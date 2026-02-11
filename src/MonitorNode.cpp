@@ -1,6 +1,4 @@
 #include "TelemetryPubSubTypes.hpp"
-// #include "TelemetryPubSubTypes.hpp" // Usa questo se ls src ti da .hpp
-
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
 #include <fastdds/dds/subscriber/Subscriber.hpp>
@@ -19,7 +17,7 @@
 using namespace eprosima::fastdds::dds;
 
 // Funzione helper per disegnare barre di caricamento
-std::string draw_bar(float value, float max, int width, std::string color) {
+std::string Barre_Caricamento(float value, float max, int width, std::string color) {
     int fill = (int)((value / max) * width);
     if (fill > width) fill = width;
     if (fill < 0) fill = 0;
@@ -53,7 +51,7 @@ public:
         if (reader->take_next_sample(&msg, &info) == RETCODE_OK && info.valid_data) {
             auto now = std::chrono::steady_clock::now();
             
-            // --- 1. ANALISI MATEMATICA DEL THREAD ---
+            //instauro la logica di controllo delle statistiche
             float cycle_time = 0.0f;
             float current_jitter = 0.0f;
             
@@ -70,7 +68,7 @@ public:
             last_pkt_time = now;
             first = false;
 
-            // Media Jitter
+            // Media Jitter il ritardo
             float avg_jitter = 0.0f;
             if (!jitter_history.empty()) {
                 float sum = std::accumulate(jitter_history.begin(), jitter_history.end(), 0.0f);
@@ -82,20 +80,20 @@ public:
             if (msg.deadline_missed()) missed_packets++;
             float loss_perc = (total_packets > 0) ? ((float)missed_packets / total_packets) * 100.0f : 0.0f;
 
-            // --- 2. LOGICA COLORI ---
+//leggo cosa e stato scritto nel write del FlightSim e controllo dopo con che colore scriverlo
             std::string status = msg.status_msg().c_str();
 
             // Definiamo cosa è CRITICO (ROSSO)
             bool alarm_crit = (status.find("ALARM") != std::string::npos ||
                                status.find("PULL UP") != std::string::npos ||     // Bassa quota
-                               status.find("PULL DOWN") != std::string::npos ||   // Alta quota (Tua richiesta)
-                               status.find("HIGH ALTITUDE") != std::string::npos); // Alta quota (Standard)
+                               status.find("PULL DOWN") != std::string::npos ||   // Alta quota
+                               status.find("HIGH ALTITUDE") != std::string::npos); // Alta quota
 
             // Definiamo cosa è ATTENZIONE (GIALLO)
             bool alarm_warn = (status.find("WARN") != std::string::npos ||
                                avg_jitter > 5.0f);
             
-            // PULIZIA SCHERMO
+
             std::cout << "\033[2J\033[1;1H"; 
 
             // HEADER DINAMICO
@@ -114,18 +112,36 @@ public:
             
             // RIGA 1: Altitudine | Cycle Time
             std::cout << " ALTITUDINE : " << std::setw(5) << (int)msg.altitude() << " m ";
-            if(msg.altitude() < 4000 || msg.altitude() > 12000) std::cout << "\033[1;31m[CRIT]\033[0m"; else std::cout << "      ";
+            if(msg.altitude() < 4000 || msg.altitude() > 12000) {
+
+            	std::cout << "\033[1;31m[CRIT]\033[0m"; }else std::cout << "      ";
+
             
             std::cout << "   |   Cycle Time : " << std::fixed << std::setprecision(2) << cycle_time << " ms ";
-            if(cycle_time > 55 || cycle_time < 45) std::cout << "\033[1;33m[UNSTABLE]\033[0m"; else std::cout << "\033[1;32m[OK]      \033[0m";
+            if(cycle_time > 55 || cycle_time < 45) {
+
+            	std::cout << "\033[1;33m[UNSTABLE]\033[0m";
+
+            }else std::cout << "\033[1;32m[OK]      \033[0m";
+
             std::cout << "\n";
 
             // RIGA 2: Roll | Jitter
             std::cout << " ROLL (X)   : " << std::setw(6) << msg.roll() << " rad ";
-            if(std::abs(msg.roll())>1.2) std::cout << "\033[1;33m[WARN]\033[0m"; else std::cout << "      ";
+            if(std::abs(msg.roll())>1.2){
+
+            	std::cout << "\033[1;33m[WARN]\033[0m";
+            }
+            else std::cout << "      ";
+
 
             std::cout << "   |   Jitter Avg : " << std::setw(5) << avg_jitter << " ms ";
-            if(avg_jitter > 2.0) std::cout << "\033[1;31m[LAG]     \033[0m"; else std::cout << "\033[1;32m[SMOOTH]  \033[0m";
+            if(avg_jitter > 2.0) {
+
+            	std::cout << "\033[1;31m[LAG]     \033[0m";
+
+            }else std::cout << "\033[1;32m[SMOOTH]  \033[0m";
+
             std::cout << "\n";
 
             // RIGA 3: Pitch | RAM Access
@@ -135,20 +151,25 @@ public:
 
             // RIGA 4: Yaw | Packet Loss
             std::cout << " YAW (Z)    : " << std::setw(6) << msg.yaw() << " rad ";
-            if(std::abs(msg.yaw())>1.2) std::cout << "\033[1;33m[WARN]\033[0m"; else std::cout << "      ";
+            if(std::abs(msg.yaw())>1.2){
+
+            	std::cout << "\033[1;33m[WARN]\033[0m";}
+            		else std::cout << "      ";
+
+
 
             std::cout << "   |   Packet Loss   : " << std::fixed << std::setprecision(1) << loss_perc << " %";
             std::cout << "\n\n";
 
             // --- BARRE GRAFICHE ---
-            std::cout << " STATO CARICO CPU (Jitter): " << draw_bar(avg_jitter, 10.0f, 20, "\033[1;33m") << "\n";
-            std::cout << " STATO ALTITUDINE (Quota) : " << draw_bar(msg.altitude(), 15000.0f, 20, "\033[1;32m") << "\n\n";
+            std::cout << " STATO CARICO CPU (Jitter): " << Barre_Caricamento(avg_jitter, 10.0f, 20, "\033[1;33m") << "\n";
+            std::cout << " STATO ALTITUDINE (Quota) : " << Barre_Caricamento(msg.altitude(), 15000.0f, 20, "\033[1;32m") << "\n\n";
 
-            // --- FOOTER: STATO GLOBALE (MODIFICATO COME CHIESTO) ---
+
             std::cout << "------------------------------------------------------------\n";
             std::cout << "CONDIZIONE VOLO : ";
 
-            // Qui c'è la logica che volevi: controlla ALARM, PULL UP e PULL DOWN
+
             if (status.find("ALARM") != std::string::npos ||
                 status.find("PULL UP") != std::string::npos ||
                 status.find("PULL DOWN") != std::string::npos ||

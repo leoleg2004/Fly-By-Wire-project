@@ -64,7 +64,7 @@ void Grafica_Aereo(float roll, float pitch, float yaw, float alt, bool recovery,
     std::string s = "\033[1;36m"; // Ciano (Cielo)
     std::string r = "\033[0m";    // Reset
 
-    std::cout << "            ORIZZONTE ARTIFICIALE\n";
+    std::cout << "            INTERFACCIA AEREO\n";
     std::cout << "      --------------------------------\n";
     
     // Logica di disegno basata sull'angolo

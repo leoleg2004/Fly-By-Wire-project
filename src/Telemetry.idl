@@ -1,11 +1,11 @@
 struct SystemStats
 {
     unsigned long packet_id;
-    float roll;
-    float pitch;
-    float yaw;
-    float altitude;     // NUOVO: Altitudine in metri
+    float roll;//asse x
+    float pitch;//asse y
+    float yaw;//asse z
+    float altitude;     
     float latency_us;
     boolean deadline_missed;
-    string<32> status_msg;
+    string<32> status_msg;//stato per i messaggi di allarme
 };
