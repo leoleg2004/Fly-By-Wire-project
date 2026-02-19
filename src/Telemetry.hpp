@@ -92,6 +92,8 @@ public:
 
                     m_latency_us = x.m_latency_us;
 
+                    m_speed = x.m_speed;
+
                     m_deadline_missed = x.m_deadline_missed;
 
                     m_status_msg = x.m_status_msg;
@@ -111,6 +113,7 @@ public:
         m_yaw = x.m_yaw;
         m_altitude = x.m_altitude;
         m_latency_us = x.m_latency_us;
+        m_speed = x.m_speed;
         m_deadline_missed = x.m_deadline_missed;
         m_status_msg = std::move(x.m_status_msg);
     }
@@ -135,6 +138,8 @@ public:
 
                     m_latency_us = x.m_latency_us;
 
+                    m_speed = x.m_speed;
+
                     m_deadline_missed = x.m_deadline_missed;
 
                     m_status_msg = x.m_status_msg;
@@ -156,6 +161,7 @@ public:
         m_yaw = x.m_yaw;
         m_altitude = x.m_altitude;
         m_latency_us = x.m_latency_us;
+        m_speed = x.m_speed;
         m_deadline_missed = x.m_deadline_missed;
         m_status_msg = std::move(x.m_status_msg);
         return *this;
@@ -174,6 +180,7 @@ public:
            m_yaw == x.m_yaw &&
            m_altitude == x.m_altitude &&
            m_latency_us == x.m_latency_us &&
+           m_speed == x.m_speed &&
            m_deadline_missed == x.m_deadline_missed &&
            m_status_msg == x.m_status_msg);
     }
@@ -363,6 +370,35 @@ public:
 
 
     /*!
+     * @brief This function sets a value in member speed
+     * @param _speed New value for member speed
+     */
+    eProsima_user_DllExport void speed(
+            float _speed)
+    {
+        m_speed = _speed;
+    }
+
+    /*!
+     * @brief This function returns the value of member speed
+     * @return Value of member speed
+     */
+    eProsima_user_DllExport float speed() const
+    {
+        return m_speed;
+    }
+
+    /*!
+     * @brief This function returns a reference to member speed
+     * @return Reference to member speed
+     */
+    eProsima_user_DllExport float& speed()
+    {
+        return m_speed;
+    }
+
+
+    /*!
      * @brief This function sets a value in member deadline_missed
      * @param _deadline_missed New value for member deadline_missed
      */
@@ -439,6 +475,7 @@ private:
     float m_yaw{0.0};
     float m_altitude{0.0};
     float m_latency_us{0.0};
+    float m_speed{0.0};
     bool m_deadline_missed{false};
     eprosima::fastcdr::fixed_string<32> m_status_msg;
 

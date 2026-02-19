@@ -6,6 +6,7 @@ struct SystemStats
     float yaw;//asse z
     float altitude;     
     float latency_us;
+    float speed;
     boolean deadline_missed;
     string<32> status_msg;//stato per i messaggi di allarme
 };

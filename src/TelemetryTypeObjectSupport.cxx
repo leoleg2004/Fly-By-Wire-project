@@ -238,6 +238,36 @@ void register_SystemStats_type_identifier(
             TypeObjectUtils::add_complete_struct_member(member_seq_SystemStats, member_latency_us);
         }
         {
+            TypeIdentifierPair type_ids_speed;
+            ReturnCode_t return_code_speed {eprosima::fastdds::dds::RETCODE_OK};
+            return_code_speed =
+                eprosima::fastdds::dds::DomainParticipantFactory::get_instance()->type_object_registry().get_type_identifiers(
+                "_float", type_ids_speed);
+
+            if (eprosima::fastdds::dds::RETCODE_OK != return_code_speed)
+            {
+                EPROSIMA_LOG_ERROR(XTYPES_TYPE_REPRESENTATION,
+                        "speed Structure member TypeIdentifier unknown to TypeObjectRegistry.");
+                return;
+            }
+            StructMemberFlag member_flags_speed = TypeObjectUtils::build_struct_member_flag(eprosima::fastdds::dds::xtypes::TryConstructFailAction::DISCARD,
+                    false, false, false, false);
+            MemberId member_id_speed = 0x00000006;
+            bool common_speed_ec {false};
+            CommonStructMember common_speed {TypeObjectUtils::build_common_struct_member(member_id_speed, member_flags_speed, TypeObjectUtils::retrieve_complete_type_identifier(type_ids_speed, common_speed_ec))};
+            if (!common_speed_ec)
+            {
+                EPROSIMA_LOG_ERROR(XTYPES_TYPE_REPRESENTATION, "Structure speed member TypeIdentifier inconsistent.");
+                return;
+            }
+            MemberName name_speed = "speed";
+            eprosima::fastcdr::optional<AppliedBuiltinMemberAnnotations> member_ann_builtin_speed;
+            ann_custom_SystemStats.reset();
+            CompleteMemberDetail detail_speed = TypeObjectUtils::build_complete_member_detail(name_speed, member_ann_builtin_speed, ann_custom_SystemStats);
+            CompleteStructMember member_speed = TypeObjectUtils::build_complete_struct_member(common_speed, detail_speed);
+            TypeObjectUtils::add_complete_struct_member(member_seq_SystemStats, member_speed);
+        }
+        {
             TypeIdentifierPair type_ids_deadline_missed;
             ReturnCode_t return_code_deadline_missed {eprosima::fastdds::dds::RETCODE_OK};
             return_code_deadline_missed =
@@ -252,7 +282,7 @@ void register_SystemStats_type_identifier(
             }
             StructMemberFlag member_flags_deadline_missed = TypeObjectUtils::build_struct_member_flag(eprosima::fastdds::dds::xtypes::TryConstructFailAction::DISCARD,
                     false, false, false, false);
-            MemberId member_id_deadline_missed = 0x00000006;
+            MemberId member_id_deadline_missed = 0x00000007;
             bool common_deadline_missed_ec {false};
             CommonStructMember common_deadline_missed {TypeObjectUtils::build_common_struct_member(member_id_deadline_missed, member_flags_deadline_missed, TypeObjectUtils::retrieve_complete_type_identifier(type_ids_deadline_missed, common_deadline_missed_ec))};
             if (!common_deadline_missed_ec)
@@ -290,7 +320,7 @@ void register_SystemStats_type_identifier(
             }
             StructMemberFlag member_flags_status_msg = TypeObjectUtils::build_struct_member_flag(eprosima::fastdds::dds::xtypes::TryConstructFailAction::DISCARD,
                     false, false, false, false);
-            MemberId member_id_status_msg = 0x00000007;
+            MemberId member_id_status_msg = 0x00000008;
             bool common_status_msg_ec {false};
             CommonStructMember common_status_msg {TypeObjectUtils::build_common_struct_member(member_id_status_msg, member_flags_status_msg, TypeObjectUtils::retrieve_complete_type_identifier(type_ids_status_msg, common_status_msg_ec))};
             if (!common_status_msg_ec)

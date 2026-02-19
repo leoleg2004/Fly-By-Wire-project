@@ -23,7 +23,7 @@
 #define FAST_DDS_GENERATED__TELEMETRYCDRAUX_HPP
 
 #include "Telemetry.hpp"
-constexpr uint32_t SystemStats_max_cdr_typesize {69UL};
+constexpr uint32_t SystemStats_max_cdr_typesize {73UL};
 constexpr uint32_t SystemStats_max_key_cdr_typesize {0UL};
 
 

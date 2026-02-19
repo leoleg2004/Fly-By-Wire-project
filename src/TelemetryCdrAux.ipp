@@ -69,9 +69,12 @@ eProsima_user_DllExport size_t calculate_serialized_size(
                 data.latency_us(), current_alignment);
 
         calculated_size += calculator.calculate_member_serialized_size(eprosima::fastcdr::MemberId(6),
-                data.deadline_missed(), current_alignment);
+                data.speed(), current_alignment);
 
         calculated_size += calculator.calculate_member_serialized_size(eprosima::fastcdr::MemberId(7),
+                data.deadline_missed(), current_alignment);
+
+        calculated_size += calculator.calculate_member_serialized_size(eprosima::fastcdr::MemberId(8),
                 data.status_msg(), current_alignment);
 
 
@@ -98,8 +101,9 @@ eProsima_user_DllExport void serialize(
         << eprosima::fastcdr::MemberId(3) << data.yaw()
         << eprosima::fastcdr::MemberId(4) << data.altitude()
         << eprosima::fastcdr::MemberId(5) << data.latency_us()
-        << eprosima::fastcdr::MemberId(6) << data.deadline_missed()
-        << eprosima::fastcdr::MemberId(7) << data.status_msg()
+        << eprosima::fastcdr::MemberId(6) << data.speed()
+        << eprosima::fastcdr::MemberId(7) << data.deadline_missed()
+        << eprosima::fastcdr::MemberId(8) << data.status_msg()
 ;
     scdr.end_serialize_type(current_state);
 }
@@ -142,10 +146,14 @@ eProsima_user_DllExport void deserialize(
                                             break;
 
                                         case 6:
-                                                dcdr >> data.deadline_missed();
+                                                dcdr >> data.speed();
                                             break;
 
                                         case 7:
+                                                dcdr >> data.deadline_missed();
+                                            break;
+
+                                        case 8:
                                                 dcdr >> data.status_msg();
                                             break;
 
@@ -175,6 +183,8 @@ void serialize_key(
                         scdr << data.altitude();
 
                         scdr << data.latency_us();
+
+                        scdr << data.speed();
 
                         scdr << data.deadline_missed();
 
