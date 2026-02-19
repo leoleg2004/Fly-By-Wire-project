@@ -6,6 +6,13 @@
 #include <fastdds/dds/subscriber/DataReaderListener.hpp>
 #include <fastdds/dds/topic/Topic.hpp>
 #include <fastdds/dds/topic/TypeSupport.hpp>
+#include <fastdds/statistics/dds/domain/DomainParticipant.hpp>
+#include <fastdds/statistics/topic_names.hpp>
+#include <fastdds/dds/domain/DomainParticipant.hpp>
+#include <fastdds/dds/domain/DomainParticipantFactory.hpp>
+#include <fastdds/statistics/dds/domain/DomainParticipant.hpp>
+#include <fastdds/statistics/topic_names.hpp>
+#include <fastdds/statistics/dds/publisher/qos/DataWriterQos.hpp>
 #include <iostream>
 #include <iomanip>
 #include <thread>
@@ -16,7 +23,7 @@
 
 using namespace eprosima::fastdds::dds;
 
-// Funzione helper per disegnare barre di caricamento
+// Funzione per disegnare barre di caricamento
 std::string Barre_Caricamento(float value, float max, int width, std::string color) {
     int fill = (int)((value / max) * width);
     if (fill > width) fill = width;
@@ -37,18 +44,19 @@ class DashboardListener : public DataReaderListener {
     long total_packets = 0;
     long missed_packets = 0;
     
-    // Statistiche Thread (Single Core Analysis)
+
     std::chrono::steady_clock::time_point last_pkt_time;
     bool first = true;
-    std::vector<float> jitter_history;
-    float max_jitter_seen = 0.0f;
+    std::vector<float> jitter_history;//vettore che mantiene la storia dei ritardi
+    float max_jitter_seen = 0.0f;//lo metto a zero in modo che il primo jitter diventi il massimo
 
 public:
     void on_data_available(DataReader* reader) override {
-        SystemStats msg;//importo telemetry.idl
+        SystemStats telemetry;//importo telemetry.idl
+
         SampleInfo info;
         
-        if (reader->take_next_sample(&msg, &info) == RETCODE_OK && info.valid_data) {
+        if (reader->take_next_sample(&telemetry, &info) == RETCODE_OK && info.valid_data) {
             auto now = std::chrono::steady_clock::now();
             
             //instauro la logica di controllo delle statistiche
@@ -59,7 +67,7 @@ public:
                 long diff_us = std::chrono::duration_cast<std::chrono::microseconds>(now - last_pkt_time).count();
                 cycle_time = diff_us / 1000.0f;
                 current_jitter = std::abs(cycle_time - 50.0f); // Target 50ms
-                
+
                 if (current_jitter > max_jitter_seen) max_jitter_seen = current_jitter;
                 
                 jitter_history.push_back(current_jitter);
@@ -77,114 +85,99 @@ public:
 
             // Statistiche Pacchetti
             total_packets++;
-            if (msg.deadline_missed()) missed_packets++;
+            if (telemetry.deadline_missed()) missed_packets++;
             float loss_perc = (total_packets > 0) ? ((float)missed_packets / total_packets) * 100.0f : 0.0f;
 
 //leggo cosa e stato scritto nel write del FlightSim e controllo dopo con che colore scriverlo
-            std::string status = msg.status_msg().c_str();
+            std::string status = telemetry.status_msg().c_str();
 
-            // Definiamo cosa è CRITICO (ROSSO)
             bool alarm_crit = (status.find("ALARM") != std::string::npos ||
-                               status.find("PULL UP") != std::string::npos ||     // Bassa quota
-                               status.find("PULL DOWN") != std::string::npos ||   // Alta quota
-                               status.find("HIGH ALTITUDE") != std::string::npos); // Alta quota
+                                           status.find("PULL UP") != std::string::npos ||
+                                           status.find("QUOTA BASSA") != std::string::npos ||
+                                           status.find("PULL DOWN") != std::string::npos ||
+                                           status.find("HIGH ALTITUDE") != std::string::npos ||
+                                           telemetry.altitude() < 200.0f ||
+                                           telemetry.altitude() > 15000.0f);
 
-            // Definiamo cosa è ATTENZIONE (GIALLO)
-            bool alarm_warn = (status.find("WARN") != std::string::npos ||
-                               avg_jitter > 5.0f);
-            
+                        bool alarm_warn = (status.find("WARN") != std::string::npos || avg_jitter > 5.0f);
 
-            std::cout << "\033[2J\033[1;1H"; 
+                        std::cout << "\033[2J\033[1;1H";
 
-            // HEADER DINAMICO
-            if (alarm_crit) std::cout << "\033[1;41m";      // Sfondo Rosso
-            else if (alarm_warn) std::cout << "\033[1;43m"; // Sfondo Giallo
-            else std::cout << "\033[1;44m";                 // Sfondo Blu
-            
-            std::cout << "############################################################\n";
-            std::cout << "           TORRE DI CONTROLLO - MONITORAGGIO REAL-TIME      \n";
-            std::cout << "############################################################\n";
-            std::cout << "\033[0m\n";
+                        if (alarm_crit) std::cout << "\033[1;41m";
+                        else if (alarm_warn) std::cout << "\033[1;43m";
+                        else std::cout << "\033[1;44m";
 
-            // --- CORPO INTERFACCIA (Doppia Colonna Allineata) ---
-            
-            std::cout << "\033[1;36m>>> TELEMETRIA DI VOLO <<<\033[0m            \033[1;35m>>> DIAGNOSTICA CORE & THREAD <<<\033[0m\n";
-            
-            // RIGA 1: Altitudine | Cycle Time
-            std::cout << " ALTITUDINE : " << std::setw(5) << (int)msg.altitude() << " m ";
-            if(msg.altitude() < 4000 || msg.altitude() > 12000) {
+                        std::cout << "############################################################\n";
+                        std::cout << "           TORRE DI CONTROLLO - MONITORAGGIO REAL-TIME      \n";
+                        std::cout << "############################################################\n";
+                        std::cout << "\033[0m\n";
 
-            	std::cout << "\033[1;31m[CRIT]\033[0m"; }else std::cout << "      ";
+                        std::cout << "\033[1;36m>>> TELEMETRIA DI VOLO <<<\033[0m            \033[1;35m>>> DIAGNOSTICA CORE & THREAD <<<\033[0m\n";
 
-            
-            std::cout << "   |   Cycle Time : " << std::fixed << std::setprecision(2) << cycle_time << " ms ";
-            if(cycle_time > 55 || cycle_time < 45) {
+                        std::cout << " ALTITUDINE : " << std::setw(5) << (int)telemetry.altitude() << " m ";
+                        if(telemetry.altitude() < 200.0f || telemetry.altitude() > 14000.0f) {
+                        	std::cout << "\033[1;31m[CRIT]\033[0m";
+                        } else {
+                            std::cout << "      ";
+                        }
 
-            	std::cout << "\033[1;33m[UNSTABLE]\033[0m";
+                        std::cout << "   |   Cycle Time : " << std::fixed << std::setprecision(2) << cycle_time << " ms ";
+                        if(cycle_time > 55 || cycle_time < 45) {
+                        	std::cout << "\033[1;33m[UNSTABLE]\033[0m";
+                        } else {
+                            std::cout << "\033[1;32m[OK]      \033[0m";
+                        }
+                        std::cout << "\n";
 
-            }else std::cout << "\033[1;32m[OK]      \033[0m";
+                        std::cout << " ROLL (X)   : " << std::setw(6) << telemetry.roll() << " rad ";
+                        if(std::abs(telemetry.roll()) > 1.2) {
+                        	std::cout << "\033[1;33m[WARN]\033[0m";
+                        } else {
+                            std::cout << "      ";
+                        }
 
-            std::cout << "\n";
+                        std::cout << "   |   Jitter Avg : " << std::setw(5) << avg_jitter << " ms ";
+                        if(avg_jitter > 2.0) {
+                        	std::cout << "\033[1;31m[LAG]     \033[0m";
+                        } else {
+                            std::cout << "\033[1;32m[SMOOTH]  \033[0m";
+                        }
+                        std::cout << "\n";
 
-            // RIGA 2: Roll | Jitter
-            std::cout << " ROLL (X)   : " << std::setw(6) << msg.roll() << " rad ";
-            if(std::abs(msg.roll())>1.2){
+                        std::cout << " PITCH (Y)  : " << std::setw(6) << telemetry.pitch() << " rad       ";
+                        std::cout << "   |   RAM Access : " << std::setw(5) << (int)telemetry.latency_us() << " us \n";
 
-            	std::cout << "\033[1;33m[WARN]\033[0m";
-            }
-            else std::cout << "      ";
+                        std::cout << " YAW (Z)    : " << std::setw(6) << telemetry.yaw() << " rad ";
+                        if(std::abs(telemetry.yaw()) > 1.2) {
+                        	std::cout << "\033[1;33m[WARN]\033[0m";
+                        } else {
+                            std::cout << "      ";
+                        }
 
+                        std::cout << "   |   Packet Loss   : " << std::fixed << std::setprecision(1) << loss_perc << " %\n";
 
-            std::cout << "   |   Jitter Avg : " << std::setw(5) << avg_jitter << " ms ";
-            if(avg_jitter > 2.0) {
+                        std::cout << " SPEED      : " << std::setw(6) << (int)telemetry.speed()*2 << " Km/h \n\n";
 
-            	std::cout << "\033[1;31m[LAG]     \033[0m";
+                        std::cout << " STATO CARICO CPU (Jitter): " << Barre_Caricamento(avg_jitter, 10.0f, 20, "\033[1;33m") << "\n";
+                        std::cout << " STATO ALTITUDINE (Quota) : " << Barre_Caricamento(telemetry.altitude(), 15000.0f, 20, "\033[1;32m") << "\n\n";
 
-            }else std::cout << "\033[1;32m[SMOOTH]  \033[0m";
+                        std::cout << "------------------------------------------------------------\n";
+                        std::cout << "CONDIZIONE VOLO : ";
 
-            std::cout << "\n";
-
-            // RIGA 3: Pitch | RAM Access
-            std::cout << " PITCH (Y)  : " << std::setw(6) << msg.pitch() << " rad       ";
-            std::cout << "   |   RAM Access : " << std::setw(5) << (int)msg.latency_us() << " us ";
-            std::cout << "\n";
-
-            // RIGA 4: Yaw | Packet Loss
-            std::cout << " YAW (Z)    : " << std::setw(6) << msg.yaw() << " rad ";
-            if(std::abs(msg.yaw())>1.2){
-
-            	std::cout << "\033[1;33m[WARN]\033[0m";}
-            		else std::cout << "      ";
-
-
-
-            std::cout << "   |   Packet Loss   : " << std::fixed << std::setprecision(1) << loss_perc << " %";
-            std::cout << "\n\n";
-
-            // --- BARRE GRAFICHE ---
-            std::cout << " STATO CARICO CPU (Jitter): " << Barre_Caricamento(avg_jitter, 10.0f, 20, "\033[1;33m") << "\n";
-            std::cout << " STATO ALTITUDINE (Quota) : " << Barre_Caricamento(msg.altitude(), 15000.0f, 20, "\033[1;32m") << "\n\n";
-
-
-            std::cout << "------------------------------------------------------------\n";
-            std::cout << "CONDIZIONE VOLO : ";
+                        if (alarm_crit) {
+                            std::cout << "\033[1;31m !!! IN PERICOLO: " << status << " (WARNING) !!!\033[0m\n";
+                        }
+                        else if (alarm_warn) {
+                            std::cout << "\033[1;33m " << status << "\033[0m\n";
+                        }
+                        else {
+                            std::cout << "\033[1;32m " << status << "\033[0m\n";
+                        }
 
 
-            if (status.find("ALARM") != std::string::npos ||
-                status.find("PULL UP") != std::string::npos ||
-                status.find("PULL DOWN") != std::string::npos ||
-                status.find("HIGH ALTITUDE") != std::string::npos)
-            {
-                std::cout << "\033[1;31m" << status << "\033[0m\n"; // ROSSO
-            }
-            else if (alarm_warn)
-            {
-                std::cout << "\033[1;33m" << status << "\033[0m\n"; // GIALLO
-            }
-            else
-            {
-                std::cout << "\033[1;32m" << status << "\033[0m\n"; // VERDE
-            }
+
+
+
 
             std::cout << " RETE DDS   : " << total_packets << " Rx | " << missed_packets << " Perse (" << loss_perc << "%)\n";
             std::cout << "------------------------------------------------------------\n";
@@ -199,16 +192,75 @@ public:
 };
 
 int main() {
-    DomainParticipantQos pqos;
-    pqos.name("Monitor_Node");
-    DomainParticipant* part = DomainParticipantFactory::get_instance()->create_participant(0, pqos);
-    TypeSupport type(new SystemStatsPubSubType());
-    type.register_type(part);
-    Subscriber* sub = part->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
-    Topic* topic = part->create_topic("TelemetryTopic", "SystemStats", TOPIC_QOS_DEFAULT);
-    DashboardListener lst;
-    DataReader* reader = sub->create_datareader(topic, DATAREADER_QOS_DEFAULT, &lst);
 
-    while(true) std::this_thread::sleep_for(std::chrono::seconds(1));
+	    DomainParticipantQos pqos;
+	    pqos.name("Monitor_Node_Leonardo");
+
+
+	    pqos.properties().properties().emplace_back("fastdds.statistics",
+	        "HISTORY_LATENCY;"
+	        "NETWORK_LATENCY;"
+	        "PUBLICATION_THROUGHPUT;"
+	        "SUBSCRIPTION_THROUGHPUT;"
+	        "HEARTBEAT_COUNT;"
+	        "ACKNACK_COUNT;"
+	        "DISCOVERY_STATISTICS;"
+	        "PHYSICAL_DATA_STATISTICS");
+
+
+//creo il participant
+	    DomainParticipant* participant = DomainParticipantFactory::get_instance()->create_participant(0, pqos);
+	    if (participant == nullptr) return 1;
+
+	    auto* stat_participant = eprosima::fastdds::statistics::dds::DomainParticipant::narrow(participant);
+	    if (stat_participant != nullptr) {
+
+	        // Traffico e Affidabilità
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::SUBSCRIPTION_THROUGHPUT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::ACKNACK_COUNT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HEARTBEAT_COUNT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	        // Latenza della rete DDS
+	      	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HISTORY_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	      	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::NETWORK_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+
+	        // Latenza della rete DDS
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HISTORY_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+
+	    }
+
+
+	    TypeSupport type(new SystemStatsPubSubType());
+	    type.register_type(participant);
+
+	    Subscriber* sub = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+	    Topic* topic = participant->create_topic("TelemetryTopic", type.get_type_name(), TOPIC_QOS_DEFAULT);
+
+	  //creo il reader
+	    DataReaderQos dr_qos = DATAREADER_QOS_DEFAULT;
+
+	    // Reliability del quality of service
+	    dr_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+	    dr_qos.durability().kind = VOLATILE_DURABILITY_QOS;
+
+	    // Abilitiamo le statistiche lato ricezione
+	    dr_qos.properties().properties().emplace_back("fastdds.statistics",
+	        "SUBSCRIPTION_THROUGHPUT;"
+	        "HISTORY_LATENCY;"
+	        "ACKNACK_COUNT");
+
+
+	    DashboardListener listener;
+	    DataReader* reader = sub->create_datareader(topic, dr_qos, &listener);
+
+	    if (reader == nullptr) {
+	    	return 1;
+	    	 std::cout << "=== DASHBOARD MONITOR IN ASCOLTO (RELIABLE) ===" << std::endl;
+
+	    }
+
+
+    while(true) {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
     return 0;
 }
