@@ -1,0 +1,11 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Terminal=false
+Encoding=UTF-8
+Version=1.1
+Name=Eclipse IDE for C and C++ Developers - 2025-12
+StartupWMClass=Eclipse
+Exec=/home/leonardo/eclipse/cpp-2025-12/eclipse/eclipse
+Categories=Development;IDE;
+Icon=/home/leonardo/eclipse/cpp-2025-12/eclipse/icon.xpm

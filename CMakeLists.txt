@@ -30,3 +30,13 @@ add_executable(DDSEDFSCORE rt_tests/DDSMCORE.cpp ${DDS_SRCS})
 target_link_libraries(DDSEDFSCORE fastdds fastcdr pthread)
 add_executable(DDSEDFMCORE rt_tests/DDSMCORE.cpp ${DDS_SRCS})
 target_link_libraries(DDSEDFMCORE fastdds fastcdr pthread)
+
+add_executable(DDSMCORE rt_tests/DDSMCORE.cpp ${DDS_SRCS})
+target_link_libraries(DDSMCORE fastdds fastcdr pthread)
+
+# CORRETTI QUESTI DUE:
+add_executable(DDSEDFSCORE rt_tests/DDSEDFSCORE.cpp ${DDS_SRCS})
+target_link_libraries(DDSEDFSCORE fastdds fastcdr pthread)
+
+add_executable(DDSEDFMCORE rt_tests/DDSEDFMCORE.cpp ${DDS_SRCS})
+target_link_libraries(DDSEDFMCORE fastdds fastcdr pthread)

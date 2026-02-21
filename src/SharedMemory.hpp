@@ -1,3 +1,4 @@
+//classe usata per fare comunicare i thread all'intero del main(thread pilota (A) e thread monitor(B)
 #ifndef SHARED_MEMORY_HPP
 #define SHARED_MEMORY_HPP
 
