@@ -136,7 +136,7 @@ int main(int argc, char *argv[]) {
 	pthread_t *thread = (pthread_t*) malloc(NUM_THREADS * sizeof(pthread_t));
 
 	int arg_idx = 1;
-	// Assegnazione su Core Diversi
+	// Assegnazione su Core Uguali
 					cpu_set_t cpuset;
 					CPU_ZERO(&cpuset);
 					CPU_SET(0*2, &cpuset);
