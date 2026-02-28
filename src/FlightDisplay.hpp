@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-// Struttura Dati Aereo
+// Struttura Dati Aereo con cui passo alla grafic ai dati
 struct PlaneData {
     float roll = 0.0f;
     float pitch = 0.0f;
@@ -13,7 +13,8 @@ struct PlaneData {
    //movimento nello spazio nelle tre dimensioni
     float x = 0.0f;
     float z = 0.0f;
-float speed;
+float speed=0.0f;
+char status_msg[64];//aggiunto per gestire nel monitor i messaggi di condizione di volo
     bool system_active = true;
 };
 
@@ -42,7 +43,8 @@ public:
 private:
     Camera3D camera;
     Vector3 cameraPositionLag;
-
+    Model skyModel;
+        bool skyLoaded;
     Model mapModel;       // Il modello del terreno
         bool mapLoaded;       // controlla che ci sia una mappa caricata
     Model modelF35;//carico modello dell'aereo
@@ -56,6 +58,8 @@ private:
         void DrawHUD(const PlaneData& data);
         void UpdateAnimations();
         void DrawSky(Vector3 cameraPosition);
+
+        void DrawGround(const PlaneData& data);
 };
 
 #endif

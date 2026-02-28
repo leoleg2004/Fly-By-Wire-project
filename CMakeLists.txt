@@ -11,32 +11,34 @@ find_package(raylib REQUIRED)
 include_directories(src "/home/leonardo/eprosima_install/include")
 link_directories("/home/leonardo/eprosima_install/lib")
 
-
 set(DDS_SRCS 
     src/TelemetryPubSubTypes.cxx 
     src/TelemetryTypeObjectSupport.cxx
 )
 
+# --- APPLICAZIONI PRINCIPALI ---
+
+# Simulatore di volo
 add_executable(FlightSim src/main.cpp src/FlightDisplay.cpp ${DDS_SRCS})
 target_link_libraries(FlightSim fastdds fastcdr raylib pthread dl m)
 
-add_executable(MonitorApp src/MonitorNode.cpp ${DDS_SRCS})
-target_link_libraries(MonitorApp fastdds fastcdr pthread dl)
+# MonitorApp con supporto grafico MonitorDisplay
+add_executable(MonitorApp src/MonitorNode.cpp src/MonitorDisplay.cpp ${DDS_SRCS})
+target_link_libraries(MonitorApp fastdds fastcdr raylib pthread dl m)
+
+# --- TEST REAL-TIME (VERSIONI CORRETTE) ---
+
 add_executable(DDSCORE rt_tests/DDSCORE.cpp ${DDS_SRCS})
 target_link_libraries(DDSCORE fastdds fastcdr pthread)
-add_executable(DDSMCORE rt_tests/DDSMCORE.cpp ${DDS_SRCS})
-target_link_libraries(DDSMCORE fastdds fastcdr pthread)
-add_executable(DDSEDFSCORE rt_tests/DDSMCORE.cpp ${DDS_SRCS})
-target_link_libraries(DDSEDFSCORE fastdds fastcdr pthread)
-add_executable(DDSEDFMCORE rt_tests/DDSMCORE.cpp ${DDS_SRCS})
-target_link_libraries(DDSEDFMCORE fastdds fastcdr pthread)
 
+# Rimosso il duplicato precedente, mantenuta la versione corretta
 add_executable(DDSMCORE rt_tests/DDSMCORE.cpp ${DDS_SRCS})
 target_link_libraries(DDSMCORE fastdds fastcdr pthread)
 
-# CORRETTI QUESTI DUE:
+# Rimosso il duplicato che puntava a DDSMCORE.cpp, mantenuto il file corretto
 add_executable(DDSEDFSCORE rt_tests/DDSEDFSCORE.cpp ${DDS_SRCS})
 target_link_libraries(DDSEDFSCORE fastdds fastcdr pthread)
 
+# Rimosso il duplicato che puntava a DDSMCORE.cpp, mantenuto il file corretto
 add_executable(DDSEDFMCORE rt_tests/DDSEDFMCORE.cpp ${DDS_SRCS})
 target_link_libraries(DDSEDFMCORE fastdds fastcdr pthread)
