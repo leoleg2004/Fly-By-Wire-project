@@ -13,6 +13,9 @@
 #define COL_NOZZLE  CLITERAL(Color){ 20, 20, 20, 255 }
 #define COL_FIRE    CLITERAL(Color){ 255, 100, 50, 200 }
 
+// Variabili globali per la sessione grafica
+static int cameraMode = 0; // 0 = Chase, 1 = Side, 2 = Front Cinematic
+
 FlightDisplay::FlightDisplay(int width, int height, const std::string& title) {
     InitWindow(width, height, title.c_str());
     SetTargetFPS(60);
@@ -56,12 +59,26 @@ FlightDisplay::~FlightDisplay() {
 
 bool FlightDisplay::IsActive() { return !WindowShouldClose(); }
 
+// ========================================================
+// LETTURA COMANDI (Aggiunti Tasti L e C)
+// ========================================================
 void FlightDisplay::HandleInput(PlaneData& data) {
 
     bool isPitching = false;
     bool isRolling = false;
 
-    // 1. LETTURA CLOCHE (Beccheggio)
+    // --- TOGGLE CARRELLO E ATTERRAGGIO (TASTO L) ---
+    if (IsKeyPressed(KEY_L)) {
+        data.landing_mode = !data.landing_mode;
+        gearOpen = data.landing_mode; // Apriamo/Chiudiamo anche i carrelli visivi!
+    }
+
+    // --- TOGGLE TELECAMERE (TASTO C) ---
+    if (IsKeyPressed(KEY_C)) {
+        cameraMode = (cameraMode + 1) % 3; // Cicla tra 0, 1 e 2
+    }
+
+    // 1. LETTURA CLOCHE
     if (IsKeyDown(KEY_UP)) {
         data.pitch += 0.03f;
         isPitching = true;
@@ -70,8 +87,6 @@ void FlightDisplay::HandleInput(PlaneData& data) {
         data.pitch -= 0.03f;
         isPitching = true;
     }
-
-    // 2. LETTURA CLOCHE (Rollio)
     if (IsKeyDown(KEY_LEFT)) {
         data.roll -= 0.025f;
         isRolling = true;
@@ -81,10 +96,11 @@ void FlightDisplay::HandleInput(PlaneData& data) {
         isRolling = true;
     }
 
-    // 3. LETTURA TIMONE (Imbardata)
+    // 2. LETTURA TIMONE
     if (IsKeyDown(KEY_Q)) data.yaw += 0.01f;
     if (IsKeyDown(KEY_E)) data.yaw -= 0.01f;
 
+    // Raddrizzamento naturale morbido
     if (!isRolling) {
         data.roll = Lerp(data.roll, 0.0f, 0.015f);
     }
@@ -92,66 +108,105 @@ void FlightDisplay::HandleInput(PlaneData& data) {
         data.pitch = Lerp(data.pitch, 0.0f, 0.005f);
     }
 
+    // 3. GESTIONE MOTORE
     if (IsKeyDown(KEY_SPACE)) {
-        data.speed = 0.0f; // Freno a mano / spegnimento
+        data.speed = 0.0f;
     } else {
         if (IsKeyDown(KEY_W)) {
             data.speed += 0.8f;
         } else if (IsKeyDown(KEY_S)) {
             data.speed -= 1.2f;
         } else {
-            // Decelerazione naturale se non dai gas
             if (data.speed > 0) data.speed -= 0.15f;
         }
     }
 
-    // Limiti di velocità rigidi (L'unica cosa che il Display controlla ancora)
+    // Limiti velocità (Se in atterraggio, limite raccomandato visivamente ma meccanica max a 200)
     if (data.speed > 200.0f) data.speed = 200.0f;
     if (data.speed < 0.0f) data.speed = 0.0f;
 
-    // Aggiornamento animazioni (Carrello)
     UpdateAnimations();
 }
 
+// ========================================================
+// SISTEMA TELECAMERE MULTIPLE
+// ========================================================
 void FlightDisplay::UpdateChaseCamera(const PlaneData& data) {
     float renderAlt = data.altitude / 1.5f;
     float speedRatio = std::min(data.speed / 200.0f, 1.0f);
 
-
-    float distH = 150.0f + (speedRatio * 1.5f);
-    float camHeight = 6.0f + (data.pitch * 6.0f);
-
     Vector3 idealPos;
-    idealPos.x = data.x - (std::sin(data.yaw) * distH);
-    idealPos.z = data.z - (std::cos(data.yaw) * distH);
-    idealPos.y = renderAlt + camHeight;
-
     Vector3 targetLook;
-    targetLook.x = data.x + (std::sin(data.yaw) * 5.0f);
-    targetLook.y = renderAlt + 2.0f;
-    targetLook.z = data.z + (std::cos(data.yaw) * 5.0f);
-
     float trackingSpeed = 0.25f + (speedRatio * 0.15f);
 
+    switch (cameraMode) {
+        case 0: // BATTLEFIELD CHASE (Dietro all'aereo)
+            {
+                float distH = 26.0f + (speedRatio * 6.0f);
+                float camHeight = 6.0f + (data.pitch * 6.0f);
+
+                idealPos.x = data.x - (std::sin(data.yaw) * distH);
+                idealPos.z = data.z - (std::cos(data.yaw) * distH);
+                idealPos.y = renderAlt + camHeight;
+
+                targetLook.x = data.x + (std::sin(data.yaw) * 5.0f);
+                targetLook.y = renderAlt + 2.0f;
+                targetLook.z = data.z + (std::cos(data.yaw) * 5.0f);
+
+                camera.up = (Vector3){ std::sin(data.roll * 0.8f), std::cos(data.roll * 0.8f), 0.0f };
+                camera.fovy = 65.0f + (speedRatio * 20.0f);
+            }
+            break;
+
+        case 1: // CINEMATIC SIDE VIEW (Vera vista videogioco laterale)
+            {
+                // La camera si posiziona a +90 gradi rispetto a dove punta il muso
+                float sideAngle = data.yaw + PI / 2.0f;
+                float distSide = 40.0f; // Distanza laterale
+
+                idealPos.x = data.x + (std::sin(sideAngle) * distSide);
+                idealPos.z = data.z + (std::cos(sideAngle) * distSide);
+                idealPos.y = renderAlt + 5.0f; // Leggermente sopra
+
+                targetLook.x = data.x;
+                targetLook.y = renderAlt;
+                targetLook.z = data.z;
+
+                camera.up = (Vector3){ 0.0f, 1.0f, 0.0f }; // Orizzonte fisso per ammirare il rollio dell'aereo
+                camera.fovy = 60.0f;
+            }
+            break;
+
+        case 2: // FRONT FLY-BY (Davanti all'aereo, guarda il muso)
+            {
+                float distFront = 50.0f;
+
+                idealPos.x = data.x + (std::sin(data.yaw) * distFront);
+                idealPos.z = data.z + (std::cos(data.yaw) * distFront);
+                idealPos.y = renderAlt + 5.0f;
+
+                targetLook.x = data.x;
+                targetLook.y = renderAlt;
+                targetLook.z = data.z;
+
+                camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+                camera.fovy = 55.0f;
+            }
+            break;
+    }
+
+    // Interpolo dolcemente la telecamera verso la posizione ideale
     cameraPositionLag.x = Lerp(cameraPositionLag.x, idealPos.x, trackingSpeed);
     cameraPositionLag.y = Lerp(cameraPositionLag.y, idealPos.y, trackingSpeed * 0.8f);
     cameraPositionLag.z = Lerp(cameraPositionLag.z, idealPos.z, trackingSpeed);
 
     camera.position = cameraPositionLag;
     camera.target = targetLook;
-
-    camera.up.x = std::sin(data.roll * 0.8f);
-    camera.up.y = std::cos(data.roll * 0.8f);
-    camera.up.z = 0.0f;
-
-
-    camera.fovy = 65.0f + (speedRatio * 5.0f);
 }
 
 void FlightDisplay::UpdateAnimations() {
     if (animsCount <= 0 || modelAnims == nullptr) return;
     int maxFrames = modelAnims[0].frameCount - 1;
-    if (IsKeyPressed(KEY_G)) gearOpen = !gearOpen;
 
     float speed = 60.0f;
     if (gearOpen) {
@@ -223,7 +278,7 @@ void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
 
     DrawModel(modelF35, (Vector3){0, 0, 0}, modelScaleAereo, WHITE);
 
-    if (data.system_active) {
+    if (data.system_active && data.speed > 5.0f) {
         rlPushMatrix();
             BeginBlendMode(BLEND_ADDITIVE);
             rlDisableDepthMask();
@@ -325,25 +380,41 @@ void FlightDisplay::DrawHUD(const PlaneData& data) {
     EndScissorMode();
     DrawTriangle({(float)cx, (float)ty + 35}, {(float)cx - 6, (float)ty + 42}, {(float)cx + 6, (float)ty + 42}, hudRed);
 
+
+    // =========================================================
+    // HUD: ALLARMI E MODALITÀ ATTERRAGGIO
+    // =========================================================
     bool blink = ((int)(GetTime() * 8) % 2 == 0);
     bool hasAlarm = false;
     const char* warnMsg = "";
 
-    if (data.altitude < 2000)            { hasAlarm = true; warnMsg = "TERRAIN PULL UP"; }
-    else if (data.altitude > 12500)      { hasAlarm = true; warnMsg = "OVERSHOOT PULL DOWN"; }
-    else if (std::abs(data.roll) > 1.6f){ hasAlarm = true; warnMsg = "AUTOPILOT RECOVERY ENGAGED"; }
-    else if (std::abs(data.roll) > 1.0f) { hasAlarm = true; warnMsg = "CRITICAL BANK ANGLE"; }
-
-    if (hasAlarm) {
-        DrawRectangleLinesEx({0, 0, (float)sw, (float)sh}, 6.0f, blink ? hudRed : Fade(hudRed, 0.4f));
+    // SE IL LANDING MODE È ATTIVO:
+    // Spegne gli allarmi del terreno per permetterti di atterrare e mostra uno stato verde
+    if (data.landing_mode) {
+        DrawRectangleLinesEx({0, 0, (float)sw, (float)sh}, 6.0f, hudGreen);
         int wx = cx - 220, wy = cy + 120, ww = 440, wh = 50;
-        DrawRectangle(wx, wy, ww, wh, blink ? Fade(hudRed, 0.5f) : Fade(BLACK, 0.9f));
-        DrawRectangleLinesEx({(float)wx, (float)wy, (float)ww, (float)wh}, 2.0f, hudRed);
-        const char* fullMsg = TextFormat("! ! !  %s  ! ! !", warnMsg);
-        DrawText(fullMsg, cx - MeasureText(fullMsg, 20)/2, wy + 15, 20, blink ? WHITE : hudRed);
+        DrawRectangle(wx, wy, ww, wh, Fade({10, 50, 10, 255}, 0.9f));
+        DrawRectangleLinesEx({(float)wx, (float)wy, (float)ww, (float)wh}, 2.0f, hudGreen);
+        DrawText("LANDING MODE ENGAGED - FBW DISABLED", cx - MeasureText("LANDING MODE ENGAGED - FBW DISABLED", 20)/2, wy + 15, 20, hudGreen);
+    }
+    // SE IL LANDING MODE È SPENTO: Normali allarmi
+    else {
+        if (data.altitude < 2000)            { hasAlarm = true; warnMsg = "TERRAIN PULL UP"; }
+        else if (data.altitude > 12500)      { hasAlarm = true; warnMsg = "OVERSHOOT PULL DOWN"; }
+        else if (std::abs(data.roll) > 1.6f) { hasAlarm = true; warnMsg = "AUTOPILOT RECOVERY ENGAGED"; }
+        else if (std::abs(data.roll) > 1.0f) { hasAlarm = true; warnMsg = "CRITICAL BANK ANGLE"; }
+
+        if (hasAlarm) {
+            DrawRectangleLinesEx({0, 0, (float)sw, (float)sh}, 6.0f, blink ? hudRed : Fade(hudRed, 0.4f));
+            int wx = cx - 220, wy = cy + 120, ww = 440, wh = 50;
+            DrawRectangle(wx, wy, ww, wh, blink ? Fade(hudRed, 0.5f) : Fade(BLACK, 0.9f));
+            DrawRectangleLinesEx({(float)wx, (float)wy, (float)ww, (float)wh}, 2.0f, hudRed);
+            const char* fullMsg = TextFormat("! ! !  %s  ! ! !", warnMsg);
+            DrawText(fullMsg, cx - MeasureText(fullMsg, 20)/2, wy + 15, 20, blink ? WHITE : hudRed);
+        }
     }
 
-    DrawText("SYS: F-35 LEO-FLIGHT-OS v28.0 // REALISTIC ROLL & CINETIC CAMERA", 30, sh - 30, 10, hudDim);
+    DrawText("SYS: F-35 LEO-FLIGHT-OS v29.0 // CAMERA [C] - LANDING [L]", 30, sh - 30, 10, hudDim);
     for(int i = 0; i < sh; i += 3) DrawLine(0, i, sw, i, Fade(BLACK, 0.15f));
 }
 

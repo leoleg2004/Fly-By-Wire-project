@@ -170,9 +170,13 @@ int main() {
                     display.HandleInput(Aereo);
 
 
-                    // Rischio schianto a terra (Sotto i 2000m)
-                    if (Aereo.altitude < 2000.0f && Aereo.speed > 0.0f) recovery_low = true;
-
+                    // L'autopilota scatta solo se NON stai cercando di atterrare (Aereo.landing_mode == false)
+                    if (Aereo.altitude < 2000.0f && Aereo.speed >= 0.0f && !Aereo.landing_mode) {
+                        recovery_low = true;
+                    } else if (Aereo.landing_mode) {
+                        // Disattiva attivamente il recupero se attiviamo il Landing Mode mentre sta già correggendo
+                        recovery_low = false;
+                    }
                     // Rischio caduta a motori spenti
                     if (Aereo.speed < 10.0f && Aereo.altitude <= 2500.0f) recovery_zero = true;
 

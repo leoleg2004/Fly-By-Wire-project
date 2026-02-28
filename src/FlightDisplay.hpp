@@ -16,6 +16,7 @@ struct PlaneData {
 float speed=0.0f;
 char status_msg[64];//aggiunto per gestire nel monitor i messaggi di condizione di volo
     bool system_active = true;
+    bool landing_mode = false;//per diabilitare il fly-by-wire
 };
 
 
