@@ -18,6 +18,15 @@ static int cameraMode = 0; // 0 = Chase, 1 = Side, 2 = Front Cinematic
 
 FlightDisplay::FlightDisplay(int width, int height, const std::string& title) {
     InitWindow(width, height, title.c_str());
+    // 1. Inizializza il dispositivo audio di sistema
+    InitAudioDevice();
+
+    // 2. Carica i suoni (assicurati di avere questi file nella cartella del progetto!)
+    sndEngineStart = LoadSound("engine_start.wav");
+    sndEngineLoop = LoadSound("engine_loop.wav");
+    sndGear = LoadSound("gear.wav"); // Ricordati di mettere un audio per il carrello nella cartella!
+
+    isEngineStarting = false;
     SetTargetFPS(60);
 
     skyModel = LoadModel("sky.glb");
@@ -27,17 +36,26 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string& title) {
     modelF35 = LoadModel("f35.glb");
     modelAnims = LoadModelAnimations("f35.glb", &animsCount);
     gearFrame = 0.0f;
-    gearOpen = true;
+    gearOpen = false;//parto con carrello chiuso
     modelF35.transform = MatrixIdentity();
 
     if (modelF35.meshCount > 0) modelLoaded = true;
     else { modelLoaded = false; TraceLog(LOG_WARNING, "ATTENZIONE: Impossibile caricare f35.glb"); }
 
-    if (animsCount > 0) gearFrame = modelAnims[0].frameCount - 1;
+    if (animsCount > 0) gearFrame = modelAnims[0].keykeykeyframeCount - 1;
     flapFrame = 0;
     flapOpen = false;
 
-    mapLoaded = false;
+    // =======================================================
+    // CARICAMENTO DELLA PISTA DI ATTERRAGGIO (AERODROME)
+    // =======================================================
+    mapModel = LoadModel("aerodrome.glb");
+    if (mapModel.meshCount > 0) {
+        mapLoaded = true;
+    } else {
+        mapLoaded = false;
+        TraceLog(LOG_WARNING, "ATTENZIONE: Impossibile caricare aerodrome.glb");
+    }
 
     camera.position = (Vector3){ 0.0f, 15.0f, -35.0f };
     camera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
@@ -49,36 +67,36 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string& title) {
 }
 
 FlightDisplay::~FlightDisplay() {
+    if (mapLoaded) UnloadModel(mapModel);
     if (skyLoaded) UnloadModel(skyModel);
     if (modelLoaded) {
         if (modelAnims) UnloadModelAnimations(modelAnims, animsCount);
         UnloadModel(modelF35);
+        UnloadSound(sndEngineStart);
+        UnloadSound(sndEngineLoop);
+        UnloadSound(sndGear);
+
     }
     CloseWindow();
 }
 
 bool FlightDisplay::IsActive() { return !WindowShouldClose(); }
 
-// ========================================================
-// LETTURA COMANDI (Aggiunti Tasti L e C)
-// ========================================================
-void FlightDisplay::HandleInput(PlaneData& data) {
 
+void FlightDisplay::HandleInput(PlaneData& data) {
     bool isPitching = false;
     bool isRolling = false;
 
-    // --- TOGGLE CARRELLO E ATTERRAGGIO (TASTO L) ---
-    if (IsKeyPressed(KEY_L)) {
-        data.landing_mode = !data.landing_mode;
-        gearOpen = data.landing_mode; // Apriamo/Chiudiamo anche i carrelli visivi!
+
+    if (IsKeyPressed(KEY_G)) {
+        gearOpen = !gearOpen;
+        // Riproduce il rumore meccanico del carrello
+        PlaySound(sndGear);
     }
 
-    // --- TOGGLE TELECAMERE (TASTO C) ---
-    if (IsKeyPressed(KEY_C)) {
-        cameraMode = (cameraMode + 1) % 3; // Cicla tra 0, 1 e 2
-    }
+    if (IsKeyPressed(KEY_L)) data.landing_mode = !data.landing_mode;
+    if (IsKeyPressed(KEY_C)) cameraMode = (cameraMode + 1) % 3;
 
-    // 1. LETTURA CLOCHE
     if (IsKeyDown(KEY_UP)) {
         data.pitch += 0.03f;
         isPitching = true;
@@ -96,177 +114,245 @@ void FlightDisplay::HandleInput(PlaneData& data) {
         isRolling = true;
     }
 
-    // 2. LETTURA TIMONE
-    if (IsKeyDown(KEY_Q)) data.yaw += 0.01f;
-    if (IsKeyDown(KEY_E)) data.yaw -= 0.01f;
+    //accensione motore
+    if (IsKeyPressed(KEY_E)) {
+        data.system_active = !data.system_active;
 
-    // Raddrizzamento naturale morbido
-    if (!isRolling) {
-        data.roll = Lerp(data.roll, 0.0f, 0.015f);
-    }
-    if (!isPitching) {
-        data.pitch = Lerp(data.pitch, 0.0f, 0.005f);
-    }
-
-    // 3. GESTIONE MOTORE
-    if (IsKeyDown(KEY_SPACE)) {
-        data.speed = 0.0f;
-    } else {
-        if (IsKeyDown(KEY_W)) {
-            data.speed += 0.8f;
-        } else if (IsKeyDown(KEY_S)) {
-            data.speed -= 1.2f;
+        if (data.system_active) {
+            PlaySound(sndEngineStart);
+            isEngineStarting = true;
         } else {
-            if (data.speed > 0) data.speed -= 0.15f;
+            StopSound(sndEngineStart);
+            StopSound(sndEngineLoop);
+            data.speed = 0.0f;
         }
     }
 
-    // Limiti velocità (Se in atterraggio, limite raccomandato visivamente ma meccanica max a 200)
+    if (data.system_active) {
+
+        if (isEngineStarting) {
+            // Se l'audio di start finisce prima di arrivare a 130km/h, lo facciamo riniziare
+            if (!IsSoundPlaying(sndEngineStart)) {
+                PlaySound(sndEngineStart);
+            }
+
+            //  Solo quando superi i 130 scatta il loop del jet!
+            if (data.speed >= 130.0f) {
+                isEngineStarting = false;
+                StopSound(sndEngineStart);
+                PlaySound(sndEngineLoop);
+            }
+        }
+        else {
+            // Modalità Volo Normale (Sopra i 130 km/h)
+            if (!IsSoundPlaying(sndEngineLoop)) PlaySound(sndEngineLoop);
+
+            // Volume e Pitch in base alla velocità
+            float thrust = std::max(0.0f, std::min(data.speed / 200.0f, 1.0f));
+            SetSoundVolume(sndEngineLoop, 0.3f + (thrust * 0.7f));
+            SetSoundPitch(sndEngineLoop, 0.8f + (thrust * 0.5f));
+        }
+    }
+
+    data.yaw -= data.roll * 0.015f;
+
+    if (!isRolling) data.roll = Lerp(data.roll, 0.0f, 0.015f);
+    if (!isPitching) data.pitch = Lerp(data.pitch, 0.0f, 0.005f);
+
+    if (IsKeyDown(KEY_SPACE)) {
+        data.speed = 0.0f;
+    } else {
+        if (IsKeyDown(KEY_W)) data.speed += 0.75f;
+        else if (IsKeyDown(KEY_S)) data.speed -= 1.0f;
+        else if (data.speed > 0) data.speed -= 0.2f;
+    }
+
     if (data.speed > 200.0f) data.speed = 200.0f;
     if (data.speed < 0.0f) data.speed = 0.0f;
 
+
+
     UpdateAnimations();
 }
-
 // ========================================================
-// SISTEMA TELECAMERE MULTIPLE
+// GESTIONE TELECAMERE
 // ========================================================
 void FlightDisplay::UpdateChaseCamera(const PlaneData& data) {
-    float renderAlt = data.altitude / 1.5f;
+    // IMPORTANTE: Sottratto 100 per pareggiare con la nuova altezza del mondo!
+    float renderAlt = (data.altitude * 5.0f);
     float speedRatio = std::min(data.speed / 200.0f, 1.0f);
+    float trackingSpeed = 0.35f + (speedRatio * 0.20f);
 
     Vector3 idealPos;
     Vector3 targetLook;
-    float trackingSpeed = 0.25f + (speedRatio * 0.15f);
 
     switch (cameraMode) {
-        case 0: // BATTLEFIELD CHASE (Dietro all'aereo)
-            {
-                float distH = 26.0f + (speedRatio * 6.0f);
-                float camHeight = 6.0f + (data.pitch * 6.0f);
+    case 0: // CHASE
+        {
+            float distH = 200.0f + (speedRatio * 15.0f);
+            float camHeight = 90.0f + (data.pitch * 40.0f);
 
-                idealPos.x = data.x - (std::sin(data.yaw) * distH);
-                idealPos.z = data.z - (std::cos(data.yaw) * distH);
-                idealPos.y = renderAlt + camHeight;
+            idealPos.x = data.x - (std::sin(data.yaw) * distH);
+            idealPos.z = data.z - (std::cos(data.yaw) * distH);
+            idealPos.y = renderAlt + camHeight;
 
-                targetLook.x = data.x + (std::sin(data.yaw) * 5.0f);
-                targetLook.y = renderAlt + 2.0f;
-                targetLook.z = data.z + (std::cos(data.yaw) * 5.0f);
+            targetLook.x = data.x + (std::sin(data.yaw) * 60.0f);
+            targetLook.y = renderAlt + 10.0f + (data.pitch * 50.0f);
+            targetLook.z = data.z + (std::cos(data.yaw) * 60.0f);
 
-                camera.up = (Vector3){ std::sin(data.roll * 0.8f), std::cos(data.roll * 0.8f), 0.0f };
-                camera.fovy = 65.0f + (speedRatio * 20.0f);
-            }
-            break;
+            camera.up = (Vector3){ std::sin(data.roll * 0.25f), std::cos(data.roll * 0.25f), 0.0f };
+            camera.fovy = 60.0f + (speedRatio * 15.0f);
+        }
+        break;
 
-        case 1: // CINEMATIC SIDE VIEW (Vera vista videogioco laterale)
-            {
-                // La camera si posiziona a +90 gradi rispetto a dove punta il muso
-                float sideAngle = data.yaw + PI / 2.0f;
-                float distSide = 40.0f; // Distanza laterale
+    case 1: // SIDE
+        {
+            float sideAngle = data.yaw + PI / 2.0f;
+            float distSide = 150.0f + (speedRatio * 30.0f);
 
-                idealPos.x = data.x + (std::sin(sideAngle) * distSide);
-                idealPos.z = data.z + (std::cos(sideAngle) * distSide);
-                idealPos.y = renderAlt + 5.0f; // Leggermente sopra
+            idealPos.x = data.x + (std::sin(sideAngle) * distSide);
+            idealPos.z = data.z + (std::cos(sideAngle) * distSide);
+            idealPos.y = renderAlt + 20.0f;
 
-                targetLook.x = data.x;
-                targetLook.y = renderAlt;
-                targetLook.z = data.z;
+            targetLook.x = data.x;
+            targetLook.y = renderAlt + 5.0f;
+            targetLook.z = data.z;
 
-                camera.up = (Vector3){ 0.0f, 1.0f, 0.0f }; // Orizzonte fisso per ammirare il rollio dell'aereo
-                camera.fovy = 60.0f;
-            }
-            break;
+            camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+            camera.fovy = 70.0f;
+        }
+        break;
 
-        case 2: // FRONT FLY-BY (Davanti all'aereo, guarda il muso)
-            {
-                float distFront = 50.0f;
+    case 2: // FRONT
+        {
+            float distFront = 200.0f + (speedRatio * 50.0f);
 
-                idealPos.x = data.x + (std::sin(data.yaw) * distFront);
-                idealPos.z = data.z + (std::cos(data.yaw) * distFront);
-                idealPos.y = renderAlt + 5.0f;
+            idealPos.x = data.x + (std::sin(data.yaw) * distFront);
+            idealPos.z = data.z + (std::cos(data.yaw) * distFront);
+            idealPos.y = renderAlt + 25.0f;
 
-                targetLook.x = data.x;
-                targetLook.y = renderAlt;
-                targetLook.z = data.z;
+            targetLook.x = data.x;
+            targetLook.y = renderAlt + 5.0f;
+            targetLook.z = data.z;
 
-                camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-                camera.fovy = 55.0f;
-            }
-            break;
+            camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+            camera.fovy = 55.0f;
+        }
+        break;
     }
 
-    // Interpolo dolcemente la telecamera verso la posizione ideale
     cameraPositionLag.x = Lerp(cameraPositionLag.x, idealPos.x, trackingSpeed);
-    cameraPositionLag.y = Lerp(cameraPositionLag.y, idealPos.y, trackingSpeed * 0.8f);
+    cameraPositionLag.y = Lerp(cameraPositionLag.y, idealPos.y, trackingSpeed * 0.7f);
     cameraPositionLag.z = Lerp(cameraPositionLag.z, idealPos.z, trackingSpeed);
-
     camera.position = cameraPositionLag;
-    camera.target = targetLook;
+
+    camera.target.x = Lerp(camera.target.x, targetLook.x, trackingSpeed * 1.0f);
+    camera.target.y = Lerp(camera.target.y, targetLook.y, trackingSpeed * 1.0f);
+    camera.target.z = Lerp(camera.target.z, targetLook.z, trackingSpeed * 1.0f);
 }
 
 void FlightDisplay::UpdateAnimations() {
     if (animsCount <= 0 || modelAnims == nullptr) return;
-    int maxFrames = modelAnims[0].frameCount - 1;
+    int maxFrames = modelAnims[0].keykeykeyframeCount;
+    if (maxFrames <= 0) return;
 
     float speed = 60.0f;
+
+    // Blocco di sicurezza sui frame estremi per evitare mesh corrotte
     if (gearOpen) {
         gearFrame += GetFrameTime() * speed;
-        if (gearFrame >= maxFrames) gearFrame = (float)maxFrames;
+        if (gearFrame >= maxFrames - 2.0f) gearFrame = maxFrames - 2.0f;
     } else {
         gearFrame -= GetFrameTime() * speed;
-        if (gearFrame <= 0.0f) gearFrame = 0.0f;
+        if (gearFrame <= 1.0f) gearFrame = 1.0f;
     }
+
     UpdateModelAnimation(modelF35, modelAnims[0], (int)gearFrame);
 }
+void FlightDisplay::DrawMapWorld(const PlaneData& data) {
+    rlEnableDepthTest();
+    rlEnableBackfaceCulling();
 
-void FlightDisplay::DrawMapWorld(const PlaneData& data) { }
+    // 1. CLIP PLANES (Precisione millimetrica)
+    rlSetClipPlanes(2.0f, 300000.0f);
 
+
+    float asphaltOffset = -8.5f;
+    Vector3 runwayPosition = { 0.0f, asphaltOffset, 0.0f };
+
+    // 3. IL FONDALE ASSOLUTO
+    DrawPlane((Vector3){ camera.position.x, -50.0f, camera.position.z },
+              (Vector2){ 1000000.0f, 1000000.0f },
+              (Color){ 10, 15, 10, 255 });
+
+    // 4. LA PIANURA DI CONTORNO
+    float groundY = -400.0f;
+
+    float tileSize = 10000.0f;
+    int viewDist = 12;
+    float snapX = std::floor(camera.position.x / tileSize);
+    float snapZ = std::floor(camera.position.z / tileSize);
+
+    for (int i = -viewDist; i <= viewDist; i++) {
+        for (int j = -viewDist; j <= viewDist; j++) {
+            float worldX = (snapX + i) * tileSize;
+            float worldZ = (snapZ + j) * tileSize;
+
+            // BUCO PER L'AEROPORTO
+            if (std::abs(worldX) < 6000.0f && std::abs(worldZ) < 8000.0f) continue;
+
+            float noise = std::sin(worldX * 0.0001f) * std::cos(worldZ * 0.0001f);
+            Color fieldColor = (noise > 0.0f) ? (Color){ 30, 45, 20, 255 } : (Color){ 35, 50, 25, 255 };
+
+            DrawCubeV((Vector3){ worldX, groundY - 0.5f, worldZ },
+                      (Vector3){ tileSize * 0.98f, 1.0f, tileSize * 0.98f },
+                      fieldColor);
+        }
+    }
+
+    if (!mapLoaded) return;
+
+    // 5. IL TUO AEROPORTO
+    rlPushMatrix();
+        DrawModel(mapModel, runwayPosition, 7.0f, WHITE);
+    rlPopMatrix();
+
+    // 6. FARO ILS PER L'ATTERRAGGIO
+    if (data.landing_mode) {
+        rlDisableDepthMask();
+        BeginBlendMode(BLEND_ADDITIVE);
+        // Il faro parte dalla pista e sale in cielo
+        DrawCylinderEx(runwayPosition, (Vector3){runwayPosition.x, 60000.0f, runwayPosition.z}, 300.0f, 300.0f, 16, Fade(GREEN, 0.4f));
+        EndBlendMode();
+        rlEnableDepthMask();
+    }
+}
 void FlightDisplay::DrawSky(Vector3 camPos) {
     Color zenithColor  = { 20, 50, 110, 255 };
-    Color sunCore      = { 255, 250, 240, 255 };
-    Color sunGlow      = { 255, 200, 120, 255 };
     ClearBackground(zenithColor);
 
     if (skyLoaded) {
         rlDisableDepthMask();
-        rlDisableDepthTest();
         rlDisableBackfaceCulling();
-
         rlPushMatrix();
-            rlTranslatef(camPos.x * 0.99f, camPos.y, camPos.z * 0.99f);
+            rlTranslatef(camPos.x, camPos.y, camPos.z);
             rlRotatef(GetTime() * 0.02f, 0, 1, 0);
-            DrawModel(skyModel, (Vector3){0, 0, 0}, 20.0f, WHITE);
+            DrawModel(skyModel, (Vector3){0, 0, 0}, 200.0f, WHITE);
         rlPopMatrix();
-
         rlEnableBackfaceCulling();
-        rlEnableDepthTest();
         rlEnableDepthMask();
     }
-
-    rlDisableDepthMask();
-    Vector3 sunPos = { camPos.x + 25000.0f, camPos.y + 15000.0f, camPos.z - 25000.0f };
-
-    BeginBlendMode(BLEND_ADDITIVE);
-    for (int i = 6; i > 0; i--) {
-        float size = 800.0f + (i * 1200.0f);
-        unsigned char alpha = (unsigned char)(255 / (i * i + 1));
-        Color layerColor = { sunGlow.r, sunGlow.g, sunGlow.b, alpha };
-        if (i == 1) layerColor = sunCore;
-        DrawSphere(sunPos, size, layerColor);
-    }
-    EndBlendMode();
-    rlEnableDepthMask();
 }
 
 void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
     if (!modelLoaded) return;
 
-    float globalScale = 4.0f;
+    float globalScale = 10.0f;
     float modelScaleAereo = 0.00015f * globalScale;
-    float modelScaleFuoco = 1.1f * globalScale;
+    float modelScaleFuoco = 0.7f * globalScale;
 
-    float fuocoZ = -8.0f * globalScale;
-    float fuocoY = 3.5f * globalScale;
+    float fuocoZ = -9.0f * globalScale;
+    float fuocoY = 3.0f * globalScale;
     float fuocoX = 0.0f;
 
     modelF35.transform = MatrixIdentity();
@@ -276,64 +362,144 @@ void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
     rlEnableDepthTest();
     rlDisableBackfaceCulling();
 
-    DrawModel(modelF35, (Vector3){0, 0, 0}, modelScaleAereo, WHITE);
+    rlPushMatrix();
+        rlTranslatef(0.0f, 5.0f, 0.0f);
+        DrawModel(modelF35, (Vector3){0, 0, 0}, modelScaleAereo, WHITE);
 
+    // =========================================================================
+    // MOTORE VOLUMETRICO AD ALTA FEDELTÀ (GRADIENTI E SHOCK DIAMONDS)
+    // =========================================================================
     if (data.system_active && data.speed > 5.0f) {
         rlPushMatrix();
             BeginBlendMode(BLEND_ADDITIVE);
             rlDisableDepthMask();
 
-            float lunghezzaFiamma = 5.0f * modelScaleFuoco;
-            Vector3 startPos = { fuocoX, fuocoY, fuocoZ };
-            Vector3 endPos   = { fuocoX, fuocoY, fuocoZ - lunghezzaFiamma };
+            // 1. Calcolo Spinta (da 0.0 a 1.0)
+            float thrust = std::max(0.05f, std::min(data.speed / 200.0f, 1.0f));
+            float timePulse = GetTime() * 30.0f;
 
-            DrawCylinderEx(startPos, endPos, 0.3f * modelScaleFuoco, 0.1f, 10, (Color){200, 220, 255, 255});
-            Vector3 endBlue = { fuocoX, fuocoY, fuocoZ - (lunghezzaFiamma * 0.8f) };
-            DrawCylinderEx(startPos, endBlue, 0.5f * modelScaleFuoco, 0.1f * modelScaleFuoco, 10, (Color){50, 150, 255, 200});
-            Vector3 startOrange = { fuocoX, fuocoY, fuocoZ - 1.0f };
-            Vector3 endOrange   = { fuocoX, fuocoY, fuocoZ - (lunghezzaFiamma * 0.6f) };
-            DrawCylinderEx(startOrange, endOrange, 0.8f * modelScaleFuoco, 0.2f * modelScaleFuoco, 12, (Color){255, 50, 0, 100});
+            // Lunghezza della fiamma tremolante in base alla velocità
+            float flameLength = 9.0f * modelScaleFuoco * thrust * (0.95f + 0.05f * std::sin(timePulse));
+            float baseRadius = 0.5f * modelScaleFuoco * (0.8f + 0.3f * thrust);
 
-            float step = lunghezzaFiamma / 4.0f;
-            for(int i=1; i<=3; i++) {
-                DrawSphere((Vector3){fuocoX, fuocoY, fuocoZ - (step*i)}, 0.35f * modelScaleFuoco, (Color){255, 255, 200, 150});
+            int slices = 35; // Numero di "fette" volumetriche per il gradiente
+            float stepZ = flameLength / slices;
+
+            // Funzione lambda per calcolare i colori fluidamente (Interpolazione Lineare)
+            auto lerpColor = [](float start, float end, float t) {
+                return start + (end - start) * t;
+            };
+
+            for (int i = 0; i < slices; i++) {
+                float t = (float)i / slices; // Variabile da 0.0 (motore) a 1.0 (fine scia)
+
+                // 2. FORMA DELLA FIAMMA E SHOCK DIAMONDS
+                // Restringimento progressivo (profilo a goccia lunga)
+                float shapeTaper = 1.0f - std::pow(t, 1.5f);
+
+                // Onde di pressione (Shock Diamonds) attive solo ad alta velocità
+                float shockWave = 1.0f;
+                if (thrust > 0.5f) {
+                    float numDiamonds = 6.0f * thrust; // Più vai veloce, più diamanti
+                    // Valore che pulsa tra 0.6 e 1.0 creando i "nodi" luminosi
+                    shockWave = 0.6f + 0.4f * std::abs(std::cos(t * PI * numDiamonds - GetTime() * 20.0f));
+                }
+
+                float currentRadius = baseRadius * shapeTaper * shockWave;
+                Vector3 slicePos = { fuocoX, fuocoY + 5.0f, fuocoZ - (stepZ * i) };
+
+                // 3. TUTTE LE SFUMATURE DI COLORE
+                float r = 0, g = 0, b = 0, a = 0;
+
+                if (thrust > 0.6f) {
+                    // --- MODALITÀ AFTERBURNER (Supersonico) ---
+                    if (t < 0.2f) {
+                        // Dal Bianco puro (motore) al Ciano accecante
+                        float nt = t / 0.2f;
+                        r = lerpColor(255, 50, nt);
+                        g = lerpColor(255, 200, nt);
+                        b = 255;
+                    }
+                    else if (t < 0.6f) {
+                        // Dal Ciano al Viola profondo / Magenta
+                        float nt = (t - 0.2f) / 0.4f;
+                        r = lerpColor(50, 150, nt);
+                        g = lerpColor(200, 20, nt);
+                        b = lerpColor(255, 200, nt);
+                    }
+                    else {
+                        // Dal Viola all'Arancione scuro fiammeggiante che si spegne
+                        float nt = (t - 0.6f) / 0.4f;
+                        r = lerpColor(150, 255, nt);
+                        g = lerpColor(20, 80, nt);
+                        b = lerpColor(200, 10, nt);
+                    }
+                } else {
+                    // --- MODALITÀ CROCIERA (Subsonico) ---
+                    // Dal Giallo all'Arancione al Rosso
+                    r = 255;
+                    g = lerpColor(220, 50, t);
+                    b = lerpColor(100, 0, t);
+                }
+
+                // Opacità: svanisce dolcemente verso la coda e trema leggermente
+                a = lerpColor(255, 0, std::pow(t, 0.8f)) * (0.8f + 0.2f * std::sin(timePulse + i));
+
+                Color sliceColor = { (unsigned char)r, (unsigned char)g, (unsigned char)b, (unsigned char)a };
+
+                // 4. DISEGNO DEI LIVELLI VOLUMETRICI
+                // Un alone gigantesco, morbido e molto trasparente (il calore irradiato)
+                DrawSphere(slicePos, currentRadius * 1.8f, Fade(sliceColor, 0.15f));
+
+                // Il raggio di fuoco principale
+                DrawSphere(slicePos, currentRadius * 0.9f, Fade(sliceColor, 0.6f));
+
+                // Il nucleo incandescente (quasi bianco, strettissimo)
+                DrawSphere(slicePos, currentRadius * 0.4f, sliceColor);
             }
-            DrawSphere(startPos, 0.8f * modelScaleFuoco, (Color){255, 100, 50, 150});
+
+            // Una scintilla purissima e accecante proprio all'uscita della turbina
+            DrawSphere((Vector3){fuocoX, fuocoY + 5.0f, fuocoZ}, baseRadius * 1.2f, (Color){255, 255, 255, 255});
 
             rlEnableDepthMask();
             EndBlendMode();
         rlPopMatrix();
     }
+    rlPopMatrix();
     rlEnableBackfaceCulling();
 }
-
 void FlightDisplay::DrawHUD(const PlaneData& data) {
     int sw = GetScreenWidth();
     int sh = GetScreenHeight();
     int cx = sw / 2;
     int cy = sh / 2;
 
-    Color hudMain  = { 255, 170, 0, 255 };
-    Color hudGreen = { 50, 255, 50, 255 };
-    Color hudRed   = { 255, 30, 30, 255 };
-    Color hudDim   = Fade(hudMain, 0.4f);
-    Color hudBg    = Fade({ 10, 10, 15, 255 }, 0.85f);
+    // --- NUOVA PALETTE COLORI: BLU INTENSO ---
+    Color hudMain   = { 0, 150, 255, 255 };   // Blu Ciano Intenso (Testi e bordi)
+    Color hudGreen  = { 50, 255, 180, 255 };  // Verde Acqua (Altitudine e Landing)
+    Color hudRed    = { 255, 50, 50, 255 };   // Rosso Allarme
+    Color hudDim    = Fade(hudMain, 0.4f);    // Blu sfumato per griglie
+    Color hudBg     = Fade({ 0, 20, 50, 255 }, 0.85f); // Sfondo Blu Notte molto scuro
+    // -----------------------------------------
 
     auto DrawTechBox = [&](int x, int y, int w, int h, const char* title, bool alignRight = false) {
         DrawRectangle(x, y, w, h, hudBg);
         DrawRectangleLines(x, y, w, h, hudDim);
+
+        // Angoli rinforzati
         int cl = 12; int ct = 2;
         DrawRectangle(x, y, cl, ct, hudMain); DrawRectangle(x, y, ct, cl, hudMain);
         DrawRectangle(x+w-cl, y, cl, ct, hudMain); DrawRectangle(x+w-ct, y, ct, cl, hudMain);
         DrawRectangle(x, y+h-ct, cl, ct, hudMain); DrawRectangle(x, y+h-cl, ct, cl, hudMain);
         DrawRectangle(x+w-cl, y+h-ct, cl, ct, hudMain); DrawRectangle(x+w-ct, y+h-cl, ct, cl, hudMain);
+
         int titleW = MeasureText(title, 10) + 20;
         int titleX = alignRight ? (x + w - titleW) : x;
         DrawRectangle(titleX, y - 18, titleW, 18, hudDim);
         DrawText(title, titleX + 10, y - 14, 10, hudMain);
     };
 
-
+    // BOX SINISTRO: SENSORI CINETICI
     int lx = 30, ly = cy - 80, lw = 220, lh = 150;
     DrawTechBox(lx, ly, lw, lh, "KINETIC SENSORS");
     DrawText("AIRSPEED (CAS)", lx + 15, ly + 20, 10, Fade(WHITE, 0.8f));
@@ -343,10 +509,12 @@ void FlightDisplay::DrawHUD(const PlaneData& data) {
     DrawText("ENGINE THRUST", lx + 15, ly + 100, 10, Fade(WHITE, 0.8f));
     float pwr = std::min(data.speed / 200.0f, 1.0f);
     for(int i = 0; i < 20; i++) {
+        // La barra della potenza ora sfuma dal blu al rosso
         Color c = (i < pwr * 20) ? ((i >= 17) ? hudRed : hudMain) : hudDim;
         DrawRectangle(lx + 15 + (i * 9), ly + 115, 6, 15, c);
     }
 
+    // BOX DESTRO: DATI INERZIALI
     int rx = sw - 250, ry = cy - 80, rw = 220, rh = 160;
     DrawTechBox(rx, ry, rw, rh, "INERTIAL DATA", true);
     DrawText("ALTITUDE (MSL)", rx + 15, ry + 20, 10, Fade(WHITE, 0.8f));
@@ -359,10 +527,11 @@ void FlightDisplay::DrawHUD(const PlaneData& data) {
         DrawText(lbl, rx + 15, ry + yOff, 10, Fade(WHITE, 0.7f));
         DrawText(val, rx + rw - 15 - MeasureText(val, 10), ry + yOff, 10, hudMain);
     };
-    DrawDataRow(105, "PITCH (RAD)", TextFormat("%+06.2f", data.pitch * RAD2DEG));
-    DrawDataRow(120, "ROLL  (RAD)", TextFormat("%+06.2f", data.roll * RAD2DEG));
-    DrawDataRow(135, "YAW   (RAD)", TextFormat("%+06.2f", data.yaw * RAD2DEG));
+    DrawDataRow(105, "PITCH (DEG)", TextFormat("%+06.2f", data.pitch * RAD2DEG));
+    DrawDataRow(120, "ROLL  (DEG)", TextFormat("%+06.2f", data.roll * RAD2DEG));
+    DrawDataRow(135, "YAW   (DEG)", TextFormat("%+06.2f", data.yaw * RAD2DEG));
 
+    // BUSSOLA (HEADING)
     int tx = cx - 180, ty = 25, tw = 360, th = 35;
     DrawTechBox(tx, ty, tw, th, "HEADING (AZIMUTH)");
     BeginScissorMode(tx + 5, ty + 5, tw - 10, th - 10);
@@ -380,29 +549,22 @@ void FlightDisplay::DrawHUD(const PlaneData& data) {
     EndScissorMode();
     DrawTriangle({(float)cx, (float)ty + 35}, {(float)cx - 6, (float)ty + 42}, {(float)cx + 6, (float)ty + 42}, hudRed);
 
-
-    // =========================================================
-    // HUD: ALLARMI E MODALITÀ ATTERRAGGIO
-    // =========================================================
+    // SISTEMA DI ALLARMI E LANDING
     bool blink = ((int)(GetTime() * 8) % 2 == 0);
     bool hasAlarm = false;
     const char* warnMsg = "";
 
-    // SE IL LANDING MODE È ATTIVO:
-    // Spegne gli allarmi del terreno per permetterti di atterrare e mostra uno stato verde
     if (data.landing_mode) {
         DrawRectangleLinesEx({0, 0, (float)sw, (float)sh}, 6.0f, hudGreen);
         int wx = cx - 220, wy = cy + 120, ww = 440, wh = 50;
-        DrawRectangle(wx, wy, ww, wh, Fade({10, 50, 10, 255}, 0.9f));
+        DrawRectangle(wx, wy, ww, wh, Fade({0, 40, 30, 255}, 0.9f));
         DrawRectangleLinesEx({(float)wx, (float)wy, (float)ww, (float)wh}, 2.0f, hudGreen);
-        DrawText("LANDING MODE ENGAGED - FBW DISABLED", cx - MeasureText("LANDING MODE ENGAGED - FBW DISABLED", 20)/2, wy + 15, 20, hudGreen);
+        DrawText("LANDING MODE ENGAGED - FOLLOW BEACON", cx - MeasureText("LANDING MODE ENGAGED - FOLLOW BEACON", 20)/2, wy + 15, 20, hudGreen);
     }
-    // SE IL LANDING MODE È SPENTO: Normali allarmi
     else {
         if (data.altitude < 2000)            { hasAlarm = true; warnMsg = "TERRAIN PULL UP"; }
         else if (data.altitude > 12500)      { hasAlarm = true; warnMsg = "OVERSHOOT PULL DOWN"; }
-        else if (std::abs(data.roll) > 1.6f) { hasAlarm = true; warnMsg = "AUTOPILOT RECOVERY ENGAGED"; }
-        else if (std::abs(data.roll) > 1.0f) { hasAlarm = true; warnMsg = "CRITICAL BANK ANGLE"; }
+        else if (std::abs(data.roll) > 1.6f) { hasAlarm = true; warnMsg = "RECOVERY SYSTEM ACTIVE"; }
 
         if (hasAlarm) {
             DrawRectangleLinesEx({0, 0, (float)sw, (float)sh}, 6.0f, blink ? hudRed : Fade(hudRed, 0.4f));
@@ -414,8 +576,11 @@ void FlightDisplay::DrawHUD(const PlaneData& data) {
         }
     }
 
-    DrawText("SYS: F-35 LEO-FLIGHT-OS v29.0 // CAMERA [C] - LANDING [L]", 30, sh - 30, 10, hudDim);
-    for(int i = 0; i < sh; i += 3) DrawLine(0, i, sw, i, Fade(BLACK, 0.15f));
+    // INFO DI SISTEMA IN BASSO
+    DrawText("SYS: F-35 ADVANCED AVIONICS v31.5 // BLUE_SCAN_ACTIVE", 30, sh - 30, 10, hudDim);
+
+    // Effetto Scanline (Linee orizzontali sottili tipiche dei CRT/HUD)
+    for(int i = 0; i < sh; i += 3) DrawLine(0, i, sw, i, Fade(BLACK, 0.1f));
 }
 
 void FlightDisplay::Draw(const PlaneData& data) {
@@ -424,14 +589,18 @@ void FlightDisplay::Draw(const PlaneData& data) {
 
     UpdateChaseCamera(data);
 
-    rlSetClipPlanes(1.0f, 100000.0f);
+
+    rlSetClipPlanes(15.0f, 300000.0f);
 
     BeginMode3D(camera);
 
         DrawSky(camera.position);
 
+        DrawMapWorld(data);
+
         rlPushMatrix();
-            rlTranslatef(data.x, data.altitude/1.5f, data.z);
+
+            rlTranslatef(data.x, (data.altitude * 5.0f), data.z);
             rlRotatef(data.yaw * RAD2DEG, 0, 1, 0);
             rlRotatef(data.pitch * RAD2DEG, -1, 0, 0);
             rlRotatef(data.roll * RAD2DEG, 0, 0, 1);

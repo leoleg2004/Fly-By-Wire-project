@@ -1,12 +1,10 @@
-struct SystemStats
-{
+struct SystemStats {
     unsigned long packet_id;
-    float roll;//asse x
-    float pitch;//asse y
-    float yaw;//asse z
-    float altitude;     
-    float latency_us;
+    float roll;
+    float pitch;
+    float yaw;
+    float altitude;
     float speed;
-    boolean deadline_missed;
-    string<32> status_msg;//stato per i messaggi di allarme
+    boolean landing_mode;
+    string<32> status_msg;
 };

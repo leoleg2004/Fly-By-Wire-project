@@ -3,7 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include "SharedMemory.hpp"
-#include "TelemetryPubSubTypes.hpp"
+#include "TelemetryPubSubTypes.hpppp"
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
 #include <fastdds/dds/publisher/Publisher.hpp>
@@ -88,33 +88,64 @@ void MonitorDisplay::DrawAttitudeIndicator(int x, int y, float value, const char
 void MonitorDisplay::DrawTacticalRadar(int x, int y, int size, const PlaneData& data) {
     Vector2 ctr = {(float)x + size/2, (float)y + size/2};
     float r = size/2.2f;
+    float radarRange = 100000.0f; // Aumentiamo la portata a 30km per vedere meglio
 
-    // Crosshair del radar
-    DrawLineV({ctr.x - r - 10, ctr.y}, {ctr.x + r + 10, ctr.y}, Fade(colHUD, 0.3f));
-    DrawLineV({ctr.x, ctr.y - r - 10}, {ctr.x, ctr.y + r + 10}, Fade(colHUD, 0.3f));
-
-    // Anelli di distanza con etichette
+    // 1. Sfondo e Cerchi di Portata
+    DrawCircleV(ctr, r, Fade(BLACK, 0.5f));
     for(int i=1; i<=3; i++) {
         DrawCircleLines(ctr.x, ctr.y, (r/3)*i, Fade(colHUD, 0.2f));
-        DrawText(TextFormat("%d NM", i*5), ctr.x + 2, ctr.y - (r/3)*i - 10, 10, Fade(colHUD, 0.5f));
     }
 
-    // Effetto sweep rotante
+    // 2. LOGICA AEROPORTI MULTIPLI (Settore attuale, precedente e successivo)
+    // Questo assicura che l'aeroporto non "salti" o scompaia mai
+    float sectorSize = 60000.0f;
+    float baseZ = std::floor(data.z / sectorSize) * sectorSize;
+
+    // Controlliamo l'aeroporto in 3 settori (quello dietro, quello attuale, quello avanti)
+    for (int i = -1; i <= 1; i++) {
+        float airportX = 0.0f;
+        float airportZ = baseZ + (i * sectorSize) + 30000.0f;
+
+        // Distanza relativa dall'aereo
+        float dx = airportX - data.x;
+        float dz = airportZ - data.z;
+        float distance = sqrtf(dx*dx + dz*dz);
+
+        // Se l'aeroporto è nel raggio del radar
+        if (distance < radarRange) {
+
+            // --- ROTAZIONE TATTICA (Track-Up) ---
+            // Ruotiamo la posizione dell'aeroporto in base allo Yaw dell'aereo
+            // così il radar gira insieme a te!
+            float angle = data.yaw;
+            float rotX = dx * cosf(angle) - dz * sinf(angle);
+            float rotZ = dx * sinf(angle) + dz * cosf(angle);
+
+            // Trasposizione sulle coordinate del cerchio radar
+            // (Moltiplichiamo per r / radarRange per scalare la distanza)
+            float screenX = ctr.x + (rotX / radarRange) * r;
+            float screenY = ctr.y - (rotZ / radarRange) * r;
+
+            // Disegna il simbolo dell'aeroporto (Rettangolo con croce)
+            DrawRectangleLines(screenX - 6, screenY - 6, 12, 12, colGreen);
+            DrawLine(screenX - 6, screenY, screenX + 6, screenY, colGreen);
+            DrawText("RWY", screenX + 10, screenY - 5, 10, colGreen);
+
+            // Linea di direzione (opzionale: punta verso l'aeroporto se è fuori scala)
+            DrawLineEx(ctr, {screenX, screenY}, 1.0f, Fade(colGreen, 0.3f));
+        }
+    }
+
+    // 3. EFFETTO SWEEP (Grafica)
     float sweep = (float)fmod(GetTime() * 120.0f, 360.0f);
-    DrawCircleSector(ctr, r, sweep, sweep + 45, 20, Fade(colHUD, 0.15f));
-    DrawLineEx(ctr, {ctr.x + cosf(sweep*DEG2RAD)*r, ctr.y + sinf(sweep*DEG2RAD)*r}, 2.0f, colHUD);
+    DrawCircleSector(ctr, r, sweep, sweep + 30, 10, Fade(colHUD, 0.1f));
+    DrawLineV({ctr.x - r, ctr.y}, {ctr.x + r, ctr.y}, Fade(colHUD, 0.1f));
+    DrawLineV({ctr.x, ctr.y - r}, {ctr.x, ctr.y + r}, Fade(colHUD, 0.1f));
 
-    // Tracking del bersaglio (Aereo)
-    float blipX = ctr.x + (fmod(data.x, 2500.0f)/2500.0f)*r;
-    float blipZ = ctr.y + (fmod(data.z, 2500.0f)/2500.0f)*r;
-
-    // Target Lock Box
-    DrawRectangleLines(blipX - 6, blipZ - 6, 12, 12, colGreen);
-    DrawPoly({blipX, blipZ}, 3, 5, data.yaw * RAD2DEG, colGreen);
-
-    // Dati target a schermo
-    DrawText(TextFormat("TGT X: %.0f", data.x), x + 5, y + size - 25, 10, colHUD);
-    DrawText(TextFormat("TGT Z: %.0f", data.z), x + 5, y + size - 12, 10, colHUD);
+    // 4. POSIZIONE PROPRIA (OWN SHIP)
+    // L'aereo è fisso al centro, punta sempre verso l'alto
+    DrawTriangle({ctr.x, ctr.y - 8}, {ctr.x - 5, ctr.y + 5}, {ctr.x + 5, ctr.y + 5}, WHITE);
+    DrawText("F-35", ctr.x - 10, ctr.y + 10, 8, Fade(WHITE, 0.6f));
 }
 
 void MonitorDisplay::DrawArtificialHorizon(int x, int y, int w, int h, float pitch, float roll) {
@@ -238,48 +269,58 @@ void MonitorDisplay::Draw(const PlaneData& data) {
     DrawTechFrame(px3, m, pW, pH, "FLIGHT KINEMATICS");
     int startY = m + 40;
     DrawAttitudeIndicator(px3 + 20, startY, data.roll, "ROLL AXIS (RAD)");
-    DrawAttitudeIndicator(px3 + 20, startY + 60, data.pitch, "PITCH AXIS (RAD)");
-    DrawAttitudeIndicator(px3 + 20, startY + 120, data.yaw, "YAW AXIS (RAD)");
+    DrawAttitudeIndicator(px3 + 20, startY + 60, data.pitch, "PITCH AXIS WITH RAD AXIS (RAD)");
+
 
     DrawRectangle(px3 + 20, startY + 180, pW - 40, 1, Fade(colHUD, 0.3f)); // Separatore
+    std::string currentStatus(data.status_msg);
+            Color statusColor = colGreen;
+            Color boxColor = RED; // Variabile per decidere il colore del rettangolo
+            bool showBox = false; // Capisce se dobbiamo disegnare il riquadro
 
-        std::string currentStatus(data.status_msg);
-        Color statusColor = colGreen;
-        bool isWarning = false;
-
-        // Se il messaggio contiene "NORMAL FLIGHT" (o "NOMINAL"), è verde. Altrimenti è rosso.
-        if (currentStatus.find("NORMAL FLIGHT") != std::string::npos ||
-            currentStatus.find("NOMINAL") != std::string::npos) {
-            statusColor = colGreen;
-        } else {
-            statusColor = RED;
-            isWarning = true;
-        }
-
-
-        int labelY = startY + 160;
-        int msgY = labelY + 18; // Spostiamo il messaggio sotto l'etichetta
-
-        // 1. Etichetta descrittiva (piccola, opaca)
-        DrawText("SYSTEM INTEGRITY STATUS:", px3 + 20, labelY, 10, Fade(WHITE, 0.5f));
-
-        // 2. Box di emergenza (compare solo se non è NORMAL FLIGHT)
-        if (isWarning) {
-            // Bordo rosso fisso per l'emergenza
-            DrawRectangleLines(px3 + 20, msgY - 2, pW - 40, 26, RED);
-
-            // Sfondo lampeggiante (Rosso/Trasparente) per catturare l'attenzione del pilota
-            if ((int)(GetTime() * 8) % 2 == 0) {
-                DrawRectangle(px3 + 20, msgY - 2, pW - 40, 26, Fade(RED, 0.4f));
-                statusColor = WHITE; // Il testo diventa bianco lampeggiante per massimo contrasto
+            // 1. Controllo prioritario: Modalità Atterraggio (Tasto L)
+            if (data.landing_mode) {
+                currentStatus = "ILS LANDING MODE ACTIVE";
+                statusColor = ORANGE;
+                boxColor = ORANGE;   // Il box diventerà Arancione!
+                showBox = true;      // Attiviamo il riquadro
             }
-        }
+            // 2. Controllo Volo Normale (Verde)
+            else if (currentStatus.find("NORMAL FLIGHT") != std::string::npos ||
+                     currentStatus.find("NOMINAL") != std::string::npos) {
+                statusColor = colGreen;
+                showBox = false;     // Niente riquadro se va tutto bene
+            }
+            // 3. Controllo Allarmi (Rosso)
+            else {
+                statusColor = RED;
+                boxColor = RED;      // Il box diventerà Rosso per i pericoli veri!
+                showBox = true;      // Attiviamo il riquadro
+            }
 
-        // 3. Testo dello stato (Ingrandito a 16 per massima leggibilità)
-        // Se è tutto ok sarà una bella scritta verde, se c'è un allarme sarà dentro il box rosso.
-        DrawText(data.status_msg, px3 + 28, msgY + 3, 16, statusColor);
-    // Visual Effect: Scanlines
-    for(int i=0; i<m_height; i+=3) DrawLine(0, i, m_width, i, Fade(BLACK, 0.2f));
+            int labelY = startY + 160;
+            int msgY = labelY + 18; // Spostiamo il messaggio sotto l'etichetta
 
-    EndDrawing();
-}
+            // 1. Etichetta descrittiva (piccola, opaca)
+            DrawText("SYSTEM INTEGRITY STATUS:", px3 + 20, labelY, 10, Fade(WHITE, 0.5f));
+
+            // 2. Box dinamico (compare per Landing o Allarmi, col colore giusto!)
+            if (showBox) {
+                // Usa boxColor al posto di RED fisso
+                DrawRectangleLines(px3 + 20, msgY - 2, pW - 40, 26, boxColor);
+
+                // Sfondo lampeggiante dinamico
+                if ((int)(GetTime() * 8) % 2 == 0) {
+                    DrawRectangle(px3 + 20, msgY - 2, pW - 40, 26, Fade(boxColor, 0.4f));
+                    statusColor = WHITE; // Il testo diventa bianco lampeggiante per contrasto
+                }
+            }
+
+            // 3. Testo dello stato
+            DrawText(currentStatus.c_str(), px3 + 28, msgY + 3, 16, statusColor);
+
+            // Visual Effect: Scanlines
+            for(int i = 0; i < m_height; i += 3) DrawLine(0, i, m_width, i, Fade(BLACK, 0.2f));
+
+        EndDrawing();
+    }

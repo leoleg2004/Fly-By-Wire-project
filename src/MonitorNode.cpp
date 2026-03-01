@@ -1,4 +1,4 @@
-#include "TelemetryPubSubTypes.hpp"
+#include "TelemetryPubSubTypes.hpppp"
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
 #include <fastdds/dds/subscriber/Subscriber.hpp>
@@ -264,7 +264,7 @@ int main() {
 
 
 
-    MonitorDisplay display(1000, 800, "Torre di Controllo - Telemetria F-35");
+    MonitorDisplay display(850, 700, "Torre di Controllo - Telemetria F-35");
     PlaneData local_aereo;
 
 

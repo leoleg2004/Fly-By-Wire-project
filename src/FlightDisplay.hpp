@@ -48,9 +48,16 @@ private:
         bool skyLoaded;
     Model mapModel;       // Il modello del terreno
         bool mapLoaded;       // controlla che ci sia una mappa caricata
+       // Model terrainModel;
+        //    bool terrainLoaded;
     Model modelF35;//carico modello dell'aereo
     Texture2D textureF35;
     bool modelLoaded;     //condizione che ci sia un modello per l'aereo
+    // --- SISTEMA AUDIO ---
+    Sound sndEngineStart;
+    Sound sndEngineLoop;
+    bool isEngineStarting;
+    Sound sndGear;
 
     // Funzioni interne al flightDisplay.cpp
     void UpdateChaseCamera(const PlaneData& data);

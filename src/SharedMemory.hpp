@@ -19,6 +19,7 @@ struct FlightControls {
     std::chrono::steady_clock::time_point timestamp; // Per calcolare la latenza interna
     bool autopilot_engaged; // Dice al computer se siamo in "Recovery Mode"
     bool recovery_bank;
+    bool landing_mode;
 };
 
 class SharedMemoryBus {
@@ -29,7 +30,7 @@ class SharedMemoryBus {
 
 public:
     // Funzione di scrittura aggiornata con 7 parametri tutti messi nella struct FlightControls
-    void write(long id, float roll, float pitch, float yaw, float alt, bool auto_on,float speed,float x,float z,bool recovery_bank) {
+    void write(long id, float roll, float pitch, float yaw, float alt, bool auto_on,float speed,float x,float z,bool recovery_bank,bool landing_mode) {
         std::unique_lock<std::mutex> lock(mtx);
         
         data.packet_id = id;
@@ -42,6 +43,7 @@ public:
         data.x=x;
         data.z=z;
         data.speed=speed;
+        data.landing_mode=landing_mode;
         data.timestamp = std::chrono::steady_clock::now();
         
         new_data_available = true;

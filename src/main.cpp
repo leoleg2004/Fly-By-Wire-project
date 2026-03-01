@@ -58,6 +58,7 @@ void flight_computer_task(DataWriter* writer) {
             stats.yaw(state.rudder);
             stats.altitude(state.altitude);
             stats.speed(state.speed);//aggiunto a posteriori ho dovuto aggiornare file con .idl
+            stats.landing_mode(state.landing_mode);
 
             // Logica autopilota
             if (state.autopilot_engaged) {
@@ -143,7 +144,7 @@ int main() {
     std::thread Pilota_dds(flight_computer_task, writer);
 
 
-        FlightDisplay display(1000, 800, "Leonardo Flight System - Manual Control");
+        FlightDisplay display(1000, 900, "Leonardo Flight System - Manual Control");
 
         unsigned long packet_id = 0;
 
@@ -156,7 +157,7 @@ int main() {
         Aereo.roll = 0.0f;
         Aereo.pitch = 0.0f;
         Aereo.yaw = 0.0f;
-        Aereo.altitude = 4000.0f;
+        Aereo.altitude = 3000.0f;
         Aereo.x = 0.0f; // Partenza al centro della mappa
         Aereo.z = 0.0f;
         Aereo.speed=0.0f;
@@ -166,104 +167,120 @@ int main() {
 
         while (display.IsActive()) {
 
-                    // 1. LEGGE I COMANDI (Nessuna fisica qui, solo input utente)
-                    display.HandleInput(Aereo);
+        	display.HandleInput(Aereo);
 
+        	        // --- GESTIONE ALLARMI E MONITOR ---
+        	        if (Aereo.landing_mode) {
+        	            recovery_low = false;
+        	            recovery_zero = false;
+        	            recovery_bank = false;
+        	            recovery_high = false;
 
-                    // L'autopilota scatta solo se NON stai cercando di atterrare (Aereo.landing_mode == false)
-                    if (Aereo.altitude < 2000.0f && Aereo.speed >= 0.0f && !Aereo.landing_mode) {
-                        recovery_low = true;
-                    } else if (Aereo.landing_mode) {
-                        // Disattiva attivamente il recupero se attiviamo il Landing Mode mentre sta già correggendo
-                        recovery_low = false;
-                    }
-                    // Rischio caduta a motori spenti
-                    if (Aereo.speed < 10.0f && Aereo.altitude <= 2500.0f) recovery_zero = true;
+        	            strcpy(Aereo.status_msg, "ILS LANDING MODE ACTIVE");
+        	        } else {
+        	            // Controllo delle condizioni di pericolo
+        	            if (Aereo.altitude < 2000.0f && Aereo.speed >= 0.0f) recovery_low = true;
+        	            if (Aereo.speed < 10.0f && Aereo.altitude > 100.0f && Aereo.altitude <= 2500.0f) recovery_zero = true;
+        	            if (std::abs(Aereo.roll) > 1.2f) recovery_bank = true;
+        	            if (Aereo.altitude > 13000.0f) recovery_high = true;
 
-                    // Rischio stratosfera / stallo (Sopra i 13000m)
-                    if (Aereo.altitude > 13000.0f) recovery_high = true;
+        	            // Aggiornamento testuale del Monitor
+        	            if (recovery_low) {
+        	                strcpy(Aereo.status_msg, "TERRAIN PULL UP");
+        	            } else if (recovery_high) {
+        	                strcpy(Aereo.status_msg, "OVERSHOOT PULL DOWN");
+        	            } else if (recovery_zero) {
+        	                strcpy(Aereo.status_msg, "STALL WARNING - LOW SPEED");
+        	            } else if (recovery_bank) {
+        	                strcpy(Aereo.status_msg, "CRITICAL BANK ANGLE");
+        	            } else {
+        	                strcpy(Aereo.status_msg, "NORMAL FLIGHT");
+        	            }
+        	        }
 
-                    // Inclinazione critica (Superiore a 1.2 radianti, come nell'HUD)
-                    if (std::abs(Aereo.roll) > 1.2f) recovery_bank = true;
+        	        // --- AZIONI FISICHE DELL'AUTOPILOTA ---
+        	        if (recovery_low) {
+        	            Aereo.roll *= 0.95f;
+        	            if (Aereo.pitch < 0.3f) Aereo.pitch += 0.005f;
+        	            if (Aereo.speed < 150.0f) Aereo.speed += 0.5f;
+        	            if (Aereo.altitude >= 2500.0f) recovery_low = false;
+        	        }
 
+        	        if (recovery_zero) {
+        	            if (Aereo.speed < 100.0f) Aereo.speed += 1.5f;
+        	            if (Aereo.pitch < 0.2f) Aereo.pitch += 0.01f;
+        	            if (Aereo.altitude >= 2500.0f && Aereo.speed >= 100.0f) recovery_zero = false;
+        	        } else if (recovery_high) {
+        	            Aereo.roll *= 0.95f;
+        	            if (Aereo.pitch > 0.0f) Aereo.pitch -= 0.05f;
+        	            else if (Aereo.pitch > -0.2f) Aereo.pitch -= 0.005f;
+        	            if (Aereo.altitude <= 12000.0f) recovery_high = false;
+        	        }
 
-                    if (recovery_low) {
-                        Aereo.roll *= 0.95f; // Raddrizza le ali
-                        if (Aereo.pitch < 0.3f) Aereo.pitch += 0.005f; // Tira su il muso dolcemente
-                        if (Aereo.speed < 150.0f) Aereo.speed += 0.5f; // Dà gas per salire
+        	        if (recovery_bank) {
+        	            if (Aereo.roll > 1.9f) Aereo.roll -= 0.06f;
+        	            else if (Aereo.roll < -1.9f) Aereo.roll += 0.06f;
+        	            else recovery_bank = false; // Rilascia i comandi solo quando è perfettamente dritto
+        	        }
 
-                        // Si spegne quando raggiungi quota di sicurezza (2500m)
-                        if (Aereo.altitude >= 2500.0f) recovery_low = false;
-                    }
+        	        // --- FISICA DI VOLO E PORTANZA ---
+        	        if (Aereo.pitch < -0.2f && Aereo.speed < 200.0f) {
+        	            Aereo.speed += std::abs(Aereo.pitch) * 0.5f;
+        	        }
+        	        if (Aereo.pitch > 0.5f && Aereo.speed > 30.0f) {
+        	            Aereo.speed -= Aereo.pitch * 0.3f;
+        	        }
 
-                    // Recupero a Motori Spenti (Riaccensione d'emergenza)
-                    if (recovery_zero) {
-                        if (Aereo.speed < 100.0f) Aereo.speed += 1.5f; // Booster ai motori
-                        if (Aereo.pitch < 0.2f) Aereo.pitch += 0.01f;  // Alza il muso per non cadere a picco
+        	        float speed_orizzontale = Aereo.speed * std::cos(Aereo.pitch);
+        	        float speed_verticale   = Aereo.speed * std::sin(Aereo.pitch);
 
-                        if (Aereo.altitude >= 2500.0f && Aereo.speed >= 100.0f) recovery_zero = false;
-                    }
-                    // Recupero da Alta Quota (OVERSHOOT PULL DOWN)
-                    else if (recovery_high) {
-                        Aereo.roll *= 0.95f; // Raddrizza
-                        if (Aereo.pitch > 0.0f) Aereo.pitch -= 0.05f; // Abbassa il muso velocemente se punti in alto
-                        else if (Aereo.pitch > -0.2f) Aereo.pitch -= 0.005f; // Lo tiene inclinato verso il basso
+        	        if (Aereo.speed < 60.0f && Aereo.altitude > 0.5f) {
+        	            float mancanza_portanza = 60.0f - Aereo.speed;
+        	            speed_verticale -= (mancanza_portanza * 0.8f);
+        	        }
 
-                        // Si spegne quando torni sotto i 12000m
-                        if (Aereo.altitude <= 12000.0f) recovery_high = false;
-                    }
+        	        if (std::abs(Aereo.roll) > 1.4f) {
+        	            speed_verticale -= 1.5f;
+        	        }
 
+        	        float physics_scale = 1.0f;
+        	        Aereo.x += std::sin(Aereo.yaw) * speed_orizzontale * physics_scale;
+        	        Aereo.z += std::cos(Aereo.yaw) * speed_orizzontale * physics_scale;
+        	        Aereo.altitude += speed_verticale * 0.1f;
 
-                    if (recovery_bank) {
-                        // Raddrizza il rollio usando la funzione fluida
-                        if (Aereo.roll > 0.15f) Aereo.roll -= 0.015f;
-                        else if (Aereo.roll < -0.15f) Aereo.roll += 0.015f;
-                        else recovery_bank = false; // Disinnesca l'autopilota quando sei dritto
-                    }
+        	        // --- ATTERRAGGIO E ATTRITO ---
+        	        if (Aereo.altitude <= 0.1f) {
+        	            Aereo.altitude = 0.0f;
+        	            Aereo.pitch = Lerp(Aereo.pitch, 0.0f, 0.1f);
+        	            Aereo.roll  = Lerp(Aereo.roll, 0.0f, 0.1f);
+        	            if (Aereo.speed > 0.0f) {
+        	                Aereo.speed -= 0.5f;
+        	            }
+        	        }
 
+        	        // --- LIMITI DI SICUREZZA FISICI ---
+        	        if(Aereo.roll > 3.2f)  Aereo.roll = 3.2f;
+        	        if(Aereo.roll < -3.2f) Aereo.roll = -3.2f;
+        	        if(Aereo.pitch > 1.5f) Aereo.pitch = 1.5f;
+        	        if(Aereo.pitch < -1.5f) Aereo.pitch = -1.5f;
 
-                    float speed_orizzontale = Aereo.speed * std::cos(Aereo.pitch);
-                    float speed_verticale   = Aereo.speed * std::sin(Aereo.pitch);
+        	        // --- COMUNICAZIONE E RENDER ---
+        	        // Aggiungiamo Aereo.landing_mode alla fine della spedizione!
+        	        bus.write(packet_id++, Aereo.roll, Aereo.pitch, Aereo.yaw, Aereo.altitude, (recovery_low || recovery_high), Aereo.speed, Aereo.x, Aereo.z, recovery_bank, Aereo.landing_mode);
 
-                    // Perdita di portanza se l'aereo è troppo inclinato (Virata stretta)
-                    if (std::abs(Aereo.roll) > 0.8f) {
-                        speed_verticale -= 1.5f;
-                    }
+        	        display.Draw(Aereo);
 
-                    // Effetto gravità se l'aereo va troppo piano
-                    if (Aereo.speed < 50.0f) {
-                        speed_verticale -= (50.0f - Aereo.speed) * 0.05f;
-                    }
+        	    } // <--- QUESTA GRAFFA CHIUDE CORRETTAMENTE IL CICLO "while (!WindowShouldClose())"
 
-                    // Variabile MAGICA per regolare lo spostamento nello spazio senza toccare la velocità
-                    float physics_scale = 0.015f;
+        	    // =======================================================
+        	    // CHIUSURA DEL PROGRAMMA E PULIZIA
+        	    // =======================================================
+        	    {
+        	        std::lock_guard<std::mutex> lock(Aereo_mutex);
+        	        Aereo.system_active = false;
+        	    }
 
-                    Aereo.x += std::sin(Aereo.yaw) * speed_orizzontale * physics_scale;
-                    Aereo.z += std::cos(Aereo.yaw) * speed_orizzontale * physics_scale;
+        	    if (Pilota_dds.joinable()) Pilota_dds.join();
 
-                    // Altitudine gestita dal moltiplicatore che hai scelto (0.2f o modificalo a piacimento)
-                    Aereo.altitude += speed_verticale * 0.2f;
-
-                    if (Aereo.altitude < 0) Aereo.altitude = 0.0f; // Pavimento assoluto
-
-                    if(Aereo.roll > 3.2f)  Aereo.roll = 3.2f;
-                    if(Aereo.roll < -3.2f) Aereo.roll = -3.2f;
-                    if(Aereo.pitch > 1.5f) Aereo.pitch = 1.5f;
-                    if(Aereo.pitch < -1.5f) Aereo.pitch = -1.5f;
-
-
-            bus.write(packet_id++, Aereo.roll, Aereo.pitch, Aereo.yaw, Aereo.altitude, (recovery_low || recovery_high),Aereo.speed,Aereo.x,Aereo.z,recovery_bank);
-
-            display.Draw(Aereo);
-        }
-
-        // chiudo il programma
-        {
-            std::lock_guard<std::mutex> lock(Aereo_mutex);
-            Aereo.system_active = false;
-        }
-
-        if (Pilota_dds.joinable()) Pilota_dds.join();
-
-        return 0;
-}
+        	    return 0;
+        	}
