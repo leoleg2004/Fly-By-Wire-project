@@ -15,8 +15,8 @@ struct PlaneData {
     float z = 0.0f;
 float speed=0.0f;
 char status_msg[64];//aggiunto per gestire nel monitor i messaggi di condizione di volo
-    bool system_active = true;
-    bool landing_mode = false;//per diabilitare il fly-by-wire
+    bool system_active = false;
+    bool landing_mode = true;//per diabilitare il fly-by-wire
 };
 
 
@@ -58,6 +58,12 @@ private:
     Sound sndEngineLoop;
     bool isEngineStarting;
     Sound sndGear;
+    Sound sndLanding;
+    Sound sndWarning;
+    Sound sndPullUp;
+    Sound sndCaution;
+    Sound sndAir;
+    Sound sndEngineDown;
 
     // Funzioni interne al flightDisplay.cpp
     void UpdateChaseCamera(const PlaneData& data);

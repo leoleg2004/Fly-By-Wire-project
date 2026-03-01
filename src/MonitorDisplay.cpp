@@ -3,7 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include "SharedMemory.hpp"
-#include "TelemetryPubSubTypes.hpppp"
+#include "TelemetryPubSubTypes.hpp"
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
 #include <fastdds/dds/publisher/Publisher.hpp>
@@ -22,6 +22,13 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "FlightDisplay.hpp"
+
+// Colori militari tattici per il monitor
+#define colBack    CLITERAL(Color){ 5, 10, 15, 255 }
+#define colHUD     CLITERAL(Color){ 0, 150, 255, 255 }
+#define colGreen   CLITERAL(Color){ 50, 255, 180, 255 }
+#define colWarning CLITERAL(Color){ 255, 200, 50, 255 }
+#define colPanel   CLITERAL(Color){ 0, 20, 40, 255 }
 
 MonitorDisplay::MonitorDisplay(int width, int height, const std::string& title)
     : m_width(width), m_height(height) {
@@ -48,12 +55,12 @@ void MonitorDisplay::DrawTechFrame(int x, int y, int w, int h, const char* title
     DrawRectangleLinesEx({(float)x, (float)y, (float)w, (float)h}, 1.0f, Fade(colHUD, 0.5f));
 
     // Corner Brackets (Angoli militari)
-    int cl = 15; // Corner length
-    int ct = 3;  // Corner thickness
-    DrawRectangle(x, y, cl, ct, colHUD); DrawRectangle(x, y, ct, cl, colHUD); // Top-Left
-    DrawRectangle(x+w-cl, y, cl, ct, colHUD); DrawRectangle(x+w-ct, y, ct, cl, colHUD); // Top-Right
-    DrawRectangle(x, y+h-ct, cl, ct, colHUD); DrawRectangle(x, y+h-cl, ct, cl, colHUD); // Bot-Left
-    DrawRectangle(x+w-cl, y+h-ct, cl, ct, colHUD); DrawRectangle(x+w-ct, y+h-cl, ct, cl, colHUD); // Bot-Right
+    int cl = 15;
+    int ct = 3;
+    DrawRectangle(x, y, cl, ct, colHUD); DrawRectangle(x, y, ct, cl, colHUD);
+    DrawRectangle(x+w-cl, y, cl, ct, colHUD); DrawRectangle(x+w-ct, y, ct, cl, colHUD);
+    DrawRectangle(x, y+h-ct, cl, ct, colHUD); DrawRectangle(x, y+h-cl, ct, cl, colHUD);
+    DrawRectangle(x+w-cl, y+h-ct, cl, ct, colHUD); DrawRectangle(x+w-ct, y+h-cl, ct, cl, colHUD);
 
     // Header Tecnico
     DrawRectangle(x, y - 20, w, 20, Fade(colHUD, 0.15f));
@@ -96,42 +103,28 @@ void MonitorDisplay::DrawTacticalRadar(int x, int y, int size, const PlaneData& 
         DrawCircleLines(ctr.x, ctr.y, (r/3)*i, Fade(colHUD, 0.2f));
     }
 
-    // 2. LOGICA AEROPORTI MULTIPLI (Settore attuale, precedente e successivo)
-    // Questo assicura che l'aeroporto non "salti" o scompaia mai
     float sectorSize = 60000.0f;
     float baseZ = std::floor(data.z / sectorSize) * sectorSize;
 
-    // Controlliamo l'aeroporto in 3 settori (quello dietro, quello attuale, quello avanti)
     for (int i = -1; i <= 1; i++) {
         float airportX = 0.0f;
         float airportZ = baseZ + (i * sectorSize) + 30000.0f;
 
-        // Distanza relativa dall'aereo
         float dx = airportX - data.x;
         float dz = airportZ - data.z;
         float distance = sqrtf(dx*dx + dz*dz);
 
-        // Se l'aeroporto è nel raggio del radar
         if (distance < radarRange) {
-
-            // --- ROTAZIONE TATTICA (Track-Up) ---
-            // Ruotiamo la posizione dell'aeroporto in base allo Yaw dell'aereo
-            // così il radar gira insieme a te!
             float angle = data.yaw;
             float rotX = dx * cosf(angle) - dz * sinf(angle);
             float rotZ = dx * sinf(angle) + dz * cosf(angle);
 
-            // Trasposizione sulle coordinate del cerchio radar
-            // (Moltiplichiamo per r / radarRange per scalare la distanza)
             float screenX = ctr.x + (rotX / radarRange) * r;
             float screenY = ctr.y - (rotZ / radarRange) * r;
 
-            // Disegna il simbolo dell'aeroporto (Rettangolo con croce)
             DrawRectangleLines(screenX - 6, screenY - 6, 12, 12, colGreen);
             DrawLine(screenX - 6, screenY, screenX + 6, screenY, colGreen);
             DrawText("RWY", screenX + 10, screenY - 5, 10, colGreen);
-
-            // Linea di direzione (opzionale: punta verso l'aeroporto se è fuori scala)
             DrawLineEx(ctr, {screenX, screenY}, 1.0f, Fade(colGreen, 0.3f));
         }
     }
@@ -143,7 +136,6 @@ void MonitorDisplay::DrawTacticalRadar(int x, int y, int size, const PlaneData& 
     DrawLineV({ctr.x, ctr.y - r}, {ctr.x, ctr.y + r}, Fade(colHUD, 0.1f));
 
     // 4. POSIZIONE PROPRIA (OWN SHIP)
-    // L'aereo è fisso al centro, punta sempre verso l'alto
     DrawTriangle({ctr.x, ctr.y - 8}, {ctr.x - 5, ctr.y + 5}, {ctr.x + 5, ctr.y + 5}, WHITE);
     DrawText("F-35", ctr.x - 10, ctr.y + 10, 8, Fade(WHITE, 0.6f));
 }
@@ -158,28 +150,23 @@ void MonitorDisplay::DrawArtificialHorizon(int x, int y, int w, int h, float pit
 
     float pOff = pitch * 200.0f; // Sensibilità pitch
 
-    // Cielo e Terra con gradiente
     DrawRectangleGradientV(-w, -h-pOff, w*2, h, Fade(BLUE, 0.4f), Fade(SKYBLUE, 0.2f));
     DrawRectangleGradientV(-w, -pOff, w*2, h, Fade(BROWN, 0.4f), Fade(DARKBROWN, 0.8f));
     DrawLineEx({(float)-w, -pOff}, {(float)w, -pOff}, 2.0f, WHITE);
 
-    // Pitch Ladder Avanzata (Gradi)
     for(int i=-90; i<=90; i+=10) {
         if (i == 0) continue;
         float ly = -pOff - (i * 3.5f);
-        int lineW = (i % 30 == 0) ? 40 : 20; // Linee più larghe ogni 30 gradi
+        int lineW = (i % 30 == 0) ? 40 : 20;
         DrawLineEx({(float)-lineW, ly}, {(float)lineW, ly}, 2.0f, WHITE);
-        // Tick marks laterali
         DrawLineEx({(float)-lineW, ly}, {(float)-lineW, ly + (i>0?5:-5)}, 2.0f, WHITE);
         DrawLineEx({(float)lineW, ly}, {(float)lineW, ly + (i>0?5:-5)}, 2.0f, WHITE);
-
         DrawText(TextFormat("%d", std::abs(i)), lineW + 5, ly - 5, 10, WHITE);
         DrawText(TextFormat("%d", std::abs(i)), -lineW - 20, ly - 5, 10, WHITE);
     }
     rlPopMatrix();
     EndScissorMode();
 
-    // Simbolo Aereo Fisso (Boresight)
     DrawLineEx({center.x-40, center.y}, {center.x-15, center.y}, 3.0f, YELLOW);
     DrawLineEx({center.x+15, center.y}, {center.x+40, center.y}, 3.0f, YELLOW);
     DrawLineEx({center.x-15, center.y}, {center.x, center.y+10}, 3.0f, YELLOW);
@@ -197,18 +184,15 @@ void MonitorDisplay::DrawVerticalTape(int x, int y, int w, int h, float value, f
         float v = ((int)(value/step)*step) + (i*step);
         float py = (y+h/2) - (i*(h/5)) + (offset*(h/5)/step);
 
-        // Tick marks
         DrawLineEx({(float)(rightAlign ? x+w-8 : x), py}, {(float)(rightAlign ? x+w : x+8), py}, 2.0f, color);
         DrawText(TextFormat("%d", (int)v), (rightAlign ? x+5 : x+15), py-5, 10, Fade(color, 0.7f));
     }
     EndScissorMode();
 
-    // Central Value Box (Target Box)
     int boxY = y + h/2 - 10;
     DrawRectangle(x - 5, boxY, w + 10, 20, BLACK);
     DrawRectangleLines(x - 5, boxY, w + 10, 20, color);
 
-    // Indicatore triangolare
     if (rightAlign) DrawTriangle({(float)x-5, (float)boxY+10}, {(float)x-10, (float)boxY+5}, {(float)x-10, (float)boxY+15}, color);
     else DrawTriangle({(float)x+w+5, (float)boxY+10}, {(float)x+w+10, (float)boxY+5}, {(float)x+w+10, (float)boxY+15}, color);
 
@@ -233,7 +217,6 @@ void MonitorDisplay::DrawHeadingTape(int x, int y, int w, float yaw) {
     }
     EndScissorMode();
 
-    // Puntatore centrale bussola
     DrawTriangle({(float)x+w/2, (float)y+25}, {(float)x+w/2-5, (float)y+35}, {(float)x+w/2+5, (float)y+35}, colWarning);
 }
 
@@ -271,56 +254,58 @@ void MonitorDisplay::Draw(const PlaneData& data) {
     DrawAttitudeIndicator(px3 + 20, startY, data.roll, "ROLL AXIS (RAD)");
     DrawAttitudeIndicator(px3 + 20, startY + 60, data.pitch, "PITCH AXIS WITH RAD AXIS (RAD)");
 
-
     DrawRectangle(px3 + 20, startY + 180, pW - 40, 1, Fade(colHUD, 0.3f)); // Separatore
+
+    // =========================================================================
+    // LOGICA MESSAGGI (Ripristinata esattamente dalla tua versione funzionante!)
+    // =========================================================================
     std::string currentStatus(data.status_msg);
-            Color statusColor = colGreen;
-            Color boxColor = RED; // Variabile per decidere il colore del rettangolo
-            bool showBox = false; // Capisce se dobbiamo disegnare il riquadro
+    Color statusColor = colGreen;
+    Color boxColor = RED;
+    bool showBox = false;
 
-            // 1. Controllo prioritario: Modalità Atterraggio (Tasto L)
-            if (data.landing_mode) {
-                currentStatus = "ILS LANDING MODE ACTIVE";
-                statusColor = ORANGE;
-                boxColor = ORANGE;   // Il box diventerà Arancione!
-                showBox = true;      // Attiviamo il riquadro
-            }
-            // 2. Controllo Volo Normale (Verde)
-            else if (currentStatus.find("NORMAL FLIGHT") != std::string::npos ||
-                     currentStatus.find("NOMINAL") != std::string::npos) {
-                statusColor = colGreen;
-                showBox = false;     // Niente riquadro se va tutto bene
-            }
-            // 3. Controllo Allarmi (Rosso)
-            else {
-                statusColor = RED;
-                boxColor = RED;      // Il box diventerà Rosso per i pericoli veri!
-                showBox = true;      // Attiviamo il riquadro
-            }
-
-            int labelY = startY + 160;
-            int msgY = labelY + 18; // Spostiamo il messaggio sotto l'etichetta
-
-            // 1. Etichetta descrittiva (piccola, opaca)
-            DrawText("SYSTEM INTEGRITY STATUS:", px3 + 20, labelY, 10, Fade(WHITE, 0.5f));
-
-            // 2. Box dinamico (compare per Landing o Allarmi, col colore giusto!)
-            if (showBox) {
-                // Usa boxColor al posto di RED fisso
-                DrawRectangleLines(px3 + 20, msgY - 2, pW - 40, 26, boxColor);
-
-                // Sfondo lampeggiante dinamico
-                if ((int)(GetTime() * 8) % 2 == 0) {
-                    DrawRectangle(px3 + 20, msgY - 2, pW - 40, 26, Fade(boxColor, 0.4f));
-                    statusColor = WHITE; // Il testo diventa bianco lampeggiante per contrasto
-                }
-            }
-
-            // 3. Testo dello stato
-            DrawText(currentStatus.c_str(), px3 + 28, msgY + 3, 16, statusColor);
-
-            // Visual Effect: Scanlines
-            for(int i = 0; i < m_height; i += 3) DrawLine(0, i, m_width, i, Fade(BLACK, 0.2f));
-
-        EndDrawing();
+    // 1. Controllo prioritario: Modalità Atterraggio (Tasto L)
+    if (data.landing_mode) {
+        currentStatus = "ILS LANDING MODE ACTIVE";
+        statusColor = ORANGE;
+        boxColor = ORANGE;
+        showBox = true;
     }
+    // 2. Controllo Volo Normale (Verde)
+    else if (currentStatus.find("NORMAL FLIGHT") != std::string::npos ||
+             currentStatus.find("NOMINAL") != std::string::npos) {
+        statusColor = colGreen;
+        showBox = false;
+    }
+    // 3. Controllo Allarmi (Rosso)
+    else {
+        statusColor = RED;
+        boxColor = RED;
+        showBox = true;
+    }
+
+    int labelY = startY + 160;
+    int msgY = labelY + 18;
+
+    // Etichetta descrittiva
+    DrawText("SYSTEM INTEGRITY STATUS:", px3 + 20, labelY, 10, Fade(WHITE, 0.5f));
+
+    // Box dinamico (compare per Landing o Allarmi)
+    if (showBox) {
+        DrawRectangleLines(px3 + 20, msgY - 2, pW - 40, 26, boxColor);
+
+        // Sfondo lampeggiante dinamico
+        if ((int)(GetTime() * 8) % 2 == 0) {
+            DrawRectangle(px3 + 20, msgY - 2, pW - 40, 26, Fade(boxColor, 0.4f));
+            statusColor = WHITE;
+        }
+    }
+
+    // Testo dello stato
+    DrawText(currentStatus.c_str(), px3 + 28, msgY + 3, 16, statusColor);
+
+    // Visual Effect: Scanlines
+    for(int i = 0; i < m_height; i += 3) DrawLine(0, i, m_width, i, Fade(BLACK, 0.2f));
+
+    EndDrawing();
+}

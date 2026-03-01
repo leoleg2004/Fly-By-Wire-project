@@ -18,13 +18,17 @@ static int cameraMode = 0; // 0 = Chase, 1 = Side, 2 = Front Cinematic
 
 FlightDisplay::FlightDisplay(int width, int height, const std::string& title) {
     InitWindow(width, height, title.c_str());
-    // 1. Inizializza il dispositivo audio di sistema
     InitAudioDevice();
 
-    // 2. Carica i suoni (assicurati di avere questi file nella cartella del progetto!)
     sndEngineStart = LoadSound("engine_start.wav");
-    sndEngineLoop = LoadSound("engine_loop.wav");
-    sndGear = LoadSound("gear.wav"); // Ricordati di mettere un audio per il carrello nella cartella!
+    sndEngineLoop  = LoadSound("engine_loop.wav");
+    sndEngineDown  = LoadSound("engine_down.wav");
+    sndGear        = LoadSound("gear.wav");
+    sndLanding     = LoadSound("landing.wav");
+    sndWarning     = LoadSound("warning.wav");
+    sndPullUp      = LoadSound("pull_up.wav");
+    sndCaution     = LoadSound("caution.wav");
+    sndAir         = LoadSound("air.wav");
 
     isEngineStarting = false;
     SetTargetFPS(60);
@@ -36,19 +40,16 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string& title) {
     modelF35 = LoadModel("f35.glb");
     modelAnims = LoadModelAnimations("f35.glb", &animsCount);
     gearFrame = 0.0f;
-    gearOpen = false;//parto con carrello chiuso
+    gearOpen = true;
     modelF35.transform = MatrixIdentity();
 
     if (modelF35.meshCount > 0) modelLoaded = true;
     else { modelLoaded = false; TraceLog(LOG_WARNING, "ATTENZIONE: Impossibile caricare f35.glb"); }
 
-    if (animsCount > 0) gearFrame = modelAnims[0].keykeykeyframeCount - 1;
+    if (animsCount > 0) gearFrame = modelAnims[0].keyframeCount - 1;
     flapFrame = 0;
     flapOpen = false;
 
-    // =======================================================
-    // CARICAMENTO DELLA PISTA DI ATTERRAGGIO (AERODROME)
-    // =======================================================
     mapModel = LoadModel("aerodrome.glb");
     if (mapModel.meshCount > 0) {
         mapLoaded = true;
@@ -74,103 +75,217 @@ FlightDisplay::~FlightDisplay() {
         UnloadModel(modelF35);
         UnloadSound(sndEngineStart);
         UnloadSound(sndEngineLoop);
+        UnloadSound(sndEngineDown);
         UnloadSound(sndGear);
-
+        UnloadSound(sndLanding);
+        UnloadSound(sndWarning);
+        UnloadSound(sndPullUp);
+        UnloadSound(sndCaution);
+        UnloadSound(sndAir);
     }
     CloseWindow();
 }
 
 bool FlightDisplay::IsActive() { return !WindowShouldClose(); }
-
-
 void FlightDisplay::HandleInput(PlaneData& data) {
     bool isPitching = false;
     bool isRolling = false;
+    float dt = GetFrameTime();
 
+    // ==========================================
+    // VARIABILI DI STATO (Memoria del volo)
+    // ==========================================
+    static double engineStartTime = 0.0;
+    static bool hasTakenOff = false;
+    static bool engineReady = false;
 
+    if (data.altitude > 100.0f) hasTakenOff = true;
+
+    // --- AUTO-SHUTDOWN DINAMICO ---
+    if (hasTakenOff && data.altitude < 2.0f && data.speed <= 1.0f && data.system_active) {
+        data.system_active = false;
+        engineReady = false;
+
+        StopSound(sndEngineStart);
+        StopSound(sndEngineLoop);
+
+        SetSoundPitch(sndEngineDown, 0.65f);
+        SetSoundVolume(sndEngineDown, 0.3f);
+        PlaySound(sndEngineDown);
+
+        StopSound(sndLanding);
+        StopSound(sndAir);
+        StopSound(sndWarning);
+        StopSound(sndPullUp);
+        hasTakenOff = false;
+    }
+
+    // ==========================================
+    // 1. CARRELLO E AUTOPILOTA (CAUTION)
+    // ==========================================
     if (IsKeyPressed(KEY_G)) {
         gearOpen = !gearOpen;
-        // Riproduce il rumore meccanico del carrello
+        StopSound(sndGear);
+        if (gearOpen) SetSoundPitch(sndGear, 0.85f);
+        else SetSoundPitch(sndGear, 1.15f);
+        SetSoundVolume(sndGear, 1.0f);
         PlaySound(sndGear);
     }
 
-    if (IsKeyPressed(KEY_L)) data.landing_mode = !data.landing_mode;
+    if (IsKeyPressed(KEY_L)) {
+        data.landing_mode = !data.landing_mode;
+        if (data.landing_mode) {
+            StopSound(sndCaution);
+            SetSoundVolume(sndCaution, 1.0f);
+            SetSoundPitch(sndCaution, 1.0f);
+            PlaySound(sndCaution);
+        }
+    }
+
     if (IsKeyPressed(KEY_C)) cameraMode = (cameraMode + 1) % 3;
 
-    if (IsKeyDown(KEY_UP)) {
-        data.pitch += 0.03f;
-        isPitching = true;
-    }
-    if (IsKeyDown(KEY_DOWN)) {
-        data.pitch -= 0.03f;
-        isPitching = true;
-    }
-    if (IsKeyDown(KEY_LEFT)) {
-        data.roll -= 0.025f;
-        isRolling = true;
-    }
-    if (IsKeyDown(KEY_RIGHT)) {
-        data.roll += 0.025f;
-        isRolling = true;
+    // RACCOLTA INPUT (I calcoli veri li fa il main.cpp!)
+    if (IsKeyDown(KEY_UP)) { data.pitch += 0.03f; isPitching = true; }
+    if (IsKeyDown(KEY_DOWN)) { data.pitch -= 0.03f; isPitching = true; }
+    if (IsKeyDown(KEY_LEFT)) { data.roll -= 0.025f; isRolling = true; }
+    if (IsKeyDown(KEY_RIGHT)) { data.roll += 0.025f; isRolling = true; }
+
+    // ==========================================
+    // 2. BITCHING BETTY (ALLARMI VOCALI)
+    // ==========================================
+    bool dangerPullUp = false;
+    bool dangerBank = false;
+
+    if (data.system_active) {
+        dangerPullUp = hasTakenOff && !data.landing_mode && (data.altitude < 1500.0f || data.altitude > 12500.0f);
+        dangerBank = (!data.landing_mode && std::abs(data.roll) > 1.0f);
+
+        if (dangerPullUp) {
+            StopSound(sndWarning);
+            if (!IsSoundPlaying(sndPullUp)) {
+                SetSoundVolume(sndPullUp, 1.0f);
+                SetSoundPitch(sndPullUp, 1.0f);
+                PlaySound(sndPullUp);
+            }
+        }
+        else if (dangerBank) {
+            if (!IsSoundPlaying(sndWarning)) {
+                SetSoundVolume(sndWarning, 1.0f);
+                SetSoundPitch(sndWarning, 1.0f);
+                PlaySound(sndWarning);
+            }
+        }
+        else {
+            if (IsSoundPlaying(sndPullUp)) StopSound(sndPullUp);
+            if (IsSoundPlaying(sndWarning)) StopSound(sndWarning);
+        }
+
+        if (data.landing_mode && data.altitude < 2000.0f && data.altitude > 15.0f && hasTakenOff) {
+            if (!IsSoundPlaying(sndLanding)) {
+                SetSoundVolume(sndLanding, 1.0f);
+                SetSoundPitch(sndLanding, 1.0f);
+                PlaySound(sndLanding);
+            }
+        } else {
+            if (IsSoundPlaying(sndLanding)) StopSound(sndLanding);
+        }
     }
 
-    //accensione motore
+    // ==========================================
+    // 3. TIMER 20 SECONDI E MOTORE
+    // ==========================================
     if (IsKeyPressed(KEY_E)) {
         data.system_active = !data.system_active;
 
         if (data.system_active) {
-            PlaySound(sndEngineStart);
-            isEngineStarting = true;
+            engineStartTime = GetTime();
+            engineReady = false;
+
+            StopSound(sndEngineLoop);
+            StopSound(sndEngineDown);
+            StopSound(sndLanding);
         } else {
+            engineReady = false;
             StopSound(sndEngineStart);
             StopSound(sndEngineLoop);
+
+            SetSoundPitch(sndEngineDown, 0.65f);
+            SetSoundVolume(sndEngineDown, 0.3f);
+            PlaySound(sndEngineDown);
+
+            StopSound(sndLanding);
+            StopSound(sndAir);
+            StopSound(sndWarning);
+            StopSound(sndPullUp);
             data.speed = 0.0f;
         }
     }
 
+    if (data.system_active && !engineReady) {
+        if (GetTime() - engineStartTime >= 20.0) {
+            engineReady = true;
+        }
+    }
+
+    // ==========================================
+    // 4. MIXAGGIO AUDIO
+    // ==========================================
     if (data.system_active) {
+        float speedRatio = data.speed / 200.0f;
 
-        if (isEngineStarting) {
-            // Se l'audio di start finisce prima di arrivare a 130km/h, lo facciamo riniziare
-            if (!IsSoundPlaying(sndEngineStart)) {
-                PlaySound(sndEngineStart);
-            }
+        if (!IsSoundPlaying(sndAir)) PlaySound(sndAir);
+        float airVol = std::pow(speedRatio, 2.0f) * 0.3f;
+        SetSoundPitch(sndAir, 0.8f + (speedRatio * 0.5f));
 
-            //  Solo quando superi i 130 scatta il loop del jet!
-            if (data.speed >= 130.0f) {
-                isEngineStarting = false;
-                StopSound(sndEngineStart);
-                PlaySound(sndEngineLoop);
-            }
+        float engineVol = 0.0f;
+        float enginePitch = 1.0f;
+
+        float inputLoad = 0.0f;
+        if (engineReady) {
+            if (IsKeyDown(KEY_W)) inputLoad = 0.2f;
+            else if (IsKeyDown(KEY_S) || IsKeyDown(KEY_SPACE)) inputLoad = -0.2f;
         }
-        else {
-            // Modalità Volo Normale (Sopra i 130 km/h)
-            if (!IsSoundPlaying(sndEngineLoop)) PlaySound(sndEngineLoop);
 
-            // Volume e Pitch in base alla velocità
-            float thrust = std::max(0.0f, std::min(data.speed / 200.0f, 1.0f));
-            SetSoundVolume(sndEngineLoop, 0.3f + (thrust * 0.7f));
-            SetSoundPitch(sndEngineLoop, 0.8f + (thrust * 0.5f));
+        engineVol = 0.2f + (speedRatio * 0.2f) + inputLoad;
+        enginePitch = 0.8f + (speedRatio * 0.4f) + (inputLoad * 0.2f);
+
+        bool isAlarmPlaying = IsSoundPlaying(sndPullUp) || IsSoundPlaying(sndWarning) || IsSoundPlaying(sndCaution) || IsSoundPlaying(sndLanding) || IsSoundPlaying(sndGear);
+        if (isAlarmPlaying) {
+            engineVol *= 0.2f;
+            airVol *= 0.2f;
         }
+
+        engineVol = std::max(0.01f, std::min(engineVol, 1.0f));
+        enginePitch = std::max(0.5f, std::min(enginePitch, 1.5f));
+
+        Sound activeEngineSound = (data.altitude < 1000.0f) ? sndEngineStart : sndEngineLoop;
+        Sound inactiveEngineSound = (data.altitude < 1000.0f) ? sndEngineLoop : sndEngineStart;
+
+        if (IsSoundPlaying(inactiveEngineSound)) StopSound(inactiveEngineSound);
+        if (!IsSoundPlaying(activeEngineSound)) PlaySound(activeEngineSound);
+
+        SetSoundVolume(activeEngineSound, engineVol);
+        SetSoundPitch(activeEngineSound, enginePitch);
+        SetSoundVolume(sndAir, std::max(0.0f, std::min(airVol, 1.0f)));
+    }
+    else {
+        if (IsSoundPlaying(sndAir)) StopSound(sndAir);
     }
 
-    data.yaw -= data.roll * 0.015f;
-
-    if (!isRolling) data.roll = Lerp(data.roll, 0.0f, 0.015f);
-    if (!isPitching) data.pitch = Lerp(data.pitch, 0.0f, 0.005f);
-
-    if (IsKeyDown(KEY_SPACE)) {
-        data.speed = 0.0f;
-    } else {
-        if (IsKeyDown(KEY_W)) data.speed += 0.75f;
-        else if (IsKeyDown(KEY_S)) data.speed -= 1.0f;
-        else if (data.speed > 0) data.speed -= 0.2f;
+    // ==========================================
+    // 5. INPUT DI VELOCITÀ BASE (Per il main.cpp)
+    // ==========================================
+    if (data.system_active && !engineReady) {
+        data.speed = 0.0f; // INCHIODATO per 20 secondi
     }
-
-    if (data.speed > 200.0f) data.speed = 200.0f;
-    if (data.speed < 0.0f) data.speed = 0.0f;
-
-
+    else {
+        if (IsKeyDown(KEY_SPACE)) {
+            data.speed -= 2.0f;
+        } else if (data.system_active && engineReady) {
+            if (IsKeyDown(KEY_W)) data.speed += 0.75f;
+            else if (IsKeyDown(KEY_S)) data.speed -= 1.0f;
+        }
+    }
 
     UpdateAnimations();
 }
@@ -253,7 +368,7 @@ void FlightDisplay::UpdateChaseCamera(const PlaneData& data) {
 
 void FlightDisplay::UpdateAnimations() {
     if (animsCount <= 0 || modelAnims == nullptr) return;
-    int maxFrames = modelAnims[0].keykeykeyframeCount;
+    int maxFrames = modelAnims[0].keyframeCount; // FIX: keykeykeyframeCount corretto
     if (maxFrames <= 0) return;
 
     float speed = 60.0f;
@@ -269,6 +384,7 @@ void FlightDisplay::UpdateAnimations() {
 
     UpdateModelAnimation(modelF35, modelAnims[0], (int)gearFrame);
 }
+
 void FlightDisplay::DrawMapWorld(const PlaneData& data) {
     rlEnableDepthTest();
     rlEnableBackfaceCulling();
@@ -327,27 +443,29 @@ void FlightDisplay::DrawMapWorld(const PlaneData& data) {
         rlEnableDepthMask();
     }
 }
+
 void FlightDisplay::DrawSky(Vector3 camPos) {
     Color zenithColor  = { 20, 50, 110, 255 };
-    ClearBackground(zenithColor);
 
     if (skyLoaded) {
         rlDisableDepthMask();
         rlDisableBackfaceCulling();
-        rlPushMatrix();
-            rlTranslatef(camPos.x, camPos.y, camPos.z);
-            rlRotatef(GetTime() * 0.02f, 0, 1, 0);
-            DrawModel(skyModel, (Vector3){0, 0, 0}, 200.0f, WHITE);
-        rlPopMatrix();
+
+        skyModel.transform = MatrixRotateY(GetTime() * 0.01f);
+
+        // INVECE DI 'WHITE', USIAMO UN BLU NOTTE!
+        // Così se la texture manca, il cielo diventa scuro e smette di accecarti,
+        // permettendoti di vedere l'aereo e il mondo 3D.
+        DrawModel(skyModel, camPos, 200.0f, (Color){ 10, 30, 60, 255 });
+
         rlEnableBackfaceCulling();
         rlEnableDepthMask();
     }
 }
-
 void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
     if (!modelLoaded) return;
 
-    float globalScale = 10.0f;
+    float globalScale = 13.0f;
     float modelScaleAereo = 0.00015f * globalScale;
     float modelScaleFuoco = 0.7f * globalScale;
 
@@ -468,6 +586,7 @@ void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
     rlPopMatrix();
     rlEnableBackfaceCulling();
 }
+
 void FlightDisplay::DrawHUD(const PlaneData& data) {
     int sw = GetScreenWidth();
     int sh = GetScreenHeight();
@@ -585,7 +704,7 @@ void FlightDisplay::DrawHUD(const PlaneData& data) {
 
 void FlightDisplay::Draw(const PlaneData& data) {
     BeginDrawing();
-    ClearBackground(BLACK);
+    ClearBackground(SKYBLUE);
 
     UpdateChaseCamera(data);
 
@@ -594,7 +713,7 @@ void FlightDisplay::Draw(const PlaneData& data) {
 
     BeginMode3D(camera);
 
-        DrawSky(camera.position);
+        //DrawSky(camera.position);
 
         DrawMapWorld(data);
 

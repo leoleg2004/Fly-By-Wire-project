@@ -30,7 +30,6 @@ SharedMemoryBus bus;
 PlaneData Aereo;       // Stato attuale dell'aereo messo nel FlightDispaly.hpp
 std::mutex Aereo_mutex;      // Semaforo per thread safety
 
-
 void flight_computer_task(DataWriter* writer) {
     FlightControls state;
     SystemStats stats;
@@ -39,41 +38,45 @@ void flight_computer_task(DataWriter* writer) {
     std::cout << "[DDS] Computer di bordo avviato. In attesa dati..." << std::endl;
 
     while(true) {
-        // Controllo se dobbiamo chiudere
-    	bool active;
+        bool active;
         {
             std::lock_guard<std::mutex> lock(Aereo_mutex);
             active = Aereo.system_active;
         }
         if (!active) break;
 
-        //e qua che faccio la lettura dopo la scrittura del pilota con un timeout di 100 milisecondi perui se pri,a non arriva nulla leggo
         bool ok = bus.read_with_timeout(state, 100);
 
         if(ok) {
-            // prendo dalla strucin telemtry idl che nel monitor node usero per la stampa
+            // TRAVASO COMPLETO DA SHARED MEMORY A DDS
             stats.packet_id(state.packet_id);
             stats.roll(state.aileron);
             stats.pitch(state.elevator);
             stats.yaw(state.rudder);
             stats.altitude(state.altitude);
-            stats.speed(state.speed);//aggiunto a posteriori ho dovuto aggiornare file con .idl
+            stats.speed(state.speed);
+
+
             stats.landing_mode(state.landing_mode);
+            // ---------------------------------------
 
-            // Logica autopilota
-            if (state.autopilot_engaged) {
-            	// Usiamo questo flag per indicare RECOVERY
-                if (state.altitude < 1000.0f) stats.status_msg("ALARM: TERRAIN PULL UP");
-
+            // Logica messaggi Autopilota e Radar
+            if (state.landing_mode) {
+                stats.status_msg("ILS LANDING MODE ACTIVE");
+            }
+            else if (state.autopilot_engaged) {
+                if (state.altitude < 1500.0f) stats.status_msg("ALARM: TERRAIN PULL UP");
                 else if (state.altitude > 12000.0f) stats.status_msg("ALARM: HIGH ALTITUDE");
-
                 else stats.status_msg("AUTOPILOT: RECOVERY");
             }
-            else if (std::abs(state.aileron) > 1.2f) stats.status_msg("WARN: HIGH BANK ANGLE");
+            else if (std::abs(state.aileron) > 1.0f) {
+                stats.status_msg("WARN: EXCESSIVE BANK");
+            }
+            else {
+                stats.status_msg("NOMINAL FLIGHT");
+            }
 
-            else stats.status_msg("NOMINAL FLIGHT");
-
-            // scrivo all'interno della struct
+            // Spedisce il pacchetto COMPLETO in rete
             writer->write(&stats);
             count++;
         } else {
@@ -81,8 +84,6 @@ void flight_computer_task(DataWriter* writer) {
         }
     }
 }
-
-
 int main() {
 
 	DomainParticipantQos pqos;
@@ -157,7 +158,7 @@ int main() {
         Aereo.roll = 0.0f;
         Aereo.pitch = 0.0f;
         Aereo.yaw = 0.0f;
-        Aereo.altitude = 3000.0f;
+        Aereo.altitude = 0.0f;
         Aereo.x = 0.0f; // Partenza al centro della mappa
         Aereo.z = 0.0f;
         Aereo.speed=0.0f;
@@ -169,7 +170,7 @@ int main() {
 
         	display.HandleInput(Aereo);
 
-        	        // --- GESTIONE ALLARMI E MONITOR ---
+
         	        if (Aereo.landing_mode) {
         	            recovery_low = false;
         	            recovery_zero = false;

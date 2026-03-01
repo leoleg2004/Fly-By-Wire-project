@@ -33,7 +33,7 @@ using DataRepresentationId_t = eprosima::fastdds::dds::DataRepresentationId_t;
 
 SystemStatsPubSubType::SystemStatsPubSubType()
 {
-    setName("SystemStats");
+    set_name("SystemStats");
     uint32_t type_size =
 #if FASTCDR_VERSION_MAJOR == 1
         static_cast<uint32_t>(SystemStats::getMaxCdrSerializedSize());
@@ -41,8 +41,8 @@ SystemStatsPubSubType::SystemStatsPubSubType()
         SystemStats_max_cdr_typesize;
 #endif
     type_size += static_cast<uint32_t>(eprosima::fastcdr::Cdr::alignment(type_size, 4)); /* possible submessage alignment */
-    m_typeSize = type_size + 4; /*encapsulation*/
-    m_isGetKeyDefined = false;
+    max_serialized_type_size = type_size + 4; /*encapsulation*/
+    is_compute_key_provided = false;
     uint32_t keyLength = SystemStats_max_key_cdr_typesize > 16 ? SystemStats_max_key_cdr_typesize : 16;
     m_keyBuffer = reinterpret_cast<unsigned char*>(malloc(keyLength));
     memset(m_keyBuffer, 0, keyLength);
@@ -58,7 +58,7 @@ SystemStatsPubSubType::~SystemStatsPubSubType()
 
 bool SystemStatsPubSubType::serialize(
         void* data,
-        SerializedPayload_t& payload,
+        SerializedPayload_t* payload,
         DataRepresentationId_t data_representation)
 {
     SystemStats* p_type = static_cast<SystemStats*>(data);
@@ -99,7 +99,7 @@ bool SystemStatsPubSubType::serialize(
 }
 
 bool SystemStatsPubSubType::deserialize(
-        SerializedPayload_t& payload,
+        SerializedPayload_t* payload,
         void* data)
 {
     try
@@ -132,7 +132,7 @@ bool SystemStatsPubSubType::deserialize(
     return true;
 }
 
-std::function<uint32_t()> SystemStatsPubSubType::calculate_serialized_size(
+std::function<uint32_t()> SystemStatsPubSubType::getSerializedSizeProvider(
         void* data,
         DataRepresentationId_t data_representation)
 {
@@ -161,23 +161,23 @@ std::function<uint32_t()> SystemStatsPubSubType::calculate_serialized_size(
            };
 }
 
-void* SystemStatsPubSubType::create_data()
+void* SystemStatsPubSubType::createData()
 {
     return reinterpret_cast<void*>(new SystemStats());
 }
 
-void SystemStatsPubSubType::delete_data(
+void SystemStatsPubSubType::deleteData(
         void* data)
 {
     delete(reinterpret_cast<SystemStats*>(data));
 }
 
-bool SystemStatsPubSubType::compute_key(
+bool SystemStatsPubSubType::getKey(
         void* data,
         InstanceHandle_t* handle,
         bool force_md5)
 {
-    if (!m_isGetKeyDefined)
+    if (!is_compute_key_provided)
     {
         return false;
     }
@@ -197,16 +197,16 @@ bool SystemStatsPubSubType::compute_key(
 #endif // FASTCDR_VERSION_MAJOR == 1
     if (force_md5 || SystemStats_max_key_cdr_typesize > 16)
     {
-        m_md5.init();
+        //m_md5.init();
 #if FASTCDR_VERSION_MAJOR == 1
-        m_md5.update(m_keyBuffer, static_cast<unsigned int>(ser.getSerializedDataLength()));
+        //m_md5.update(m_keyBuffer, static_cast<unsigned int>(ser.getSerializedDataLength()));
 #else
-        m_md5.update(m_keyBuffer, static_cast<unsigned int>(ser.get_serialized_data_length()));
+        //m_md5.update(m_keyBuffer, static_cast<unsigned int>(ser.get_serialized_data_length()));
 #endif // FASTCDR_VERSION_MAJOR == 1
-        m_md5.finalize();
+        //m_md5.finalize();
         for (uint8_t i = 0; i < 16; ++i)
         {
-            handle->value[i] = m_md5.digest[i];
+            handle->value[i] = 0;
         }
     }
     else

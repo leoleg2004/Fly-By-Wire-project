@@ -28,8 +28,6 @@ char dummy;
 
 #include "Telemetry.hpp"
 
-#include "TelemetryTypeObject.hpp"
-
 #include <fastcdr/Cdr.h>
 
 
@@ -43,8 +41,6 @@ using namespace eprosima::fastcdr::exception;
 
 SystemStats::SystemStats()
 {
-    // Just to register all known types
-    registerTelemetryTypes();
 }
 
 SystemStats::~SystemStats()
