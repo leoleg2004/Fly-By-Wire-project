@@ -120,26 +120,51 @@ public:
 };
 
 int main() {
-    DomainParticipantQos pqos;
-    pqos.name("Monitor_Node_Leonardo");
+	DomainParticipantQos pqos;
+	    pqos.name("Monitor_Node_Leonardo");
 
-    DomainParticipant* participant = DomainParticipantFactory::get_instance()->create_participant(0, pqos);
-    if (participant == nullptr) return 1;
+	    // 1. Abilitazione QoS Globale per le Statistiche
+	    pqos.properties().properties().emplace_back("fastdds.statistics",
+	        "HISTORY_LATENCY;"
+	        "NETWORK_LATENCY;"
+	        "PUBLICATION_THROUGHPUT;"
+	        "SUBSCRIPTION_THROUGHPUT;"
+	        "HEARTBEAT_COUNT;"
+	        "ACKNACK_COUNT;"
+	        "DISCOVERY_STATISTICS;"
+	        "PHYSICAL_DATA_STATISTICS");
 
-    TypeSupport type(new SystemStatsPubSubType());
-    type.register_type(participant);
+	    DomainParticipant* participant = DomainParticipantFactory::get_instance()->create_participant(0, pqos);
+	    if (participant == nullptr) return 1;
 
-    Subscriber* sub = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
-    Topic* topic = participant->create_topic("TelemetryTopic", type.get_type_name(), TOPIC_QOS_DEFAULT);
+	    // 2. Attivazione dei DataWriter Statistici (lato Subscriber)
+	    auto* stat_participant = eprosima::fastdds::statistics::dds::DomainParticipant::narrow(participant);
+	    if (stat_participant != nullptr) {
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::SUBSCRIPTION_THROUGHPUT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::ACKNACK_COUNT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HEARTBEAT_COUNT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HISTORY_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::NETWORK_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+	    }
 
-    DataReaderQos dr_qos = DATAREADER_QOS_DEFAULT;
-    dr_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
-    dr_qos.durability().kind = VOLATILE_DURABILITY_QOS;
+	    TypeSupport type(new SystemStatsPubSubType());
+	    type.register_type(participant);
 
-    DashboardListener listener;
-    DataReader* reader = sub->create_datareader(topic, dr_qos, &listener);
+	    Subscriber* sub = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+	    Topic* topic = participant->create_topic("TelemetryTopic", type.get_type_name(), TOPIC_QOS_DEFAULT);
 
-    if (reader == nullptr) return 1;
+	    DataReaderQos dr_qos = DATAREADER_QOS_DEFAULT;
+	    dr_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+	    dr_qos.durability().kind = VOLATILE_DURABILITY_QOS;
+
+	    // 3. Assegnazione proprietà statistiche specifiche al DataReader
+	    dr_qos.properties().properties().emplace_back("fastdds.statistics",
+	        "SUBSCRIPTION_THROUGHPUT;"
+	        "HISTORY_LATENCY;"
+	        "ACKNACK_COUNT");
+
+	    DashboardListener listener;
+	    DataReader* reader = sub->create_datareader(topic, dr_qos, &listener);
 
     MonitorDisplay display(850, 700, "Torre di Controllo - Telemetria F-35");
 

@@ -272,9 +272,7 @@ void FlightDisplay::HandleInput(PlaneData& data) {
         if (IsSoundPlaying(sndAir)) StopSound(sndAir);
     }
 
-    // ==========================================
-    // 5. INPUT DI VELOCITÀ BASE (Per il main.cpp)
-    // ==========================================
+
     if (data.system_active && !engineReady) {
         data.speed = 0.0f; // INCHIODATO per 20 secondi
     }
@@ -289,30 +287,32 @@ void FlightDisplay::HandleInput(PlaneData& data) {
 
     UpdateAnimations();
 }
-// ========================================================
-// GESTIONE TELECAMERE
-// ========================================================
 void FlightDisplay::UpdateChaseCamera(const PlaneData& data) {
-    // IMPORTANTE: Sottratto 100 per pareggiare con la nuova altezza del mondo!
     float renderAlt = (data.altitude * 5.0f);
     float speedRatio = std::min(data.speed / 200.0f, 1.0f);
+
+    // trackingSpeed determina la fluidità della telecamera.
     float trackingSpeed = 0.35f + (speedRatio * 0.20f);
+
+    //
+    float slowFactor = 1.0f - speedRatio; // 1.0 quando fermo, 0.0 a 200 KPH
+    float hoverHeight = slowFactor * 120.0f; // Aggiunge fino a 120m di altezza quando parcheggiato
 
     Vector3 idealPos;
     Vector3 targetLook;
 
     switch (cameraMode) {
-    case 0: // CHASE
+    case 0:
         {
             float distH = 200.0f + (speedRatio * 15.0f);
-            float camHeight = 90.0f + (data.pitch * 40.0f);
+            float camHeight = 90.0f + (data.pitch * 40.0f) + hoverHeight;
 
             idealPos.x = data.x - (std::sin(data.yaw) * distH);
             idealPos.z = data.z - (std::cos(data.yaw) * distH);
             idealPos.y = renderAlt + camHeight;
 
             targetLook.x = data.x + (std::sin(data.yaw) * 60.0f);
-            targetLook.y = renderAlt + 10.0f + (data.pitch * 50.0f);
+            targetLook.y = renderAlt + 15.0f + (data.pitch * 50.0f);
             targetLook.z = data.z + (std::cos(data.yaw) * 60.0f);
 
             camera.up = (Vector3){ std::sin(data.roll * 0.25f), std::cos(data.roll * 0.25f), 0.0f };
@@ -323,48 +323,65 @@ void FlightDisplay::UpdateChaseCamera(const PlaneData& data) {
     case 1: // SIDE
         {
             float sideAngle = data.yaw + PI / 2.0f;
-            float distSide = 150.0f + (speedRatio * 30.0f);
+
+            // Distanza aumentata a 300 per prendere tutto il jet
+            float distSide = 300.0f + (speedRatio * 30.0f);
 
             idealPos.x = data.x + (std::sin(sideAngle) * distSide);
             idealPos.z = data.z + (std::cos(sideAngle) * distSide);
-            idealPos.y = renderAlt + 20.0f;
+            idealPos.y = renderAlt + 20.0f + hoverHeight;
 
+            // Lock esatto al centro del telaio dell'aereo
             targetLook.x = data.x;
-            targetLook.y = renderAlt + 5.0f;
+            targetLook.y = renderAlt + 10.0f;
             targetLook.z = data.z;
 
             camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-            camera.fovy = 70.0f;
+            camera.fovy = 65.0f;
+
+            // Rende l'ancoraggio molto più "rigido" per non far sfuggire l'aereo
+            trackingSpeed = 0.85f;
         }
         break;
 
     case 2: // FRONT
         {
-            float distFront = 200.0f + (speedRatio * 50.0f);
+            // Distanza aumentata a 350 per contenere comodamente l'intero caccia
+            float distFront = 350.0f + (speedRatio * 50.0f);
 
             idealPos.x = data.x + (std::sin(data.yaw) * distFront);
             idealPos.z = data.z + (std::cos(data.yaw) * distFront);
-            idealPos.y = renderAlt + 25.0f;
+            idealPos.y = renderAlt + 25.0f + hoverHeight;
 
+            // Lock esatto
             targetLook.x = data.x;
-            targetLook.y = renderAlt + 5.0f;
+            targetLook.y = renderAlt + 10.0f;
             targetLook.z = data.z;
 
             camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
-            camera.fovy = 55.0f;
+            camera.fovy = 60.0f;
+
+            // Ancoraggio rigido
+            trackingSpeed = 0.85f;
         }
         break;
     }
 
+    // Interpolazione Posizione della Telecamera
     cameraPositionLag.x = Lerp(cameraPositionLag.x, idealPos.x, trackingSpeed);
-    cameraPositionLag.y = Lerp(cameraPositionLag.y, idealPos.y, trackingSpeed * 0.7f);
+    cameraPositionLag.y = Lerp(cameraPositionLag.y, idealPos.y, trackingSpeed * 0.7f); // Y leggermente più lento per morbidezza
     cameraPositionLag.z = Lerp(cameraPositionLag.z, idealPos.z, trackingSpeed);
     camera.position = cameraPositionLag;
 
-    camera.target.x = Lerp(camera.target.x, targetLook.x, trackingSpeed * 1.0f);
-    camera.target.y = Lerp(camera.target.y, targetLook.y, trackingSpeed * 1.0f);
-    camera.target.z = Lerp(camera.target.z, targetLook.z, trackingSpeed * 1.0f);
+    // Interpolazione rapida del Target (dove guarda la telecamera)
+    // Moltiplicando x 1.2 forziamo il target a restare sempre perfettamente centrato sull'aereo!
+    camera.target.x = Lerp(camera.target.x, targetLook.x, std::min(trackingSpeed * 1.2f, 1.0f));
+    camera.target.y = Lerp(camera.target.y, targetLook.y, std::min(trackingSpeed * 1.2f, 1.0f));
+    camera.target.z = Lerp(camera.target.z, targetLook.z, std::min(trackingSpeed * 1.2f, 1.0f));
 }
+
+
+
 
 void FlightDisplay::UpdateAnimations() {
     if (animsCount <= 0 || modelAnims == nullptr) return;

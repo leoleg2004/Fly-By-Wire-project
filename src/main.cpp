@@ -15,6 +15,10 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "FlightDisplay.hpp"
+#include <fastdds/rtps/attributes/PropertyPolicy.hpp>
+#include <fastdds/statistics/dds/domain/DomainParticipant.hpp>
+#include <fastdds/statistics/topic_names.hpp>
+#include <fastdds/statistics/dds/publisher/qos/DataWriterQos.hpp>
 
 using namespace eprosima::fastdds::dds;
 
@@ -66,22 +70,47 @@ int main() {
     DomainParticipantQos pqos;
     pqos.name("Pilot_Node_F35");
 
-    DomainParticipant* participant = DomainParticipantFactory::get_instance()->create_participant(0, pqos);
-    if (participant == nullptr) return 1;
+    // 1. Abilitazione QoS per le Statistiche
+        pqos.properties().properties().emplace_back("fastdds.statistics",
+            "HISTORY_LATENCY;"
+            "NETWORK_LATENCY;"
+            "PUBLICATION_THROUGHPUT;"
+            "SUBSCRIPTION_THROUGHPUT;"
+            "HEARTBEAT_COUNT;"
+            "ACKNACK_COUNT;"
+            "DISCOVERY_STATISTICS;"
+            "PHYSICAL_DATA_STATISTICS");
 
-    TypeSupport type(new SystemStatsPubSubType());
-    type.register_type(participant);
+        DomainParticipant* participant = DomainParticipantFactory::get_instance()->create_participant(0, pqos);
+        if (participant == nullptr) return 1;
 
-    Publisher* pub = participant->create_publisher(PUBLISHER_QOS_DEFAULT);
-    Topic* topic = participant->create_topic("TelemetryTopic", type.get_type_name(), TOPIC_QOS_DEFAULT);
+        // 2. Attivazione dei DataWriter Statistici del kernel DDS
+        auto* stat_participant = eprosima::fastdds::statistics::dds::DomainParticipant::narrow(participant);
+        if (stat_participant != nullptr) {
+            stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::PUBLICATION_THROUGHPUT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+            stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::NETWORK_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+            stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HISTORY_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+            stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HEARTBEAT_COUNT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+        }
 
-    DataWriterQos wqos = DATAWRITER_QOS_DEFAULT;
-    wqos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+        TypeSupport type(new SystemStatsPubSubType());
+        type.register_type(participant);
 
-    DataWriter* writer = pub->create_datawriter(topic, wqos);
-    if (writer == nullptr) return 1;
+        Publisher* pub = participant->create_publisher(PUBLISHER_QOS_DEFAULT);
+        Topic* topic = participant->create_topic("TelemetryTopic", type.get_type_name(), TOPIC_QOS_DEFAULT);
 
-    std::thread Pilota_dds(flight_computer_task, writer);
+        DataWriterQos wqos = DATAWRITER_QOS_DEFAULT;
+        wqos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+
+        // 3. Assegnazione proprietà statistiche specifiche al DataWriter
+        wqos.properties().properties().emplace_back("fastdds.statistics",
+            "PUBLICATION_THROUGHPUT;"
+            "HISTORY_LATENCY");
+
+        DataWriter* writer = pub->create_datawriter(topic, wqos);
+        if (writer == nullptr) return 1;
+
+        std::thread Pilota_dds(flight_computer_task, writer);
 
     FlightDisplay display(1000, 900, "Leonardo Flight System - Manual Control");
 
