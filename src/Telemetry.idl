@@ -5,6 +5,9 @@ struct SystemStats {
     float yaw;
     float altitude;
     float speed;
+    float x;
+    float z;
     boolean landing_mode;
-    string<32> status_msg;
+    boolean system_active;
+    string status_msg;
 };
