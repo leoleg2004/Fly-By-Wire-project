@@ -238,59 +238,68 @@ void MonitorDisplay::Draw(const PlaneData& data) {
     DrawRectangle(px3 + 20, startY + 140, pW - 40, 1, Fade(colHUD, 0.3f));
 
     // =========================================================================
-    // EICAS: I 3 SEGNALI (PERICOLO, WARNING, CONTROLLO)
-    // =========================================================================
-    std::string currentStatus(data.status_msg);
-    Color statusColor = colGreen;
-    Color boxColor = colGreen;
-    std::string categoria = "[ CONTROL ] - SYSTEM NOMINAL";
-    bool isAlert = false;
+        // EICAS: I 3 SEGNALI (PERICOLO, WARNING, CONTROLLO)
+        // =========================================================================
 
-    // 1. DANGER (Pericolo Imminente)
-    if (!data.system_active || currentStatus.find("DANGER") != std::string::npos || currentStatus.find("PULL UP") != std::string::npos || currentStatus.find("STALL") != std::string::npos) {
-        statusColor = WHITE; boxColor = colDanger;
-        categoria = "[ DANGER ] - CRITICAL ALERT";
-        isAlert = true;
+        // Inizializza con il messaggio nativo
+        std::string currentStatus(data.status_msg);
+        Color statusColor = colGreen;
+        Color boxColor = colGreen;
+        std::string categoria = "[ CONTROL ] - SYSTEM NOMINAL";
+        bool isAlert = false;
+
+        // 1. DANGER (Pericolo Imminente o Motore Spento)
+        if (!data.system_active) {
+            currentStatus = "ENGINES SHUT DOWN"; // Sovrascrive forzatamente
+            statusColor = WHITE; boxColor = colDanger;
+            categoria = "[ DANGER ] - CRITICAL ALERT";
+            isAlert = true;
+        }
+        else if (currentStatus.find("DANGER") != std::string::npos || currentStatus.find("PULL UP") != std::string::npos || currentStatus.find("STALL") != std::string::npos) {
+            statusColor = WHITE; boxColor = colDanger;
+            categoria = "[ DANGER ] - CRITICAL ALERT";
+            isAlert = true;
+        }
+        // 2. WARNING (Attenzione Richiesta)
+        else if (currentStatus.find("WARNING") != std::string::npos || data.landing_mode || currentStatus.find("BANK") != std::string::npos || currentStatus.find("GEAR") != std::string::npos) {
+            statusColor = WHITE; boxColor = colWarning;
+            categoria = "[ WARNING ] - CAUTION ADVISORY";
+            isAlert = true;
+        }
+        // 3. CONTROL (Tutto OK)
+        else {
+            statusColor = colGreen; boxColor = colHUD;
+            categoria = "[ CONTROL ] - SYSTEMS NORMAL";
+            isAlert = false;
+        }
+
+        int labelY = startY + 160;
+        DrawText(categoria.c_str(), px3 + 20, labelY, 10, boxColor);
+
+        int msgY = labelY + 20;
+        float pulse = (std::sin(GetTime() * 10.0f) + 1.0f) * 0.5f;
+
+        DrawRectangle(px3 + 20, msgY, pW - 40, 40, Fade(BLACK, 0.8f));
+
+        if (isAlert) {
+            DrawRectangleGradientV(px3 + 20, msgY, pW - 40, 40, Fade(boxColor, 0.2f + pulse * 0.4f), Fade(BLACK, 0.9f));
+            DrawRectangleLinesEx({(float)px3 + 20, (float)msgY, (float)pW - 40, 40.0f}, 2.0f, Fade(boxColor, 0.6f + pulse * 0.4f));
+        } else {
+            DrawRectangleLines(px3 + 20, msgY, pW - 40, 40, Fade(colHUD, 0.3f));
+        }
+
+        // Centratura Testo Pulita eliminando i prefissi "DANGER: " o "WARNING: " se presenti
+        // Uso currentStatus (già sovrascritto se necessario) invece di pescare di nuovo da data.status_msg
+        std::string displayMsg = currentStatus;
+        size_t colonPos = displayMsg.find(": ");
+        if(colonPos != std::string::npos) displayMsg = displayMsg.substr(colonPos + 2);
+
+        int txtW = MeasureText(displayMsg.c_str(), 16);
+        DrawText(displayMsg.c_str(), px3 + 20 + ((pW-40)/2) - (txtW/2), msgY + 12, 16, statusColor);
+
+        // Vignettatura fissa
+        DrawCircleGradient(m_width / 2, m_height / 2, m_width * 0.7f, BLANK, Fade(BLACK, 0.6f));
+        for(int i = 0; i < m_height; i += 3) DrawLine(0, i, m_width, i, Fade(BLACK, 0.25f));
+
+        EndDrawing();
     }
-    // 2. WARNING (Attenzione Richiesta)
-    else if (currentStatus.find("WARNING") != std::string::npos || data.landing_mode || currentStatus.find("BANK") != std::string::npos || currentStatus.find("GEAR") != std::string::npos) {
-        statusColor = WHITE; boxColor = colWarning;
-        categoria = "[ WARNING ] - CAUTION ADVISORY";
-        isAlert = true;
-    }
-    // 3. CONTROL (Tutto OK)
-    else {
-        statusColor = colGreen; boxColor = colHUD;
-        categoria = "[ CONTROL ] - SYSTEMS NORMAL";
-        isAlert = false;
-    }
-
-    int labelY = startY + 160;
-    DrawText(categoria.c_str(), px3 + 20, labelY, 10, boxColor);
-
-    int msgY = labelY + 20;
-    float pulse = (std::sin(GetTime() * 10.0f) + 1.0f) * 0.5f;
-
-    DrawRectangle(px3 + 20, msgY, pW - 40, 40, Fade(BLACK, 0.8f));
-
-    if (isAlert) {
-        DrawRectangleGradientV(px3 + 20, msgY, pW - 40, 40, Fade(boxColor, 0.2f + pulse * 0.4f), Fade(BLACK, 0.9f));
-        DrawRectangleLinesEx({(float)px3 + 20, (float)msgY, (float)pW - 40, 40.0f}, 2.0f, Fade(boxColor, 0.6f + pulse * 0.4f));
-    } else {
-        DrawRectangleLines(px3 + 20, msgY, pW - 40, 40, Fade(colHUD, 0.3f));
-    }
-
-    // Centratura Testo Pulita eliminando i prefissi "DANGER: " o "WARNING: " se presenti
-    std::string displayMsg = currentStatus;
-    size_t colonPos = displayMsg.find(": ");
-    if(colonPos != std::string::npos) displayMsg = displayMsg.substr(colonPos + 2);
-
-    int txtW = MeasureText(displayMsg.c_str(), 16);
-    DrawText(displayMsg.c_str(), px3 + 20 + ((pW-40)/2) - (txtW/2), msgY + 12, 16, statusColor);
-
-    // Vignettatura fissa
-    DrawCircleGradient(m_width / 2, m_height / 2, m_width * 0.7f, BLANK, Fade(BLACK, 0.6f));
-    for(int i = 0; i < m_height; i += 3) DrawLine(0, i, m_width, i, Fade(BLACK, 0.25f));
-
-    EndDrawing();
-}
