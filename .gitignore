@@ -1,2 +1,36 @@
-build/
+# ==========================================
+# 1. SPAZZATURA DI CMAKE E COMPILATORI
+# ==========================================
+# Ignora le cartelle CMakeFiles ovunque si trovino (risolve il problema in src/ e build/)
+CMakeFiles/
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CMakeScripts/
 
+# ==========================================
+# 2. FILE OGGETTO E LIBRERIE (Incluso Raylib)
+# ==========================================
+*.o
+*.a
+*.so
+*.dylib
+*.out
+.raylib/
+_deps/
+
+# ==========================================
+# 3. GESTIONE SPECIFICA DELLA CARTELLA BUILD
+# ==========================================
+# Ignora TUTTO quello che c'è dentro la cartella build/ di default
+build/*
+
+# TRANNE (!) i seguenti file che vogliamo assolutamente su GitHub:
+!build/FlightSim
+!build/MonitorApp
+!build/*.glb
+!build/*.wav
+
+# (Se il tuo eseguibile si chiama in un altro modo, modificalo qui sopra)
