@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-// Assicurati che PlaneData sia accessibile
+// Dipendenza per definizioni telemetriche strutturate
 #include "FlightDisplay.hpp"
 
 class MonitorDisplay {
@@ -13,21 +13,21 @@ public:
 
     bool IsActive();
 
-    // Torniamo a 1 solo argomento come richiesto
+    // Routine principale di aggiornamento canvas
     void Draw(const PlaneData& data);
 
 private:
     int m_width;
     int m_height;
 
-    // Palette "Stealth Command"
+    // Costanti cromatiche MFD
     const Color colBack      = { 2, 6, 12, 255 };
     const Color colHUD       = { 0, 225, 255, 255 };
     const Color colWarning   = { 255, 40, 0, 255 };
     const Color colGreen     = { 0, 255, 120, 255 };
     const Color colPanel     = { 15, 25, 35, 240 };
 
-    // Moduli di Rendering
+    // Funzioni di rendering specializzate per quadrante
     void DrawTechFrame(int x, int y, int w, int h, const char* title);
     void DrawTacticalRadar(int x, int y, int size, const PlaneData& data);
     void DrawArtificialHorizon(int x, int y, int w, int h, float pitch, float roll);
