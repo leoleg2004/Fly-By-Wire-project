@@ -104,7 +104,7 @@ void FlightDisplay::HandleInput(PlaneData& data) {
     float dt = GetFrameTime();
 
     // ==========================================
-    // VARIABILI DI STATO (Memoria del volo)
+    // VARIABILI DI STATO (FSM)
     // ==========================================
     static double engineStartTime = 0.0;
     static bool hasTakenOff = false;
@@ -112,7 +112,7 @@ void FlightDisplay::HandleInput(PlaneData& data) {
 
     if (data.altitude > 100.0f) hasTakenOff = true;
 
-    // --- AUTO-SHUTDOWN DINAMICO ---
+    // --- LOGICA DI AUTO-SHUTDOWN ---
     if (hasTakenOff && data.altitude < 2.0f && data.speed <= 1.0f && data.system_active) {
         data.system_active = false;
         engineReady = false;
@@ -132,7 +132,7 @@ void FlightDisplay::HandleInput(PlaneData& data) {
     }
 
     // ==========================================
-    // 1. CARRELLO E AUTOPILOTA (CAUTION)
+    // 1. SISTEMI CARRELLO E AUTOPILOTA
     // ==========================================
     if (IsKeyPressed(KEY_G)) {
         gearOpen = !gearOpen;
@@ -162,7 +162,7 @@ void FlightDisplay::HandleInput(PlaneData& data) {
     if (IsKeyDown(KEY_RIGHT)) { data.roll += 0.025f; isRolling = true; }
 
     // ==========================================
-    // 2. BITCHING BETTY (ALLARMI VOCALI)
+    // 2. SISTEMA ALLERTA VOCALE (VWS)
     // ==========================================
     bool dangerPullUp = false;
     bool dangerBank = false;
@@ -203,7 +203,7 @@ void FlightDisplay::HandleInput(PlaneData& data) {
     }
 
     // ==========================================
-    // 3. TIMER 20 SECONDI E MOTORE
+    // 3. ACCENSIONE E TIMER MOTORE
     // ==========================================
     if (IsKeyPressed(KEY_E)) {
         data.system_active = !data.system_active;
@@ -239,7 +239,7 @@ void FlightDisplay::HandleInput(PlaneData& data) {
     }
 
     // ==========================================
-    // 4. MIXAGGIO AUDIO
+    // 4. MIXER AUDIO SPAZIALE E VOLUMI
     // ==========================================
     if (data.system_active) {
         float speedRatio = data.speed / 200.0f;
@@ -350,7 +350,7 @@ void FlightDisplay::UpdateChaseCamera(const PlaneData& data) {
             camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
             camera.fovy = 65.0f;
 
-            // Rende l'ancoraggio molto più "rigido" per non far sfuggire l'aereo
+            // Forza una rigidità maggiore per l'ancoraggio della camera
             trackingSpeed = 0.85f;
         }
         break;
@@ -380,12 +380,12 @@ void FlightDisplay::UpdateChaseCamera(const PlaneData& data) {
 
     // Interpolazione Posizione della Telecamera
     cameraPositionLag.x = Lerp(cameraPositionLag.x, idealPos.x, trackingSpeed);
-    cameraPositionLag.y = Lerp(cameraPositionLag.y, idealPos.y, trackingSpeed * 0.7f); // Y leggermente più lento per morbidezza
+    cameraPositionLag.y = Lerp(cameraPositionLag.y, idealPos.y, trackingSpeed * 0.7f); // Damping verticale morbido
     cameraPositionLag.z = Lerp(cameraPositionLag.z, idealPos.z, trackingSpeed);
     camera.position = cameraPositionLag;
 
-    // Interpolazione rapida del Target (dove guarda la telecamera)
-    // Moltiplicando x 1.2 forziamo il target a restare sempre perfettamente centrato sull'aereo!
+    // Follower cinematico del punto di focus (target visivo)
+    // Overdrive sul trackingSpeed per mantenere il lock al centro
     camera.target.x = Lerp(camera.target.x, targetLook.x, std::min(trackingSpeed * 1.2f, 1.0f));
     camera.target.y = Lerp(camera.target.y, targetLook.y, std::min(trackingSpeed * 1.2f, 1.0f));
     camera.target.z = Lerp(camera.target.z, targetLook.z, std::min(trackingSpeed * 1.2f, 1.0f));
@@ -417,19 +417,19 @@ void FlightDisplay::DrawMapWorld(const PlaneData& data) {
     rlEnableDepthTest();
     rlEnableBackfaceCulling();
 
-    // 1. CLIP PLANES (Precisione millimetrica)
+    // 1. CLIP PLANES
     rlSetClipPlanes(2.0f, 300000.0f);
 
 
     float asphaltOffset = -8.5f;
     Vector3 runwayPosition = { 0.0f, asphaltOffset, 0.0f };
 
-    // 3. IL FONDALE ASSOLUTO
+    // 3. PIANO DI BASE INFERIORE
     DrawPlane((Vector3){ camera.position.x, -50.0f, camera.position.z },
               (Vector2){ 1000000.0f, 1000000.0f },
               (Color){ 10, 15, 10, 255 });
 
-    // 4. LA PIANURA DI CONTORNO
+    // 4. GENERAZIONE TERRENO CITTADINO
     float groundY = -400.0f;
 
     float tileSize = 10000.0f;
@@ -456,12 +456,12 @@ void FlightDisplay::DrawMapWorld(const PlaneData& data) {
 
     if (!mapLoaded) return;
 
-    // 5. IL TUO AEROPORTO
+    // 5. RENDERING MESH AEROPORTO
     rlPushMatrix();
         DrawModel(mapModel, runwayPosition, 7.0f, WHITE);
     rlPopMatrix();
 
-    // 6. FARO ILS PER L'ATTERRAGGIO
+    // 6. GUIDA VISIVA ILS (INSTRUMENT LANDING SYSTEM)
     if (data.landing_mode) {
         rlDisableDepthMask();
         BeginBlendMode(BLEND_ADDITIVE);
@@ -473,7 +473,7 @@ void FlightDisplay::DrawMapWorld(const PlaneData& data) {
 }
 
 // =========================================================================
-// CIELO PROCEDURALE 4.0: DIRADATO, ALTA QUOTA E SOLE DEFINITO
+// RENDERING VOLUMETRICO CIELO E ATMOSFERA PROCEDURALE
 // =========================================================================
 void FlightDisplay::DrawSky(Vector3 camPos) {
     rlDisableDepthTest();
@@ -484,7 +484,7 @@ void FlightDisplay::DrawSky(Vector3 camPos) {
     rlTranslatef(camPos.x, camPos.y, camPos.z);
 
     // ==========================================
-    // 1. STRATOSFERA & FOSCHIA
+    // 1. RAYLEIGH SCATTERING MIE E FOSCHIA
     // ==========================================
     DrawSphereEx((Vector3){0, 0, 0}, 10000.0f, 16, 16, (Color){ 6, 15, 35, 255 });
 
@@ -498,7 +498,7 @@ void FlightDisplay::DrawSky(Vector3 camPos) {
     EndBlendMode();
 
     // ==========================================
-    // 2. SOLE FOTOREALISTICO (Disco + Corona Atmosferica)
+    // 2. RENDERING SOLE, BLOOM E CORONA
     // ==========================================
     Vector3 sunPos = { 5500.0f, 2500.0f, 6500.0f };
 
@@ -522,7 +522,7 @@ void FlightDisplay::DrawSky(Vector3 camPos) {
     EndBlendMode();
 
     // ==========================================
-    // 3. NUVOLE (Diradate, Alta quota e Morbide)
+    // 3. FORMAZIONI NUVOLOSE STRATIFICATE
     // ==========================================
     BeginBlendMode(BLEND_ALPHA);
     srand(8888); // Nuovo seme per una composizione più aperta
@@ -624,9 +624,9 @@ void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
             rlTranslatef(0.0f, 5.0f, 0.0f);
 
             // =========================================================================
-            // INIZIO DISEGNO AEREO (ISOLATO)
+            // RENDERING MODELLO AEREOMOBILE
             // =========================================================================
-            rlPushMatrix(); // <--- TRUCCO: Questo isola la scala dell'aereo dal fuoco
+            rlPushMatrix(); // Isola la trasformazione della scala dal resto della scena
                 // Applichiamo la scala manualmente per il DrawMesh
                 rlScalef(modelScaleAereo, modelScaleAereo, modelScaleAereo);
 
@@ -649,13 +649,13 @@ void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
                     }
                 }
                 rlEnableDepthMask(); // Riattiviamo la profondità
-            rlPopMatrix(); // <--- FINE TRUCCO: Togliamo la scala microscopica. Da qui in poi torna tutto grande!
+            rlPopMatrix(); // Ripristino della scala matrice per i successivi draw-call
             // =========================================================================
-            // FINE DISEGNO AEREO
+            // FINE MODELLO AEREOMOBILE
             // =========================================================================
 
     // =========================================================================
-    // MOTORE VOLUMETRICO AD ALTA FEDELTÀ (GRADIENTI E SHOCK DIAMONDS)
+    // EFFETTI MOTORE (SHOCK DIAMONDS E AFTERBURNER)
     // =========================================================================
     if (data.system_active && data.speed > 5.0f) {
         rlPushMatrix();
