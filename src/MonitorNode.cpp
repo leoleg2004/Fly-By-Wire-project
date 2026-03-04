@@ -67,7 +67,7 @@ public:
             total_packets++;
             float loss_perc = (total_packets > 0) ? ((float)missed_packets / total_packets) * 100.0f : 0.0f;
 
-            // TRAVASO SICURO
+            // Assegnazione in mutuo esclusione
             {
                 std::lock_guard<std::mutex> lock(aereo_mutex);
                 shared_aereo.altitude = telemetry.altitude();
@@ -78,7 +78,7 @@ public:
                 shared_aereo.x        = telemetry.x();
                 shared_aereo.z        = telemetry.z();
                 shared_aereo.landing_mode  = telemetry.landing_mode();
-                shared_aereo.system_active = telemetry.system_active(); // ORA LEGGE IL VERO STATO
+                shared_aereo.system_active = telemetry.system_active(); // Sincronizzazione stato operativo
 
                 snprintf(shared_aereo.status_msg, sizeof(shared_aereo.status_msg), "%s", telemetry.status_msg().c_str());
             }
@@ -87,7 +87,7 @@ public:
             bool alarm_crit = (status.find("ALARM") != std::string::npos || status.find("PULL UP") != std::string::npos || status.find("HIGH ALTITUDE") != std::string::npos);
             bool alarm_warn = (status.find("WARN") != std::string::npos || avg_jitter > 5.0f);
 
-            // Stampa Terminale
+            // Aggiornamento console per diagnostica
             std::cout << "\033[2J\033[1;1H";
             if (alarm_crit) std::cout << "\033[1;41m";
             else if (alarm_warn) std::cout << "\033[1;43m";
@@ -175,8 +175,8 @@ int main() {
             local_aereo = shared_aereo;
         }
 
-        // ELIMINATA LA TRAPPOLA CHE SPEGNEVA IL MONITOR.
-        // ORA SI FIDA DI "local_aereo.system_active" CHE ARRIVA DAL DDS!
+        // Disegno interfaccia basato interamente su telemetry DDS
+        // Il flag system_active non blocca più il ciclo grafico
 
         display.Draw(local_aereo);
     }
