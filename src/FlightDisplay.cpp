@@ -472,23 +472,135 @@ void FlightDisplay::DrawMapWorld(const PlaneData& data) {
     }
 }
 
+// =========================================================================
+// CIELO PROCEDURALE 4.0: DIRADATO, ALTA QUOTA E SOLE DEFINITO
+// =========================================================================
 void FlightDisplay::DrawSky(Vector3 camPos) {
-    Color zenithColor  = { 20, 50, 110, 255 };
+    rlDisableDepthTest();
+    rlDisableDepthMask();
+    rlDisableBackfaceCulling();
 
-    if (skyLoaded) {
-        rlDisableDepthMask();
-        rlDisableBackfaceCulling();
+    rlPushMatrix();
+    rlTranslatef(camPos.x, camPos.y, camPos.z);
 
-        skyModel.transform = MatrixRotateY(GetTime() * 0.01f);
+    // ==========================================
+    // 1. STRATOSFERA & FOSCHIA
+    // ==========================================
+    DrawSphereEx((Vector3){0, 0, 0}, 10000.0f, 16, 16, (Color){ 6, 15, 35, 255 });
 
-        // INVECE DI 'WHITE', USIAMO UN BLU NOTTE!
-        // Così se la texture manca, il cielo diventa scuro e smette di accecarti,
-        // permettendoti di vedere l'aereo e il mondo 3D.
-        DrawModel(skyModel, camPos, 200.0f, (Color){ 10, 30, 60, 255 });
-
-        rlEnableBackfaceCulling();
-        rlEnableDepthMask();
+    BeginBlendMode(BLEND_ALPHA);
+    for (int i = 0; i < 8; i++) {
+        float offset = 5000.0f - (i * 700.0f);
+        float alpha = 0.04f + (i * 0.035f);
+        DrawSphereEx((Vector3){0, -offset, 0}, 9500.0f, 16, 16, Fade((Color){ 80, 160, 255, 255 }, alpha));
     }
+    DrawSphereEx((Vector3){0, -1000.0f, 0}, 8500.0f, 16, 16, Fade((Color){ 190, 220, 250, 255 }, 0.45f));
+    EndBlendMode();
+
+    // ==========================================
+    // 2. SOLE FOTOREALISTICO (Disco + Corona Atmosferica)
+    // ==========================================
+    Vector3 sunPos = { 5500.0f, 2500.0f, 6500.0f };
+
+    // A) La dispersione di luce nell'aria (Additive)
+    BeginBlendMode(BLEND_ADDITIVE);
+    DrawSphereEx(sunPos, 2500.0f, 16, 16, Fade((Color){ 255, 130, 40, 255 }, 0.05f));  // Vastissimo alone caldo
+    DrawSphereEx(sunPos, 1200.0f, 16, 16, Fade((Color){ 255, 180, 80, 255 }, 0.15f));  // Corona esterna
+    DrawSphereEx(sunPos, 450.0f,  16, 16, Fade((Color){ 255, 230, 180, 255 }, 0.4f));   // Corona interna
+
+    // Lens Flare (Raggio orizzontale della lente della telecamera)
+    rlPushMatrix();
+        rlTranslatef(sunPos.x, sunPos.y, sunPos.z);
+        rlScalef(35.0f, 0.05f, 1.0f);
+        DrawSphereEx((Vector3){0,0,0}, 200.0f, 12, 12, Fade((Color){ 255, 210, 160, 255 }, 0.2f));
+    rlPopMatrix();
+    EndBlendMode();
+
+    // B) Il modello del Sole fisico: un disco nettissimo al centro del bagliore
+    BeginBlendMode(BLEND_ALPHA);
+    DrawSphereEx(sunPos, 130.0f, 24, 24, (Color){ 255, 250, 245, 255 });
+    EndBlendMode();
+
+    // ==========================================
+    // 3. NUVOLE (Diradate, Alta quota e Morbide)
+    // ==========================================
+    BeginBlendMode(BLEND_ALPHA);
+    srand(8888); // Nuovo seme per una composizione più aperta
+    float timeOffset = GetTime();
+
+    // --- LAYER 1: CIRRI STRATOSFERICI ---
+    rlPushMatrix();
+    rlRotatef(timeOffset * 0.1f, 0, 1, 0);
+    // Ridotte da 35 a 15 (Molto diradate)
+    for (int i = 0; i < 15; i++) {
+        float angle = (rand() % 360) * DEG2RAD;
+        float dist = 3000.0f + (rand() % 6000);
+        // Quota alzata in modo estremo (8000+)
+        float alt = 8000.0f + (rand() % 2000);
+        float size = 2000.0f + (rand() % 3000);
+
+        Vector3 pos = { std::cos(angle)*dist, alt, std::sin(angle)*dist };
+
+        rlPushMatrix();
+            rlTranslatef(pos.x, pos.y, pos.z);
+            rlRotatef((rand() % 360), 0, 1, 0);
+            rlScalef(1.0f, 0.02f, 0.15f); // Velo sottilissimo
+            DrawSphereEx((Vector3){0,0,0}, size, 8, 8, Fade(WHITE, 0.08f));
+        rlPopMatrix();
+    }
+    rlPopMatrix();
+
+    // --- LAYER 2: CUMULI VOLUMETRICI SPARSI ---
+    rlPushMatrix();
+    rlRotatef(timeOffset * 0.03f, 0, 1, 0); // Vento lentissimo
+
+    // Ridotte da 50 a 20 formazioni enormi isolate
+    for (int i = 0; i < 20; i++) {
+        float angle = (rand() % 360) * DEG2RAD;
+        // Distanza allargata per fare spazio tra una nuvola e l'altra
+        float dist = 2500.0f + (rand() % 8000);
+        // Base alzata da 600m a oltre 3000m
+        float alt = 3000.0f + (rand() % 2500);
+        float baseSize = 1000.0f + (rand() % 1500);
+
+        Vector3 clusterPos = { std::cos(angle)*dist, alt, std::sin(angle)*dist };
+
+        rlPushMatrix();
+            rlTranslatef(clusterPos.x, clusterPos.y, clusterPos.z);
+            rlRotatef((rand() % 360), 0, 1, 0);
+
+            // A) OMBRA BASE (Resa più morbida e meno aggressiva)
+            rlPushMatrix();
+                rlTranslatef(0, -baseSize * 0.15f, 0);
+                rlScalef(1.0f, 0.2f, 0.9f);
+                DrawSphereEx((Vector3){0,0,0}, baseSize * 1.1f, 8, 8, Fade((Color){ 110, 125, 145, 255 }, 0.4f));
+            rlPopMatrix();
+
+            // B) CORPO CENTRALE
+            rlPushMatrix();
+                rlTranslatef(0, 0, 0);
+                rlScalef(1.0f, 0.3f, 0.8f);
+                DrawSphereEx((Vector3){0,0,0}, baseSize, 8, 8, Fade((Color){ 210, 220, 230, 255 }, 0.6f));
+            rlPopMatrix();
+
+            // C) CIMA ILLUMINATA (Rimbalzo della luce stellare)
+            rlPushMatrix();
+                rlTranslatef(baseSize * 0.15f, baseSize * 0.2f, baseSize * 0.15f);
+                rlScalef(0.85f, 0.4f, 0.7f);
+                DrawSphereEx((Vector3){0,0,0}, baseSize * 0.85f, 8, 8, Fade(WHITE, 0.8f));
+            rlPopMatrix();
+
+        rlPopMatrix();
+    }
+    rlPopMatrix();
+
+    EndBlendMode();
+
+    rlPopMatrix();
+
+    rlEnableBackfaceCulling();
+    rlEnableDepthMask();
+    rlEnableDepthTest();
 }
 void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
     if (!modelLoaded) return;
@@ -762,16 +874,20 @@ void FlightDisplay::DrawHUD(const PlaneData& data) {
 
 void FlightDisplay::Draw(const PlaneData& data) {
     BeginDrawing();
-    ClearBackground(SKYBLUE);
+
+    // Mettiamo NERO, così se il cielo finisce vediamo lo spazio e non un colore finto
+    ClearBackground(BLACK);
 
     UpdateChaseCamera(data);
 
-
+    // Manteniamo la tua distanza di rendering
     rlSetClipPlanes(15.0f, 300000.0f);
 
     BeginMode3D(camera);
 
-        //DrawSky(camera.position);
+        // === ECCO IL PROBLEMA: ERA COMMENTATA! ===
+        // Ho rimosso le "//", ora il tuo cielo verrà finalmente disegnato!
+        DrawSky(camera.position);
 
         DrawMapWorld(data);
 
@@ -782,6 +898,7 @@ void FlightDisplay::Draw(const PlaneData& data) {
             rlRotatef(data.pitch * RAD2DEG, -1, 0, 0);
             rlRotatef(data.roll * RAD2DEG, 0, 0, 1);
             DrawUltimateF35(data);
+
         rlPopMatrix();
 
     EndMode3D();
