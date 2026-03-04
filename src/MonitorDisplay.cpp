@@ -6,7 +6,7 @@
 #include "raylib.h"
 #include "raymath.h"
 
-// Colori militari tattici (Glass Cockpit moderno)
+// Costanti cromatiche HUD/MFD
 #define colBack    CLITERAL(Color){ 2, 8, 15, 255 }
 #define colHUD     CLITERAL(Color){ 0, 180, 255, 255 }
 #define colGreen   CLITERAL(Color){ 50, 255, 120, 255 }
@@ -61,19 +61,19 @@ void MonitorDisplay::DrawAttitudeIndicator(int x, int y, float value, const char
     DrawText(TextFormat("%+05.2f", value), x + barW + 15, y + 14, 10, colHUD);
 }
 
-// RADAR MIGLIORATO: SFONDO NERO SOLIDO E ANELLI LUMINOSI
+// Radar Tattico Top-Down
 void MonitorDisplay::DrawTacticalRadar(int x, int y, int size, const PlaneData& data) {
     Vector2 ctr = {(float)x + size/2, (float)y + size/2};
     float r = size/2.2f;
     float radarRange = 100000.0f;
 
-    // Sfondo molto più scuro e contrastato
+    // Layer disco radar
     DrawCircleV(ctr, r, Fade(BLACK, 0.95f));
     DrawCircleLines(ctr.x, ctr.y, r, colHUD);
 
     for(int i=1; i<=3; i++) {
         float ringR = (r/3)*i;
-        DrawCircleLines(ctr.x, ctr.y, ringR, Fade(colHUD, 0.6f)); // Luminosità anelli aumentata
+        DrawCircleLines(ctr.x, ctr.y, ringR, Fade(colHUD, 0.6f)); // Anelli radiali di distanza
         DrawText(TextFormat("%dK", (int)(radarRange/3000 * i)), ctr.x + 4, ctr.y - ringR + 4, 10, colHUD);
     }
 
@@ -238,19 +238,19 @@ void MonitorDisplay::Draw(const PlaneData& data) {
     DrawRectangle(px3 + 20, startY + 140, pW - 40, 1, Fade(colHUD, 0.3f));
 
     // =========================================================================
-        // EICAS: I 3 SEGNALI (PERICOLO, WARNING, CONTROLLO)
+        // EICAS (Engine-Indicating and Crew-Alerting System)
         // =========================================================================
 
-        // Inizializza con il messaggio nativo
+        // Parsing stato nominale
         std::string currentStatus(data.status_msg);
         Color statusColor = colGreen;
         Color boxColor = colGreen;
         std::string categoria = "[ CONTROL ] - SYSTEM NOMINAL";
         bool isAlert = false;
 
-        // 1. DANGER (Pericolo Imminente o Motore Spento)
+        // EICAS Level A (Red)
         if (!data.system_active) {
-            currentStatus = "ENGINES SHUT DOWN"; // Sovrascrive forzatamente
+            currentStatus = "ENGINES SHUT DOWN"; // Override
             statusColor = WHITE; boxColor = colDanger;
             categoria = "[ DANGER ] - CRITICAL ALERT";
             isAlert = true;
@@ -260,13 +260,13 @@ void MonitorDisplay::Draw(const PlaneData& data) {
             categoria = "[ DANGER ] - CRITICAL ALERT";
             isAlert = true;
         }
-        // 2. WARNING (Attenzione Richiesta)
+        // EICAS Level B (Amber)
         else if (currentStatus.find("WARNING") != std::string::npos || data.landing_mode || currentStatus.find("BANK") != std::string::npos || currentStatus.find("GEAR") != std::string::npos) {
             statusColor = WHITE; boxColor = colWarning;
             categoria = "[ WARNING ] - CAUTION ADVISORY";
             isAlert = true;
         }
-        // 3. CONTROL (Tutto OK)
+        // EICAS Level C (Green)
         else {
             statusColor = colGreen; boxColor = colHUD;
             categoria = "[ CONTROL ] - SYSTEMS NORMAL";
@@ -288,8 +288,8 @@ void MonitorDisplay::Draw(const PlaneData& data) {
             DrawRectangleLines(px3 + 20, msgY, pW - 40, 40, Fade(colHUD, 0.3f));
         }
 
-        // Centratura Testo Pulita eliminando i prefissi "DANGER: " o "WARNING: " se presenti
-        // Uso currentStatus (già sovrascritto se necessario) invece di pescare di nuovo da data.status_msg
+        // Parsing per rimozione header prefissi (es. "DANGER: ")
+        // Rendering testo a spaziatura limitata
         std::string displayMsg = currentStatus;
         size_t colonPos = displayMsg.find(": ");
         if(colonPos != std::string::npos) displayMsg = displayMsg.substr(colonPos + 2);
@@ -297,7 +297,7 @@ void MonitorDisplay::Draw(const PlaneData& data) {
         int txtW = MeasureText(displayMsg.c_str(), 16);
         DrawText(displayMsg.c_str(), px3 + 20 + ((pW-40)/2) - (txtW/2), msgY + 12, 16, statusColor);
 
-        // Vignettatura fissa
+        // Maschera lente e scanlines per effetto CRT
         DrawCircleGradient(m_width / 2, m_height / 2, m_width * 0.7f, BLANK, Fade(BLACK, 0.6f));
         for(int i = 0; i < m_height; i += 3) DrawLine(0, i, m_width, i, Fade(BLACK, 0.25f));
 
