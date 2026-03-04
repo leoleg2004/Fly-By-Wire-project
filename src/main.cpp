@@ -54,14 +54,14 @@ void flight_computer_task(DataWriter* writer) {
             stats.z(state.z);
             stats.landing_mode(state.landing_mode);
 
-            // ORA PASSA IL VERO STATO AL MONITOR (non più bloccato a true!)
+            // Sincronizzazione stato operativo (attivo/inattivo)
             stats.system_active(active);
             stats.status_msg(current_msg);
 
             writer->write(&stats);
         }
 
-        // Continua sempre a mandare dati (anche se spento), così il monitor lo sa!
+        // Frequenza di aggiornamento telemetria heartbeat
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
     }
 }
@@ -179,13 +179,13 @@ int main() {
         }
 
         if (recovery_bank) {
-                    // L'autopilota entra in azione con forza maggiore (0.08f invece di 0.03f)
+                    // Autopilot authority override per recupero assetto (0.08 rad/s)
                     if (Aereo.roll > 0.05f) {
                         Aereo.roll -= 0.08f;
                     } else if (Aereo.roll < -0.05f) {
                         Aereo.roll += 0.08f;
                     } else {
-                        // Sgancio dell'autopilota
+                        // Ripristino comandi e disinserimento recupero
                         Aereo.roll = 0.0f;
                         recovery_bank = false;
                     }
@@ -228,18 +228,18 @@ int main() {
         }
 
         // ==========================================
-        // BLOCCHI E LIMITI DI SICUREZZA FISICI
+        // APPLICAZIONE DEI LIMITI FISICI DI SICUREZZA
         // ==========================================
         if(Aereo.roll > 3.2f)  Aereo.roll = 3.2f;
         if(Aereo.roll < -3.2f) Aereo.roll = -3.2f;
         if(Aereo.pitch > 1.5f) Aereo.pitch = 1.5f;
         if(Aereo.pitch < -1.5f) Aereo.pitch = -1.5f;
 
-        // 1. Limite massimo di velocità a 300 KPH!
+        // Limite strutturale della velocità aria
         if (Aereo.speed > 300.0f) Aereo.speed = 300.0f;
         if (Aereo.speed < 0.0f) Aereo.speed = 0.0f;
 
-        // 2. Se l'aereo è a terra ed è SPENTO, velocità forzata a 0
+        // Limite inferiore: speed pari a 0 al suolo e a motori inattivi
         if (!Aereo.system_active && Aereo.altitude <= 0.1f) {
             Aereo.speed = 0.0f;
         }
@@ -249,12 +249,12 @@ int main() {
         display.Draw(Aereo);
     }
 
-    // Chiusura sicura
+    // Arresto sicuro dei sottosistemi
     {
         std::lock_guard<std::mutex> lock(Aereo_mutex);
         Aereo.system_active = false;
     }
 
-    exit(0); // Forza l'uscita rapida senza bloccare i thread
+    exit(0); // Terminazione forzata dei processi secondari
     return 0;
 }
