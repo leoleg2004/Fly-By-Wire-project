@@ -39,6 +39,17 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string& title) {
 
     modelF35 = LoadModel("f35.glb");
     modelAnims = LoadModelAnimations("f35.glb", &animsCount);
+    modelF35 = LoadModel("f35.glb");
+        modelAnims = LoadModelAnimations("f35.glb", &animsCount);
+
+
+        // Fix per i materiali .glb corrotti o salvati con opacità zero
+        for (int i = 0; i < modelF35.materialCount; i++) {
+            if (modelF35.materials[i].maps[MATERIAL_MAP_ALBEDO].color.a == 0) {
+                modelF35.materials[i].maps[MATERIAL_MAP_ALBEDO].color.a = 255;
+            }
+        }
+
     gearFrame = 0.0f;
     gearOpen = true;
     modelF35.transform = MatrixIdentity();
@@ -498,8 +509,38 @@ void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
     rlDisableBackfaceCulling();
 
     rlPushMatrix();
-        rlTranslatef(0.0f, 5.0f, 0.0f);
-        DrawModel(modelF35, (Vector3){0, 0, 0}, modelScaleAereo, WHITE);
+            rlTranslatef(0.0f, 5.0f, 0.0f);
+
+            // =========================================================================
+            // INIZIO DISEGNO AEREO (ISOLATO)
+            // =========================================================================
+            rlPushMatrix(); // <--- TRUCCO: Questo isola la scala dell'aereo dal fuoco
+                // Applichiamo la scala manualmente per il DrawMesh
+                rlScalef(modelScaleAereo, modelScaleAereo, modelScaleAereo);
+
+                // PASSAGGIO 1: Disegna la Fusoliera, il Pilota e i Monitor (Tutto ciò che è OPaco)
+                for (int i = 0; i < modelF35.meshCount; i++) {
+                    Material mat = modelF35.materials[modelF35.meshMaterial[i]];
+                    // Se il pezzo è solido (opacità quasi al massimo)
+                    if (mat.maps[MATERIAL_MAP_ALBEDO].color.a > 100) {
+                        DrawMesh(modelF35.meshes[i], mat, modelF35.transform);
+                    }
+                }
+
+                // PASSAGGIO 2: Disegna i Vetri (Tutto ciò che è Trasparente)
+                rlDisableDepthMask(); // Diciamo alla GPU che i vetri NON devono cancellare l'interno!
+                for (int i = 0; i < modelF35.meshCount; i++) {
+                    Material mat = modelF35.materials[modelF35.meshMaterial[i]];
+                    // Se il pezzo è semi-trasparente (come il canopy del vetro)
+                    if (mat.maps[MATERIAL_MAP_ALBEDO].color.a <= 100) {
+                        DrawMesh(modelF35.meshes[i], mat, modelF35.transform);
+                    }
+                }
+                rlEnableDepthMask(); // Riattiviamo la profondità
+            rlPopMatrix(); // <--- FINE TRUCCO: Togliamo la scala microscopica. Da qui in poi torna tutto grande!
+            // =========================================================================
+            // FINE DISEGNO AEREO
+            // =========================================================================
 
     // =========================================================================
     // MOTORE VOLUMETRICO AD ALTA FEDELTÀ (GRADIENTI E SHOCK DIAMONDS)
