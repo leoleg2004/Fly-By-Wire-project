@@ -670,7 +670,8 @@ void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
             float flameLength = 9.0f * modelScaleFuoco * thrust * (0.95f + 0.05f * std::sin(timePulse));
             float baseRadius = 0.5f * modelScaleFuoco * (0.8f + 0.3f * thrust);
 
-            int slices = 35; // Numero di "fette" volumetriche per il gradiente
+            // OTTIMIZZATO: Ridotto a 15 per evitare lag o blocchi del sistema operativo
+            int slices = 15;
             float stepZ = flameLength / slices;
 
             // Funzione lambda per calcolare i colori fluidamente (Interpolazione Lineare)
@@ -756,7 +757,6 @@ void FlightDisplay::DrawUltimateF35(const PlaneData& data) {
     rlPopMatrix();
     rlEnableBackfaceCulling();
 }
-
 void FlightDisplay::DrawHUD(const PlaneData& data) {
     int sw = GetScreenWidth();
     int sh = GetScreenHeight();
