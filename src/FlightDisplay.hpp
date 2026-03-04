@@ -4,19 +4,19 @@
 #include <string>
 #include <vector>
 
-// Struttura Dati Aereo con cui passo alla grafic ai dati
+// Struttura dati per il trasferimento della telemetria al motore grafico
 struct PlaneData {
     float roll = 0.0f;
     float pitch = 0.0f;
     float yaw = 0.0f;
     float altitude = 5000.0f;
-   //movimento nello spazio nelle tre dimensioni
+   // Coordinate spaziali
     float x = 0.0f;
     float z = 0.0f;
 float speed=0.0f;
-char status_msg[64];//aggiunto per gestire nel monitor i messaggi di condizione di volo
+char status_msg[64];// Buffer messaggi strumentali
     bool system_active = false;
-    bool landing_mode = true;//per diabilitare il fly-by-wire
+    bool landing_mode = true;// Disabilita i controlli FCS
 };
 
 
@@ -26,16 +26,16 @@ private:
 
 	    ModelAnimation *modelAnims;
 	    int animsCount=0;
-	    float gearFrame=0.0f;    // DEVE essere float
+	    float gearFrame=0.0f;    // Stato animazione carrello
 	    bool gearOpen=false;
-//devo implementare su blender
-    // Variabili per i FLAP/ALETTONI
+// TODO: Implementazione superfici in modello sorgente
+    // Variabili d'assetto superfici (Flap/Alettoni)
     int flapFrame = 0;
     bool flapOpen = false;
 
 public:
     FlightDisplay(int width, int height, const std::string& title);
-    ~FlightDisplay(); // Distruttore (Importante per scaricare il modello)
+    ~FlightDisplay(); // Distruttore per il clean-up dei modelli caricati
 
     bool IsActive();
     void HandleInput(PlaneData& data);
@@ -46,13 +46,13 @@ private:
     Vector3 cameraPositionLag;
     Model skyModel;
         bool skyLoaded;
-    Model mapModel;       // Il modello del terreno
-        bool mapLoaded;       // controlla che ci sia una mappa caricata
+    Model mapModel;       // Modello del suolo
+        bool mapLoaded;       // Flag di caricamento terreno
        // Model terrainModel;
         //    bool terrainLoaded;
-    Model modelF35;//carico modello dell'aereo
+    Model modelF35;// Modello 3D principale
     Texture2D textureF35;
-    bool modelLoaded;     //condizione che ci sia un modello per l'aereo
+    bool modelLoaded;     // Flag validità mesh
     // --- SISTEMA AUDIO ---
     Sound sndEngineStart;
     Sound sndEngineLoop;
@@ -65,10 +65,10 @@ private:
     Sound sndAir;
     Sound sndEngineDown;
 
-    // Funzioni interne al flightDisplay.cpp
+    // Metodi privati di rendering e aggiornamento
     void UpdateChaseCamera(const PlaneData& data);
         void DrawUltimateF35(const PlaneData& data);
-        void DrawMapWorld(const PlaneData& data); // gli pass plane data perche deve sapere dove si trova
+        void DrawMapWorld(const PlaneData& data); // Richiede offset posizionale
         void DrawHUD(const PlaneData& data);
         void UpdateAnimations();
         void DrawSky(Vector3 cameraPosition);
