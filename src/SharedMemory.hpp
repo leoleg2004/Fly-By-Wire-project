@@ -1,4 +1,4 @@
-//classe usata per fare comunicare i thread all'intero del main(thread pilota (A) e thread monitor(B)
+// Bus di memoria condivisa per comunicazione inter-thread (Pilota/Monitor)
 #ifndef SHARED_MEMORY_HPP
 #define SHARED_MEMORY_HPP
 
@@ -15,9 +15,9 @@ struct FlightControls {
     float altitude;     // altitudine
     float x;        // Posizione sulla mappa Est/Ovest
         float z;
-        float speed;//acceleratore da ggiungere al monitor
-    std::chrono::steady_clock::time_point timestamp; // Per calcolare la latenza interna
-    bool autopilot_engaged; // Dice al computer se siamo in "Recovery Mode"
+    float speed;// Spinta propulsiva (Throttle)
+    std::chrono::steady_clock::time_point timestamp; // Timestamp metriche di latenza
+    bool autopilot_engaged; // Stato sistema di volo autonomo (Recovery)
     bool recovery_bank;
     bool landing_mode;
 };
@@ -29,7 +29,7 @@ class SharedMemoryBus {
     bool new_data_available = false;
 
 public:
-    // Funzione di scrittura aggiornata con 7 parametri tutti messi nella struct FlightControls
+    // Scrittura atomica dei dati telemetrici nella struttura FlightControls
     void write(long id, float roll, float pitch, float yaw, float alt, bool auto_on,float speed,float x,float z,bool recovery_bank,bool landing_mode) {
         std::unique_lock<std::mutex> lock(mtx);
         
@@ -37,9 +37,9 @@ public:
         data.aileron = roll;
         data.elevator = pitch;
         data.rudder = yaw;
-        data.altitude = alt;            // Salviamo l'altitudine
-        data.autopilot_engaged = auto_on; // Salviamo lo stato dell'autopilota
-        data.recovery_bank= recovery_bank;//controlliamo lo stato di roll
+        data.altitude = alt;            // Quota
+        data.autopilot_engaged = auto_on; // Flag autopilota
+        data.recovery_bank= recovery_bank;// Flag correzione assetto
         data.x=x;
         data.z=z;
         data.speed=speed;
@@ -47,13 +47,13 @@ public:
         data.timestamp = std::chrono::steady_clock::now();
         
         new_data_available = true;
-        cv.notify_one(); // Sveglia il thread del Computer di Volo
+        cv.notify_one(); // Segnale di nuovi dati disponibili
     }
 
-    // Funzione di lettura copia tutta la struct usata
+    // Lettura bloccante con timeout dei dati di volo
     bool read_with_timeout(FlightControls& final_data, int timeout_ms) {
         std::unique_lock<std::mutex> lock(mtx);
-        // Aspetta finché non ci sono dati o scade il tempo
+        // Attesa condizionale sui nuovi dati
         if(cv.wait_for(lock, std::chrono::milliseconds(timeout_ms), [this]{
         	return new_data_available;
         })) {
