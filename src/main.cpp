@@ -161,6 +161,15 @@ int main() {
 
   while (display.IsActive()) {
     float dt = GetFrameTime();
+
+    // FIX MICRO-STUTTER: Fissa esattamente dt a 1/60s se le fluttuazioni sono
+    // minime.
+    if (std::abs(dt - (1.0f / 60.0f)) < 0.005f) {
+      dt = 1.0f / 60.0f;
+    } else if (dt > 0.1f) {
+      dt = 0.1f;
+    }
+
     debug_elapsed += dt;
     debug_frame_count++;
 
