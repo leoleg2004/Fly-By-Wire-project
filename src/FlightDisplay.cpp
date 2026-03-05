@@ -476,8 +476,9 @@ void FlightDisplay::DrawMapWorld(const PlaneData &data) {
   // 4. GENERAZIONE TERRENO CITTADINO
   float groundY = -400.0f;
 
-  float tileSize = 10000.0f;
-  int viewDist = 12;
+  // Ottimizzazione del terreno per liberare CPU e mantenere alti i frame
+  float tileSize = 20000.0f;
+  int viewDist = 6;
   float snapX = std::floor(camera.position.x / tileSize);
   float snapZ = std::floor(camera.position.z / tileSize);
 
@@ -487,7 +488,7 @@ void FlightDisplay::DrawMapWorld(const PlaneData &data) {
       float worldZ = (snapZ + j) * tileSize;
 
       // BUCO PER L'AEROPORTO
-      if (std::abs(worldX) < 6000.0f && std::abs(worldZ) < 8000.0f)
+      if (std::abs(worldX) < 15000.0f && std::abs(worldZ) < 15000.0f)
         continue;
 
       float noise = std::sin(worldX * 0.0001f) * std::cos(worldZ * 0.0001f);
@@ -730,8 +731,8 @@ void FlightDisplay::DrawUltimateF35(const PlaneData &data) {
         9.0f * modelScaleFuoco * thrust * (0.95f + 0.05f * std::sin(timePulse));
     float baseRadius = 0.5f * modelScaleFuoco * (0.8f + 0.3f * thrust);
 
-    // OTTIMIZZATO: Ridotto a 15 per evitare lag o blocchi del sistema operativo
-    int slices = 15;
+    // Ottimizzato per salvare risorse
+    int slices = 10;
     float stepZ = flameLength / slices;
 
     // Funzione lambda per calcolare i colori fluidamente (Interpolazione
