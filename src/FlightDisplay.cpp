@@ -978,8 +978,6 @@ void FlightDisplay::Draw(const PlaneData &data) {
 
   BeginMode3D(camera);
 
-  // === ECCO IL PROBLEMA: ERA COMMENTATA! ===
-  // Ho rimosso le "//", ora il tuo cielo verrà finalmente disegnato!
   DrawSky(camera.position);
 
   DrawMapWorld(data);
