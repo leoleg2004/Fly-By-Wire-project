@@ -1,263 +1,285 @@
-/* g++ rt_scheduler.cpp -o rt_scheduler -pthread && g++ DueThreadCoreDiversi.cpp -o
- DueThreadCoreDiversi -pthread && g++ EDFCoreUguali.cpp -o rt_edf_test -pthread
+/* g++ rt_scheduler.cpp -o rt_scheduler -pthread && g++ DueThreadCoreDiversi.cpp
+ -o DueThreadCoreDiversi -pthread && g++ EDFCoreUguali.cpp -o rt_edf_test
+ -pthread
  && g++ EDFCoreDIversi.cpp -o EDFCoreDiversi -pthread
  *
  *
  * comando per aggiornare le modifiche sul codcie da terminale
  */
-//#define _GNU_SOURCE
-#include <unistd.h>
+// #define _GNU_SOURCE
+#include <cmath>
+#include <iomanip>
+#include <iostream>
+#include <linux/kernel.h>
+#include <linux/types.h>
+#include <linux/unistd.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <linux/unistd.h>
-#include <linux/kernel.h>
-#include <linux/types.h>
 #include <sys/syscall.h>
-#include <pthread.h>
-#include <iostream>
+#include <time.h>
+#include <unistd.h>
 #include <vector>
-#include <iomanip>
-#include <cmath>
 
-#define handle_error(en, msg) \
-        if(en != 0) {errno = en; perror(msg); exit(EXIT_FAILURE);}
+#define handle_error(en, msg)                                                  \
+  if (en != 0) {                                                               \
+    errno = en;                                                                \
+    perror(msg);                                                               \
+    exit(EXIT_FAILURE);                                                        \
+  }
 
-#define SCHED_DEADLINE  6
+#define SCHED_DEADLINE 6
 #define TYPE_LOW_RECOVERY 0
 #define TYPE_HIGH_RECOVERY 1
 
 struct sched_attr {
-	__u32 size;
-	__u32 sched_policy;
-	__u64 sched_flags;
-	__s32 sched_nice;
-	__u32 sched_priority;
-	__u64 sched_runtime;
-	__u64 sched_deadline;
-	__u64 sched_period;
+  __u32 size;
+  __u32 sched_policy;
+  __u64 sched_flags;
+  __s32 sched_nice;
+  __u32 sched_priority;
+  __u64 sched_runtime;
+  __u64 sched_deadline;
+  __u64 sched_period;
 };
 
-//devo fare la chiamata da sistema per poter utilizzare edf devo fornire periodo deadlne a cnhe cpu usata
+// devo fare la chiamata da sistema per poter utilizzare edf devo fornire
+// periodo deadlne a cnhe cpu usata
 int sched_setattr(pid_t pid, const struct sched_attr *attr,
-		unsigned int flags) {
-	return syscall(__NR_sched_setattr, pid, attr, flags);
+                  unsigned int flags) {
+  return syscall(__NR_sched_setattr, pid, attr, flags);
 }
 
 typedef struct arg {
-	int id;
-	long period_ms;
-	long deadline_ms;
-	long runtime_ms;
-	int type;
-	int final_jitter_violations;
-	int final_deadline_misses;
+  int id;
+  long period_ms;
+  long deadline_ms;
+  long runtime_ms;
+  int type;
+  int final_jitter_violations;
+  int final_deadline_misses;
 } t_arg;
 
-void* Task(void *ptr);
+void *Task(void *ptr);
 
 void timespec_add_ms(struct timespec *t, long ms) {
-	t->tv_sec += ms / 1000;
-	t->tv_nsec += (ms % 1000) * 1000000;
-	if (t->tv_nsec >= 1000000000) {
-		t->tv_sec++;
-		t->tv_nsec -= 1000000000;
-	}
+  t->tv_sec += ms / 1000;
+  t->tv_nsec += (ms % 1000) * 1000000;
+  if (t->tv_nsec >= 1000000000) {
+    t->tv_sec++;
+    t->tv_nsec -= 1000000000;
+  }
 }
 
 double time_diff_ms(struct timespec start, struct timespec end) {
-	double s = end.tv_sec - start.tv_sec;
-	double ns = end.tv_nsec - start.tv_nsec;
-	return (s * 1000.0) + (ns / 1000000.0);
+  double s = end.tv_sec - start.tv_sec;
+  double ns = end.tv_nsec - start.tv_nsec;
+  return (s * 1000.0) + (ns / 1000000.0);
 }
 
 void burn_cpu(long ms) {
-	struct timespec start, current;
-	clock_gettime(CLOCK_MONOTONIC, &start);
-	do {
-		clock_gettime(CLOCK_MONOTONIC, &current);
-	} while (time_diff_ms(start, current) < ms);
+  struct timespec start, current;
+  clock_gettime(CLOCK_MONOTONIC, &start);
+  do {
+    clock_gettime(CLOCK_MONOTONIC, &current);
+  } while (time_diff_ms(start, current) < ms);
 }
 
 int main(int argc, char *argv[]) {
 
-	if (argc < 5) {
-		std::cerr
-				<< "USO: sudo ./rt_test Period_1 Dead_L1 Period_2 Dead_High2\n";
-		exit(1);
-	}
+  if (argc < 5) {
+    std::cerr << "USO: sudo ./rt_test Period_1 Dead_L1 Period_2 Dead_High2\n";
+    exit(1);
+  }
 
-	int NUM_THREADS = 2;
-	int TARGET_CORE = 0;
+  int NUM_THREADS = 2;
+  int TARGET_CORE = 0;
 
-	std::cout << "--- RT Dual Test | SCHED_DEADLINE (EDF) | Core "
-			<< TARGET_CORE << " ---\n";
+  std::cout << "--- RT Dual Test | SCHED_DEADLINE (EDF) | Core " << TARGET_CORE
+            << " ---\n";
 
-	pthread_attr_t attributes;
-	pthread_attr_init(&attributes);
-	pthread_attr_setdetachstate(&attributes, PTHREAD_CREATE_JOINABLE);
+  pthread_attr_t attributes;
+  pthread_attr_init(&attributes);
+  pthread_attr_setdetachstate(&attributes, PTHREAD_CREATE_JOINABLE);
 
-	t_arg *arg = (t_arg*) malloc(NUM_THREADS * sizeof(t_arg));
-	pthread_t *thread = (pthread_t*) malloc(NUM_THREADS * sizeof(pthread_t));
+  t_arg *arg = (t_arg *)malloc(NUM_THREADS * sizeof(t_arg));
+  pthread_t *thread = (pthread_t *)malloc(NUM_THREADS * sizeof(pthread_t));
 
-	int arg_idx = 1;
+  int arg_idx = 1;
 
-	for (unsigned int i = 0; i < NUM_THREADS; i++) {
-		cpu_set_t cpuset;
-				CPU_ZERO(&cpuset);
-				CPU_SET(i*2, &cpuset);
-				pthread_attr_setaffinity_np(&attributes, sizeof(cpu_set_t), &cpuset);
-		arg[i].id = i + 1;
-		arg[i].period_ms = std::stol(argv[arg_idx++]);
-		arg[i].deadline_ms = std::stol(argv[arg_idx++]);
-		arg[i].type = i % 2;
+  for (unsigned int i = 0; i < NUM_THREADS; i++) {
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(i * 2, &cpuset);
+    pthread_attr_setaffinity_np(&attributes, sizeof(cpu_set_t), &cpuset);
+    arg[i].id = i + 1;
+    arg[i].period_ms = std::stol(argv[arg_idx++]);
+    arg[i].deadline_ms = std::stol(argv[arg_idx++]);
+    arg[i].type = i % 2;
 
-//watch -n 0.01 "ps -T -C EDFCoreDiversi -o pid,tid,psr,comm"
-		//nel primo compare il thread che verrà assegnato a un core il secondo mostra quello usato effettivamente dai thread
+    // watch -n 0.01 "ps -T -C EDFCoreDiversi -o pid,tid,psr,comm"
+    // nel primo compare il thread che verrà assegnato a un core il secondo
+    // mostra quello usato effettivamente dai thread
 
+    // Chiediamo il 100% della deadline come Runtime garantito decido qua quanto
+    // stressare il sistema
+    arg[i].runtime_ms = (long)(arg[i].deadline_ms * 0.8);
+    if (arg[i].runtime_ms < 1)
+      arg[i].runtime_ms = 1;
 
-		// Chiediamo il 100% della deadline come Runtime garantito decido qua quanto stressare il sistema
-		arg[i].runtime_ms = (long) (arg[i].deadline_ms * 0.8);
-		if (arg[i].runtime_ms < 1)
-			arg[i].runtime_ms = 1;
+    int ret =
+        pthread_create(&(thread[i]), &attributes, Task, (void *)&(arg[i]));
+    handle_error(ret, "Thread Creation Failed");
 
-		int ret = pthread_create(&(thread[i]), &attributes, Task,
-				(void*) &(arg[i]));
-		handle_error(ret, "Thread Creation Failed");
+    std::string type_name =
+        (arg[i].type == TYPE_LOW_RECOVERY) ? "LOW_REC" : "HIGH_REC";
+    std::cout << "Thread " << arg[i].id << " [" << type_name
+              << "] -> Req Runtime: " << arg[i].runtime_ms
+              << "ms (Deadline: " << arg[i].deadline_ms << "ms)\n";
+  }
 
-		std::string type_name =
-				(arg[i].type == TYPE_LOW_RECOVERY) ? "LOW_REC" : "HIGH_REC";
-		std::cout << "Thread " << arg[i].id << " [" << type_name
-				<< "] -> Req Runtime: " << arg[i].runtime_ms << "ms (Deadline: "
-				<< arg[i].deadline_ms << "ms)\n";
-	}
+  for (unsigned int i = 0; i < NUM_THREADS; i++) {
+    pthread_join(thread[i], NULL);
+  }
 
-	for (unsigned int i = 0; i < NUM_THREADS; i++) {
-		pthread_join(thread[i], NULL);
-	}
+  std::cout << "\n====================================================\n";
+  std::cout << "              RISULTATI FINALI TEST EDF             \n";
+  std::cout << "====================================================\n";
+  for (unsigned int i = 0; i < NUM_THREADS; i++) {
+    std::string type_name =
+        (arg[i].type == TYPE_LOW_RECOVERY) ? "LOW " : "HIGH";
+    std::cout << "[" << type_name
+              << "] -> Violazioni Jitter (>0.1ms): " << std::setw(2)
+              << arg[i].final_jitter_violations
+              << " | Deadline Missed: " << std::setw(2)
+              << arg[i].final_deadline_misses << "\n";
+  }
+  std::cout << "====================================================\n\n";
 
-	std::cout << "\n====================================================\n";
-	std::cout << "              RISULTATI FINALI TEST EDF             \n";
-	std::cout << "====================================================\n";
-	for (unsigned int i = 0; i < NUM_THREADS; i++) {
-		std::string type_name =
-				(arg[i].type == TYPE_LOW_RECOVERY) ? "LOW " : "HIGH";
-		std::cout << "[" << type_name << "] -> Violazioni Jitter (>0.1ms): "
-				<< std::setw(2) << arg[i].final_jitter_violations
-				<< " | Deadline Missed: " << std::setw(2)
-				<< arg[i].final_deadline_misses << "\n";
-	}
-	std::cout << "====================================================\n\n";
-
-	printf("Test EDF concluso.\n");
-	free(arg);
-	free(thread);
-	pthread_attr_destroy(&attributes);
-	exit(0);
+  printf("Test EDF concluso.\n");
+  free(arg);
+  free(thread);
+  pthread_attr_destroy(&attributes);
+  exit(0);
 }
-
 
 float shared_altitude = 15000.0f;
 bool new_data_available = false;
-void* Task(void *ptr) {
-	t_arg *arg = (t_arg*) ptr;
+void *Task(void *ptr) {
+  t_arg *arg = (t_arg *)ptr;
 
-	struct timespec next_activation, start_work, end_work;
-	std::string type_str = (arg->type == TYPE_LOW_RECOVERY) ? "MANDO" : "AGISCO ";
-	std::string status;
-	int CountViolation = 0, CountDeadLineMiss = 0;
+  struct sched_attr attr;
+  memset(&attr, 0, sizeof(attr));
+  attr.size = sizeof(attr);
+  attr.sched_policy = SCHED_DEADLINE;
+  attr.sched_runtime = arg->runtime_ms * 1000 * 1000;
+  attr.sched_deadline = arg->deadline_ms * 1000 * 1000;
+  attr.sched_period = arg->period_ms * 1000 * 1000;
 
-	double max_jitter = 0.0;
+  if (sched_setattr(0, &attr, 0) != 0) {
+    perror("sched_setattr failed");
+    pthread_exit(NULL);
+  }
 
-	float local_altitude = 15000.0f;
-	bool descending = true;
+  struct timespec next_activation, start_work, end_work;
+  std::string type_str = (arg->type == TYPE_LOW_RECOVERY) ? "MANDO" : "AGISCO ";
+  std::string status;
+  int CountViolation = 0, CountDeadLineMiss = 0;
 
-	int tempo_totale_test_ms = 20000; // 20 secondi
-	int iterazioni_da_fare = tempo_totale_test_ms / arg->period_ms;
+  double max_jitter = 0.0;
 
-	clock_gettime(CLOCK_MONOTONIC, &next_activation);
+  float local_altitude = 15000.0f;
+  bool descending = true;
 
-	for (int i = 0; i < iterazioni_da_fare; i++) {
-		timespec_add_ms(&next_activation, arg->period_ms);
-		clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &next_activation, NULL);
-		clock_gettime(CLOCK_MONOTONIC, &start_work);
+  int tempo_totale_test_ms = 20000; // 20 secondi
+  int iterazioni_da_fare = tempo_totale_test_ms / arg->period_ms;
 
-		double jitter = std::abs(time_diff_ms(next_activation, start_work));
-		if (jitter > max_jitter) max_jitter = jitter;
-		if (jitter > 0.1) CountViolation++;
+  clock_gettime(CLOCK_MONOTONIC, &next_activation);
 
-		if (arg->type == TYPE_LOW_RECOVERY) {
+  for (int i = 0; i < iterazioni_da_fare; i++) {
+    timespec_add_ms(&next_activation, arg->period_ms);
+    clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &next_activation, NULL);
+    clock_gettime(CLOCK_MONOTONIC, &start_work);
 
-			shared_altitude = local_altitude;
-			new_data_available = true;
+    double jitter = std::abs(time_diff_ms(next_activation, start_work));
+    if (jitter > max_jitter)
+      max_jitter = jitter;
+    if (jitter > 0.1)
+      CountViolation++;
 
-			status = "[Dati Inviati]";
-			burn_cpu(2);
+    if (arg->type == TYPE_LOW_RECOVERY) {
 
-			if (descending) {
-				local_altitude -= 200.0f;
-				if (local_altitude <= 1000.0f) {
-					descending = false;
-				}
-			} else {
-				local_altitude += 200.0f;
-				if (local_altitude >= 15000.0f) {
-					descending = true;
-				}
-			}
-		}
+      shared_altitude = local_altitude;
+      new_data_available = true;
 
-		else if (arg->type == TYPE_HIGH_RECOVERY) {
-			bool got_new_data = false;
+      status = "[Dati Inviati]";
+      burn_cpu(2);
 
-			if (new_data_available) {
-				local_altitude = shared_altitude;
-				new_data_available = false;
-				got_new_data = true;
-			}
+      if (descending) {
+        local_altitude -= 200.0f;
+        if (local_altitude <= 1000.0f) {
+          descending = false;
+        }
+      } else {
+        local_altitude += 200.0f;
+        if (local_altitude >= 15000.0f) {
+          descending = true;
+        }
+      }
+    }
 
-			if (got_new_data) {
-				if (local_altitude < 2500.0f) {
-					status = "\033[1;41m[PULL UP ATTIVO]\033[0m";
-					burn_cpu(15);
-				} else if (local_altitude >= 13000.0f) {
-					status = "\033[1;43m[PULL DW ATTIVO]\033[0m";
-					burn_cpu(15);
-				} else {
-					status = "\033[1;36m[CLIMB]  \033[0m";
-					burn_cpu(1);
-				}
-			}  else {
-				status = "\033[1;36m[STABLE]  \033[0m";
-				burn_cpu(1);
-			}
-		}
+    else if (arg->type == TYPE_HIGH_RECOVERY) {
+      bool got_new_data = false;
 
-		clock_gettime(CLOCK_MONOTONIC, &end_work);
-		double response_time = time_diff_ms(start_work, end_work);
+      if (new_data_available) {
+        local_altitude = shared_altitude;
+        new_data_available = false;
+        got_new_data = true;
+      }
 
-		std::cout << "[" << type_str << "] Alt:" << std::setw(5)
-				<< (int) local_altitude << " | " << std::left
-				<< std::setw(20) << status << " | CPU:" << std::fixed
-				<< std::setprecision(2) << response_time << "ms" << " | Jit:"
-				<< std::setprecision(3) << jitter << "ms";
+      if (got_new_data) {
+        if (local_altitude < 2500.0f) {
+          status = "\033[1;41m[PULL UP ATTIVO]\033[0m";
+          burn_cpu(15);
+        } else if (local_altitude >= 13000.0f) {
+          status = "\033[1;43m[PULL DW ATTIVO]\033[0m";
+          burn_cpu(15);
+        } else {
+          status = "\033[1;36m[CLIMB]  \033[0m";
+          burn_cpu(1);
+        }
+      } else {
+        status = "\033[1;36m[STABLE]  \033[0m";
+        burn_cpu(1);
+      }
+    }
 
-		if (response_time <= arg->deadline_ms)
-			std::cout << " | DL: OK\n";
-		else {
-			std::cout << " | \033[1;31mDeadLineMISSED\033[0m\n";
-			CountDeadLineMiss++;
-		}
-	}
+    clock_gettime(CLOCK_MONOTONIC, &end_work);
+    double response_time = time_diff_ms(start_work, end_work);
 
-	arg->final_jitter_violations = CountViolation;
-	arg->final_deadline_misses = CountDeadLineMiss;
+    std::cout << "[" << type_str << "] Alt:" << std::setw(5)
+              << (int)local_altitude << " | " << std::left << std::setw(20)
+              << status << " | CPU:" << std::fixed << std::setprecision(2)
+              << response_time << "ms" << " | Jit:" << std::setprecision(3)
+              << jitter << "ms";
 
-	std::cout << "\n====================================================";
-	std::cout << "\n[" << type_str << "] FINE THREAD -> PICCO MAX JITTER: "
-			  << std::fixed << std::setprecision(3) << max_jitter << " ms\n";
-	std::cout << "====================================================\n\n";
+    if (response_time <= arg->deadline_ms)
+      std::cout << " | DL: OK\n";
+    else {
+      std::cout << " | \033[1;31mDeadLineMISSED\033[0m\n";
+      CountDeadLineMiss++;
+    }
+  }
 
-	pthread_exit(NULL);
+  arg->final_jitter_violations = CountViolation;
+  arg->final_deadline_misses = CountDeadLineMiss;
+
+  std::cout << "\n====================================================";
+  std::cout << "\n[" << type_str
+            << "] FINE THREAD -> PICCO MAX JITTER: " << std::fixed
+            << std::setprecision(3) << max_jitter << " ms\n";
+  std::cout << "====================================================\n\n";
+
+  pthread_exit(NULL);
 }

@@ -161,6 +161,19 @@ bool new_data_available = false;
 void* Task(void *ptr) {
 	t_arg *arg = (t_arg*) ptr;
 
+	struct sched_attr attr;
+	memset(&attr, 0, sizeof(attr));
+	attr.size = sizeof(attr);
+	attr.sched_policy = SCHED_DEADLINE;
+	attr.sched_runtime = arg->runtime_ms * 1000 * 1000;
+	attr.sched_deadline = arg->deadline_ms * 1000 * 1000;
+	attr.sched_period = arg->period_ms * 1000 * 1000;
+
+	if (sched_setattr(0, &attr, 0) != 0) {
+		perror("sched_setattr failed");
+		pthread_exit(NULL);
+	}
+
 	struct timespec next_activation, start_work, end_work;
 	std::string type_str = (arg->type == TYPE_LOW_RECOVERY) ? "MANDO" : "AGISCO ";
 	std::string status;
