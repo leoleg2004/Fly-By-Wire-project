@@ -22,6 +22,12 @@ struct TaskConfig {
   int iterations_to_run;
   long deadline_ms; // optional: used for reporting only
   std::vector<ActivityResult> results;
+
+  // DDS fields
+  bool use_dds{false};
+  bool is_publisher{false};
+  void *dds_writer{nullptr};
+  void *dds_reader{nullptr};
 };
 
 // Run the simplified app09-like workload with two threads

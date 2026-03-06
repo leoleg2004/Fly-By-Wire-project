@@ -1,3 +1,3 @@
-#include "rt_task_library.hpp"
+#include "../rt_task_library.hpp"
 
-int main() { return RunTestDDS("RM", "MULTI", "config.xml"); }
+int main() { return RunTestDDS("RM", "MULTI", "../config.xml"); }

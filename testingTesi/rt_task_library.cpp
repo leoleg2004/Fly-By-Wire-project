@@ -13,6 +13,20 @@
 #include <string.h>
 #include <time.h>
 
+#include <fastdds/dds/domain/DomainParticipant.hpp>
+#include <fastdds/dds/domain/DomainParticipantFactory.hpp>
+#include <fastdds/dds/publisher/DataWriter.hpp>
+#include <fastdds/dds/publisher/Publisher.hpp>
+#include <fastdds/dds/subscriber/DataReader.hpp>
+#include <fastdds/dds/subscriber/SampleInfo.hpp>
+#include <fastdds/dds/subscriber/Subscriber.hpp>
+#include <fastdds/dds/topic/Topic.hpp>
+#include <fastdds/dds/topic/TypeSupport.hpp>
+#include <fastdds/dds/core/ReturnCode.hpp>
+
+#include "TaskData.hpp"
+#include "TaskDataPubSubTypes.hpp"
+
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -52,6 +66,59 @@ static void Activity(int parameter) {
   (void)result;
 }
 
+struct DDSContext {
+  eprosima::fastdds::dds::DomainParticipant *participant{nullptr};
+  eprosima::fastdds::dds::Publisher *publisher{nullptr};
+  eprosima::fastdds::dds::Subscriber *subscriber{nullptr};
+  eprosima::fastdds::dds::Topic *topic{nullptr};
+  eprosima::fastdds::dds::DataWriter *writer{nullptr};
+  eprosima::fastdds::dds::DataReader *reader{nullptr};
+  eprosima::fastdds::dds::TypeSupport type;
+};
+
+static bool InitDDS(DDSContext &ctx, const std::string &participant_name) {
+  using namespace eprosima::fastdds::dds;
+
+  DomainParticipantQos pqos;
+  pqos.name(participant_name.c_str());
+
+  ctx.participant =
+      DomainParticipantFactory::get_instance()->create_participant(1, pqos);
+  if (!ctx.participant) {
+    std::cerr << "DDS: errore creazione participant\n";
+    return false;
+  }
+
+  ctx.type = TypeSupport(new TaskDataPubSubType());
+  ctx.type.register_type(ctx.participant);
+
+  ctx.topic = ctx.participant->create_topic("TaskDataTopic",
+                                            ctx.type.get_type_name(),
+                                            TOPIC_QOS_DEFAULT);
+  if (!ctx.topic) {
+    std::cerr << "DDS: errore creazione topic\n";
+    return false;
+  }
+
+  ctx.publisher = ctx.participant->create_publisher(PUBLISHER_QOS_DEFAULT);
+  ctx.subscriber = ctx.participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+  if (!ctx.publisher || !ctx.subscriber) {
+    std::cerr << "DDS: errore creazione publisher/subscriber\n";
+    return false;
+  }
+
+  ctx.writer = ctx.publisher->create_datawriter(ctx.topic, DATAWRITER_QOS_DEFAULT);
+  ctx.reader = ctx.subscriber->create_datareader(ctx.topic, DATAREADER_QOS_DEFAULT);
+  if (!ctx.writer || !ctx.reader) {
+    std::cerr << "DDS: errore creazione writer/reader\n";
+    return false;
+  }
+
+  std::cout << "DDS pronto: dominio 1, topic TaskDataTopic, participant '"
+            << pqos.name() << "'\n";
+  return true;
+}
+
 // Thread routine -------------------------------------------------------------
 static void *PeriodicTask(void *ptr) {
   TaskConfig *task = static_cast<TaskConfig *>(ptr);
@@ -69,7 +136,43 @@ static void *PeriodicTask(void *ptr) {
     bool skipped_this_job = skip;
 
     if (!skip) {
-      Activity(task->parameter);
+      if (task->use_dds) {
+        using namespace eprosima::fastdds::dds;
+        auto *writer = static_cast<DataWriter *>(task->dds_writer);
+        auto *reader = static_cast<DataReader *>(task->dds_reader);
+
+        static thread_local uint32_t packet_id = 0;
+
+        if (task->is_publisher && writer) {
+          TaskData sample;
+          sample.packet_id = ++packet_id;
+          sample.workload = task->parameter;
+          sample.deadline_missed = false;
+          sample.latency_ms = 0.0f;
+          writer->write(&sample);
+          Activity(task->parameter);
+        } else if (!task->is_publisher && reader) {
+          TaskData sample;
+          SampleInfo info;
+          bool got = false;
+          while (reader->take_next_sample(&sample, &info) ==
+                 eprosima::fastdds::dds::RETCODE_OK) {
+            if (info.valid_data) {
+              got = true;
+            }
+          }
+
+          if (got) {
+            Activity(task->parameter);
+          } else {
+            Activity(std::max(1, task->parameter / 2));
+          }
+        } else {
+          Activity(task->parameter);
+        }
+      } else {
+        Activity(task->parameter);
+      }
     }
 
     uint64_t exec_end_time = time_current_millisecs();
@@ -148,10 +251,12 @@ static void ParseTaskConfigFromXML(const std::string &xml_file, TaskConfig &t1,
 // CSV writer ---------------------------------------------------------------
 static void ExportResultsToCSV(const std::string &filename,
                                const std::string &configuration,
-                               const std::vector<TaskConfig> &tasks) {
+                               const std::vector<TaskConfig> &tasks,
+                               const std::string &config_xml_path) {
   namespace fs = std::filesystem;
 
-  const fs::path csv_dir{"CSVData"};
+  const fs::path base_dir = fs::absolute(fs::path{config_xml_path}).parent_path();
+  const fs::path csv_dir = base_dir / "CSVData";
   std::error_code ec;
   fs::create_directories(csv_dir, ec);
   if (ec) {
@@ -187,7 +292,8 @@ static void ExportResultsToCSV(const std::string &filename,
 // Orchestrator -------------------------------------------------------------
 static int RunTestVariant(const std::string &label, const std::string &policy,
                           const std::string &affinity,
-                          const std::string &config_xml) {
+                          const std::string &config_xml, bool use_dds,
+                          DDSContext *dds_ctx) {
   TaskConfig task1{}, task2{};
 
   try {
@@ -202,6 +308,21 @@ static int RunTestVariant(const std::string &label, const std::string &policy,
       std::max<long>(1, duration_ms / std::max<long>(1, task1.period_ms));
   task2.iterations_to_run =
       std::max<long>(1, duration_ms / std::max<long>(1, task2.period_ms));
+
+  if (use_dds) {
+    if (!dds_ctx || !dds_ctx->writer || !dds_ctx->reader) {
+      std::cerr << "DDS non inizializzato\n";
+      return 1;
+    }
+    task1.use_dds = true;
+    task2.use_dds = true;
+    task1.is_publisher = true;
+    task2.is_publisher = false;
+    task1.dds_writer = dds_ctx->writer;
+    task1.dds_reader = dds_ctx->reader;
+    task2.dds_writer = dds_ctx->writer;
+    task2.dds_reader = dds_ctx->reader;
+  }
 
   pthread_t thread1, thread2;
   pthread_attr_t attr1, attr2;
@@ -242,17 +363,27 @@ static int RunTestVariant(const std::string &label, const std::string &policy,
   std::string csv_name =
       "results_" + label + "_" + policy + "_" + affinity + ".csv";
   std::vector<TaskConfig> tasks = {task1, task2};
-  ExportResultsToCSV(csv_name, label + "_" + policy + "_" + affinity, tasks);
+  ExportResultsToCSV(csv_name, label + "_" + policy + "_" + affinity, tasks,
+                     config_xml);
 
   return 0;
 }
 
 int RunTestMem(const std::string &policy, const std::string &affinity,
                const std::string &config_xml) {
-  return RunTestVariant("mem", policy, affinity, config_xml);
+  return RunTestVariant("mem", policy, affinity, config_xml, false, nullptr);
 }
 
 int RunTestDDS(const std::string &policy, const std::string &affinity,
                const std::string &config_xml) {
-  return RunTestVariant("dds", policy, affinity, config_xml);
+  static DDSContext dds_ctx;
+  static bool dds_ready = false;
+  if (!dds_ready) {
+    std::string participant_name =
+        std::string("RT_Task_Participant_") + policy + "_" + affinity;
+    dds_ready = InitDDS(dds_ctx, participant_name);
+  }
+
+  return RunTestVariant("dds", policy, affinity, config_xml, true,
+                        dds_ready ? &dds_ctx : nullptr);
 }

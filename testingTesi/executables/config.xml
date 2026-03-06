@@ -3,14 +3,14 @@
     <Tasks>
         <Task>
             <Name>Activity_1</Name>
-            <Period_ms>1000</Period_ms>
-            <Deadline_ms>1000</Deadline_ms>
+            <Period_ms>1800</Period_ms>
+            <Deadline_ms>1800</Deadline_ms>
             <Parameter>20</Parameter>
         </Task>
         <Task>
             <Name>Activity_2</Name>
-            <Period_ms>400</Period_ms>
-            <Deadline_ms>400</Deadline_ms>
+            <Period_ms>800</Period_ms>
+            <Deadline_ms>800</Deadline_ms>
             <Parameter>10</Parameter>
         </Task>
     </Tasks>

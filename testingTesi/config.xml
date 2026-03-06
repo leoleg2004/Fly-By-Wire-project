@@ -3,8 +3,8 @@
     <Tasks>
         <Task>
             <Name>Activity_1</Name>
-            <Period_ms>1800</Period_ms>
-            <Deadline_ms>1800</Deadline_ms>
+            <Period_ms>1700</Period_ms>
+            <Deadline_ms>1700</Deadline_ms>
             <Parameter>20</Parameter>
         </Task>
         <Task>
