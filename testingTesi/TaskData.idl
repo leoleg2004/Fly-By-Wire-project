@@ -1,0 +1,6 @@
+struct TaskData {
+    unsigned long packet_id;
+    long workload;
+    boolean deadline_missed;
+    float latency_ms;
+};
