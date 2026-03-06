@@ -3,6 +3,9 @@
 
 #include <string>
 #include <vector>
+#include <sched.h>
+
+#include <cstdint>
 
 // Execution metrics captured for every iteration
 struct ActivityResult {
@@ -28,6 +31,14 @@ struct TaskConfig {
   bool is_publisher{false};
   void *dds_writer{nullptr};
   void *dds_reader{nullptr};
+
+  // Scheduling policy info
+  int sched_policy{SCHED_OTHER};
+  int sched_priority{0};
+  bool use_deadline{false};
+  uint64_t runtime_ns{0};
+  uint64_t deadline_ns{0};
+  uint64_t period_ns{0};
 };
 
 // Run the simplified app09-like workload with two threads

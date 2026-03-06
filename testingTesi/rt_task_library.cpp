@@ -24,6 +24,10 @@
 #include <fastdds/dds/topic/TypeSupport.hpp>
 #include <fastdds/dds/core/ReturnCode.hpp>
 
+#include <linux/sched.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
 #include "TaskData.hpp"
 #include "TaskDataPubSubTypes.hpp"
 
@@ -120,8 +124,52 @@ static bool InitDDS(DDSContext &ctx, const std::string &participant_name) {
 }
 
 // Thread routine -------------------------------------------------------------
+// Attempt to apply RT scheduling inside the thread (needed for SCHED_DEADLINE)
+static void ApplyScheduling(TaskConfig *task) {
+  if (!task)
+    return;
+
+  if (task->sched_policy == SCHED_FIFO || task->sched_policy == SCHED_RR) {
+    struct sched_param sp{};
+    sp.sched_priority = task->sched_priority;
+    int rc = pthread_setschedparam(pthread_self(), task->sched_policy, &sp);
+    if (rc != 0) {
+      perror("pthread_setschedparam");
+    }
+    return;
+  }
+
+#ifdef SCHED_DEADLINE
+  if (task->sched_policy == SCHED_DEADLINE) {
+    struct sched_attr {
+      uint32_t size;
+      uint32_t sched_policy;
+      uint64_t sched_flags;
+      int32_t sched_nice;
+      uint32_t sched_priority;
+      uint64_t sched_runtime;
+      uint64_t sched_deadline;
+      uint64_t sched_period;
+    } attr{};
+
+    attr.size = sizeof(attr);
+    attr.sched_policy = SCHED_DEADLINE;
+    attr.sched_runtime = task->runtime_ns;
+    attr.sched_deadline = task->deadline_ns;
+    attr.sched_period = task->period_ns;
+
+    long ret = syscall(SYS_sched_setattr, 0, &attr, 0);
+    if (ret != 0) {
+      perror("sched_setattr (SCHED_DEADLINE)");
+    }
+  }
+#endif
+}
+
 static void *PeriodicTask(void *ptr) {
   TaskConfig *task = static_cast<TaskConfig *>(ptr);
+
+  ApplyScheduling(task);
 
   struct timespec exec_release_time;
   clock_gettime(CLOCK_MONOTONIC, &exec_release_time);
@@ -309,6 +357,55 @@ static int RunTestVariant(const std::string &label, const std::string &policy,
   task2.iterations_to_run =
       std::max<long>(1, duration_ms / std::max<long>(1, task2.period_ms));
 
+  // Set scheduling policy and priorities
+  int sched_policy = SCHED_OTHER;
+  if (policy == "RM") {
+    sched_policy = SCHED_FIFO;
+    // Rate-monotonic: shorter period => higher priority (scaled from XML periods)
+    long p_min = std::min(task1.period_ms, task2.period_ms);
+    long p_max = std::max(task1.period_ms, task2.period_ms);
+    auto compute_prio = [&](long p) {
+      if (p_max == p_min)
+        return 80; // same period
+      double norm = static_cast<double>(p - p_min) /
+                    static_cast<double>(std::max<long>(1, p_max - p_min));
+      int prio = 90 - static_cast<int>(norm * 20.0); // 90..70 band
+      return std::clamp(prio, 10, 90);
+    };
+    task1.sched_priority = compute_prio(task1.period_ms); // @suppress("Field cannot be resolved")
+    task2.sched_priority = compute_prio(task2.period_ms);
+  } else if (policy == "EDF") {
+    // Use SCHED_DEADLINE if available; otherwise fallback to SCHED_FIFO equal priorities
+#ifdef SCHED_DEADLINE
+    sched_policy = SCHED_DEADLINE;
+    auto to_ns = [](long ms) {
+      return static_cast<uint64_t>(ms) * 1000000ULL;
+    };
+    task1.use_deadline = true;
+    task2.use_deadline = true;
+    task1.runtime_ns = to_ns(std::max<long>(1, task1.period_ms / 2));
+    task2.runtime_ns = to_ns(std::max<long>(1, task2.period_ms / 2));
+    task1.deadline_ns = to_ns(task1.deadline_ms);
+    task2.deadline_ns = to_ns(task2.deadline_ms);
+    task1.period_ns = to_ns(task1.period_ms);
+    task2.period_ns = to_ns(task2.period_ms);
+#else
+    sched_policy = SCHED_FIFO;
+    task1.sched_priority = 60;
+    task2.sched_priority = 60;
+#endif
+  }
+  // If no privileges, fall back to SCHED_OTHER for RT policies
+  if (geteuid() != 0 && (sched_policy == SCHED_FIFO || sched_policy == SCHED_DEADLINE || sched_policy == SCHED_RR)) {
+    sched_policy = SCHED_OTHER;
+    task1.sched_priority = 0;
+    task2.sched_priority = 0;
+    task1.use_deadline = false;
+    task2.use_deadline = false;
+  }
+  task1.sched_policy = sched_policy;
+  task2.sched_policy = sched_policy;
+
   if (use_dds) {
     if (!dds_ctx || !dds_ctx->writer || !dds_ctx->reader) {
       std::cerr << "DDS non inizializzato\n";
@@ -331,6 +428,53 @@ static int RunTestVariant(const std::string &label, const std::string &policy,
   pthread_attr_setdetachstate(&attr1, PTHREAD_CREATE_JOINABLE);
   pthread_attr_setdetachstate(&attr2, PTHREAD_CREATE_JOINABLE);
 
+  // Apply scheduling policy/priority via pthread attributes only for FIFO/RR
+  bool can_set_rt = (geteuid() == 0);
+
+  if ((sched_policy == SCHED_FIFO || sched_policy == SCHED_RR) && can_set_rt) {
+    int rc;
+    bool rt_attr_ok = true;
+    rc = pthread_attr_setinheritsched(&attr1, PTHREAD_EXPLICIT_SCHED);
+    if (rc != 0) {
+      perror("pthread_attr_setinheritsched attr1");
+      rt_attr_ok = false;
+    }
+    rc = pthread_attr_setschedpolicy(&attr1, sched_policy);
+    if (rc != 0) {
+      perror("pthread_attr_setschedpolicy attr1");
+      rt_attr_ok = false;
+    }
+    rc = pthread_attr_setinheritsched(&attr2, PTHREAD_EXPLICIT_SCHED);
+    if (rc != 0) {
+      perror("pthread_attr_setinheritsched attr2");
+      rt_attr_ok = false;
+    }
+    rc = pthread_attr_setschedpolicy(&attr2, sched_policy);
+    if (rc != 0) {
+      perror("pthread_attr_setschedpolicy attr2");
+      rt_attr_ok = false;
+    }
+
+    if (rt_attr_ok) {
+      struct sched_param sp1{};
+      sp1.sched_priority = task1.sched_priority;
+      rc = pthread_attr_setschedparam(&attr1, &sp1);
+      if (rc != 0)
+        perror("pthread_attr_setschedparam attr1");
+      struct sched_param sp2{};
+      sp2.sched_priority = task2.sched_priority;
+      rc = pthread_attr_setschedparam(&attr2, &sp2);
+      if (rc != 0)
+        perror("pthread_attr_setschedparam attr2");
+    } else {
+      // Fallback to default scheduling
+      pthread_attr_setinheritsched(&attr1, PTHREAD_INHERIT_SCHED);
+      pthread_attr_setinheritsched(&attr2, PTHREAD_INHERIT_SCHED);
+      task1.sched_policy = SCHED_OTHER;
+      task2.sched_policy = SCHED_OTHER;
+    }
+  }
+
   if (affinity == "SINGLE") {
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
@@ -343,7 +487,7 @@ static int RunTestVariant(const std::string &label, const std::string &policy,
     CPU_ZERO(&cpuset1);
     CPU_ZERO(&cpuset2);
     CPU_SET(0, &cpuset1);
-    CPU_SET(2, &cpuset2);
+    CPU_SET(1, &cpuset2);
     pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t), &cpuset1);
     pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t), &cpuset2);
   }
