@@ -35,7 +35,7 @@ typedef struct arg {
 
 void* Task(void *ptr);
 
-// Helper Time Functions
+// Helper Time Functions timespec struct per la gestione del tempo in nanosecondi di posix
 void timespec_add_ms(struct timespec *t, long ms) {
 	t->tv_sec += ms / 1000;
 	t->tv_nsec += (ms % 1000) * 1000000;

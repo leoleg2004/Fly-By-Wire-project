@@ -140,7 +140,7 @@ int main(int argc, char *argv[]) {
   int arg_idx = 1;
 
   for (unsigned int i = 0; i < NUM_THREADS; i++) {
-
+//da commentare nella documentazione
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
     CPU_SET(i * 2, &cpuset);
