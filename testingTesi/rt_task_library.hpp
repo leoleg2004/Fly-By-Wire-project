@@ -21,7 +21,7 @@ struct ActivityResult {
 struct TaskConfig {
   std::string name;
   long period_ms;
-  int parameter;
+  int job;
   int iterations_to_run;
   long deadline_ms; // optional: used for reporting only
   std::vector<ActivityResult> results;

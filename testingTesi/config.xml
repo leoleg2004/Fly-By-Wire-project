@@ -5,13 +5,13 @@
             <Name>Activity_1</Name>
             <Period_ms>1700</Period_ms>
             <Deadline_ms>1700</Deadline_ms>
-            <Parameter>20</Parameter>
+            <Job>20</Job>
         </Task>
         <Task>
             <Name>Activity_2</Name>
             <Period_ms>800</Period_ms>
             <Deadline_ms>800</Deadline_ms>
-            <Parameter>10</Parameter>
+            <Job>10</Job>
         </Task>
     </Tasks>
 </AppConfig>

@@ -194,11 +194,11 @@ static void *PeriodicTask(void *ptr) {
         if (task->is_publisher && writer) {
           TaskData sample;
           sample.packet_id = ++packet_id;
-          sample.workload = task->parameter;
+          sample.workload = task->job;
           sample.deadline_missed = false;
           sample.latency_ms = 0.0f;
           writer->write(&sample);
-          Activity(task->parameter);
+          Activity(task->job);
         } else if (!task->is_publisher && reader) {
           TaskData sample;
           SampleInfo info;
@@ -211,15 +211,15 @@ static void *PeriodicTask(void *ptr) {
           }
 
           if (got) {
-            Activity(task->parameter);
+            Activity(task->job);
           } else {
-            Activity(std::max(1, task->parameter / 2));
+            Activity(std::max(1, task->job / 2));
           }
         } else {
-          Activity(task->parameter);
+          Activity(task->job);
         }
       } else {
-        Activity(task->parameter);
+        Activity(task->job);
       }
     }
 
@@ -283,7 +283,8 @@ static void ParseTaskConfigFromXML(const std::string &xml_file, TaskConfig &t1,
     target->name = kv.second.get<std::string>("Name", idx == 0 ? "Activity_1"
                                                                 : "Activity_2");
     target->period_ms = kv.second.get<long>("Period_ms");
-    target->parameter = kv.second.get<int>("Parameter", 10);
+    target->job = kv.second.get<int>("Job",
+                                     kv.second.get<int>("Parameter", 10));
     target->deadline_ms = kv.second.get<long>("Deadline_ms", target->period_ms);
 
     idx++;
@@ -320,16 +321,16 @@ static void ExportResultsToCSV(const std::string &filename,
     return;
   }
 
-  csv_file << "Configuration,Task,Period(ms),Parameter,Deadline(ms),Iteration,";
+  csv_file << "Configuration,Task,Period(ms),JOB,Deadline(ms),Iteration,";
   csv_file << "StartTime(ms),EndTime(ms),Cost(ms),MissedDeadline,Skipped\n";
 
   for (const auto &t : tasks) {
     for (const auto &res : t.results) {
       csv_file << configuration << ',' << t.name << ',' << t.period_ms << ','
-               << t.parameter << ',' << t.deadline_ms << ',' << res.iteration
-               << ',' << res.start_time_ms << ',' << res.end_time_ms << ','
-               << res.cost_ms << ',' << (res.missed_deadline ? 1 : 0) << ','
-               << (res.skipped ? 1 : 0) << "\n";
+               << t.job << ',' << t.deadline_ms << ',' << res.iteration
+                << ',' << res.start_time_ms << ',' << res.end_time_ms << ','
+                << res.cost_ms << ',' << (res.missed_deadline ? 1 : 0) << ','
+                << (res.skipped ? 1 : 0) << "\n";
     }
   }
 
