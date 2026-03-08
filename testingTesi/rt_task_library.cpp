@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <errno.h>
 #include <filesystem>
 #include <fstream>
@@ -59,6 +60,29 @@ static uint64_t time_current_millisecs() {
   struct timespec t;
   clock_gettime(CLOCK_MONOTONIC, &t);
   return time_to_ms(t);
+}
+//serve per dare permessi user alle cartelle dei CSV
+static void SetOwnerToCallingUser(const std::filesystem::path &path) {
+  if (geteuid() != 0) {
+    return;
+  }
+
+  const char *sudo_uid = std::getenv("SUDO_UID");
+  const char *sudo_gid = std::getenv("SUDO_GID");
+  if (!sudo_uid || !sudo_gid) {
+    return;
+  }
+
+  uid_t uid = static_cast<uid_t>(std::strtoul(sudo_uid, nullptr, 10));
+  gid_t gid = static_cast<gid_t>(std::strtoul(sudo_gid, nullptr, 10));
+
+  if (uid == 0 || gid == 0) {
+    return;
+  }
+
+  if (chown(path.c_str(), uid, gid) != 0) {
+    perror("chown");
+  }
 }
 
 // Pure CPU workload copied from app09
@@ -301,17 +325,33 @@ static void ParseTaskConfigFromXML(const std::string &xml_file, TaskConfig &t1,
 static void ExportResultsToCSV(const std::string &filename,
                                const std::string &configuration,
                                const std::vector<TaskConfig> &tasks,
-                               const std::string &config_xml_path) {
+                               const std::string &config_xml_path,
+                               bool use_dds) {
   namespace fs = std::filesystem;
-
+//ho tolto le priorità root alla creazione della cartella dava problemi con la creazione dei grafici
   const fs::path base_dir = fs::absolute(fs::path{config_xml_path}).parent_path();
-  const fs::path csv_dir = base_dir / "CSVData";
+  const std::string csv_folder = use_dds ? "CSVDataDDS" : "CSVDatamem";
+
+  fs::path csv_dir;
+  if (base_dir.filename() == "executables") {
+    csv_dir = base_dir / csv_folder;
+  } else {
+    const fs::path executables_dir = base_dir / "executables";
+    if (fs::exists(executables_dir) && fs::is_directory(executables_dir)) {
+      csv_dir = executables_dir / csv_folder;
+    } else {
+      csv_dir = base_dir / csv_folder;
+    }
+  }
   std::error_code ec;
   fs::create_directories(csv_dir, ec);
   if (ec) {
-    std::cerr << "Errore creazione cartella CSVData: " << ec.message() << "\n";
+    std::cerr << "Errore creazione cartella " << csv_dir << ": "
+              << ec.message() << "\n";
     return;
   }
+
+  SetOwnerToCallingUser(csv_dir);
 
   const fs::path target = csv_dir / filename;
 
@@ -327,14 +367,15 @@ static void ExportResultsToCSV(const std::string &filename,
   for (const auto &t : tasks) {
     for (const auto &res : t.results) {
       csv_file << configuration << ',' << t.name << ',' << t.period_ms << ','
-               << t.job << ',' << t.deadline_ms << ',' << res.iteration
-                << ',' << res.start_time_ms << ',' << res.end_time_ms << ','
-                << res.cost_ms << ',' << (res.missed_deadline ? 1 : 0) << ','
-                << (res.skipped ? 1 : 0) << "\n";
+               << t.job << ',' << t.deadline_ms << ',' << res.iteration << ','
+               << res.start_time_ms << ',' << res.end_time_ms << ','
+               << res.cost_ms << ',' << (res.missed_deadline ? 1 : 0) << ','
+               << (res.skipped ? 1 : 0) << "\n";
     }
   }
 
   csv_file.close();
+  SetOwnerToCallingUser(target);
   std::cout << "Dati esportati in: " << target.string() << "\n";
 }
 
@@ -509,7 +550,7 @@ static int RunTestVariant(const std::string &label, const std::string &policy,
       "results_" + label + "_" + policy + "_" + affinity + ".csv";
   std::vector<TaskConfig> tasks = {task1, task2};
   ExportResultsToCSV(csv_name, label + "_" + policy + "_" + affinity, tasks,
-                     config_xml);
+                     config_xml, use_dds);
 
   return 0;
 }
