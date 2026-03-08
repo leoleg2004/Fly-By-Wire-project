@@ -35,11 +35,17 @@ target_link_libraries(rt_task_library PUBLIC
     Threads::Threads
 )
 
+
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/executables)
 file(MAKE_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/config.xml DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-configure_file(config.xml ${CMAKE_BINARY_DIR}/config.xml COPYONLY)
 
+
+file(COPY 
+    ${CMAKE_CURRENT_SOURCE_DIR}/executables/config.xml 
+    ${CMAKE_CURRENT_SOURCE_DIR}/executables/configDDS.xml 
+    DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+)
 set(APP_LIST
     mem_edf_single
     mem_edf_multi
