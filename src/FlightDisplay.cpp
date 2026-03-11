@@ -33,12 +33,26 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string &title) {
   isEngineStarting = false;
   SetTargetFPS(60);
 
-  skyModel = LoadModel("sky.glb");
-  if (skyModel.meshCount > 0)
+  skyTexture = LoadTexture(
+      "sky_pano_-_monument_valley_lookout(1)/textures/lambert1_emissive.png");
+  if (skyTexture.id > 0) {
     skyLoaded = true;
-  else {
+    Mesh sphere = GenMeshSphere(90000.0f, 64, 64);
+    // Le texture equirettangolari caricate come Environment map spesso sono
+    // capovolte in Raylib
+    for (int i = 0; i < sphere.vertexCount; i++) {
+      sphere.texcoords[i * 2 + 1] = 1.0f - sphere.texcoords[i * 2 + 1];
+    }
+    // UpdateMeshBuffer non è strettamente necessario prima che
+    // LoadModelFromMesh carichi i dati sul VRAM, dato che LoadModelFromMesh
+    // chiama UploadMesh interamente
+    skyModel = LoadModelFromMesh(sphere);
+    skyModel.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = skyTexture;
+    skyModel.materials[0].maps[MATERIAL_MAP_ALBEDO].color = WHITE;
+  } else {
     skyLoaded = false;
-    TraceLog(LOG_WARNING, "ATTENZIONE: Impossibile caricare sky.glb");
+    TraceLog(LOG_WARNING,
+             "ATTENZIONE: Impossibile caricare lambert1_emissive.png");
   }
 
   modelF35 = LoadModel("f35.glb");
@@ -89,8 +103,10 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string &title) {
 FlightDisplay::~FlightDisplay() {
   if (mapLoaded)
     UnloadModel(mapModel);
-  if (skyLoaded)
+  if (skyLoaded) {
     UnloadModel(skyModel);
+    UnloadTexture(skyTexture);
+  }
   if (modelLoaded) {
     if (modelAnims)
       UnloadModelAnimations(modelAnims, animsCount);
@@ -464,14 +480,19 @@ void FlightDisplay::DrawMapWorld(const PlaneData &data) {
   rlEnableBackfaceCulling();
 
   // 1. CLIP PLANES
-  rlSetClipPlanes(2.0f, 300000.0f);
+  // Alziamo il Near Plane in modo estremo (150.0) e chiudiamo la Far a 150k.
+  // Rapporto Near/Far 1:1000 -> Precisione matematica Z-Buffer assoluta per la
+  // mesh del modello.
+  rlSetClipPlanes(150.0f, 150000.0f);
 
   float asphaltOffset = -8.5f;
   Vector3 runwayPosition = {0.0f, asphaltOffset, 0.0f};
 
-  // 3. PIANO DI BASE INFERIORE
-  DrawPlane((Vector3){camera.position.x, -50.0f, camera.position.z},
-            (Vector2){1000000.0f, 1000000.0f}, (Color){10, 15, 10, 255});
+  // 3. PIANO DI BASE INFERIORE (Deserto - Sabbia scura)
+  // Lo abbassiamo leggermente sotto l'aeroporto ed usiamo un colore terra
+  DrawPlane(
+      (Vector3){camera.position.x, asphaltOffset - 0.5f, camera.position.z},
+      (Vector2){1000000.0f, 1000000.0f}, (Color){150, 95, 65, 255});
 
   // 4. GENERAZIONE TERRENO CITTADINO
   float groundY = -400.0f;
@@ -492,8 +513,8 @@ void FlightDisplay::DrawMapWorld(const PlaneData &data) {
         continue;
 
       float noise = std::sin(worldX * 0.0001f) * std::cos(worldZ * 0.0001f);
-      Color fieldColor =
-          (noise > 0.0f) ? (Color){30, 45, 20, 255} : (Color){35, 50, 25, 255};
+      Color fieldColor = (noise > 0.0f) ? (Color){160, 100, 70, 255}
+                                        : (Color){140, 85, 55, 255};
 
       DrawCubeV((Vector3){worldX, groundY - 0.5f, worldZ},
                 (Vector3){tileSize * 0.98f, 1.0f, tileSize * 0.98f},
@@ -506,7 +527,9 @@ void FlightDisplay::DrawMapWorld(const PlaneData &data) {
 
   // 5. RENDERING MESH AEROPORTO
   rlPushMatrix();
-  DrawModel(mapModel, runwayPosition, 7.0f, WHITE);
+  // Diamo all'aeroporto una tinta calda e aranciata per sposarsi col tramonto
+  // della Monument Valley
+  DrawModel(mapModel, runwayPosition, 7.0f, (Color){255, 220, 180, 255});
   rlPopMatrix();
 
   // 6. GUIDA VISIVA ILS (INSTRUMENT LANDING SYSTEM)
@@ -524,6 +547,10 @@ void FlightDisplay::DrawMapWorld(const PlaneData &data) {
 
 // --- Volumetric Sky & Procedural Atmosphere ---
 void FlightDisplay::DrawSky(Vector3 camPos) {
+  // Disabilita scritture nel depth buffer:
+  // Il cielo non scriverà la propria profondità, così qualasisi cosa
+  // (aeroporto, aereo, terreno) Verrà sempre disegnata "sopra" di esso,
+  // risolvendo l'effetto "vedo gli oggetti attraverso la texture".
   rlDisableDepthTest();
   rlDisableDepthMask();
   rlDisableBackfaceCulling();
@@ -531,128 +558,145 @@ void FlightDisplay::DrawSky(Vector3 camPos) {
   rlPushMatrix();
   rlTranslatef(camPos.x, camPos.y, camPos.z);
 
-  // --- Rayleigh Scattering ---
-  // Background gradient
-  DrawSphereEx((Vector3){0, 0, 0}, 20000.0f, 16, 16,
-               (Color){100, 150, 230, 255});
+  if (skyLoaded) {
+    // Ruota la sfera lentamente, e assicura che il suo pivot interno e le
+    // coordinate siano posizionate su camPos. GenMeshSphere crea una sfera
+    // centrata su origin, quindi Traslatef qui sopra sposta già il matrix stack
+    // su camPos.
+    skyModel.transform = MatrixRotateY(GetTime() * 0.002f);
+    // Abbassiamo la sfera di 5000 unità sull'asse Y per far salire l'orizzonte
+    // fotografico e farlo combaciare perfettamente col pavimento 3D,
+    // nascondendo il "pavimento" della foto.
+    DrawModelEx(skyModel, (Vector3){0, -5000.0f, 0}, (Vector3){0, 0, 1}, 180.0f,
+                (Vector3){1.0f, 1.0f, 1.0f}, WHITE);
+  } else {
+    // --- Rayleigh Scattering ---
+    // Background gradient
+    DrawSphereEx((Vector3){0, 0, 0}, 20000.0f, 16, 16,
+                 (Color){100, 150, 230, 255});
 
-  BeginBlendMode(BLEND_ALPHA);
-  for (int i = 0; i < 8; i++) {
-    float offset = 5000.0f - (i * 700.0f);
-    float alpha = 0.08f + (i * 0.045f);
-    DrawSphereEx((Vector3){0, -offset, 0}, 18000.0f, 16, 16,
-                 Fade((Color){130, 180, 255, 255}, alpha));
+    BeginBlendMode(BLEND_ALPHA);
+    for (int i = 0; i < 8; i++) {
+      float offset = 5000.0f - (i * 700.0f);
+      float alpha = 0.08f + (i * 0.045f);
+      DrawSphereEx((Vector3){0, -offset, 0}, 18000.0f, 16, 16,
+                   Fade((Color){130, 180, 255, 255}, alpha));
+    }
+    // Horizon haze
+    DrawSphereEx((Vector3){0, -2000.0f, 0}, 15000.0f, 16, 16,
+                 Fade((Color){200, 230, 255, 255}, 0.7f));
+    EndBlendMode();
+
+    // --- Sun & Bloom ---
+    // Spostiamo il sole un po' più in alto e lontano
+    Vector3 sunPos = {8000.0f, 3500.0f, 9000.0f};
+
+    // A) La dispersione di luce nell'aria (Additive)
+    BeginBlendMode(BLEND_ADDITIVE);
+    DrawSphereEx(
+        sunPos, 4000.0f, 16, 16,
+        Fade((Color){255, 180, 80, 255}, 0.08f)); // Vastissimo alone caldo
+    DrawSphereEx(sunPos, 1800.0f, 16, 16,
+                 Fade((Color){255, 210, 120, 255}, 0.2f)); // Corona esterna
+    DrawSphereEx(sunPos, 600.0f, 16, 16,
+                 Fade((Color){255, 240, 200, 255}, 0.5f)); // Corona interna
+
+    // Lens Flare (Raggio orizzontale della lente della telecamera)
+    rlPushMatrix();
+    rlTranslatef(sunPos.x, sunPos.y, sunPos.z);
+    rlScalef(35.0f, 0.05f, 1.0f);
+    DrawSphereEx((Vector3){0, 0, 0}, 200.0f, 12, 12,
+                 Fade((Color){255, 210, 160, 255}, 0.2f));
+    rlPopMatrix();
+    EndBlendMode();
+
+    // B) Il modello del Sole fisico: un disco nettissimo al centro del bagliore
+    BeginBlendMode(BLEND_ALPHA);
+    DrawSphereEx(sunPos, 130.0f, 24, 24, (Color){255, 250, 245, 255});
+    EndBlendMode();
+
+    // --- Procedural Clouds ---
+    BeginBlendMode(BLEND_ALPHA);
+    srand(8888); // Nuovo seme per una composizione più aperta
+    float timeOffset = GetTime();
+
+    // --- LAYER 1: CIRRI STRATOSFERICI ---
+    rlPushMatrix();
+    rlRotatef(timeOffset * 0.1f, 0, 1, 0);
+    // Ridotte da 35 a 15 (Molto diradate)
+    for (int i = 0; i < 15; i++) {
+      float angle = (rand() % 360) * DEG2RAD;
+      float dist = 3000.0f + (rand() % 6000);
+      // Quota alzata in modo estremo (8000+)
+      float alt = 8000.0f + (rand() % 2000);
+      float size = 2000.0f + (rand() % 3000);
+
+      Vector3 pos = {std::cos(angle) * dist, alt, std::sin(angle) * dist};
+
+      rlPushMatrix();
+      rlTranslatef(pos.x, pos.y, pos.z);
+      rlRotatef((rand() % 360), 0, 1, 0);
+      rlScalef(1.0f, 0.02f, 0.15f); // Velo sottilissimo
+      DrawSphereEx((Vector3){0, 0, 0}, size, 8, 8, Fade(WHITE, 0.08f));
+      rlPopMatrix();
+    }
+    rlPopMatrix();
+
+    // --- LAYER 2: CUMULI VOLUMETRICI SPARSI ---
+    rlPushMatrix();
+    rlRotatef(timeOffset * 0.03f, 0, 1, 0); // Vento lentissimo
+
+    // Ridotte da 50 a 20 formazioni enormi isolate
+    for (int i = 0; i < 20; i++) {
+      float angle = (rand() % 360) * DEG2RAD;
+      // Distanza allargata per fare spazio tra una nuvola e l'altra
+      float dist = 2500.0f + (rand() % 8000);
+      // Base alzata da 600m a oltre 3000m
+      float alt = 3000.0f + (rand() % 2500);
+      float baseSize = 1000.0f + (rand() % 1500);
+
+      Vector3 clusterPos = {std::cos(angle) * dist, alt,
+                            std::sin(angle) * dist};
+
+      rlPushMatrix();
+      rlTranslatef(clusterPos.x, clusterPos.y, clusterPos.z);
+      rlRotatef((rand() % 360), 0, 1, 0);
+
+      // A) OMBRA BASE (Resa più morbida e meno aggressiva)
+      rlPushMatrix();
+      rlTranslatef(0, -baseSize * 0.15f, 0);
+      rlScalef(1.0f, 0.2f, 0.9f);
+      DrawSphereEx((Vector3){0, 0, 0}, baseSize * 1.1f, 8, 8,
+                   Fade((Color){110, 125, 145, 255}, 0.4f));
+      rlPopMatrix();
+
+      // B) CORPO CENTRALE
+      rlPushMatrix();
+      rlTranslatef(0, 0, 0);
+      rlScalef(1.0f, 0.3f, 0.8f);
+      DrawSphereEx((Vector3){0, 0, 0}, baseSize, 8, 8,
+                   Fade((Color){210, 220, 230, 255}, 0.6f));
+      rlPopMatrix();
+
+      // C) CIMA ILLUMINATA (Rimbalzo della luce stellare)
+      rlPushMatrix();
+      rlTranslatef(baseSize * 0.15f, baseSize * 0.2f, baseSize * 0.15f);
+      rlScalef(0.85f, 0.4f, 0.7f);
+      DrawSphereEx((Vector3){0, 0, 0}, baseSize * 0.85f, 8, 8,
+                   Fade(WHITE, 0.8f));
+      rlPopMatrix();
+
+      rlPopMatrix();
+    }
+    rlPopMatrix();
+
+    EndBlendMode();
   }
-  // Horizon haze
-  DrawSphereEx((Vector3){0, -2000.0f, 0}, 15000.0f, 16, 16,
-               Fade((Color){200, 230, 255, 255}, 0.7f));
-  EndBlendMode();
-
-  // --- Sun & Bloom ---
-  // Spostiamo il sole un po' più in alto e lontano
-  Vector3 sunPos = {8000.0f, 3500.0f, 9000.0f};
-
-  // A) La dispersione di luce nell'aria (Additive)
-  BeginBlendMode(BLEND_ADDITIVE);
-  DrawSphereEx(
-      sunPos, 4000.0f, 16, 16,
-      Fade((Color){255, 180, 80, 255}, 0.08f)); // Vastissimo alone caldo
-  DrawSphereEx(sunPos, 1800.0f, 16, 16,
-               Fade((Color){255, 210, 120, 255}, 0.2f)); // Corona esterna
-  DrawSphereEx(sunPos, 600.0f, 16, 16,
-               Fade((Color){255, 240, 200, 255}, 0.5f)); // Corona interna
-
-  // Lens Flare (Raggio orizzontale della lente della telecamera)
-  rlPushMatrix();
-  rlTranslatef(sunPos.x, sunPos.y, sunPos.z);
-  rlScalef(35.0f, 0.05f, 1.0f);
-  DrawSphereEx((Vector3){0, 0, 0}, 200.0f, 12, 12,
-               Fade((Color){255, 210, 160, 255}, 0.2f));
-  rlPopMatrix();
-  EndBlendMode();
-
-  // B) Il modello del Sole fisico: un disco nettissimo al centro del bagliore
-  BeginBlendMode(BLEND_ALPHA);
-  DrawSphereEx(sunPos, 130.0f, 24, 24, (Color){255, 250, 245, 255});
-  EndBlendMode();
-
-  // --- Procedural Clouds ---
-  BeginBlendMode(BLEND_ALPHA);
-  srand(8888); // Nuovo seme per una composizione più aperta
-  float timeOffset = GetTime();
-
-  // --- LAYER 1: CIRRI STRATOSFERICI ---
-  rlPushMatrix();
-  rlRotatef(timeOffset * 0.1f, 0, 1, 0);
-  // Ridotte da 35 a 15 (Molto diradate)
-  for (int i = 0; i < 15; i++) {
-    float angle = (rand() % 360) * DEG2RAD;
-    float dist = 3000.0f + (rand() % 6000);
-    // Quota alzata in modo estremo (8000+)
-    float alt = 8000.0f + (rand() % 2000);
-    float size = 2000.0f + (rand() % 3000);
-
-    Vector3 pos = {std::cos(angle) * dist, alt, std::sin(angle) * dist};
-
-    rlPushMatrix();
-    rlTranslatef(pos.x, pos.y, pos.z);
-    rlRotatef((rand() % 360), 0, 1, 0);
-    rlScalef(1.0f, 0.02f, 0.15f); // Velo sottilissimo
-    DrawSphereEx((Vector3){0, 0, 0}, size, 8, 8, Fade(WHITE, 0.08f));
-    rlPopMatrix();
-  }
-  rlPopMatrix();
-
-  // --- LAYER 2: CUMULI VOLUMETRICI SPARSI ---
-  rlPushMatrix();
-  rlRotatef(timeOffset * 0.03f, 0, 1, 0); // Vento lentissimo
-
-  // Ridotte da 50 a 20 formazioni enormi isolate
-  for (int i = 0; i < 20; i++) {
-    float angle = (rand() % 360) * DEG2RAD;
-    // Distanza allargata per fare spazio tra una nuvola e l'altra
-    float dist = 2500.0f + (rand() % 8000);
-    // Base alzata da 600m a oltre 3000m
-    float alt = 3000.0f + (rand() % 2500);
-    float baseSize = 1000.0f + (rand() % 1500);
-
-    Vector3 clusterPos = {std::cos(angle) * dist, alt, std::sin(angle) * dist};
-
-    rlPushMatrix();
-    rlTranslatef(clusterPos.x, clusterPos.y, clusterPos.z);
-    rlRotatef((rand() % 360), 0, 1, 0);
-
-    // A) OMBRA BASE (Resa più morbida e meno aggressiva)
-    rlPushMatrix();
-    rlTranslatef(0, -baseSize * 0.15f, 0);
-    rlScalef(1.0f, 0.2f, 0.9f);
-    DrawSphereEx((Vector3){0, 0, 0}, baseSize * 1.1f, 8, 8,
-                 Fade((Color){110, 125, 145, 255}, 0.4f));
-    rlPopMatrix();
-
-    // B) CORPO CENTRALE
-    rlPushMatrix();
-    rlTranslatef(0, 0, 0);
-    rlScalef(1.0f, 0.3f, 0.8f);
-    DrawSphereEx((Vector3){0, 0, 0}, baseSize, 8, 8,
-                 Fade((Color){210, 220, 230, 255}, 0.6f));
-    rlPopMatrix();
-
-    // C) CIMA ILLUMINATA (Rimbalzo della luce stellare)
-    rlPushMatrix();
-    rlTranslatef(baseSize * 0.15f, baseSize * 0.2f, baseSize * 0.15f);
-    rlScalef(0.85f, 0.4f, 0.7f);
-    DrawSphereEx((Vector3){0, 0, 0}, baseSize * 0.85f, 8, 8, Fade(WHITE, 0.8f));
-    rlPopMatrix();
-
-    rlPopMatrix();
-  }
-  rlPopMatrix();
-
-  EndBlendMode();
 
   rlPopMatrix();
 
+  // Riabilita il depth buffer e il depth mask per permettere all'aereo e
+  // all'aeroporto di essere renderizzati davanti al cielo e ai suoi effetti.
   rlEnableBackfaceCulling();
   rlEnableDepthMask();
   rlEnableDepthTest();
@@ -973,8 +1017,8 @@ void FlightDisplay::Draw(const PlaneData &data) {
 
   UpdateChaseCamera(data);
 
-  // Manteniamo la tua distanza di rendering
-  rlSetClipPlanes(15.0f, 300000.0f);
+  // Applichiamo clip planes ottimali per distruggere lo z-fighting
+  rlSetClipPlanes(150.0f, 150000.0f);
 
   BeginMode3D(camera);
 

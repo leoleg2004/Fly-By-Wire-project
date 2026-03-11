@@ -45,6 +45,7 @@ public:
 private:
   Camera3D camera;
   Vector3 cameraPositionLag;
+  Texture2D skyTexture;
   Model skyModel;
   bool skyLoaded;
   Model mapModel; // Modello del suolo
