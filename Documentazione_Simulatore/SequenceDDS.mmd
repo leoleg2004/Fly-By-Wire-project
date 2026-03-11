@@ -1,0 +1,67 @@
+sequenceDiagram
+    autonumber
+    
+    box lightblue Pilot Node (F35 Simulator)
+        participant Main3D as Render Loop<br>(main thread 60Hz)
+        participant FCC as FlightControlComputer<br>(g_fcc singoletto)
+        participant DDSPub as DDS Publisher Thread<br>(~20Hz)
+    end
+    
+    box rgb(220,180,240) DDS Network
+        participant FastDDS as FastDDS Middleware<br>(DDS Domain 0)
+    end
+    
+    box lightgreen Monitor Node (Control Tower)
+        participant DDSListener as DDS Callback Thread<br>(FastDDS Asynchronous)
+        participant MonitorUI as Monitor Loop<br>(main thread)
+    end
+
+    Note over Main3D, DDSPub: Inizializzazione
+    Main3D ->> FCC: set_initial_state(initial_state)<br>[landing_mode=true, system_active=false]
+    Main3D ->> DDSPub: std::thread(dds_publish_thread, writer)
+    activate DDSPub
+    DDSPub ->> FastDDS: Registra DataWriter QoS (50ms Deadline)
+
+    Note over Main3D, MonitorUI: Flusso di Esecuzione (a regime)
+
+    par Render Loop (60Hz)
+        loop Ogni Frame
+            Main3D ->> Main3D: Calcola dt (es. 1/60s)
+            
+            Main3D ->>+ FCC: get_state()
+            FCC -->>- Main3D: FlightState (copia pre-step)
+            
+            Main3D ->> Main3D: HandleInput(Aereo, pilot_input)<br>[Raccoglie tasti e aggiorna audio]
+            
+            Main3D ->>+ FCC: step(pilot_input, dt)
+            FCC ->> FCC: law.compute(pilot_input, state, dt)<br>[Control Law Normal/Alternate/Direct]
+            FCC ->> FCC: Integra fisica aerodinamica e propulsiva
+            FCC ->> FCC: Determina eventuali messaggi di allarme (EICAS)
+            FCC -->>- Main3D: (Return)
+            
+            Main3D ->>+ FCC: get_state()
+            FCC -->>- Main3D: FlightState (stato finale)
+            
+            Main3D ->> Main3D: Draw(Aereo)<br>[Renderizza F35 e HUD]
+        end
+    and Publisher Sincrono (Monitoraggio FCC)
+        loop ~20Hz Target Rate
+            DDSPub ->>+ FCC: get_state()
+            FCC -->>- DDSPub: FlightState (copia)
+            DDSPub ->> DDSPub: Traduce in SystemStats
+            DDSPub ->> FastDDS: writer->write(&stats)
+            DDSPub ->> DDSPub: sleep_for(50ms)
+        end
+    and Subscriber Asincrono e UI
+        loop Push Data Asincrono
+            FastDDS ->>+ DDSListener: on_data_available()
+            DDSListener ->> DDSListener: Calcola Jitter, Cycle Time, Throughput
+            DDSListener ->> DDSListener: Mutex lock e aggiorna shared_aereo (PlaneData)
+            DDSListener ->> DDSListener: Print allarmi formattati a terminale
+            DDSListener -->>- FastDDS: (Return)
+        end
+        loop Render Loop Torre
+            MonitorUI ->> MonitorUI: Mutex lock & catch<br>local_aereo = shared_aereo
+            MonitorUI ->> MonitorUI: display.Draw(local_aereo)<br>[Aggiorna Radar, Horizon, Tapes]
+        end
+    end

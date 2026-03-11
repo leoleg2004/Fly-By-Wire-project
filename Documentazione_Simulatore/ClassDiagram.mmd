@@ -1,0 +1,305 @@
+classDiagram
+    namespace Core_Data {
+        class FBWMode {
+            <<enumeration>>
+            NORMAL_LAW = 0
+            ALTERNATE_LAW = 1
+            DIRECT_LAW = 2
+        }
+
+        class PilotInput {
+            +float stick_roll
+            +float stick_pitch
+            +float rudder
+            +float speed_delta
+            +bool engines_on
+            +bool engine_ready
+            +bool landing_mode
+            +bool gear_deploy
+        }
+
+        class ControlSurfaces {
+            +float aileron_deflection
+            +float elevator_deflection
+            +float rudder_deflection
+            +float thrust_normalized
+        }
+
+        class ProtectionStatus {
+            +bool alpha_floor
+            +bool overspeed
+            +bool high_altitude
+            +bool terrain_avoidance
+            +bool bank_angle_limit
+            +bool load_factor_limit
+        }
+
+        class FlightState {
+            +float roll
+            +float pitch
+            +float yaw
+            +float roll_rate
+            +float pitch_rate
+            +float yaw_rate
+            +float x
+            +float z
+            +float altitude
+            +float speed
+            +FBWMode mode
+            +ProtectionStatus protections
+            +bool system_active
+            +bool landing_mode
+            +char status_msg[64]
+            +uint32_t packet_id
+            +FlightState()
+        }
+    }
+
+    namespace Core_Control {
+        class FlightControlLaw {
+            -ProtectionStatus m_prot
+            -float m_pitch_integrator
+            -static constexpr float MAX_ROLL_RATE = 1.5f
+            -static constexpr float MAX_PITCH_RATE = 0.5f
+            -static constexpr float MAX_AIL_DEG = 25.0f
+            -static constexpr float MAX_ELEV_DEG = 30.0f
+            -static constexpr float MAX_RUD_DEG = 30.0f
+            -static constexpr float BANK_LIMIT = 1.17f
+            -static constexpr float ALPHA_MIN_SPEED = 60.0f
+            -static constexpr float VMO = 290.0f
+            -static constexpr float ALT_MAX = 13000.0f
+            -static constexpr float GPWS_ALT = 2000.0f
+            +FlightControlLaw()
+            +ControlSurfaces compute(const PilotInput& pilot, const FlightState& state, float dt)
+            +FBWMode evaluate_mode(const FlightState& state) const
+            +const ProtectionStatus& protection_status() const
+            -ControlSurfaces normal_law(const PilotInput& p, const FlightState& s, float dt)
+            -ControlSurfaces alternate_law(const PilotInput& p)
+            -ControlSurfaces direct_law(const PilotInput& p)
+            -void apply_protections(ControlSurfaces& surf, const FlightState& s, const PilotInput& p)
+        }
+
+        class FlightControlComputer {
+            -FlightControlLaw m_law
+            -FlightState m_state
+            -mutable std::mutex m_mtx
+            -bool m_terrain_recovery_active
+            -bool m_high_alt_recovery_active
+            -bool m_bank_recovery_active
+            -static constexpr float EFF_AIL = 0.06f
+            -static constexpr float EFF_ELEV = 0.04f
+            +FlightControlComputer()
+            +void step(const PilotInput& input, float dt)
+            +FlightState get_state() const
+            +void set_initial_state(const FlightState& state)
+            +void debug_print() const
+        }
+    }
+
+    namespace Simulator_Rendering {
+        class PlaneData {
+            <<struct>>
+            +float roll
+            +float pitch
+            +float yaw
+            +float altitude
+            +float x
+            +float z
+            +float speed
+            +char status_msg[64]
+            +bool system_active
+            +bool landing_mode
+        }
+
+        class FlightDisplay {
+            -ModelAnimation* modelAnims
+            -int animsCount
+            -float gearFrame
+            -bool gearOpen
+            -int flapFrame
+            -bool flapOpen
+            -Camera3D camera
+            -Vector3 cameraPositionLag
+            -Model skyModel
+            -Model mapModel
+            -Model modelF35
+            -bool skyLoaded, mapLoaded, modelLoaded
+            -Sound sndEngineStart
+            -Sound sndEngineLoop
+            -Sound sndGear, sndLanding, sndWarning, sndPullUp, sndCaution, sndAir, sndEngineDown
+            +FlightDisplay(int width, int height, const std::string& title)
+            +~FlightDisplay()
+            +bool IsActive()
+            +void HandleInput(PlaneData& data, PilotInput& pilot_out)
+            +void Draw(const PlaneData& data)
+            -void UpdateChaseCamera(const PlaneData& data)
+            -void DrawUltimateF35(const PlaneData& data)
+            -void DrawMapWorld(const PlaneData& data)
+            -void DrawHUD(const PlaneData& data)
+            -void UpdateAnimations()
+            -void DrawSky(Vector3 cameraPosition)
+            -void DrawGround(const PlaneData& data)
+        }
+    }
+
+    namespace Monitor_Rendering {
+        class MonitorDisplay {
+            -int m_width, m_height
+            -const Color colBack, colHUD, colWarning, colGreen, colPanel
+            +MonitorDisplay(int width, int height, const std::string& title)
+            +~MonitorDisplay()
+            +bool IsActive()
+            +void Draw(const PlaneData& data)
+            -void DrawTechFrame(int x, int y, int w, int h, const char* title)
+            -void DrawTacticalRadar(int x, int y, int size, const PlaneData& data)
+            -void DrawArtificialHorizon(int x, int y, int w, int h, float pitch, float roll)
+            -void DrawVerticalTape(int x, int y, int w, int h, float value, float step, Color color, bool rightAlign)
+            -void DrawHeadingTape(int x, int y, int w, float yaw)
+            -void DrawAttitudeIndicator(int x, int y, float value, const char* label)
+            -void DrawVFX()
+        }
+    }
+
+    namespace FastDDS_Middleware {
+        class DomainParticipantFactory {
+            <<static>>
+            +DomainParticipantFactory* get_instance()
+            +DomainParticipant* create_participant(DomainId_t did, const DomainParticipantQos& qos)
+            +void delete_participant(DomainParticipant* part)
+        }
+        
+        class DomainParticipant {
+            +Publisher* create_publisher(const PublisherQos& qos)
+            +Subscriber* create_subscriber(const SubscriberQos& qos)
+            +Topic* create_topic(const std::string& topic_name, const std::string& type_name, const TopicQos& qos)
+            +void delete_publisher(Publisher* publisher)
+            +void delete_subscriber(Subscriber* subscriber)
+            +void delete_topic(Topic* topic)
+        }
+
+        class Publisher {
+            +DataWriter* create_datawriter(Topic* topic, const DataWriterQos& qos)
+            +void delete_datawriter(DataWriter* writer)
+        }
+
+        class Subscriber {
+            +DataReader* create_datareader(TopicDescription* topic, const DataReaderQos& qos, DataReaderListener* listener)
+            +void delete_datareader(DataReader* reader)
+        }
+
+        class DataWriter {
+            +bool write(void* data)
+        }
+
+        class DataReader {
+            +ReturnCode_t take_next_sample(void* data, SampleInfo* info)
+        }
+        
+        class Topic {
+            +std::string get_name() const
+            +std::string get_type_name() const
+        }
+        
+        class TopicDataType {
+            <<interface>>
+            +bool serialize(...)
+            +bool deserialize(...)
+        }
+
+        class DataReaderListener {
+            <<interface>>
+            +void on_data_available(DataReader* reader)
+        }
+        
+        class TypeSupport {
+            +TypeSupport(TopicDataType* ptr)
+            +void register_type(DomainParticipant* participant)
+            +std::string get_type_name() const
+        }
+    }
+
+    namespace DDS_Telemetry_eIDL {
+        class SystemStats {
+            <<IDL Generated>>
+            +uint32_t packet_id()
+            +void packet_id(uint32_t _packet_id)
+            +float roll()
+            +void roll(float _roll)
+            +float pitch()
+            +void pitch(float _pitch)
+            +float yaw()
+            +void yaw(float _yaw)
+            +float altitude()
+            +void altitude(float _altitude)
+            +float speed()
+            +void speed(float _speed)
+            +float x()
+            +void x(float _x)
+            +float z()
+            +void z(float _z)
+            +bool landing_mode()
+            +void landing_mode(bool _landing_mode)
+            +bool system_active()
+            +void system_active(bool _system_active)
+            +std::string status_msg()
+            +void status_msg(const std::string& _status_msg)
+        }
+
+        class SystemStatsPubSubType {
+            +SystemStatsPubSubType()
+            +virtual ~SystemStatsPubSubType() override
+            +bool serialize(const void* const data, SerializedPayload_t& payload, DataRepresentationId_t data_representation) override
+            +bool deserialize(SerializedPayload_t& payload, void* data) override
+            +uint32_t calculate_serialized_size(const void* const data, DataRepresentationId_t data_representation) override
+            +bool compute_key(SerializedPayload_t& payload, InstanceHandle_t& ihandle, bool force_md5) override
+            +bool compute_key(const void* const data, InstanceHandle_t& ihandle, bool force_md5) override
+            +void* create_data() override
+            +void delete_data(void* data) override
+        }
+        
+        class DashboardListener {
+            -long total_packets
+            -long missed_packets
+            -std::chrono::steady_clock::time_point last_pkt_time
+            -bool first
+            -std::vector~float~ jitter_history
+            -float max_jitter_seen
+            +void on_data_available(DataReader* reader) override
+        }
+    }
+
+    %% Relazioni e Molteplicità
+    FlightControlLaw ..> ControlSurfaces : creates
+    FlightControlLaw ..> ProtectionStatus : uses
+    FlightControlLaw ..> PilotInput : uses
+    FlightControlLaw ..> FlightState : uses
+
+    FlightControlComputer *-- FlightControlLaw : m_law
+    FlightControlComputer o-- FlightState : m_state
+
+    FlightDisplay ..> PlaneData : reads
+    FlightDisplay ..> PilotInput : produces
+
+    MonitorDisplay ..> PlaneData : reads
+
+    %% DDS Core Relations
+    DomainParticipantFactory ..> DomainParticipant : creates
+    DomainParticipant *-- Publisher : owns
+    DomainParticipant *-- Subscriber : owns
+    DomainParticipant *-- Topic : owns
+
+    Publisher *-- DataWriter : owns
+    Subscriber *-- DataReader : owns
+
+    DataWriter --> Topic : publishes to
+    DataReader --> Topic : subscribes to
+
+    TypeSupport *-- TopicDataType : wraps
+    TopicDataType <|-- SystemStatsPubSubType
+
+    %% DDS Telemetry eIDL Relations
+    DataReaderListener <|-- DashboardListener
+    DashboardListener ..> DataReader : reads from
+    DashboardListener ..> SystemStats : deserializes into
+    DashboardListener ..> PlaneData : updates shared_aereo
+    SystemStatsPubSubType ..> SystemStats : serializes/deserializes
