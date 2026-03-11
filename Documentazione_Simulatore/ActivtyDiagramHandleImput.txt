@@ -1,0 +1,108 @@
+@startuml
+skinparam handwritten false
+skinparam roundcorner 10
+skinparam DefaultFontName Arial
+skinparam ActivityBackgroundColor LightYellow
+skinparam ActivityBorderColor DarkGoldenRod
+
+title Flusso di Esecuzione Fly-By-Wire: Input -> Control Law -> Attuatori
+
+start
+
+:Pilot Node: Render Loop Inizia (60Hz);
+
+partition "Fase 1: Acquisizione Input (FlightDisplay::HandleInput)" {
+    :Lettura Tastiera/Asse Joystick;
+    note right
+        KEY_UP/DOWN -> pilot_out.stick_pitch (±1.0)
+        KEY_LEFT/RIGHT -> pilot_out.stick_roll (±1.0)
+        KEY_W/S/SPACE -> pilot_out.speed_delta (Accelerazione/Freno)
+    end note
+    :Acquisizione Toggle (Motori E, Carrello G, ILS L);
+    :Aggiornamento Spaziale Audio (Motore, Vento, Allarmi VWS);
+    :Aggiornamento Animazioni Modello (Carrello gearFrame);
+}
+
+:Passaggio Struttura "PilotInput" al FCC;
+
+partition "Fase 2: Flight Control Law (FCC::step)" {
+    :ControlLaw::evaluate_mode();
+    if (Sistema Attivo?) then (No)
+        :FBWMode::DIRECT_LAW;
+        :Generazione ControlSurfaces grezze\n(Input Diretto = Angolo Diretto);
+    else (Sì)
+        :FBWMode::NORMAL_LAW;
+        :Generazione ControlSurfaces (C-Star Law);
+        note right
+            Canale Laterale:
+            roll_rate_demand = stick_roll * 1.5 rad/s
+            aileron_deflection = proporzionale al MAX_AIL_DEG (±25°)
+            
+            Canale Longitudinale:
+            pitch_rate_demand = stick_pitch * 0.5 rad/s
+            Integrazione/Smorzamento del pitch
+            elevator_deflection = proporzionale al MAX_ELEV_DEG (±30°)
+            
+            Canale Direzionale:
+            yaw_damper = -yaw_rate * 0.5
+            rudder_deflection = timone_pilota + yaw_damper
+        end note
+    endif
+    
+    :ControlLaw::apply_protections();
+    note right
+        Calcola i boolean in ProtectionStatus:
+        - alpha_floor (speed < 60 KPH & alt > 0.5)
+        - overspeed (speed > 290 KPH)
+        - terrain_avoidance (alt < 300m)
+        - high_altitude (alt > 15000m)
+        - bank_angle_limit (|roll| > 1.0 rad)
+    end note
+    :Clamp Meccanico Strutturale Attuatori (±25°, ±30°);
+}
+
+partition "Fase 3: Attuazione Dinamica (FCC::step)" {
+    :Integrazione Base Assetto;
+    note right
+        snap.roll_rate = aileron_deflection * 0.06f
+        snap.pitch_rate = elevator_deflection * 0.04f
+    end note
+    
+    :Controllo Hysteresis Autopilota EICAS;
+    if (Autopilota di Emergenza Ingaggiato?) then (Sì)
+        if (Terrain Pull Up?) then (Sì)
+            :Forzatura Pitch a +3.0 rad/s\nLivellamento Ali\nBoost d'Emergenza Altitudine;
+        elseif (Overshoot Pull Down?) then (Sì)
+            :Forzatura Pitch a -3.0 rad/s\nLivellamento Ali;
+        elseif (Critical Bank?) then (Sì)
+            :Forzatura Roll a -3.0 rad/s restitutivo\nStabilizzazione Pitch;
+        endif
+    else (No - Volo Manuale)
+        :Mantenimento ratei calcolati dalle ControlSurfaces;
+    endif
+    
+    :Integrazione Finale Ratei -> Angoli di Eulero;
+    note right
+        snap.roll += roll_rate * dt
+        snap.pitch += pitch_rate * dt
+        snap.yaw_rate = -roll * 0.015 (Virata Coordinata Naturale)
+        snap.yaw += yaw_rate * dt
+    end note
+    
+    :Risoluzione Spinta Motori (Traslazione X, Z, Speed, Altitude);
+    :Gestione Collisione Suolo (Altitude = 0);
+}
+
+partition "Fase 4: Rendering (FlightDisplay::Draw)" {
+    :Aggiornamento status_msg (EICAS Alarms);
+    :Esportazione "FlightState" Aggiornato al Main;
+    :Copia Mappatura Dati in "PlaneData" C-Style;
+    :Aggiornamento Telecamera Chase/Side/Front (no interpolation);
+    :Visualizzazione Mesh F35\nEffetti Afterburner (Procedurali in base a Thrust);
+    :Disegno HUD (Horizon, Altimeter, Speed Tape);
+}
+
+stop
+
+@enduml
+

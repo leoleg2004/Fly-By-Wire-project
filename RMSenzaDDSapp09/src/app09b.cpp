@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
 
     // Configuro il secondo CPU set per bloccare il thread 2 sul CORE 1
     CPU_ZERO(&cpuset2);
-    CPU_SET(1, &cpuset2); // 1 indica il secondo core logico
+    CPU_SET(1, &cpuset2); // 1 indica il secondo core
     pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t), &cpuset2);
 
     /* Create the first periodic thread */
