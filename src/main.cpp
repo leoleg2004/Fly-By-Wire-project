@@ -151,11 +151,7 @@ int main() {
   Aereo.system_active = false; // Motori spenti, coerente con spawn state
   Aereo.landing_mode = true; // Ground mode attivo: carrello giù, flap estratti
 
-  // ------------------------------------------------------------------
-  // DEBUG LOOP: stampa il stato FBW ogni 2 secondi per tracciare freeze
-  // Utile per vedere il momento esatto in cui i comandi smettono di
-  // rispondere — guarda i flag PROT (GPWS, BANK, ALPHA) nell'output.
-  // ------------------------------------------------------------------
+
   int debug_frame_count = 0;
   float debug_elapsed = 0.0f;
 
@@ -207,7 +203,7 @@ int main() {
     // B. HandleInput: tasti, audio, animazioni → scrive in pilot_input
     display.HandleInput(Aereo, pilot_input);
 
-    // C. FCC step con dt reale del renderer — fisica sincrona al rendering
+    // C. FCC fa il calcolo in base alle modifiche delle surface fatte in law e le applica o fa entrare l'autopilota
     g_fcc.step(pilot_input, dt);
 
     // D. Leggi stato aggiornato per il disegno
