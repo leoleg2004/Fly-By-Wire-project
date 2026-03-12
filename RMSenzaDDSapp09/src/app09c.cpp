@@ -158,7 +158,7 @@ int main(int argc, char* argv[]) {
     // Passo attr2 invece di NULL qua modifico gli attributi quindi non vengono messi quelli di default ma quelli modificati per la schedulazione RM
         ret_err = pthread_create( &thread1, &attr1, PeriodicTask, (void*) &activity_1);
         // Dopo pthread_create di thread2 cosi su kernel linux vedo nei task Activity2
-            pthread_setname_np(thread1, "Activity_1");
+            pthread_setname_np(thread1, "Activity_2");
     handle_error(ret_err, "Error in creating PeriodicTask 2");
 
     // Pulizia degli attributi
