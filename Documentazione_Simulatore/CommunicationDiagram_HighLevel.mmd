@@ -1,0 +1,47 @@
+graph TD
+    classDef actor fill:#dfd,stroke:#333,stroke-width:2px;
+    classDef node fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef core fill:#eef,stroke:#333,stroke-width:2px;
+    classDef middleware fill:#bbf,stroke:#333,stroke-width:2px;
+
+    Pilot((Pilot)):::actor
+    Operator((ATC Operator)):::actor
+
+    subgraph "Node 1: F-35 Flight Simulator"
+        SimUI[FlightDisplay \n Input/Render UI]:::node
+        
+        subgraph "Fly-By-Wire Core"
+            Law[FlightControlLaw \n Calcola ControlSurfaces \n e Limiti di volo]:::core
+            FCC[FlightControlComputer \n Esegue Integrazione Fisica, \n Attivazione Autopilota EICAS]:::core
+        end
+
+        Pub[DDS Publisher \n Telemetry Thread]:::node
+    end
+
+    subgraph "DDS Network Layer"
+        FastDDS((FastDDS Middleware \n Topic: F35_Telemetry)):::middleware
+    end
+
+    subgraph "Node 2: Control Tower (Monitor Node)"
+        Sub[DDS Listener \n Async Receiver]:::node
+        MonUI[MonitorDisplay \n UI Render]:::node
+    end
+
+    %% Interaction Sequence with explicit Law -> Actuator -> Physics Flow
+    Pilot -- "1: Joystick & Throttle Input" --> SimUI
+    SimUI -- "2: Invia PilotInput a FCC \n step(input)" --> FCC
+    
+    FCC -- "3: Richiede Attuatori \n compute(input, snap)" --> Law
+    Law -. "4: Ritorna ControlSurfaces \n (Aileron, Elevator, Rudder)" .-> FCC
+    
+    FCC -- "5: Modifica Fisica \n Controlla Allarmi e \n Salva Stato nel Mutex" --> FCC
+    FCC -. "6: Ritorna Feedback Fisico" .-> SimUI
+    SimUI -- "7: Disegna Interfaccia (60Hz)" --> Pilot
+
+    Pub -- "8: Query Sicura (Mutex) \n get_state()" --> FCC
+    FCC -. "9: Ritorna Dati Fisici" .-> Pub
+    Pub -- "10: Trasmette Dati (20Hz)" --> FastDDS
+
+    FastDDS -- "11: Trigger di Ricezione \n on_data_available()" --> Sub
+    Sub -- "12: Mutex Scrittura \n aggiorna(shared_aereo)" --> MonUI
+    MonUI -- "13: Mutex Lettura e Disegno Interfaccia" --> Operator

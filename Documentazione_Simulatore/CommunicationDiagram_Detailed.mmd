@@ -1,0 +1,77 @@
+graph TD
+    classDef thread fill:#ffb,stroke:#333,stroke-width:2px,rx:10,ry:10;
+    classDef obj fill:#bdf,stroke:#333,stroke-width:2px;
+    classDef func fill:#eef,stroke:#333,stroke-width:2px,rx:10,ry:10;
+    classDef dds fill:#dff,stroke:#333,stroke-width:2px;
+
+    subgraph "Processo: Simulatore F-35"
+        direction TB
+        Main_Thread([Thread Principale<br>Render Loop 60Hz]):::thread
+        Pub_Thread([Thread Publisher DDS<br>Loop 20Hz]):::thread
+        
+        subgraph "Oggetto: FCC (Flight Control Computer)"
+            direction LR
+            FCC_Mutex{std::mutex m_mtx\nLock di Protezione}:::obj
+            FCC_Data[(FlightState m_state\nStato Fisico Protetto)]:::obj
+        end
+
+        subgraph "Logica di Controllo e Fisica (Senza Lock)"
+            Law([FlightControlLaw::compute\nCalcolo Attuatori e Protezioni]):::func
+            Physics([FCC Physics & Alarms\nIntegrazione Autopilota e EICAS]):::func
+        end
+    end
+
+    DDS((Middleware FastDDS\nTopic F35_Telemetry)):::dds
+
+    subgraph "Processo: Torre di Controllo (Monitor)"
+        direction TB
+        Sub_Thread([Thread Callback DDS<br>Asincrono per Ricezione]):::thread
+        Mon_Thread([Thread Monitor<br>Render Loop 60Hz]):::thread
+
+        subgraph "Memoria Condivisa"
+            direction LR
+            Mon_Mutex{std::mutex shared_mutex\nLock UI}:::obj
+            Mon_Data[(PlaneData shared_aereo)]:::obj
+        end
+    end
+
+    %% F-35 Main Thread: FCC Step (Double Locking Pattern)
+    Main_Thread -- "1: Inizio step(pilot_input, dt)" --> FCC_Mutex
+    FCC_Mutex -- "2: Acquire Lock" --> FCC_Data
+    FCC_Data -. "3: Ritorna copia Snapshot (snap)" .-> Main_Thread
+    FCC_Mutex -. "4: Release Lock" .-> Main_Thread
+
+    Main_Thread -- "5: Invia Input a Leggi di Controllo" --> Law
+    Law -. "6: Ritorna ControlSurfaces (Attuatori Limitati)" .-> Main_Thread
+    
+    Main_Thread -- "7: Esegue Calcoli Aerodinamici" --> Physics
+    Physics -. "8: Modifica Ratei Pitch/Roll" .-> Physics
+    Physics -. "9: Applica Allarmi EICAS e Sovrascrive Autopilota" .-> Physics
+    Physics -. "10: Integra coordinate X,Y,Z finali" .-> Main_Thread
+    
+    Main_Thread -- "11: Fine step() - Salva Dati" --> FCC_Mutex
+    FCC_Mutex -- "12: Acquire Lock" --> FCC_Data
+    FCC_Data -. "13: Sovrascrive m_state = snap" .-> FCC_Data
+    FCC_Mutex -. "14: Release Lock" .-> Main_Thread
+
+    %% F-35 Pub Thread: Lettura Dati per invio
+    Pub_Thread -- "15: Chiamata get_state()" --> FCC_Mutex
+    FCC_Mutex -- "16: Acquire Lock (Attesa Sicura)" --> FCC_Data
+    FCC_Data -. "17: Ritorna Copia Snapshot m_state" .-> Pub_Thread
+    FCC_Mutex -. "18: Release Lock" .-> Pub_Thread
+
+    %% Trasmissione Dati in Rete
+    Pub_Thread -- "19: write(SystemStats)" --> DDS
+    DDS -- "20: Callback Asincrono" --> Sub_Thread
+
+    %% Monitor Sub Thread: Scrittura da Rete
+    Sub_Thread -- "21: lock(shared_mutex)" --> Mon_Mutex
+    Mon_Mutex -- "22: Accesso Scrittura (Blocca UI)" --> Mon_Data
+    Mon_Data -. "23: Salva Dati Ricevuti" .-> Mon_Data
+    Mon_Mutex -. "24: unlock(shared_mutex)" .-> Sub_Thread
+
+    %% Monitor Render Thread: Lettura per Disegno UI
+    Mon_Thread -- "25: lock(shared_mutex)" --> Mon_Mutex
+    Mon_Mutex -- "26: Accesso Lettura" --> Mon_Data
+    Mon_Data -. "27: Ritorna Copia Dati" .-> Mon_Thread
+    Mon_Mutex -. "28: unlock(shared_mutex)" .-> Mon_Thread
