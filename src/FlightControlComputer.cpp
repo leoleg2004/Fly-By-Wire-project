@@ -1,5 +1,7 @@
 #include "FlightControlComputer.hpp"
+#include "F16AeroData.hpp"
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstring>
 #include <iomanip>
