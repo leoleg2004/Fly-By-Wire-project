@@ -133,8 +133,10 @@ int main(int argc, char* argv[]) {
     if (param1.sched_priority < 1) param1.sched_priority = 1;
     pthread_attr_setschedparam(&attr1, &param1);
 
-    // Passo attr1 invece di NULL qua modifico gli attributi quindi non venogno messi quelli di defaul ma quelli modficati per la schedulazione RM
-    ret_err = pthread_create( &thread1, &attr1, PeriodicTask, (void*) &activity_1);
+    // Passo attr1 invece di NULL qua modifico gli attributi quindi non vengono messi quelli di default ma quelli modificati per la schedulazione RM
+        ret_err = pthread_create( &thread1, &attr1, PeriodicTask, (void*) &activity_1);
+        // Dopo pthread_create di thread2 cosi su kernel linux vedo nei task Activity1
+            pthread_setname_np(thread1, "Activity_1");
     handle_error(ret_err, "Error in creating PeriodicTask 1");
 
 
@@ -152,8 +154,11 @@ int main(int argc, char* argv[]) {
     //passo i miei atributi &attr2 personalizzati secondo la schedulazione RM
     pthread_attr_setschedparam(&attr2, &param2);
 
-    // Passo attr2 invece di NULL
-    ret_err = pthread_create( &thread2, &attr2, PeriodicTask, (void*) &activity_2);
+
+    // Passo attr2 invece di NULL qua modifico gli attributi quindi non vengono messi quelli di default ma quelli modificati per la schedulazione RM
+        ret_err = pthread_create( &thread1, &attr1, PeriodicTask, (void*) &activity_1);
+        // Dopo pthread_create di thread2 cosi su kernel linux vedo nei task Activity2
+            pthread_setname_np(thread1, "Activity_1");
     handle_error(ret_err, "Error in creating PeriodicTask 2");
 
     // Pulizia degli attributi

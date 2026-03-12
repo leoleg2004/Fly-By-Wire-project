@@ -64,6 +64,14 @@ SCOPO:      Termina in modo pulito e sicuro il thread da cui viene chiamata.
 USO:        L'ho inserita come ultimissima istruzione di PeriodicTask per garantire 
             una chiusura sicura nel caso in cui il loop infinito dovesse interrompersi.
 
+
+10. pthread_setname_np(thread1, "Activity_1");
+--------------------------------------------------------------------------------
+SCOPO:     da avere il nome activity all'interno di kernel linux invece di vedere i nome dei tre task(main, e i due thread)
+USO:        l'ho inserita dopo la creazione del thread per assegnarli il nome ActivityN
+
+
+
 ================================================================================
            COMANDI PER CONTROLLARE SU QUALE CORE GIRANO I THREAD
 ================================================================================
@@ -73,3 +81,16 @@ effettivamente l'assegnazione dei core (colonna PSR):
 
 ps -T -o pid,tid,psr,comm -C app09b
 ps -T -o pid,tid,psr,comm -C app09c
+
+
+TRACCIAMENTO DEI TASK:
+
+Ho installato kernel linux per tracciare l'andamento dei task in base alla schedulazione allego comando per far traccaire i file:
+
+sudo trace-cmd record -e sched_switch -e sched_wakeup ./Nomefile
+
+e poi per aprire il traccimaneto terminata l'esecuzione 
+
+kernelshark trace.dat
+
+trace.dat è il documento che viene generato finita l'esecuzione
