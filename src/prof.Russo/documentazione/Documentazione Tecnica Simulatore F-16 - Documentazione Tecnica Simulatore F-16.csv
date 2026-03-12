@@ -1,0 +1,11 @@
+Aspetto,Originale (Arcade),Refactoring (NASA 6-DOF)
+Modello,Hardcoded,Lookup table (44 tabelle)
+Forze,EFF_AIL=0.06,
+Atmosfera,No,"ISA standard (ρ, T dipendenti da quota)"
+Velocità,Scalare singolo,"Vettore body (u,v,w) → α, β, V_T"
+Inerzie,Costanti fittizie,"NASA TP-1538 (I_XX, I_YY, I_ZZ, I_XZ)"
+Stabilità,Instabile (oscilla),"SAS inner loop (Kq=-2.0, etc.)"
+Attuatori,Istantanei,First-order (τ=0.05s) + rate limit
+Integrazione,Euler 1° ordine,RK4 (O(dt⁴) globale)
+Cinematica,Approssimata,Euler angles corretti + NED
+Futuro (PID),—,Predisposto (prof.Russo placeholder)
