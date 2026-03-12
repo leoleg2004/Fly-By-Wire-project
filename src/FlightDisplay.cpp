@@ -343,19 +343,22 @@ void FlightDisplay::HandleInput(PlaneData &data, PilotInput &pilot_out) {
       StopSound(sndAir);
   }
 
-  // SPEED FBW — delta velocità diretto per frame (identico all'originale)
-  // KEY_W:     +0.75 KPH/frame  (accelerazione)
-  // KEY_S:     -1.0  KPH/frame  (riduzione gas)
-  // KEY_SPACE: -2.0  KPH/frame  (freno aerodinamico)
-  pilot_out.speed_delta = 0.0f;
+  // THROTTLE - F-16 6-DOF
+  // KEY_W: Aumenta gas
+  // KEY_S: Riduci gas
+  // Mantiene il valore di manetta attuale se rilasciati
+  static float current_throttle = 0.0f;
   if (data.system_active && engineReady) {
     if (IsKeyDown(KEY_W))
-      pilot_out.speed_delta = +0.75f;
+      current_throttle += 0.5f * dt;
     else if (IsKeyDown(KEY_S))
-      pilot_out.speed_delta = -1.0f;
-    if (IsKeyDown(KEY_SPACE))
-      pilot_out.speed_delta -= 2.0f;
+      current_throttle -= 0.5f * dt;
+
+    current_throttle = std::clamp(current_throttle, 0.0f, 1.0f);
+  } else {
+    current_throttle = 0.0f;
   }
+  pilot_out.throttle_input = current_throttle;
 
   // Propagazione flag FBW verso il FCC
   pilot_out.engines_on = data.system_active;

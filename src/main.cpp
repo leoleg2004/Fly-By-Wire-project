@@ -35,7 +35,8 @@ void dds_publish_thread(DataWriter *writer) {
     stats.pitch(state.pitch);
     stats.yaw(state.yaw);
     stats.altitude(state.altitude);
-    stats.speed(state.speed);
+    stats.speed(
+        std::sqrt(state.u * state.u + state.v * state.v + state.w * state.w));
     stats.x(state.x);
     stats.z(state.z);
     stats.landing_mode(state.landing_mode);
@@ -175,7 +176,7 @@ int main() {
       // Log aggiuntivo: input corrente del pilota
       std::cout << "  [INPUT] roll=" << pilot_input.stick_roll
                 << " pitch=" << pilot_input.stick_pitch
-                << " spd_d=" << pilot_input.speed_delta
+                << " thr=" << pilot_input.throttle_input
                 << " eng=" << pilot_input.engines_on
                 << " rdy=" << pilot_input.engine_ready
                 << " land=" << pilot_input.landing_mode
@@ -191,7 +192,8 @@ int main() {
       Aereo.pitch = state.pitch;
       Aereo.yaw = state.yaw;
       Aereo.altitude = state.altitude;
-      Aereo.speed = state.speed;
+      Aereo.speed =
+          std::sqrt(state.u * state.u + state.v * state.v + state.w * state.w);
       Aereo.x = state.x;
       Aereo.z = state.z;
       Aereo.system_active = state.system_active;
@@ -203,7 +205,8 @@ int main() {
     // B. HandleInput: tasti, audio, animazioni → scrive in pilot_input
     display.HandleInput(Aereo, pilot_input);
 
-    // C. FCC fa il calcolo in base alle modifiche delle surface fatte in law e le applica o fa entrare l'autopilota
+    // C. FCC fa il calcolo in base alle modifiche delle surface fatte in law e
+    // le applica o fa entrare l'autopilota
     g_fcc.step(pilot_input, dt);
 
     // D. Leggi stato aggiornato per il disegno
@@ -213,7 +216,8 @@ int main() {
       Aereo.pitch = state.pitch;
       Aereo.yaw = state.yaw;
       Aereo.altitude = state.altitude;
-      Aereo.speed = state.speed;
+      Aereo.speed =
+          std::sqrt(state.u * state.u + state.v * state.v + state.w * state.w);
       Aereo.x = state.x;
       Aereo.z = state.z;
       Aereo.system_active = state.system_active;
