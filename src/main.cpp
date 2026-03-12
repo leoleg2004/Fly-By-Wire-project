@@ -152,7 +152,6 @@ int main() {
   Aereo.system_active = false; // Motori spenti, coerente con spawn state
   Aereo.landing_mode = true; // Ground mode attivo: carrello giù, flap estratti
 
-
   int debug_frame_count = 0;
   float debug_elapsed = 0.0f;
 
