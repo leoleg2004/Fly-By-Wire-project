@@ -1,4 +1,7 @@
-#include "TelemetryPubSubTypes.hpp"
+#include "F16KinematicsPubSubTypes.hpp"
+#include "F16AeroStatePubSubTypes.hpp"
+#include "F16ActuatorsPubSubTypes.hpp"
+#include "MonitorDisplay.hpp"
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
 #include <fastdds/dds/subscriber/Subscriber.hpp>
@@ -10,181 +13,263 @@
 #include <fastdds/statistics/dds/domain/DomainParticipant.hpp>
 #include <fastdds/statistics/topic_names.hpp>
 #include <fastdds/statistics/dds/publisher/qos/DataWriterQos.hpp>
-#include "MonitorDisplay.hpp"
-#include <iostream>
+#include <chrono>
+#include <cmath>
+#include <cstdio>
 #include <iomanip>
-#include <thread>
+#include <iostream>
+#include <mutex>
+#include <numeric>
 #include <string>
 #include <vector>
-#include <numeric>
-#include <cmath>
-#include <mutex>
 
 using namespace eprosima::fastdds::dds;
 
-PlaneData shared_aereo;
-float shared_jitter, shared_cycle_time;
-std::mutex aereo_mutex;
+// =========================================================================
+// Shared telemetry state (populated from the 3 DDS topics)
+// =========================================================================
+static PlaneData    shared_aereo;
+static float        shared_jitter    = 0.0f;
+static float        shared_cycle_ms  = 0.0f;
+static std::mutex   aereo_mutex;
 
-class DashboardListener : public DataReaderListener {
-    long total_packets = 0;
-    long missed_packets = 0;
-    
-    std::chrono::steady_clock::time_point last_pkt_time;
-    bool first = true;
-    std::vector<float> jitter_history;
-    float max_jitter_seen = 0.0f;
+// =========================================================================
+// KinematicsListener — F16KinematicsTopic
+// =========================================================================
+class KinematicsListener : public DataReaderListener {
+  std::chrono::steady_clock::time_point last_pkt;
+  bool first = true;
+  std::vector<float> jitter_history;
+  long total = 0, missed = 0;
 
 public:
-    void on_data_available(DataReader* reader) override {
-        SystemStats telemetry;
-        SampleInfo info;
-        
-        if (reader->take_next_sample(&telemetry, &info) == RETCODE_OK && info.valid_data) {
-            auto now = std::chrono::steady_clock::now();
-            float cycle_time = 0.0f;
-            float current_jitter = 0.0f;
-            
-            if (!first) {
-                long diff_us = std::chrono::duration_cast<std::chrono::microseconds>(now - last_pkt_time).count();
-                cycle_time = diff_us / 1000.0f;
-                current_jitter = std::abs(cycle_time - 50.0f);
+  void on_data_available(DataReader *reader) override {
+    F16Kinematics kin;
+    SampleInfo    info;
+    if (reader->take_next_sample(&kin, &info) != RETCODE_OK || !info.valid_data)
+      return;
 
-                if (current_jitter > max_jitter_seen) max_jitter_seen = current_jitter;
-                
-                jitter_history.push_back(current_jitter);
-                if (jitter_history.size() > 20) jitter_history.erase(jitter_history.begin());
-            }
-            last_pkt_time = now;
-            first = false;
+    auto  now        = std::chrono::steady_clock::now();
+    float cycle_ms   = 0.0f;
+    float jitter_ms  = 0.0f;
 
-            float avg_jitter = 0.0f;
-            if (!jitter_history.empty()) {
-                float sum = std::accumulate(jitter_history.begin(), jitter_history.end(), 0.0f);
-                avg_jitter = sum / jitter_history.size();
-            }
-
-            total_packets++;
-            float loss_perc = (total_packets > 0) ? ((float)missed_packets / total_packets) * 100.0f : 0.0f;
-
-            // Assegnazione in mutuo esclusione
-            {
-                std::lock_guard<std::mutex> lock(aereo_mutex);
-                shared_aereo.altitude = telemetry.altitude();
-                shared_aereo.speed    = telemetry.speed();
-                shared_aereo.roll     = telemetry.roll();
-                shared_aereo.pitch    = telemetry.pitch();
-                shared_aereo.yaw      = telemetry.yaw();
-                shared_aereo.x        = telemetry.x();
-                shared_aereo.z        = telemetry.z();
-                shared_aereo.landing_mode  = telemetry.landing_mode();
-                shared_aereo.system_active = telemetry.system_active(); // Sincronizzazione stato operativo
-
-                snprintf(shared_aereo.status_msg, sizeof(shared_aereo.status_msg), "%s", telemetry.status_msg().c_str());
-            }
-
-            std::string status = telemetry.status_msg().c_str();
-            bool alarm_crit = (status.find("ALARM") != std::string::npos || status.find("PULL UP") != std::string::npos || status.find("HIGH ALTITUDE") != std::string::npos);
-            bool alarm_warn = (status.find("WARN") != std::string::npos || avg_jitter > 5.0f);
-
-            // Aggiornamento console per diagnostica
-            std::cout << "\033[2J\033[1;1H";
-            if (alarm_crit) std::cout << "\033[1;41m";
-            else if (alarm_warn) std::cout << "\033[1;43m";
-            else if (telemetry.landing_mode()) std::cout << "\033[1;45m";
-            else std::cout << "\033[1;44m";
-
-            std::cout << "############################################################\n";
-            std::cout << "           TORRE DI CONTROLLO - MONITORAGGIO REAL-TIME      \n";
-            std::cout << "############################################################\n\033[0m\n";
-
-            std::cout << "\033[1;36m>>> TELEMETRIA DI VOLO <<<\033[0m            \033[1;35m>>> DIAGNOSTICA CORE & THREAD <<<\033[0m\n";
-            std::cout << " ALTITUDINE : " << std::setw(5) << (int)telemetry.altitude() << " m ";
-            std::cout << "   |   Cycle Time : " << std::fixed << std::setprecision(2) << cycle_time << " ms \n";
-            std::cout << " ROLL (X)   : " << std::setw(6) << telemetry.roll() << " rad ";
-            std::cout << "   |   Jitter Avg : " << std::setw(5) << avg_jitter << " ms \n";
-            std::cout << " PITCH (Y)  : " << std::setw(6) << telemetry.pitch() << " rad       ";
-            std::cout << "   |   RAM Access : " << std::setw(5) << (int)0 << " us \n";
-            std::cout << " YAW (Z)    : " << std::setw(6) << telemetry.yaw() << " rad ";
-            std::cout << "   |   Packet Loss: " << std::fixed << std::setprecision(1) << loss_perc << " %\n";
-            std::cout << " SPEED      : " << std::setw(6) << (int)telemetry.speed() << " KPH \n\n";
-
-            std::cout << "------------------------------------------------------------\nCONDIZIONE VOLO : ";
-            if (alarm_crit) std::cout << "\033[1;31m !!! " << status << " !!!\033[0m\n";
-            else if (alarm_warn) std::cout << "\033[1;33m " << status << "\033[0m\n";
-            else if (telemetry.landing_mode()) std::cout << "\033[1;35m " << status << "\033[0m\n";
-            else std::cout << "\033[1;32m " << status << "\033[0m\n";
-            std::cout << "------------------------------------------------------------\n";
-        }
+    if (!first) {
+      long us  = std::chrono::duration_cast<std::chrono::microseconds>(
+                     now - last_pkt).count();
+      cycle_ms  = us / 1000.0f;
+      jitter_ms = std::abs(cycle_ms - 50.0f);
+      jitter_history.push_back(jitter_ms);
+      if (jitter_history.size() > 20) jitter_history.erase(jitter_history.begin());
     }
+    last_pkt = now;
+    first    = false;
+    total++;
+
+    float avg_jitter = 0.0f;
+    if (!jitter_history.empty()) {
+      float sum = std::accumulate(jitter_history.begin(),
+                                  jitter_history.end(), 0.0f);
+      avg_jitter = sum / jitter_history.size();
+    }
+
+    {
+      std::lock_guard<std::mutex> lock(aereo_mutex);
+      shared_aereo.roll       = kin.roll;
+      shared_aereo.pitch      = kin.pitch;
+      shared_aereo.yaw        = kin.yaw;
+      shared_aereo.roll_rate  = kin.roll_rate;
+      shared_aereo.pitch_rate = kin.pitch_rate;
+      shared_aereo.yaw_rate   = kin.yaw_rate;
+      shared_aereo.u          = kin.u;
+      shared_aereo.v          = kin.v;
+      shared_aereo.w          = kin.w;
+      shared_aereo.x          = kin.x;
+      shared_aereo.z          = kin.z;
+      shared_aereo.altitude   = kin.altitude;
+      shared_aereo.speed      = std::sqrt(kin.u * kin.u +
+                                          kin.v * kin.v +
+                                          kin.w * kin.w);
+      shared_jitter           = avg_jitter;
+      shared_cycle_ms         = cycle_ms;
+    }
+
+    float loss = (total > 0) ? (float)missed / total * 100.0f : 0.0f;
+    std::cout << "\033[2J\033[1;1H";
+    std::cout << "\033[1;44m"
+              << "========== F-16 TORRE DI CONTROLLO — MONITORAGGIO REAL-TIME ==========\n"
+              << "\033[0m\n";
+    std::cout << std::fixed << std::setprecision(3);
+    std::cout << " KINEMATICS | roll=" << kin.roll * 57.3f << "° "
+              << "pitch=" << kin.pitch * 57.3f << "° "
+              << "yaw=" << kin.yaw * 57.3f << "°\n";
+    std::cout << "            | p=" << kin.roll_rate << " q=" << kin.pitch_rate
+              << " r=" << kin.yaw_rate << " rad/s\n";
+    std::cout << "            | alt=" << kin.altitude << " m  "
+              << "x=" << kin.x << " z=" << kin.z << " m\n";
+    std::cout << " JITTER     | cycle=" << cycle_ms << " ms  "
+              << "avg_jitter=" << avg_jitter << " ms  loss=" << loss << "%\n";
+  }
 };
 
-int main() {
-	DomainParticipantQos pqos;
-	    pqos.name("Monitor_Node_Leonardo");
+// =========================================================================
+// AeroStateListener — F16AeroStateTopic
+// =========================================================================
+class AeroStateListener : public DataReaderListener {
+public:
+  void on_data_available(DataReader *reader) override {
+    F16AeroState aero;
+    SampleInfo   info;
+    if (reader->take_next_sample(&aero, &info) != RETCODE_OK || !info.valid_data)
+      return;
 
-	    // 1. Abilitazione QoS Globale per le Statistiche
-	    pqos.properties().properties().emplace_back("fastdds.statistics",
-	        "HISTORY_LATENCY;"
-	        "NETWORK_LATENCY;"
-	        "PUBLICATION_THROUGHPUT;"
-	        "SUBSCRIPTION_THROUGHPUT;"
-	        "HEARTBEAT_COUNT;"
-	        "ACKNACK_COUNT;"
-	        "DISCOVERY_STATISTICS;"
-	        "PHYSICAL_DATA_STATISTICS");
-
-	    DomainParticipant* participant = DomainParticipantFactory::get_instance()->create_participant(0, pqos);
-	    if (participant == nullptr) return 1;
-
-	    // 2. Attivazione dei DataWriter Statistici (lato Subscriber)
-	    auto* stat_participant = eprosima::fastdds::statistics::dds::DomainParticipant::narrow(participant);
-	    if (stat_participant != nullptr) {
-	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::SUBSCRIPTION_THROUGHPUT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
-	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::ACKNACK_COUNT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
-	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HEARTBEAT_COUNT_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
-	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::HISTORY_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
-	        stat_participant->enable_statistics_datawriter(eprosima::fastdds::statistics::NETWORK_LATENCY_TOPIC, eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
-	    }
-
-	    TypeSupport type(new SystemStatsPubSubType());
-	    type.register_type(participant);
-
-	    Subscriber* sub = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
-	    Topic* topic = participant->create_topic("TelemetryTopic", type.get_type_name(), TOPIC_QOS_DEFAULT);
-
-	    DataReaderQos dr_qos = DATAREADER_QOS_DEFAULT;
-	    dr_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
-	    dr_qos.durability().kind = VOLATILE_DURABILITY_QOS;
-
-	    // 3. Assegnazione proprietà statistiche specifiche al DataReader
-	    dr_qos.properties().properties().emplace_back("fastdds.statistics",
-	        "SUBSCRIPTION_THROUGHPUT;"
-	        "HISTORY_LATENCY;"
-	        "ACKNACK_COUNT");
-
-	    DashboardListener listener;
-	    DataReader* reader = sub->create_datareader(topic, dr_qos, &listener);
-
-    MonitorDisplay display(850, 700, "Torre di Controllo - Telemetria F-35");
-
-    while (display.IsActive()) {
-        PlaneData local_aereo;
-        {
-            std::lock_guard<std::mutex> lock(aereo_mutex);
-            local_aereo = shared_aereo;
-        }
-
-        // Disegno interfaccia basato interamente su telemetry DDS
-        // Il flag system_active non blocca più il ciclo grafico
-
-        display.Draw(local_aereo);
+    {
+      std::lock_guard<std::mutex> lock(aereo_mutex);
+      shared_aereo.alpha         = aero.alpha;
+      shared_aereo.beta          = aero.beta;
+      shared_aereo.mach          = aero.mach;
+      shared_aereo.speed_kts     = aero.speed_kts;
+      shared_aereo.nz            = aero.nz;
+      shared_aereo.system_active = aero.system_active;
+      shared_aereo.landing_mode  = aero.landing_mode;
+      snprintf(shared_aereo.status_msg, sizeof(shared_aereo.status_msg),
+               "%s", aero.status_msg.c_str());
     }
 
-    sub->delete_datareader(reader);
-    participant->delete_subscriber(sub);
-    participant->delete_topic(topic);
-    DomainParticipantFactory::get_instance()->delete_participant(participant);
+    bool alarm_crit = (aero.status_msg.find("PULL UP") != std::string::npos ||
+                       aero.status_msg.find("ALARM")   != std::string::npos ||
+                       aero.status_msg.find("HIGH ALT") != std::string::npos);
+    bool alarm_warn = (aero.status_msg.find("WARN") != std::string::npos ||
+                       shared_jitter > 5.0f);
 
-    return 0;
+    if      (alarm_crit)         std::cout << "\033[1;31m";
+    else if (alarm_warn)         std::cout << "\033[1;33m";
+    else if (aero.landing_mode)  std::cout << "\033[1;35m";
+    else                         std::cout << "\033[1;32m";
+
+    std::cout << std::fixed << std::setprecision(3);
+    std::cout << " AERO STATE | alpha=" << aero.alpha * 57.3f << "°  "
+              << "beta=" << aero.beta * 57.3f << "°  "
+              << "Mach=" << aero.mach << "\n";
+    std::cout << "            | CAS=" << aero.speed_kts << " kt  "
+              << "Nz=" << aero.nz << " g\n";
+    std::cout << " COND VOLO  | " << aero.status_msg
+              << (aero.landing_mode ? " [LANDING]" : "") << "\033[0m\n";
+  }
+};
+
+// =========================================================================
+// ActuatorsListener — F16ActuatorsTopic
+// =========================================================================
+class ActuatorsListener : public DataReaderListener {
+public:
+  void on_data_available(DataReader *reader) override {
+    F16Actuators act;
+    SampleInfo   info;
+    if (reader->take_next_sample(&act, &info) != RETCODE_OK || !info.valid_data)
+      return;
+
+    {
+      std::lock_guard<std::mutex> lock(aereo_mutex);
+      shared_aereo.act_ele = act.ele;
+      shared_aereo.act_ail = act.ail;
+      shared_aereo.act_rud = act.rud;
+      shared_aereo.act_lef = act.lef;
+      shared_aereo.act_thr = act.thr;
+    }
+
+    std::cout << std::fixed << std::setprecision(2);
+    std::cout << " ACTUATORS  | ele=" << act.ele << "°  "
+              << "ail=" << act.ail << "°  "
+              << "rud=" << act.rud << "°  "
+              << "lef=" << act.lef << "°  "
+              << "thr=" << act.thr * 100.0f << "%\n";
+    std::cout << "====================================================================\n";
+  }
+};
+
+// =========================================================================
+// main
+// =========================================================================
+int main() {
+  DomainParticipantQos pqos;
+  pqos.name("F16_Monitor_Node");
+  pqos.properties().properties().emplace_back("fastdds.statistics",
+      "HISTORY_LATENCY;NETWORK_LATENCY;PUBLICATION_THROUGHPUT;"
+      "SUBSCRIPTION_THROUGHPUT;HEARTBEAT_COUNT;ACKNACK_COUNT;"
+      "DISCOVERY_STATISTICS;PHYSICAL_DATA_STATISTICS");
+
+  DomainParticipant *participant =
+      DomainParticipantFactory::get_instance()->create_participant(0, pqos);
+  if (participant == nullptr) return 1;
+
+  auto *stat_p =
+      eprosima::fastdds::statistics::dds::DomainParticipant::narrow(participant);
+  if (stat_p != nullptr) {
+    stat_p->enable_statistics_datawriter(
+        eprosima::fastdds::statistics::SUBSCRIPTION_THROUGHPUT_TOPIC,
+        eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+    stat_p->enable_statistics_datawriter(
+        eprosima::fastdds::statistics::ACKNACK_COUNT_TOPIC,
+        eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+    stat_p->enable_statistics_datawriter(
+        eprosima::fastdds::statistics::HISTORY_LATENCY_TOPIC,
+        eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+    stat_p->enable_statistics_datawriter(
+        eprosima::fastdds::statistics::NETWORK_LATENCY_TOPIC,
+        eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
+  }
+
+  // ── Register 3 types ──────────────────────────────────────────────────
+  TypeSupport type_kin (new F16KinematicsPubSubType());
+  TypeSupport type_aero(new F16AeroStatePubSubType());
+  TypeSupport type_act (new F16ActuatorsPubSubType());
+  type_kin .register_type(participant);
+  type_aero.register_type(participant);
+  type_act .register_type(participant);
+
+  // ── Subscriber + 3 DataReaders ────────────────────────────────────────
+  Subscriber *sub = participant->create_subscriber(SUBSCRIBER_QOS_DEFAULT);
+
+  DataReaderQos dr_qos = DATAREADER_QOS_DEFAULT;
+  dr_qos.reliability().kind = RELIABLE_RELIABILITY_QOS;
+  dr_qos.durability().kind  = VOLATILE_DURABILITY_QOS;
+  dr_qos.properties().properties().emplace_back(
+      "fastdds.statistics", "SUBSCRIPTION_THROUGHPUT;HISTORY_LATENCY;ACKNACK_COUNT");
+
+  Topic *topic_kin  = participant->create_topic(
+      "F16KinematicsTopic",  type_kin .get_type_name(), TOPIC_QOS_DEFAULT);
+  Topic *topic_aero = participant->create_topic(
+      "F16AeroStateTopic",   type_aero.get_type_name(), TOPIC_QOS_DEFAULT);
+  Topic *topic_act  = participant->create_topic(
+      "F16ActuatorsTopic",   type_act .get_type_name(), TOPIC_QOS_DEFAULT);
+
+  KinematicsListener listener_kin;
+  AeroStateListener  listener_aero;
+  ActuatorsListener  listener_act;
+
+  DataReader *reader_kin  = sub->create_datareader(topic_kin,  dr_qos, &listener_kin);
+  DataReader *reader_aero = sub->create_datareader(topic_aero, dr_qos, &listener_aero);
+  DataReader *reader_act  = sub->create_datareader(topic_act,  dr_qos, &listener_act);
+
+  MonitorDisplay display(900, 750, "Torre di Controllo — F-16 Telemetria");
+
+  while (display.IsActive()) {
+    PlaneData local;
+    {
+      std::lock_guard<std::mutex> lock(aereo_mutex);
+      local = shared_aereo;
+    }
+    display.Draw(local);
+  }
+
+  sub->delete_datareader(reader_kin);
+  sub->delete_datareader(reader_aero);
+  sub->delete_datareader(reader_act);
+  participant->delete_subscriber(sub);
+  participant->delete_topic(topic_kin);
+  participant->delete_topic(topic_aero);
+  participant->delete_topic(topic_act);
+  DomainParticipantFactory::get_instance()->delete_participant(participant);
+
+  return 0;
 }

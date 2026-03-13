@@ -19,6 +19,12 @@ FlightState FlightControlComputer::get_state() const {
   return m_state;
 }
 
+ActuatorOut FlightControlComputer::get_actuator_state() const {
+  std::lock_guard<std::mutex> lock(m_mtx);
+  return {m_actuator.ele, m_actuator.ail, m_actuator.rud,
+          m_actuator.lef, m_actuator.thr};
+}
+
 // =========================================================================
 // Actuator Model — First-order lag con rate limit (trim_and_linearize.m)
 //

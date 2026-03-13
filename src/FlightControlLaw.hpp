@@ -100,7 +100,8 @@ private:
   static constexpr float INTEGRAL_MAX = 1.0f;
 
   OuterLoopState m_outer{};
-  bool m_outer_loop_engaged = false; // false = bypass (solo manuale + SAS)
+  bool m_outer_loop_engaged  = false; // false = bypass (solo manuale + SAS)
+  bool m_prev_landing_mode   = true;  // per rilevare la transizione landing→volo
 
   // TODO prof.Russo: Implementare la logica PID qui
   void compute_outer_loop(const FlightState &s, float dt);

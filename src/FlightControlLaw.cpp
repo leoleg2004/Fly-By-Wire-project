@@ -18,6 +18,27 @@ ControlSurfaces FlightControlLaw::compute(const PilotInput &pilot,
                                           const FlightState &state, float dt) {
   ControlSurfaces surf{};
 
+  // --- Outer Loop engagement / disengagement on landing_mode transition ---
+  bool in_flight = pilot.engines_on && !pilot.landing_mode;
+  if (in_flight && m_prev_landing_mode) {
+    // landing_mode true→false: engage attitude hold, capture current attitude
+    m_outer.phi_ref          = state.roll;
+    m_outer.theta_ref        = state.pitch;
+    m_outer.phi_integral     = 0.0f;
+    m_outer.theta_integral   = 0.0f;
+    m_outer.phi_error_prev   = 0.0f;
+    m_outer.theta_error_prev = 0.0f;
+    m_outer.p_cmd            = 0.0f;
+    m_outer.q_cmd            = 0.0f;
+    m_pitch_integrator       = 0.0f;
+    m_outer_loop_engaged     = true;
+  } else if (!in_flight && !m_prev_landing_mode) {
+    // landing_mode false→true (or engines off): disengage
+    m_outer_loop_engaged = false;
+    reset_outer_loop();
+  }
+  m_prev_landing_mode = pilot.landing_mode;
+
   // --- Outer Loop PID (placeholder prof.Russo) ---
   compute_outer_loop(state, dt);
 

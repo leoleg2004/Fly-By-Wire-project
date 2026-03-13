@@ -1,9 +1,14 @@
 #include "FlightControlComputer.hpp"
 #include "FlightDisplay.hpp"
-#include "TelemetryPubSubTypes.hpp"
+#include "F16KinematicsPubSubTypes.hpp"
+#include "F16AeroStatePubSubTypes.hpp"
+#include "F16ActuatorsPubSubTypes.hpp"
 #include <atomic>
 #include <chrono>
+#include <cmath>
 #include <cstring>
+#include <iomanip>
+#include <iostream>
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
 #include <fastdds/dds/publisher/DataWriter.hpp>
@@ -19,40 +24,93 @@
 
 using namespace eprosima::fastdds::dds;
 
-// Shared variables between render and DDS threads
-static FlightControlComputer g_fcc; // FCC — il render lo chiama, DDS lo legge
-static std::atomic<bool> g_running{true}; // Flag shutdown ordinato
+static FlightControlComputer g_fcc;
+static std::atomic<bool>     g_running{true};
 
-// DDS Telemetry publisher thread (~20Hz)
-// Reads FCC state and publishes it without blocking the render loop
-void dds_publish_thread(DataWriter *writer) {
+// =========================================================================
+// Helper — computes derived quantities from FlightState
+// =========================================================================
+static inline float compute_mach(float speed, float altitude) {
+  float T_K   = (altitude < 11000.0f) ? (288.15f - 0.0065f * altitude) : 216.65f;
+  float a     = std::sqrt(1.4f * 287.05f * T_K);
+  return speed / a;
+}
+
+static inline float compute_nz(const FlightState &s, float V) {
+  float nz = std::cos(s.pitch) * std::cos(s.roll)
+             + s.pitch_rate * V / 9.806f;
+  return std::clamp(nz, -3.0f, 9.0f);
+}
+
+// =========================================================================
+// DDS Publish thread — 3 topics at ~20 Hz
+// =========================================================================
+struct F16Writers {
+  DataWriter *kin;   // F16KinematicsTopic
+  DataWriter *aero;  // F16AeroStateTopic
+  DataWriter *act;   // F16ActuatorsTopic
+};
+
+void dds_publish_thread(F16Writers w) {
   while (g_running.load(std::memory_order_relaxed)) {
     FlightState state = g_fcc.get_state();
+    ActuatorOut act   = g_fcc.get_actuator_state();
 
-    SystemStats stats;
-    stats.packet_id(state.packet_id);
-    stats.roll(state.roll);
-    stats.pitch(state.pitch);
-    stats.yaw(state.yaw);
-    stats.altitude(state.altitude);
-    stats.speed(
-        std::sqrt(state.u * state.u + state.v * state.v + state.w * state.w));
-    stats.x(state.x);
-    stats.z(state.z);
-    stats.landing_mode(state.landing_mode);
-    stats.system_active(state.system_active);
-    stats.status_msg(state.status_msg);
-    writer->write(&stats);
+    float speed = std::sqrt(state.u * state.u +
+                            state.v * state.v +
+                            state.w * state.w);
 
-    // ~20 Hz target rate
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    // ── F16KinematicsTopic ─────────────────────────────────
+    F16Kinematics kin_msg;
+    kin_msg.packet_id  = state.packet_id;
+    kin_msg.roll       = state.roll;
+    kin_msg.pitch      = state.pitch;
+    kin_msg.yaw        = state.yaw;
+    kin_msg.roll_rate  = state.roll_rate;
+    kin_msg.pitch_rate = state.pitch_rate;
+    kin_msg.yaw_rate   = state.yaw_rate;
+    kin_msg.u          = state.u;
+    kin_msg.v          = state.v;
+    kin_msg.w          = state.w;
+    kin_msg.x          = state.x;
+    kin_msg.z          = state.z;
+    kin_msg.altitude   = state.altitude;
+    w.kin->write(&kin_msg);
+
+    // ── F16AeroStateTopic ──────────────────────────────────
+    F16AeroState aero_msg;
+    aero_msg.packet_id     = state.packet_id;
+    aero_msg.alpha         = state.alpha;
+    aero_msg.beta          = state.beta;
+    aero_msg.mach          = compute_mach(speed, state.altitude);
+    aero_msg.speed_kts     = speed * 1.94384f;
+    aero_msg.nz            = compute_nz(state, speed);
+    aero_msg.system_active = state.system_active;
+    aero_msg.landing_mode  = state.landing_mode;
+    aero_msg.status_msg    = state.status_msg; // char[64] → std::string
+    w.aero->write(&aero_msg);
+
+    // ── F16ActuatorsTopic ──────────────────────────────────
+    F16Actuators act_msg;
+    act_msg.packet_id = state.packet_id;
+    act_msg.ele       = act.ele;
+    act_msg.ail       = act.ail;
+    act_msg.rud       = act.rud;
+    act_msg.lef       = act.lef;
+    act_msg.thr       = act.thr;
+    w.act->write(&act_msg);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(50)); // ~20 Hz
   }
 }
 
+// =========================================================================
+// main
+// =========================================================================
 int main() {
-  // 1. DDS Setup
+  // ── 1. DDS Participant ────────────────────────────────────────────────
   DomainParticipantQos pqos;
-  pqos.name("Pilot_Node_F35");
+  pqos.name("F16_Pilot_Node");
   pqos.properties().properties().emplace_back(
       "fastdds.statistics",
       "HISTORY_LATENCY;NETWORK_LATENCY;PUBLICATION_THROUGHPUT;"
@@ -61,183 +119,159 @@ int main() {
 
   DomainParticipant *participant =
       DomainParticipantFactory::get_instance()->create_participant(0, pqos);
-  if (participant == nullptr)
-    return 1;
+  if (participant == nullptr) return 1;
 
-  auto *stat_participant =
-      eprosima::fastdds::statistics::dds::DomainParticipant::narrow(
-          participant);
-  if (stat_participant != nullptr) {
-    stat_participant->enable_statistics_datawriter(
+  auto *stat_p =
+      eprosima::fastdds::statistics::dds::DomainParticipant::narrow(participant);
+  if (stat_p != nullptr) {
+    stat_p->enable_statistics_datawriter(
         eprosima::fastdds::statistics::PUBLICATION_THROUGHPUT_TOPIC,
         eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
-    stat_participant->enable_statistics_datawriter(
+    stat_p->enable_statistics_datawriter(
         eprosima::fastdds::statistics::NETWORK_LATENCY_TOPIC,
         eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
-    stat_participant->enable_statistics_datawriter(
+    stat_p->enable_statistics_datawriter(
         eprosima::fastdds::statistics::HISTORY_LATENCY_TOPIC,
         eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
-    stat_participant->enable_statistics_datawriter(
+    stat_p->enable_statistics_datawriter(
         eprosima::fastdds::statistics::HEARTBEAT_COUNT_TOPIC,
         eprosima::fastdds::statistics::dds::STATISTICS_DATAWRITER_QOS);
   }
 
-  TypeSupport type(new SystemStatsPubSubType());
-  type.register_type(participant);
+  // ── 2. Register 3 types ───────────────────────────────────────────────
+  TypeSupport type_kin (new F16KinematicsPubSubType());
+  TypeSupport type_aero(new F16AeroStatePubSubType());
+  TypeSupport type_act (new F16ActuatorsPubSubType());
+  type_kin .register_type(participant);
+  type_aero.register_type(participant);
+  type_act .register_type(participant);
 
+  // ── 3. Publisher + 3 Topics + 3 DataWriters ───────────────────────────
   Publisher *pub = participant->create_publisher(PUBLISHER_QOS_DEFAULT);
-  Topic *topic = participant->create_topic(
-      "TelemetryTopic", type.get_type_name(), TOPIC_QOS_DEFAULT);
 
+  // DEADLINE QoS: 50 ms (= 20 Hz publish cycle)
   DataWriterQos wqos = DATAWRITER_QOS_DEFAULT;
   wqos.reliability().kind = RELIABLE_RELIABILITY_QOS;
-  // DEADLINE QoS: il middleware avvisa se l'aggiornamento supera i 50ms
-  wqos.deadline().period = eprosima::fastdds::dds::Duration_t(0, 50'000'000);
+  wqos.deadline().period  = Duration_t(0, 50'000'000);
   wqos.properties().properties().emplace_back(
       "fastdds.statistics", "PUBLICATION_THROUGHPUT;HISTORY_LATENCY");
 
-  DataWriter *writer = pub->create_datawriter(topic, wqos);
-  if (writer == nullptr)
-    return 1;
+  Topic *topic_kin  = participant->create_topic(
+      "F16KinematicsTopic",  type_kin .get_type_name(), TOPIC_QOS_DEFAULT);
+  Topic *topic_aero = participant->create_topic(
+      "F16AeroStateTopic",   type_aero.get_type_name(), TOPIC_QOS_DEFAULT);
+  Topic *topic_act  = participant->create_topic(
+      "F16ActuatorsTopic",   type_act .get_type_name(), TOPIC_QOS_DEFAULT);
 
-  // =========================================================================
-  // 2. Inizializzazione FCC — Assetto "Grounded" corretto
-  //
-  // BUG FIX: lo stato iniziale deve rispecchiare un aereo FERMO IN PISTA:
-  //   - landing_mode = true  → ILS/ground logic attiva, GPWS disabilitato
-  //   - system_active = false → motori SPENTI (il pilota preme E per accendere)
-  //   - altitude = 0          → a terra
-  // =========================================================================
+  DataWriter *writer_kin  = pub->create_datawriter(topic_kin,  wqos);
+  DataWriter *writer_aero = pub->create_datawriter(topic_aero, wqos);
+  DataWriter *writer_act  = pub->create_datawriter(topic_act,  wqos);
+  if (!writer_kin || !writer_aero || !writer_act) return 1;
+
+  // ── 4. FCC initial state (grounded, engines off) ──────────────────────
   FlightState initial_state;
-  initial_state.system_active = false; // Motori spenti all'avvio — premi E
-  initial_state.landing_mode = true;   // ILS + ground mode attivo
-  initial_state.altitude = 0.0f;
+  initial_state.system_active = false;
+  initial_state.landing_mode  = true;
+  initial_state.altitude      = 0.0f;
   strncpy(initial_state.status_msg, "ENGINES SHUT DOWN", 63);
   g_fcc.set_initial_state(initial_state);
-  std::cout << "[FBW INIT] Stato iniziale spawn: landing_mode=true, "
-               "engines=off, alt=0"
-            << std::endl;
+  std::cout << "[FBW INIT] landing_mode=true, engines=off, alt=0\n";
 
-  // =========================================================================
-  // 3. Avvio thread DDS (solo publish, senza fisica)
-  // =========================================================================
-  std::thread dds_thread(dds_publish_thread, writer);
+  // ── 5. DDS publish thread (20 Hz, non-blocking for render) ───────────
+  std::thread dds_thread(dds_publish_thread,
+                         F16Writers{writer_kin, writer_aero, writer_act});
 
-  // =========================================================================
-  // 4. Loop di rendering — 60 FPS
-  //
-  // Il FCC viene chiamato QUI, non in un thread separato.
-  // Questo elimina i salti discreti di posizione che causavano il
-  // movimento "a scatti" quando fisica (100Hz) e render (60Hz) erano
-  // su thread diversi.
-  //
-  // Flusso per ogni frame:
-  //   A. Leggi stato FCC → aggiorna PlaneData per audio e rendering
-  //   B. HandleInput → cattura tasti, audio, scrive PilotInput
-  //   C. g_fcc.step(pilot, dt) → FCC esegue physics + control law
-  //   D. Leggi stato FCC aggiornato → aggiorna PlaneData per disegno
+  // ── 6. Render loop — 60 FPS ───────────────────────────────────────────
+  // Flow per frame:
+  //   A. Read FCC state → populate PlaneData (for audio in HandleInput)
+  //   B. HandleInput → keys, audio, writes PilotInput
+  //   C. g_fcc.step(pilot, dt) → physics + control law
+  //   D. Read updated FCC state → populate PlaneData for rendering
   //   E. Draw
-  // =========================================================================
-  FlightDisplay display(1000, 900, "Leonardo Flight System - FBW");
-  PlaneData Aereo;
-  PilotInput pilot_input{};
+  FlightDisplay display(1000, 900, "F-16 Leo Flight System FBW");
+  PlaneData     Aereo;
+  PilotInput    pilot_input{};
 
-  Aereo.roll = 0.0f;
-  Aereo.pitch = 0.0f;
-  Aereo.yaw = 0.0f;
-  Aereo.altitude = 0.0f;
-  Aereo.x = 0.0f;
-  Aereo.z = 0.0f;
-  Aereo.speed = 0.0f;
-  Aereo.system_active = false; // Motori spenti, coerente con spawn state
-  Aereo.landing_mode = true; // Ground mode attivo: carrello giù, flap estratti
+  int   debug_frame_count = 0;
+  float debug_elapsed     = 0.0f;
 
-  int debug_frame_count = 0;
-  float debug_elapsed = 0.0f;
+  // Lambda: populate Aereo from FCC state (deduplicates A and D)
+  auto populate_plane_data = [&]() {
+    FlightState state = g_fcc.get_state();
+    ActuatorOut act   = g_fcc.get_actuator_state();
+
+    Aereo.roll       = state.roll;
+    Aereo.pitch      = state.pitch;
+    Aereo.yaw        = state.yaw;
+    Aereo.roll_rate  = state.roll_rate;
+    Aereo.pitch_rate = state.pitch_rate;
+    Aereo.yaw_rate   = state.yaw_rate;
+    Aereo.u          = state.u;
+    Aereo.v          = state.v;
+    Aereo.w          = state.w;
+    Aereo.alpha      = state.alpha;
+    Aereo.beta       = state.beta;
+    Aereo.altitude   = state.altitude;
+    Aereo.x          = state.x;
+    Aereo.z          = state.z;
+    Aereo.speed      = std::sqrt(state.u * state.u +
+                                 state.v * state.v +
+                                 state.w * state.w);
+    Aereo.mach       = compute_mach(Aereo.speed, state.altitude);
+    Aereo.speed_kts  = Aereo.speed * 1.94384f;
+    Aereo.nz         = compute_nz(state, Aereo.speed);
+
+    Aereo.act_ele = act.ele;
+    Aereo.act_ail = act.ail;
+    Aereo.act_rud = act.rud;
+    Aereo.act_lef = act.lef;
+    Aereo.act_thr = act.thr;
+
+    Aereo.system_active = state.system_active;
+    Aereo.landing_mode  = state.landing_mode;
+    strncpy(Aereo.status_msg, state.status_msg, 63);
+    Aereo.status_msg[63] = '\0';
+  };
 
   while (display.IsActive()) {
     float dt = GetFrameTime();
-
-    // FIX MICRO-STUTTER: Fissa esattamente dt a 1/60s se le fluttuazioni sono
-    // minime.
-    if (std::abs(dt - (1.0f / 60.0f)) < 0.005f) {
-      dt = 1.0f / 60.0f;
-    } else if (dt > 0.1f) {
-      dt = 0.1f;
-    }
+    if (std::abs(dt - (1.0f / 60.0f)) < 0.005f) dt = 1.0f / 60.0f;
+    else if (dt > 0.1f)                           dt = 0.1f;
 
     debug_elapsed += dt;
     debug_frame_count++;
-
-    // Debug ogni 2 secondi
     if (debug_elapsed >= 2.0f) {
       g_fcc.debug_print();
-      // Log aggiuntivo: input corrente del pilota
       std::cout << "  [INPUT] roll=" << pilot_input.stick_roll
                 << " pitch=" << pilot_input.stick_pitch
                 << " thr=" << pilot_input.throttle_input
                 << " eng=" << pilot_input.engines_on
                 << " rdy=" << pilot_input.engine_ready
                 << " land=" << pilot_input.landing_mode
-                << " frame=" << debug_frame_count << " dt=" << std::fixed
-                << std::setprecision(4) << dt << std::endl;
-      debug_elapsed = 0.0f;
+                << " frame=" << debug_frame_count
+                << " dt=" << std::fixed << std::setprecision(4) << dt << '\n';
+      debug_elapsed     = 0.0f;
+      debug_frame_count = 0;
     }
 
-    // A. Leggi stato pre-step dal FCC (per condizioni audio in HandleInput)
-    {
-      FlightState state = g_fcc.get_state();
-      Aereo.roll = state.roll;
-      Aereo.pitch = state.pitch;
-      Aereo.yaw = state.yaw;
-      Aereo.altitude = state.altitude;
-      Aereo.speed =
-          std::sqrt(state.u * state.u + state.v * state.v + state.w * state.w);
-      Aereo.x = state.x;
-      Aereo.z = state.z;
-      Aereo.system_active = state.system_active;
-      Aereo.landing_mode = state.landing_mode;
-      strncpy(Aereo.status_msg, state.status_msg, 63);
-      Aereo.status_msg[63] = '\0';
-    }
-
-    // B. HandleInput: tasti, audio, animazioni → scrive in pilot_input
-    display.HandleInput(Aereo, pilot_input);
-
-    // C. FCC fa il calcolo in base alle modifiche delle surface fatte in law e
-    // le applica o fa entrare l'autopilota
-    g_fcc.step(pilot_input, dt);
-
-    // D. Leggi stato aggiornato per il disegno
-    {
-      FlightState state = g_fcc.get_state();
-      Aereo.roll = state.roll;
-      Aereo.pitch = state.pitch;
-      Aereo.yaw = state.yaw;
-      Aereo.altitude = state.altitude;
-      Aereo.speed =
-          std::sqrt(state.u * state.u + state.v * state.v + state.w * state.w);
-      Aereo.x = state.x;
-      Aereo.z = state.z;
-      Aereo.system_active = state.system_active;
-      Aereo.landing_mode = state.landing_mode;
-      strncpy(Aereo.status_msg, state.status_msg, 63);
-      Aereo.status_msg[63] = '\0';
-    }
-
-    // E. Rendering 3D e HUD
-    display.Draw(Aereo);
+    populate_plane_data();            // A
+    display.HandleInput(Aereo, pilot_input); // B
+    g_fcc.step(pilot_input, dt);      // C
+    populate_plane_data();            // D
+    display.Draw(Aereo);              // E
   }
 
-  // =========================================================================
-  // 5. Shutdown ordinato
-  // =========================================================================
+  // ── 7. Orderly shutdown ───────────────────────────────────────────────
   g_running.store(false, std::memory_order_relaxed);
   dds_thread.join();
 
-  pub->delete_datawriter(writer);
+  pub->delete_datawriter(writer_kin);
+  pub->delete_datawriter(writer_aero);
+  pub->delete_datawriter(writer_act);
   participant->delete_publisher(pub);
-  participant->delete_topic(topic);
+  participant->delete_topic(topic_kin);
+  participant->delete_topic(topic_aero);
+  participant->delete_topic(topic_act);
   DomainParticipantFactory::get_instance()->delete_participant(participant);
 
   return 0;

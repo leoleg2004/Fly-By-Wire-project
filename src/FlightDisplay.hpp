@@ -3,79 +3,100 @@
 #include "FBW_Types.hpp"
 #include "raylib.h"
 #include <string>
-#include <vector>
 
-// Struttura dati per il trasferimento della telemetria al motore grafico
+// Telemetry transfer struct — populated from FlightState + ActuatorOut each frame
 struct PlaneData {
-  float roll = 0.0f;
+  // Attitude (rad)
+  float roll  = 0.0f;
   float pitch = 0.0f;
-  float yaw = 0.0f;
-  float altitude = 5000.0f;
-  // Coordinate spaziali
-  float x = 0.0f;
-  float z = 0.0f;
-  float speed = 0.0f;
-  char status_msg[64]; // Buffer messaggi strumentali
-  bool system_active = false;
-  bool landing_mode = true; // Disabilita i controlli FCS
+  float yaw   = 0.0f;
+
+  // Angular rates (rad/s)
+  float roll_rate  = 0.0f;
+  float pitch_rate = 0.0f;
+  float yaw_rate   = 0.0f;
+
+  // Body velocities (m/s)
+  float u = 0.0f, v = 0.0f, w = 0.0f;
+
+  // Aerodynamic angles (rad)
+  float alpha = 0.0f; // AoA
+  float beta  = 0.0f; // sideslip
+
+  // Navigation
+  float altitude = 0.0f; // m MSL
+  float x = 0.0f;        // m East
+  float z = 0.0f;        // m North
+
+  // Derived kinematic quantities
+  float speed     = 0.0f; // m/s total
+  float speed_kts = 0.0f; // CAS knots
+  float mach      = 0.0f; // Mach number
+  float nz        = 1.0f; // Load factor (g)
+
+  // Actuator deflections (deg)
+  float act_ele = 0.0f;
+  float act_ail = 0.0f;
+  float act_rud = 0.0f;
+  float act_lef = 0.0f;
+  float act_thr = 0.0f;
+
+  // System state
+  char status_msg[64] = {};
+  bool system_active  = false;
+  bool landing_mode   = true;
 };
 
 class FlightDisplay {
-
-private:
-  ModelAnimation *modelAnims;
-  int animsCount = 0;
-  float gearFrame = 0.0f; // Stato animazione carrello
-  bool gearOpen = false;
-  // TODO: Implementazione superfici in modello sorgente
-  // Variabili d'assetto superfici (Flap/Alettoni)
-  int flapFrame = 0;
-  bool flapOpen = false;
-
 public:
   FlightDisplay(int width, int height, const std::string &title);
-  ~FlightDisplay(); // Distruttore per il clean-up dei modelli caricati
+  ~FlightDisplay();
 
   bool IsActive();
-  // Legge i tasti, aggiorna audio/animazioni, scrive i comandi pilota in
-  // pilot_out
+  // Reads keys, updates audio/animations, writes pilot commands to pilot_out
   void HandleInput(PlaneData &data, PilotInput &pilot_out);
   void Draw(const PlaneData &data);
 
 private:
   Camera3D camera;
-  Vector3 cameraPositionLag;
+  Vector3  cameraPositionLag;
+
+  // Sky
   Texture2D skyTexture;
-  Model skyModel;
-  bool skyLoaded;
-  Model mapModel; // Modello del suolo
-  bool mapLoaded; // Flag di caricamento terreno
-                  // Model terrainModel;
-                  //    bool terrainLoaded;
-  Model modelF35; // Modello 3D principale
-  Texture2D textureF35;
-  bool modelLoaded; // Flag validità mesh
-  // --- SISTEMA AUDIO ---
-  Sound sndEngineStart;
-  Sound sndEngineLoop;
-  bool isEngineStarting;
-  Sound sndGear;
-  Sound sndLanding;
-  Sound sndWarning;
-  Sound sndPullUp;
-  Sound sndCaution;
-  Sound sndAir;
-  Sound sndEngineDown;
+  Model     skyModel;
+  bool      skyLoaded = false;
 
-  // Metodi privati di rendering e aggiornamento
+  // Terrain / aerodrome
+  Model mapModel;
+  bool  mapLoaded = false;
+
+  // Aircraft model
+  Model          modelF16;
+  ModelAnimation *modelAnims  = nullptr;
+  int             animsCount  = 0;
+  float           gearFrame   = 0.0f;
+  bool            gearOpen    = false;
+  bool            modelLoaded = false;
+
+  // Audio
+  Sound sndEngineStart, sndEngineLoop, sndEngineDown;
+  Sound sndGear, sndLanding, sndWarning, sndPullUp, sndCaution, sndAir;
+
+  // Private rendering helpers
   void UpdateChaseCamera(const PlaneData &data);
-  void DrawUltimateF35(const PlaneData &data);
-  void DrawMapWorld(const PlaneData &data); // Richiede offset posizionale
-  void DrawHUD(const PlaneData &data);
-  void UpdateAnimations();
+  void DrawAircraftModel(const PlaneData &data);
+  void DrawMapWorld(const PlaneData &data);
   void DrawSky(Vector3 cameraPosition);
+  void UpdateAnimations();
 
-  void DrawGround(const PlaneData &data);
+  // HUD elements
+  void DrawHUD(const PlaneData &data);
+  void DrawPitchLadder(const PlaneData &data);
+  void DrawSpeedTape(const PlaneData &data);
+  void DrawAltitudeTape(const PlaneData &data);
+  void DrawHeadingTape(const PlaneData &data);
+  void DrawAlphaGMeter(const PlaneData &data);
+  void DrawWarnings(const PlaneData &data);
 };
 
 #endif

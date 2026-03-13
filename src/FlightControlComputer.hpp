@@ -15,12 +15,22 @@
 //
 // Ref: NASA TP-1538, Stevens & Lewis "Aircraft Control and Simulation"
 // =========================================================================
+// Actuator positions exposed to rendering layer
+struct ActuatorOut {
+  float ele; // [deg] stabilatore
+  float ail; // [deg] flaperon
+  float rud; // [deg] timone
+  float lef; // [deg] LEF
+  float thr; // [0,1] throttle
+};
+
 class FlightControlComputer {
 public:
   FlightControlComputer();
 
   void step(const PilotInput &input, float dt);
   FlightState get_state() const;
+  ActuatorOut get_actuator_state() const;
   void set_initial_state(const FlightState &state);
   void debug_print() const;
 
