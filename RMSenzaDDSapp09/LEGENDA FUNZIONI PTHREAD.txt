@@ -120,3 +120,10 @@ Ecco cosa significa ogni singolo componente:
 Il Ring Buffer per il Real-Time: Ogni volta che avviene un Context Switch, il kernel genera un minuscolo pacchetto di dati (contenente il microsecondo esatto, l'ID del thread, il core della CPU e la priorità). Per non rallentare i tuoi task Real-Time, il kernel non scrive subito su disco, ma salva tutto in un Ring Buffer (un buffer circolare in RAM allocato in precedenza).
 
 Estrazione: Alla fine, trace-cmd preleva i dati da questo buffer circolare in memoria e li riversa fisicamente sull'hard disk nel file trace.dat.
+
+------------------------------------------------------------------------------------------------------------------------bisogna entrare nella cartella build dove si crea il trace.dat dell'esecuzione
+COMANDO PER TRQASOFRMARE IL TRACE.DAT IN TRACE.TXT
+trace-cmd report > trace_output.txt
+
+COMANDO PER PRENDERE PROPRIO L'ESECUZIONE DEI MIEI THREAD
+sudo trace-cmd report | grep -E "Activity_1|Activity_2" | sudo tee trace_THREAD.txt > /dev/null

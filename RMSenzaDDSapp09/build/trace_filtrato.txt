@@ -1,0 +1,324 @@
+      Activity_1-17130 [006]  8620.709579: sched_switch:         app09b:17130 [120] S ==> migration/6:53 [0]
+      Activity_2-17131 [006]  8620.709753: sched_switch:         app09b:17131 [120] S ==> migration/6:53 [0]
+      Activity_2-17131 [001]  8620.711307: sched_wakeup:         kworker/1:1:14636 [120] CPU:001
+      Activity_1-17130 [000]  8620.804356: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8620.804358: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8620.804650: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8620.906759: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8620.906761: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8620.907055: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8620.949305: sched_wakeup:         kworker/0:1:14412 [120] CPU:000
+      Activity_1-17130 [000]  8621.009151: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.009153: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.009692: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.111561: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.111562: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.111837: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8621.206463: sched_switch:         Activity_2:17131 [80] S ==> kworker/1:1:14636 [120]
+      Activity_1-17130 [000]  8621.213958: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.213964: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.214255: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.253850: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.253851: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.253887: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.253922: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.253923: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.253959: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.254521: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.254522: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.254915: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.316356: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.316357: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.316913: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.418755: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.418756: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.419034: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+          <idle>-0     [001]  8621.509824: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8621.509839: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+      Activity_1-17130 [000]  8621.521166: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.521167: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.521467: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.544646: sched_wakeup:         migration/0:18 [0] CPU:000
+      Activity_1-17130 [000]  8621.544648: sched_switch:         Activity_1:17130 [98] R ==> migration/0:18 [0]
+     migration/0-18    [000]  8621.544650: sched_switch:         migration/0:18 [0] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8621.547645: sched_wakeup:         migration/1:23 [0] CPU:001
+      Activity_2-17131 [001]  8621.547647: sched_switch:         Activity_2:17131 [80] R ==> migration/1:23 [0]
+     migration/1-23    [001]  8621.547650: sched_switch:         migration/1:23 [0] S ==> Activity_2:17131 [80]
+      Activity_1-17130 [000]  8621.623573: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8621.623574: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8621.623873: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.659244: sched_switch:         Activity_1:17130 [98] R ==> kworker/0:1:14412 [120]
+     kworker/0:1-14412 [000]  8621.659265: sched_switch:         kworker/0:1:14412 [120] I ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8621.678309: sched_switch:         Activity_1:17130 [98] S ==> swapper/0:0 [120]
+      Activity_2-17131 [001]  8621.975209: sched_switch:         Activity_2:17131 [80] S ==> kworker/1:1:14636 [120]
+          <idle>-0     [001]  8622.309915: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8622.309929: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.405333: sched_wakeup:         kworker/1:1:14636 [120] CPU:001
+          <idle>-0     [000]  8622.509709: sched_wakeup:         Activity_1:17130 [98] CPU:000
+          <idle>-0     [000]  8622.509712: sched_switch:         swapper/0:0 [120] R ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.533343: sched_wakeup:         kworker/0:1:14412 [120] CPU:000
+      Activity_1-17130 [000]  8622.545165: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.545166: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.545682: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.626918: sched_wakeup:         irq/9-acpi:81 [49] CPU:000
+      Activity_1-17130 [000]  8622.626920: sched_switch:         Activity_1:17130 [98] R ==> irq/9-acpi:81 [49]
+      irq/9-acpi-81    [000]  8622.627068: sched_switch:         irq/9-acpi:81 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.627113: sched_wakeup:         irq/9-acpi:81 [49] CPU:000
+      Activity_1-17130 [000]  8622.627114: sched_switch:         Activity_1:17130 [98] R ==> irq/9-acpi:81 [49]
+      irq/9-acpi-81    [000]  8622.627241: sched_switch:         irq/9-acpi:81 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.628887: sched_wakeup:         irq/9-acpi:81 [49] CPU:000
+      Activity_1-17130 [000]  8622.628888: sched_switch:         Activity_1:17130 [98] R ==> irq/9-acpi:81 [49]
+      irq/9-acpi-81    [000]  8622.628989: sched_switch:         irq/9-acpi:81 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.647591: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.647593: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.647880: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.647895: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.647895: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.648117: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.648254: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.648255: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.648833: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.648940: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.648941: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.649001: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.649310: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.649312: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.649547: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.649589: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.649592: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.649667: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.650038: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.650039: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.650268: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.658072: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.658072: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.658542: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.677524: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.677525: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.677596: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.677918: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.677919: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.678154: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.687244: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.687244: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.687478: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8622.700064: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.700067: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.700157: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.700914: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.700915: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.700988: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.701239: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.701240: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.701313: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.701628: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.701629: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.701704: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.701784: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.701784: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.701865: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.701937: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.701937: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.702011: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.702102: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.702103: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.702177: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.702708: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.702708: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.702783: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.702892: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.702892: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.702967: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.703065: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.703065: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.703141: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.703213: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.703214: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.703295: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.703372: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.703373: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.703448: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.703593: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.703593: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.703668: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8622.704240: sched_wakeup:         irq/172-AudioDS:1021 [49] CPU:001
+      Activity_2-17131 [001]  8622.704240: sched_switch:         Activity_2:17131 [80] R ==> irq/172-AudioDS:1021 [49]
+ irq/172-AudioDS-1021  [001]  8622.704315: sched_switch:         irq/172-AudioDS:1021 [49] S ==> Activity_2:17131 [80]
+      Activity_1-17130 [000]  8622.749961: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.749962: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.750213: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8622.815368: sched_switch:         Activity_2:17131 [80] S ==> kworker/1:1:14636 [120]
+      Activity_1-17130 [000]  8622.954795: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.954797: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.955347: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.955709: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.955710: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.955939: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.956264: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.956265: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.956760: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.956805: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.956805: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.956881: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.959690: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.959691: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.959921: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.968385: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.968386: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.968860: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8622.994414: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8622.994416: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8622.994644: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8623.057174: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8623.057175: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8623.057685: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+          <idle>-0     [001]  8623.109851: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8623.109867: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+      Activity_1-17130 [000]  8623.159586: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8623.159588: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8623.159874: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8623.238017: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8623.238019: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8623.238050: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8623.238074: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8623.238074: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8623.238110: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8623.238727: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8623.238727: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8623.239387: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8623.261967: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8623.261969: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8623.262251: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8623.301346: sched_wakeup:         kworker/1:1:14636 [120] CPU:001
+      Activity_1-17130 [000]  8623.364371: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8623.364373: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8623.364661: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8623.432490: sched_switch:         Activity_1:17130 [98] R ==> kworker/0:1:14412 [120]
+     kworker/0:1-14412 [000]  8623.432521: sched_switch:         kworker/0:1:14412 [120] I ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8623.458589: sched_switch:         Activity_1:17130 [98] S ==> swapper/0:0 [120]
+      Activity_2-17131 [001]  8623.580123: sched_switch:         Activity_2:17131 [80] S ==> kworker/1:1:14636 [120]
+          <idle>-0     [001]  8623.909875: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8623.909882: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8623.941360: sched_wakeup:         kworker/1:1:14636 [120] CPU:001
+          <idle>-0     [000]  8624.309753: sched_wakeup:         Activity_1:17130 [98] CPU:000
+          <idle>-0     [000]  8624.309769: sched_switch:         swapper/0:0 [120] R ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8624.326362: sched_wakeup:         kworker/0:1:14412 [120] CPU:000
+      Activity_1-17130 [000]  8624.388381: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8624.388383: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8624.388668: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8624.408655: sched_switch:         Activity_2:17131 [80] S ==> kworker/1:1:14636 [120]
+      Activity_1-17130 [000]  8624.490803: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8624.490807: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8624.491095: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8624.491097: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8624.491098: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8624.491340: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8624.593194: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8624.593197: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8624.593486: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8624.695587: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8624.695588: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8624.695865: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+          <idle>-0     [001]  8624.709878: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8624.709895: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+      Activity_1-17130 [000]  8624.797989: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8624.797991: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8624.798268: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8624.900407: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8624.900409: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8624.900705: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8625.002786: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8625.002788: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8625.003069: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8625.003070: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8625.003071: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8625.003312: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8625.105182: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8625.105184: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8625.105457: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8625.175440: sched_switch:         Activity_2:17131 [80] S ==> swapper/1:0 [120]
+      Activity_1-17130 [000]  8625.207590: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8625.207593: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8625.208132: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8625.259713: sched_switch:         Activity_1:17130 [98] S ==> kworker/0:1:14412 [120]
+          <idle>-0     [001]  8625.509975: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8625.509990: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8625.541385: sched_wakeup:         kworker/1:1:14636 [120] CPU:001
+      Activity_2-17131 [001]  8625.547713: sched_wakeup:         migration/1:23 [0] CPU:001
+      Activity_2-17131 [001]  8625.547717: sched_switch:         Activity_2:17131 [80] R ==> migration/1:23 [0]
+     migration/1-23    [001]  8625.547721: sched_switch:         migration/1:23 [0] S ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8626.009975: sched_switch:         Activity_2:17131 [80] S ==> kworker/1:1:14636 [120]
+          <idle>-0     [000]  8626.109779: sched_wakeup:         Activity_1:17130 [98] CPU:000
+          <idle>-0     [000]  8626.109789: sched_switch:         swapper/0:0 [120] R ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.129198: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.129202: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.129521: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.181394: sched_wakeup:         kworker/0:1:14412 [120] CPU:000
+      Activity_1-17130 [000]  8626.231597: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.231599: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.231891: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+          <idle>-0     [001]  8626.309904: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8626.309920: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+      Activity_1-17130 [000]  8626.333992: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.333993: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.334268: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.334339: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.334339: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.334609: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.334610: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.334611: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.334841: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.335164: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.335164: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.335733: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.336034: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.336034: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.336267: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.353992: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.353993: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.354221: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8626.374395: sched_wakeup:         kworker/1:1:14636 [120] CPU:001
+      Activity_1-17130 [000]  8626.436420: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.436421: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.436693: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.538798: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.538799: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.539299: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.631724: sched_wakeup:         irq/9-acpi:81 [49] CPU:000
+      Activity_1-17130 [000]  8626.631725: sched_switch:         Activity_1:17130 [98] R ==> irq/9-acpi:81 [49]
+      irq/9-acpi-81    [000]  8626.631858: sched_switch:         irq/9-acpi:81 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.631904: sched_wakeup:         irq/9-acpi:81 [49] CPU:000
+      Activity_1-17130 [000]  8626.631905: sched_switch:         Activity_1:17130 [98] R ==> irq/9-acpi:81 [49]
+      irq/9-acpi-81    [000]  8626.632034: sched_switch:         irq/9-acpi:81 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.633693: sched_wakeup:         irq/9-acpi:81 [49] CPU:000
+      Activity_1-17130 [000]  8626.633694: sched_switch:         Activity_1:17130 [98] R ==> irq/9-acpi:81 [49]
+      irq/9-acpi-81    [000]  8626.633797: sched_switch:         irq/9-acpi:81 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.641207: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.641208: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.641486: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.743611: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.743613: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.743924: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_2-17131 [001]  8626.775360: sched_switch:         Activity_2:17131 [80] S ==> kworker/1:1:14636 [120]
+      Activity_1-17130 [000]  8626.846003: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.846006: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.846328: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8626.948412: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8626.948415: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8626.949122: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8627.050803: sched_wakeup:         irq/171-rtw88_p:605 [49] CPU:000
+      Activity_1-17130 [000]  8627.050804: sched_switch:         Activity_1:17130 [98] R ==> irq/171-rtw88_p:605 [49]
+ irq/171-rtw88_p-605   [000]  8627.051082: sched_switch:         irq/171-rtw88_p:605 [49] S ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8627.059765: sched_switch:         Activity_1:17130 [98] R ==> kworker/0:1:14412 [120]
+     kworker/0:1-14412 [000]  8627.059853: sched_switch:         kworker/0:1:14412 [120] I ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8627.087160: sched_switch:         Activity_1:17130 [98] S ==> swapper/0:0 [120]
+          <idle>-0     [001]  8627.110005: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8627.110017: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+      Activity_2-17131 [001]  8627.269412: sched_wakeup:         kworker/1:1:14636 [120] CPU:001
+      Activity_2-17131 [001]  8627.607242: sched_switch:         Activity_2:17131 [80] S ==> kworker/1:1:14636 [120]
+          <idle>-0     [001]  8627.761035: sched_wakeup:         Activity_2:17131 [80] CPU:001
+          <idle>-0     [001]  8627.761040: sched_switch:         swapper/1:0 [120] R ==> Activity_2:17131 [80]
+          <idle>-0     [000]  8627.761137: sched_wakeup:         Activity_1:17130 [98] CPU:000
+      Activity_2-17131 [001]  8627.761137: sched_switch:         Activity_2:17131 [80] X ==> swapper/1:0 [120]
+          <idle>-0     [000]  8627.761144: sched_switch:         swapper/0:0 [120] R ==> Activity_1:17130 [98]
+      Activity_1-17130 [000]  8627.761211: sched_switch:         Activity_1:17130 [98] X ==> swapper/0:0 [120]
