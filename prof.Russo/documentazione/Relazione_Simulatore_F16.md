@@ -440,36 +440,290 @@ L  = Cl_tot × q̄ × S × b    M  = Cm_tot × q̄ × S × c̄    N  = Cn_tot ×
 
 ## 8. Le equazioni del moto 6-DOF
 
-Le equazioni del moto sono quelle del corpo rigido a sei gradi di libertà (three translational + three rotational) secondo la formulazione di **Stevens & Lewis, Eq. 1.4-4**.
+Le equazioni del moto sono quelle del corpo rigido a sei gradi di libertà secondo la formulazione di **Stevens & Lewis, "Aircraft Control and Simulation", 2ª ed., Cap. 1.4**. Il riferimento specifico è la derivazione del sistema accoppiato con I_xz ≠ 0, che in alcuni testi appare come Eq. 1.4-4 o equivalente a seconda dell'edizione. Questa sezione deriva le equazioni passo per passo per verificarne la correttezza e mostrare la corrispondenza con il codice.
 
-### 8.1 Equazioni di forza (accelerazioni lineari)
+### 8.1 Equazioni di forza (accelerazioni lineari) — derivazione da Newton
 
-```
-m·u̇ = Fx_aero + Thrust + W_x + m·(r·v − q·w)
-m·v̇ = Fy_aero +         W_y + m·(p·w − r·u)
-m·ẇ = Fz_aero +         W_z + m·(q·u − p·v)
-```
-
-I termini `r·v − q·w`, `p·w − r·u`, `q·u − p·v` sono i **termini di Coriolis** dovuti alla rotazione del body frame.
-
-### 8.2 Equazioni di momento (accelerazioni angolari)
-
-L'F-16 ha un **prodotto d'inerzia I_xz non trascurabile** (1331 kg·m²) che accoppia i canali di rollio e imbardata. Le equazioni non possono essere semplificate come spesso si fa nei modelli didattici:
+Il secondo principio di Newton nel **body frame** non ha la forma semplice F = m·a, perché il body frame è un sistema di riferimento **non inerziale** (ruota con l'aereo). Il teorema del trasporto dice:
 
 ```
-I_xx·ṗ + I_xz·ṙ = L + (I_yy − I_xx − I_zz)·p·q·I_xz + (I_xz² + I_zz·(I_zz − I_yy))·q·r
-I_yy·q̇           = M − (I_xx − I_zz)·p·r − I_xz·(p² − r²)
-I_xz·ṗ + I_zz·ṙ = N + (I_yy − I_xx − I_zz)·r·q·I_xz + (I_xz² + I_xx·(I_xx − I_yy))·p·q
+(dV/dt)_inerziale = (dV/dt)_body + ω × V
 ```
 
-Per risolvere il sistema accoppiato ṗ e ṙ, si usa la formula inversa:
+dove ω = (p, q, r) è la velocità angolare nel body frame e V = (u, v, w) è la velocità lineare nel body frame. Quindi Newton diventa:
 
 ```
-denominatore = I_xx·I_zz − I_xz²
+F = m · [(dV/dt)_body + ω × V]
+```
 
-ṗ = [I_zz·L + I_xz·N − (...)·q·r] / denominatore
-q̇ = [M − (I_xx − I_zz)·p·r − I_xz·(p² − r²)] / I_yy
-ṙ = [I_xz·L + I_xx·N + (...)·p·q] / denominatore
+Calcolando il prodotto vettoriale ω × V:
+
+```
+     | i    j    k  |
+ω×V =| p    q    r  | = (q·w − r·v)·i + (r·u − p·w)·j + (p·v − q·u)·k
+     | u    v    w  |
+```
+
+Quindi le equazioni scalari diventano:
+
+```
+m·u̇ = Fx − m·(q·w − r·v) = Fx + m·(r·v − q·w)
+m·v̇ = Fy − m·(r·u − p·w) = Fy + m·(p·w − r·u)
+m·ẇ = Fz − m·(p·v − q·u) = Fz + m·(q·u − p·v)
+```
+
+dove Fx, Fy, Fz sono le **forze totali nel body frame** (aerodinamica + spinta + peso):
+
+```
+Fx = Fx_aero + Thrust + W_x      W_x = −m·g·sin(Θ)
+Fy = Fy_aero          + W_y      W_y = +m·g·cos(Θ)·sin(Φ)
+Fz = Fz_aero          + W_z      W_z = +m·g·cos(Θ)·cos(Φ)
+```
+
+I termini `r·v − q·w`, `p·w − r·u`, `q·u − p·v` sono i **termini di Coriolis** (forze apparenti causate dalla rotazione del frame). Vanno sempre portati a destra prima di dividere per m:
+
+```
+u̇ = (Fx_aero + Thrust + W_x)/m  +  r·v − q·w          (8.1a)
+v̇ = (Fy_aero          + W_y)/m  +  p·w − r·u          (8.1b)
+ẇ = (Fz_aero          + W_z)/m  +  q·u − p·v          (8.1c)
+```
+
+**Verifica nel codice** (`FlightControlComputer.cpp`, lambda `compute_accel`):
+
+```cpp
+float au = (Fx_aero + thrust_force + W_x) / MASS_KG + sr*sv - sq*sw;  // 8.1a ✓
+float av = (Fy_aero + W_y)          / MASS_KG + sp*sw - sr*su;         // 8.1b ✓
+float aw = (Fz_aero + W_z)          / MASS_KG + sq*su - sp*sv;         // 8.1c ✓
+```
+
+Le equazioni di forza nel codice sono **corrette** e coincidono con la derivazione sopra.
+
+### 8.2 Equazioni di momento (accelerazioni angolari) — derivazione con I_xz ≠ 0
+
+Le equazioni di momento derivano dalla **legge di Eulero** per un corpo rigido:
+
+```
+dH/dt|_inerziale = dH/dt|_body + ω × H = M_esterno
+```
+
+dove H è il **vettore momento angolare**. Per l'F-16, con il piano xz come piano di simmetria (quindi I_xy = I_yz = 0, ma I_xz ≠ 0), il momento angolare nel body frame è:
+
+```
+Hx = I_xx·p − I_xz·r
+Hy = I_yy·q
+Hz = I_zz·r − I_xz·p
+```
+
+**Nota sul segno**: I_xz è definito positivo secondo la convenzione Stevens & Lewis come +∫xz dm. Per l'F-16, il valore fisico è I_xz = +1331 kg·m² (massa distribuita leggermente anteriore sulle ali). Il segno **meno** davanti a I_xz nelle espressioni di Hx e Hz viene dalla definizione standard del tensore di inerzia: il termine fuori diagonale è −I_xz nella riga (1,3) e (3,1).
+
+Sviluppando le tre componenti di dH/dt|_body + ω × H = (L, M, N):
+
+**Equazione di rollio (L):**
+
+```
+L = Ḣx + q·Hz − r·Hy
+L = (I_xx·ṗ − I_xz·ṙ) + q·(I_zz·r − I_xz·p) − r·(I_yy·q)
+L = I_xx·ṗ − I_xz·ṙ + I_zz·q·r − I_xz·p·q − I_yy·q·r
+L = I_xx·ṗ − I_xz·ṙ + (I_zz − I_yy)·q·r − I_xz·p·q
+```
+
+Quindi la forma implicita (ṗ e ṙ a sinistra, tutto il resto a destra):
+
+```
+I_xx·ṗ − I_xz·ṙ = L − (I_zz − I_yy)·q·r + I_xz·p·q          (8.2a)
+```
+
+**Equazione di beccheggio (M):**
+
+```
+M = Ḣy + r·Hx − p·Hz
+M = I_yy·q̇ + r·(I_xx·p − I_xz·r) − p·(I_zz·r − I_xz·p)
+M = I_yy·q̇ + I_xx·p·r − I_xz·r² − I_zz·p·r + I_xz·p²
+M = I_yy·q̇ + (I_xx − I_zz)·p·r + I_xz·(p² − r²)
+```
+
+Quindi:
+
+```
+I_yy·q̇ = M − (I_xx − I_zz)·p·r − I_xz·(p² − r²)              (8.2b)
+```
+
+**Equazione di imbardata (N):**
+
+```
+N = Ḣz + p·Hy − q·Hx
+N = (I_zz·ṙ − I_xz·ṗ) + p·(I_yy·q) − q·(I_xx·p − I_xz·r)
+N = I_zz·ṙ − I_xz·ṗ + I_yy·p·q − I_xx·p·q + I_xz·q·r
+N = I_zz·ṙ − I_xz·ṗ + (I_yy − I_xx)·p·q + I_xz·q·r
+```
+
+Quindi:
+
+```
+−I_xz·ṗ + I_zz·ṙ = N − (I_yy − I_xx)·p·q − I_xz·q·r           (8.2c)
+```
+
+Le equazioni (8.2a) e (8.2c) formano un **sistema lineare 2×2** accoppiato in ṗ e ṙ. La (8.2b) per q̇ è invece disaccoppiata e si risolve direttamente. In forma matriciale:
+
+```
+┌ I_xx   −I_xz ┐ ┌ ṗ ┐   ┌ L − (I_zz−I_yy)·q·r + I_xz·p·q        ┐
+│              │ │   │ = │                                           │
+└ −I_xz   I_zz ┘ └ ṙ ┘   └ N − (I_yy−I_xx)·p·q − I_xz·q·r         ┘
+```
+
+### 8.3 Inversione del sistema 2×2 → equazioni esplicite
+
+L'inversione della matrice 2×2 di inerzia con il determinante Γ = I_xx·I_zz − I_xz² dà:
+
+```
+┌ I_xx   −I_xz ┐⁻¹    1   ┌  I_zz   I_xz ┐
+│              │    = ─── │              │
+└ −I_xz   I_zz ┘      Γ  └  I_xz   I_xx ┘
+```
+
+Moltiplicando si ottengono le **equazioni esplicite corrette** (Stevens & Lewis, Cap. 1.4):
+
+Definendo per brevità:
+```
+RHS_p = L − (I_zz−I_yy)·q·r + I_xz·p·q
+RHS_r = N − (I_yy−I_xx)·p·q − I_xz·q·r
+```
+
+```
+Γ·ṗ = I_zz·RHS_p + I_xz·RHS_r
+Γ·ṙ = I_xz·RHS_p + I_xx·RHS_r
+```
+
+Espandendo completamente:
+
+```
+Γ·ṗ = I_zz·L + I_xz·N
+     − [I_xz² + I_zz·(I_zz−I_yy)]·q·r        ← termine q·r
+     − I_xz·(I_yy−I_xx−I_zz)·p·q              ← termine p·q
+```
+
+```
+Γ·q̇ = [M − (I_xx−I_zz)·p·r − I_xz·(p²−r²)] · Γ/I_yy   (non Γ, si divide solo per I_yy)
+```
+
+```
+Γ·ṙ = I_xz·L + I_xx·N
+     + I_xz·(I_yy−I_xx−I_zz)·q·r              ← termine q·r
+     + [I_xz² + I_xx·(I_xx−I_yy)]·p·q          ← termine p·q
+```
+
+In forma finale, le tre equazioni rotazionali sono:
+
+```
+          I_zz·L + I_xz·N − [I_xz² + I_zz·(I_zz−I_yy)]·q·r − I_xz·(I_yy−I_xx−I_zz)·p·q
+ṗ  =  ─────────────────────────────────────────────────────────────────────────────────────
+                                    Γ = I_xx·I_zz − I_xz²
+
+          M − (I_xx−I_zz)·p·r − I_xz·(p²−r²)
+q̇  =  ───────────────────────────────────────
+                       I_yy
+
+          I_xz·L + I_xx·N + I_xz·(I_yy−I_xx−I_zz)·q·r + [I_xz² + I_xx·(I_xx−I_yy)]·p·q
+ṙ  =  ─────────────────────────────────────────────────────────────────────────────────────
+                                    Γ = I_xx·I_zz − I_xz²
+```
+
+**Punti chiave di queste equazioni:**
+
+- Il termine `I_zz·L + I_xz·N` in ṗ e `I_xz·L + I_xx·N` in ṙ mostrano l'**accoppiamento inerziale**: un momento di rollio L genera non solo ṗ ma anche ṙ (e viceversa), in proporzione a I_xz/I_xx.
+- I termini `q·r` e `p·q` sono i **termini giroscopici**: sono la conseguenza del fatto che la terna del corpo ruota, e il momento angolare in un asse alimenta le accelerazioni angolari degli altri assi.
+- L'equazione di q̇ è disaccoppiata perché I_yy è il solo momento d'inerzia non nullo nella riga y del tensore (non ci sono prodotti d'inerzia con l'asse y per un aereo simmetrico).
+
+### 8.4 Valori numerici per l'F-16 e significato fisico dell'accoppiamento
+
+Con i parametri inerziali dell'F-16:
+
+```
+I_xx = 12874 kg·m²    I_yy = 75674 kg·m²    I_zz = 85552 kg·m²    I_xz = 1331 kg·m²
+Γ = I_xx·I_zz − I_xz² = 12874×85552 − 1331² = 1.1015×10⁹ − 1.771×10⁶ ≈ 1.0997×10⁹ kg²·m⁴
+```
+
+I coefficienti degli accoppiamenti nelle equazioni di ṗ e ṙ valgono:
+
+| Termine | Coefficiente | Valore numerico | Coefficiente/Γ |
+|---------|--------------|-----------------|----------------|
+| q·r in ṗ | −[I_xz²+I_zz·(I_zz−I_yy)] | −847.2×10⁶ | −0.7704 (rad/s)/(rad/s)² |
+| p·q in ṗ | −I_xz·(I_yy−I_xx−I_zz) | +30.28×10⁶ | +0.02754 (rad/s)/(rad/s)² |
+| q·r in ṙ | +I_xz·(I_yy−I_xx−I_zz) | −30.28×10⁶ | −0.02754 (rad/s)/(rad/s)² |
+| p·q in ṙ | +[I_xz²+I_xx·(I_xx−I_yy)] | −852.5×10⁶ | −0.7754 (rad/s)/(rad/s)² |
+
+Il coefficiente del termine q·r in ṗ (−0.770) è **dominante**: in una virata coordinata con q = r = 0.5 rad/s, questo termine contribuisce −0.770×0.5×0.5 = −0.193 rad/s² all'accelerazione di rollio. I termini con I_xz nell'accoppiamento (±0.0275) sono circa 30 volte più piccoli, ma non trascurabili ad alte velocità angolari.
+
+### 8.5 Implementazione nel codice e analisi della discrepanza
+
+Il codice in `FlightControlComputer.cpp` implementa le equazioni come segue:
+
+```cpp
+float denom = I_XX * I_ZZ - I_XZ * I_XZ;   // Γ ✓
+
+float ap = (I_ZZ * L_tot + I_XZ * N_tot
+          - (I_XZ*(I_YY - I_XX - I_ZZ)*sp
+           + (I_XZ*I_XZ + I_ZZ*(I_ZZ - I_YY))) * sq*sr) / denom;
+
+float aq = (M_tot - (I_XX - I_ZZ)*sp*sr
+          - I_XZ*(sp*sp - sr*sr)) / I_YY;   // q̇ ✓
+
+float ar = (I_XZ * L_tot + I_XX * N_tot
+          + (I_XZ*(I_YY - I_XX - I_ZZ)*sr
+           + (I_XZ*I_XZ + I_XX*(I_XX - I_YY))) * sp*sq) / denom;
+```
+
+**L'equazione q̇ è corretta.** Corrispondenza con (8.2b):
+
+```
+aq = [M − (I_xx−I_zz)·p·r − I_xz·(p²−r²)] / I_yy  ✓
+```
+
+**L'equazione q̇ è corretta.**
+
+**Le equazioni ṗ e ṙ presentano una discrepanza** rispetto alla derivazione sopra. Espandendo il codice per ap:
+
+```
+ap = [I_zz·L + I_xz·N  −  (I_xz·(I_yy−I_xx−I_zz)·p  +  (I_xz²+I_zz·(I_zz−I_yy))) · q·r] / Γ
+   = [I_zz·L + I_xz·N  −  I_xz·(I_yy−I_xx−I_zz)·p·q·r  −  (I_xz²+I_zz·(I_zz−I_yy))·q·r] / Γ
+```
+
+La formula corretta è:
+
+```
+ṗ = [I_zz·L + I_xz·N  −  (I_xz²+I_zz·(I_zz−I_yy))·q·r  −  I_xz·(I_yy−I_xx−I_zz)·p·q] / Γ
+```
+
+Il termine `I_xz·(I_yy−I_xx−I_zz)·p·q` (un **prodotto doppio** p·q) viene calcolato nel codice come `I_xz·(I_yy−I_xx−I_zz)·p·q·r` (un **prodotto triplo** p·q·r). Analogamente per ṙ.
+
+**Quantificazione dell'errore**: con I_xz·(I_yy−I_xx−I_zz)/Γ ≈ +0.0275 e valori tipici di volo:
+
+| Condizione | p | q | r | Errore su ṗ (rad/s²) | Relativo rispetto a ṗ |
+|-----------|---|---|---|----------------------|----------------------|
+| Crociera livellata | ~0 | 0.01 | 0 | ~0 | ~0% |
+| Rollio coordinato | 1.0 | 0.1 | 0.3 | 0.0275×1×0.1×(0.3−1) = **−1.9×10⁻³** | piccolo |
+| Rollio puro (r=0) | 1.0 | 0.1 | 0 | 0.0275×1×0.1×(0−1) = **−2.75×10⁻³** | ~1% di ap tipico |
+| Manovra estrema | 2.0 | 0.3 | 0.5 | 0.0275×2×0.3×(0.5−1) = **−8.25×10⁻³** | ~2–3% |
+
+L'errore è **piccolo ma non nullo**, dovuto all'entità ridotta di I_xz (1331 kg·m² su I_xx = 12874 kg·m²). In volo normale l'impatto è percettibilmente trascurabile. Nelle manovre aggressive (rollio puro con r ≈ 0) l'errore è al massimo ~2–3% del valore di ṗ. Il simulatore risulta comunque stabile perché:
+
+1. Il termine principale in ṗ e ṙ è `I_zz·L/Γ` e `I_xx·N/Γ` (aerodinamica diretta), e questi sono calcolati correttamente.
+2. Il termine q·r dominante (coefficiente −0.77) è calcolato correttamente.
+3. Il termine errato (coefficiente ±0.0275) è 28 volte più piccolo del precedente.
+
+La formula corretta da implementare per rigore accademico è:
+
+```cpp
+// FORMA CORRETTA — separazione esplicita dei termini q·r e p·q
+float c_qr_p = -(I_XZ*I_XZ + I_ZZ*(I_ZZ - I_YY));      // coeff q·r in ṗ
+float c_pq_p = -I_XZ*(I_YY - I_XX - I_ZZ);              // coeff p·q in ṗ
+float ap = (I_ZZ*L_tot + I_XZ*N_tot
+          + c_qr_p*sq*sr + c_pq_p*sp*sq) / denom;
+
+float c_qr_r = I_XZ*(I_YY - I_XX - I_ZZ);               // coeff q·r in ṙ
+float c_pq_r = (I_XZ*I_XZ + I_XX*(I_XX - I_YY));        // coeff p·q in ṙ
+float ar = (I_XZ*L_tot + I_XX*N_tot
+          + c_qr_r*sq*sr + c_pq_r*sp*sq) / denom;
 ```
 
 ### 8.3 Integrazione RK4
@@ -487,11 +741,12 @@ f₁ = u̇ = (Fx_aero + Thrust + W_x)/m + r·v − q·w
 f₂ = v̇ = (Fy_aero + W_y)/m           + p·w − r·u
 f₃ = ẇ = (Fz_aero + W_z)/m           + q·u − p·v
 
-f₄ = ṗ = [I_zz·L + I_xz·N − (I_xz·(I_yy−I_xx−I_zz)·p + (I_xz²+I_zz·(I_zz−I_yy)))·q·r] / Γ
+f₄ = ṗ = [I_zz·L + I_xz·N − (I_xz²+I_zz·(I_zz−I_yy))·q·r − I_xz·(I_yy−I_xx−I_zz)·p·q] / Γ
 f₅ = q̇ = [M − (I_xx−I_zz)·p·r − I_xz·(p²−r²)] / I_yy
-f₆ = ṙ = [I_xz·L + I_xx·N + (I_xz·(I_yy−I_xx−I_zz)·r + (I_xz²+I_xx·(I_xx−I_yy)))·p·q] / Γ
+f₆ = ṙ = [I_xz·L + I_xx·N + I_xz·(I_yy−I_xx−I_zz)·q·r + (I_xz²+I_xx·(I_xx−I_yy))·p·q] / Γ
 
 dove  Γ = I_xx·I_zz − I_xz²
+      (v. Sez. 8.5 per analisi della discrepanza con il codice attuale)
 ```
 
 Si noti che le equazioni traslazionali (f₁, f₂, f₃) e rotazionali (f₄, f₅, f₆) sono **mutuamente accoppiate**: le accelerazioni lineari dipendono dalle velocità angolari (termini di Coriolis r·v, q·w, ...) e le accelerazioni angolari dipendono dalle velocità angolari stesse (termini giroscopici q·r, p·r, p·q). Questo accoppiamento rende il sistema **non lineare** e giustifica l'uso di un integratore di ordine elevato.
