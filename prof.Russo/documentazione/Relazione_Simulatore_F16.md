@@ -514,7 +514,24 @@ Hy = I_yy·q
 Hz = I_zz·r − I_xz·p
 ```
 
-**Nota sul segno**: I_xz è definito positivo secondo la convenzione Stevens & Lewis come +∫xz dm. Per l'F-16, il valore fisico è I_xz = +1331 kg·m² (massa distribuita leggermente anteriore sulle ali). Il segno **meno** davanti a I_xz nelle espressioni di Hx e Hz viene dalla definizione standard del tensore di inerzia: il termine fuori diagonale è −I_xz nella riga (1,3) e (3,1).
+**Convenzione del segno di I_xz — critica per la coerenza delle equazioni.**
+
+Stevens & Lewis (1992, ed. di riferimento per questo progetto come dichiarato in `trim_and_linearize.m`) definisce il tensore d'inerzia con segni negativi fuori dalla diagonale:
+
+```
+        ┌  I_xx    0    −I_xz ┐
+I_S&L = │    0    I_yy    0   │     con I_xz = +∫xz dm  (valore fisico positivo)
+        └ −I_xz    0    I_zz  ┘
+```
+
+Il termine (1,3) del tensore vale **−I_xz** (negativo). Questa è la convenzione classica dei sistemi di meccanica del volo (anche usata da Etkin, McRuer, ecc.). Ne consegue:
+
+```
+Hx = I_xx·p − I_xz·r      (segno meno su I_xz·r)
+Hz = I_zz·r − I_xz·p      (segno meno su I_xz·p)
+```
+
+Il MATLAB `load_F16_params.m` costruisce la matrice come `[Ixx 0 Ixz; 0 Iyy 0; Ixz 0 Izz]` con `Ixz = +982` — il termine (1,3) è **+Ixz** (positivo). Questo è il formato richiesto dal blocco Simulink "6DOF (Quaternion)" di Aerospace Blockset, che interpreta l'elemento (1,3) del tensore fornito come valore con il suo segno incluso. Poiché il blocco usa la formula `I·α = M - ω × (I·ω)` con il tensore come passato, esso calcola `Hx = Ixx·p + Ixz·r`. Le due formulazioni producono **equazioni con segni diversi sui termini I_xz**. Questo viene analizzato in dettaglio nella sezione 8.5.
 
 Sviluppando le tre componenti di dH/dt|_body + ω × H = (L, M, N):
 
@@ -654,76 +671,121 @@ I coefficienti degli accoppiamenti nelle equazioni di ṗ e ṙ valgono:
 
 Il coefficiente del termine q·r in ṗ (−0.770) è **dominante**: in una virata coordinata con q = r = 0.5 rad/s, questo termine contribuisce −0.770×0.5×0.5 = −0.193 rad/s² all'accelerazione di rollio. I termini con I_xz nell'accoppiamento (±0.0275) sono circa 30 volte più piccoli, ma non trascurabili ad alte velocità angolari.
 
-### 8.5 Implementazione nel codice e analisi della discrepanza
+### 8.5 Verifica completa: codice C++ vs Stevens & Lewis vs MATLAB Simulink
 
-Il codice in `FlightControlComputer.cpp` implementa le equazioni come segue:
+Questa sezione esegue la verifica analitica sistematica di ogni termine delle equazioni angolari confrontando tre fonti: (A) Stevens & Lewis 1992, (B) MATLAB Simulink "6DOF (Quaternion)", (C) codice C++.
+
+#### Confronto delle convenzioni sul tensore d'inerzia
+
+Le tre fonti usano definizioni diverse del termine I_xz:
+
+| Fonte | Tensore (riga 1, col 3) | Momento angolare Hx | Momento angolare Hz |
+|-------|------------------------|---------------------|---------------------|
+| Stevens & Lewis (1992) | **−I_xz** | I_xx·p **−** I_xz·r | I_zz·r **−** I_xz·p |
+| MATLAB `load_F16_params.m` | **+I_xz** | I_xx·p **+** I_xz·r | I_zz·r **+** I_xz·p |
+| Codice C++ (`I_XZ = +1331`) | usa S&L (−I_xz nel calcolo) | I_xx·p **−** I_xz·r | I_zz·r **−** I_xz·p |
+
+La radice della differenza: Stevens & Lewis definisce il tensore con **segni negativi fuori dalla diagonale** (convenzione classica della meccanica del volo). Il blocco Simulink "6DOF (Quaternion)" riceve la matrice numerica così come è — e `load_F16_params.m` gli passa `[Ixx 0 +Ixz; 0 Iyy 0; +Ixz 0 Izz]`, quindi Simulink calcola l'asse x del momento angolare come `Hx = Ixx·p + Ixz·r`. Il codice C++ usa `I_XZ = +1331` ma lo mette nelle equazioni con la struttura S&L (segno derivato dalla derivazione con −I_xz nel tensore). **Le due formulazioni producono equazioni con segni opposti sui termini che moltiplicano I_xz.**
+
+#### Derivazione delle equazioni MATLAB/Simulink (per confronto)
+
+Con il tensore MATLAB (`Hx = Ixx·p + Ixz·r`, `Hz = Izz·r + Ixz·p`) e il Simulink `I·α = M − ω×(I·ω)`:
+
+```
+ω × H = [(Izz−Iyy)·q·r + Ixz·p·q,
+          (Ixx−Izz)·p·r − Ixz·(p²−r²),
+          (Iyy−Ixx)·p·q − Ixz·q·r]
+```
+
+Sistema 2×2 (con +Ixz in posizione (1,3)):
+
+```
+┌ Ixx   +Ixz ┐ ┌ ṗ ┐   ┌ L − (Izz−Iyy)·q·r − Ixz·p·q ┐
+│             │ │   │ = │                                │
+└ +Ixz   Izz ┘ └ ṙ ┘   └ N − (Iyy−Ixx)·p·q + Ixz·q·r  ┘
+```
+
+Invertendo con I⁻¹ = (1/Γ)·[Izz, −Ixz; −Ixz, Ixx]:
+
+```
+ṗ_MATLAB = [Izz·L − Ixz·N − (Ixz²+Izz·(Izz−Iyy))·q·r + Ixz·(Iyy−Ixx−Izz)·p·q] / Γ
+q̇_MATLAB = [M − (Ixx−Izz)·p·r + Ixz·(p²−r²)] / Iyy
+ṙ_MATLAB = [−Ixz·L + Ixx·N − Ixz·(Iyy−Ixx−Izz)·q·r + (Ixz²+Ixx·(Ixx−Iyy))·p·q] / Γ
+```
+
+#### Tabella di confronto termine per termine
+
+Definizioni coefficienti:  `Γ = Ixx·Izz − Ixz²`,  `A = Ixz·(Iyy−Ixx−Izz)`,  `B = Ixz²+Izz·(Izz−Iyy)`,  `C = Ixz²+Ixx·(Ixx−Iyy)`
+
+**Equazione ṗ:**
+
+| Termine | S&L / C++ corretto | MATLAB Simulink | Codice C++ attuale |
+|---------|-------------------|-----------------|-------------------|
+| Coeff L | **+Izz** | **+Izz** ✓ stesso | **+Izz** ✓ |
+| Coeff N | **+Ixz** | **−Ixz** ← opposto | **+Ixz** (=S&L) |
+| Coeff q·r | **−B** | **−B** ✓ stesso | **−B** ✓ (ma con errore grouping) |
+| Coeff p·q | **−A** | **+A** ← opposto | **−A·q·r** ← errore: moltiplicato per r in più |
+
+**Equazione q̇:**
+
+| Termine | S&L / C++ corretto | MATLAB Simulink | Codice C++ attuale |
+|---------|-------------------|-----------------|-------------------|
+| Coeff p·r | **−(Ixx−Izz)** | **−(Ixx−Izz)** ✓ | **−(Ixx−Izz)** ✓ |
+| Coeff (p²−r²) | **−Ixz** | **+Ixz** ← opposto | **−Ixz** ✓ (=S&L) |
+
+**Equazione ṙ:**
+
+| Termine | S&L / C++ corretto | MATLAB Simulink | Codice C++ attuale |
+|---------|-------------------|-----------------|-------------------|
+| Coeff L | **+Ixz** | **−Ixz** ← opposto | **+Ixz** ✓ (=S&L) |
+| Coeff N | **+Ixx** | **+Ixx** ✓ stesso | **+Ixx** ✓ |
+| Coeff q·r | **+A** | **−A** ← opposto | **+A·p·q** ← errore: moltiplicato per p in più |
+| Coeff p·q | **+C** | **+C** ✓ stesso | **+C** ✓ |
+
+#### Conclusioni della verifica
+
+**Il codice C++ è internamente coerente con Stevens & Lewis (1992)** per quanto riguarda la convenzione del segno di I_xz. Tutte e tre le equazioni usano la struttura derivata con `Hx = Ixx·p − Ixz·r`. In particolare, q̇ ha il segno corretto (`−Ixz·(p²−r²)`) che è il discriminatore più diretto della convenzione.
+
+Il MATLAB Simulink usa la convenzione opposta (tensore con +Ixz). Questo produce equazioni con segni opposti sui termini che coinvolgono I_xz (segnati ← nella tabella). Poiché il progetto dichiara come riferimento Stevens & Lewis, **il codice C++ è aderente alla fonte citata**.
+
+Esistono **due discrepanze residue** nel codice C++ rispetto alle equazioni S&L corrette, entrambe nelle equazioni ṗ e ṙ:
+
+**Discrepanza 1 — Errore di raggruppamento (p·q·r invece di p·q):**
+
+Il codice calcola `(A·p + B)·q·r = A·p·q·r + B·q·r`, ma la formula corretta ha due termini distinti: `B·q·r + A·p·q`. Il termine gyroscopico p·q viene moltiplicato per un fattore `r` aggiuntivo.
+
+Impatto numerico: il coefficiente A/Γ ≈ ±0.0275 rad/s per (rad/s)². Errore su ṗ ≈ 0.0275·p·q·(r−1). **Al massimo ~2–3% di ṗ** in manovre aggressive con r ≈ 0.
+
+**Discrepanza 2 — Convenzione I_xz rispetto al MATLAB (solo se si vuole coerenza con Simulink):**
+
+I termini I_xz·N (in ṗ), Ixz·(p²−r²) (in q̇), I_xz·L (in ṙ) hanno segni opposti rispetto al MATLAB Simulink. Impatto numerico identico al caso 1 (stesso ordine di grandezza, essendo tutti proporzionali a I_xz/Γ ≈ 0.00121 m⁻²·s²).
+
+**I termini dominanti** — `Izz·L/Γ` in ṗ, `M/Iyy` in q̇, `Ixx·N/Γ` in ṙ, e il termine q·r con coefficiente −B/Γ ≈ −0.77 — sono **identici** nelle tre formulazioni. Il simulatore è stabile e fisicamente rappresentativo perché questi termini dominano la dinamica dell'aereo.
+
+#### Implementazione corretta per rigore accademico (S&L convention)
+
+La forma corretta delle equazioni ṗ e ṙ, perfettamente coerenti con Stevens & Lewis, con i termini q·r e p·q separati:
 
 ```cpp
-float denom = I_XX * I_ZZ - I_XZ * I_XZ;   // Γ ✓
+float denom = I_XX * I_ZZ - I_XZ * I_XZ;       // Γ
 
-float ap = (I_ZZ * L_tot + I_XZ * N_tot
-          - (I_XZ*(I_YY - I_XX - I_ZZ)*sp
-           + (I_XZ*I_XZ + I_ZZ*(I_ZZ - I_YY))) * sq*sr) / denom;
+// Coefficienti S&L (convenzione Hx = Ixx·p − Ixz·r)
+float c_B  = -(I_XZ*I_XZ + I_ZZ*(I_ZZ - I_YY)); // coeff q·r in ṗ  (≈ −0.770·Γ)
+float c_A  = -I_XZ*(I_YY - I_XX - I_ZZ);         // coeff p·q in ṗ  (≈ +0.0275·Γ)
+float c_C  = (I_XZ*I_XZ + I_XX*(I_XX - I_YY));   // coeff p·q in ṙ  (≈ −0.775·Γ)
 
-float aq = (M_tot - (I_XX - I_ZZ)*sp*sr
-          - I_XZ*(sp*sp - sr*sr)) / I_YY;   // q̇ ✓
+// S&L Eq. (derivata da Hx = Ixx·p − Ixz·r):
+float ap = (I_ZZ*L_tot + I_XZ*N_tot           // ṗ: +Izz·L + Ixz·N
+           + c_B*sq*sr                          //    − B·q·r
+           + c_A*sp*sq) / denom;                //    − A·p·q
 
-float ar = (I_XZ * L_tot + I_XX * N_tot
-          + (I_XZ*(I_YY - I_XX - I_ZZ)*sr
-           + (I_XZ*I_XZ + I_XX*(I_XX - I_YY))) * sp*sq) / denom;
-```
+float aq = (M_tot
+           - (I_XX - I_ZZ)*sp*sr               // q̇: −(Ixx−Izz)·p·r
+           - I_XZ*(sp*sp - sr*sr)) / I_YY;      //    −Ixz·(p²−r²)   ← segno S&L
 
-**L'equazione q̇ è corretta.** Corrispondenza con (8.2b):
-
-```
-aq = [M − (I_xx−I_zz)·p·r − I_xz·(p²−r²)] / I_yy  ✓
-```
-
-**L'equazione q̇ è corretta.**
-
-**Le equazioni ṗ e ṙ presentano una discrepanza** rispetto alla derivazione sopra. Espandendo il codice per ap:
-
-```
-ap = [I_zz·L + I_xz·N  −  (I_xz·(I_yy−I_xx−I_zz)·p  +  (I_xz²+I_zz·(I_zz−I_yy))) · q·r] / Γ
-   = [I_zz·L + I_xz·N  −  I_xz·(I_yy−I_xx−I_zz)·p·q·r  −  (I_xz²+I_zz·(I_zz−I_yy))·q·r] / Γ
-```
-
-La formula corretta è:
-
-```
-ṗ = [I_zz·L + I_xz·N  −  (I_xz²+I_zz·(I_zz−I_yy))·q·r  −  I_xz·(I_yy−I_xx−I_zz)·p·q] / Γ
-```
-
-Il termine `I_xz·(I_yy−I_xx−I_zz)·p·q` (un **prodotto doppio** p·q) viene calcolato nel codice come `I_xz·(I_yy−I_xx−I_zz)·p·q·r` (un **prodotto triplo** p·q·r). Analogamente per ṙ.
-
-**Quantificazione dell'errore**: con I_xz·(I_yy−I_xx−I_zz)/Γ ≈ +0.0275 e valori tipici di volo:
-
-| Condizione | p | q | r | Errore su ṗ (rad/s²) | Relativo rispetto a ṗ |
-|-----------|---|---|---|----------------------|----------------------|
-| Crociera livellata | ~0 | 0.01 | 0 | ~0 | ~0% |
-| Rollio coordinato | 1.0 | 0.1 | 0.3 | 0.0275×1×0.1×(0.3−1) = **−1.9×10⁻³** | piccolo |
-| Rollio puro (r=0) | 1.0 | 0.1 | 0 | 0.0275×1×0.1×(0−1) = **−2.75×10⁻³** | ~1% di ap tipico |
-| Manovra estrema | 2.0 | 0.3 | 0.5 | 0.0275×2×0.3×(0.5−1) = **−8.25×10⁻³** | ~2–3% |
-
-L'errore è **piccolo ma non nullo**, dovuto all'entità ridotta di I_xz (1331 kg·m² su I_xx = 12874 kg·m²). In volo normale l'impatto è percettibilmente trascurabile. Nelle manovre aggressive (rollio puro con r ≈ 0) l'errore è al massimo ~2–3% del valore di ṗ. Il simulatore risulta comunque stabile perché:
-
-1. Il termine principale in ṗ e ṙ è `I_zz·L/Γ` e `I_xx·N/Γ` (aerodinamica diretta), e questi sono calcolati correttamente.
-2. Il termine q·r dominante (coefficiente −0.77) è calcolato correttamente.
-3. Il termine errato (coefficiente ±0.0275) è 28 volte più piccolo del precedente.
-
-La formula corretta da implementare per rigore accademico è:
-
-```cpp
-// FORMA CORRETTA — separazione esplicita dei termini q·r e p·q
-float c_qr_p = -(I_XZ*I_XZ + I_ZZ*(I_ZZ - I_YY));      // coeff q·r in ṗ
-float c_pq_p = -I_XZ*(I_YY - I_XX - I_ZZ);              // coeff p·q in ṗ
-float ap = (I_ZZ*L_tot + I_XZ*N_tot
-          + c_qr_p*sq*sr + c_pq_p*sp*sq) / denom;
-
-float c_qr_r = I_XZ*(I_YY - I_XX - I_ZZ);               // coeff q·r in ṙ
-float c_pq_r = (I_XZ*I_XZ + I_XX*(I_XX - I_YY));        // coeff p·q in ṙ
-float ar = (I_XZ*L_tot + I_XX*N_tot
-          + c_qr_r*sq*sr + c_pq_r*sp*sq) / denom;
+float ar = (I_XZ*L_tot + I_XX*N_tot            // ṙ: +Ixz·L + Ixx·N
+           + I_XZ*(I_YY-I_XX-I_ZZ)*sq*sr        //    + A·q·r  (stesso coeff, segno +)
+           + c_C*sp*sq) / denom;                //    + C·p·q
 ```
 
 ### 8.3 Integrazione RK4
