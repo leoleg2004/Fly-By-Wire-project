@@ -1,0 +1,67 @@
+
+TRACCIAMENTO DEI TASK:
+
+Ho installato kernel shark per tracciare l'andamento dei task in base alla schedulazione allego comando per far traccaire i file:
+
+sudo trace-cmd record -e sched_switch -e sched_wakeup ./Nomefile
+
+e poi per aprire il traccimaneto terminata l'esecuzione 
+
+kernelshark trace.dat
+
+trace.dat è il documento che viene generato finita l'esecuzione
+--------------------------------------------------------------------------------
+COMANDO PER GENERAZIONE SENZA KERNEL SHARK
+sudo trace-cmd record -e sched:sched_switch -e sched:sched_wakeup ./my_app
+
+Ecco cosa significa ogni singolo componente:
+
+    sudo: I privilegi di amministratore (root) sono obbligatori perché il tracciamento richiede l'accesso diretto alla memoria del kernel Linux e alle sue strutture dati interne.
+
+    trace-cmd: È il programma "front-end" a riga di comando. Il suo scopo è fare da interprete tra te e ftrace, che è il vero motore di tracciamento nascosto dentro il kernel Linux.
+
+    record: Ordina al kernel di accendere il tracciamento. Tutte le informazioni raccolte verranno compresse e salvate in un file binario nella cartella corrente, chiamato di default trace.dat (lo stesso file che KernelShark legge graficamente).
+
+    -e sched:sched_switch: La flag -e significa Event. Questo comando dice al kernel: "Ogni volta che il tuo Scheduler decide di fare un Context Switch (ovvero toglie la CPU a un thread per darla a un altro), scrivi un appunto". Questo è fondamentale per vedere per quanto tempo il tuo aereo (thread) ha trattenuto la CPU.
+
+    -e sched:sched_wakeup: Questo secondo evento dice al kernel: "Ogni volta che un thread passa dallo stato 'addormentato' (es. era fermo ad aspettare il suo periodo) allo stato 'pronto per essere eseguito', scrivi un appunto". Serve per capire se il thread viene svegliato in tempo per la sua Deadline.
+
+    ./my_app: È il tuo simulatore. trace-cmd è intelligente: avvia il tracciamento una frazione di secondo prima di lanciare il tuo programma, e lo ferma automaticamente non appena il tuo programma termina.
+    --------------------------------------------------------------------------------
+    --------------------------------------------------------------------------------
+    COSA ACCADE NEL KERNEL LINUX:
+    
+    Patching Dinamico del Codice: Normalmente, per non rallentare il computer, i "sensori" di tracciamento (chiamati Tracepoints) dentro il kernel sono disattivati e sostituiti da istruzioni vuote (Nop). Quando esegui trace-cmd, il kernel modifica fisicamente se stesso "a caldo" nella RAM, sostituendo quelle istruzioni vuote con le chiamate alle funzioni di registrazione per sched_switch e sched_wakeup.
+
+Il Ring Buffer per il Real-Time: Ogni volta che avviene un Context Switch, il kernel genera un minuscolo pacchetto di dati (contenente il microsecondo esatto, l'ID del thread, il core della CPU e la priorità). Per non rallentare i tuoi task Real-Time, il kernel non scrive subito su disco, ma salva tutto in un Ring Buffer (un buffer circolare in RAM allocato in precedenza).
+
+Estrazione: Alla fine, trace-cmd preleva i dati da questo buffer circolare in memoria e li riversa fisicamente sull'hard disk nel file trace.dat.
+
+------------------------------------------------------------------------------------------------------------------------bisogna entrare nella cartella build dove si crea il trace.dat dell'esecuzione
+COMANDO PER TRQASOFRMARE IL TRACE.DAT IN TRACE.TXT
+trace-cmd report > trace_output.txt
+
+COMANDO PER PRENDERE PROPRIO L'ESECUZIONE DEI MIEI THREAD
+sudo trace-cmd report | grep -E "Activity_1|Activity_2" | sudo tee trace_THREAD.txt > /dev/null
+
+grep -E funziona come una OR logica 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+questa funzione awl mi permette dirioridinar il file generato al punto precedente in  modo da renderlo ordinato e leggibile da file 
+awk '{
+    gsub(":", "", $3); 
+    gsub(":", "", $4);
+    printf "%-25s | %-5s | %-12s | %-15s | ", $1, $2, $3, $4;
+    for(i=5; i<=NF; i++) printf "%s ", $i;
+    print ""
+}' trace_THREAD.txt > trace_colonne.txt (file di output)
+---------------------------------------------------------------------------------------------------------
+PARSER PER LETTURA FILE
+creato il file parser.cpp che serve per fare la lettura da file
+
+(comando per aggiornare le modifiche del parser)
+g++ parser.cpp -o parser
+
+
+
+
