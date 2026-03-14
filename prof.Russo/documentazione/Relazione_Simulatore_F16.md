@@ -592,7 +592,114 @@ La relazione tra le velocità angolari nel body frame (p, q, r) e le derivate de
 Ψ̇ = [sin(Φ)·q + cos(Φ)·r] / cos(Θ)
 ```
 
-Nota: la formula per Ψ̇ ha una singolarità a Θ = ±90° (gimbal lock). Il codice protegge con `cos_th_safe = max(|cos(Θ)|, 0.001)`.
+Questa relazione si ricava invertendo la matrice che lega (p, q, r) a (Φ̇, Θ̇, Ψ̇). In forma matriciale:
+
+```
+┌ p ┐   ┌ 1   0      −sin(Θ)       ┐ ┌ Φ̇ ┐
+│ q │ = │ 0   cos(Φ)   sin(Φ)·cos(Θ) │ │ Θ̇ │
+└ r ┘   └ 0  −sin(Φ)   cos(Φ)·cos(Θ) ┘ └ Ψ̇ ┘
+```
+
+L'inversione di questa matrice produce le equazioni sopra, ma con un termine `1/cos(Θ)` nell'espressione di Φ̇ e Ψ̇ (tramite tan(Θ) e la divisione diretta).
+
+#### Il problema del gimbal lock
+
+Quando l'angolo di beccheggio Θ si avvicina a ±90° (cabrata o picchiata verticale), cos(Θ) → 0 e le equazioni per Φ̇ e Ψ̇ **divergono a infinito**. Questo non è un problema numerico ma una **singolarità intrinseca** della rappresentazione con angoli di Eulero, nota come **gimbal lock**.
+
+Fisicamente il fenomeno è questo: con Θ = 90° (muso che punta esattamente verso l'alto), una rotazione attorno all'asse del corpo X (rollio) produce lo stesso effetto visivo di una rotazione attorno all'asse terrestre Z (yaw). I due gradi di libertà Φ e Ψ **collassano in uno solo** — il sistema perde un grado di libertà di rappresentazione. Qualsiasi combinazione di Φ e Ψ tale che Φ − Ψ = costante descrive lo stesso orientamento fisico. Questo significa che:
+
+1. La mappatura (Φ, Θ, Ψ) → orientamento non è più iniettiva
+2. Le derivate Φ̇ e Ψ̇ diventano indeterminate (0/0 o ∞)
+3. L'integratore numerico produce valori erratici
+
+Il nome "gimbal lock" viene dall'analogia meccanica: in una piattaforma giroscopica a tre gimbal, quando due assi si allineano (a Θ = 90°) si perde fisicamente un asse di rotazione.
+
+#### Protezione nel motore fisico
+
+Nel motore fisico (FlightControlComputer), le equazioni di Eulero sono mantenute perché il modello MATLAB di riferimento le usa e perché l'F-16, nelle condizioni di volo normali, non raggiunge mai Θ = ±90° (nemmeno in manovre estreme). Il codice protegge la singolarità con un clamp numerico:
+
+```cpp
+float cos_th_safe = std::max(std::abs(cos_th), 0.001f);
+float Psi_dot = (sin_ph * snap.pitch_rate + cos_ph * snap.yaw_rate)
+              / cos_th_safe * (cos_th >= 0 ? 1.0f : -1.0f);
+```
+
+Il valore 0.001 limita il massimo amplificazione a 1/0.001 = 1000×, e il termine `(cos_th >= 0 ? 1.0f : -1.0f)` preserva il segno corretto. Inoltre Θ viene clampato a ±1.57 rad (≈ ±89.95°) per impedire fisicamente il raggiungimento della singolarità.
+
+#### Quaternioni nel rendering (FlightDisplay)
+
+Il motore di rendering affronta un problema diverso: deve applicare la rotazione (Φ, Θ, Ψ) al modello 3D dell'F-16 per visualizzarlo. Se si usassero direttamente le matrici di rotazione di Eulero concatenate, il gimbal lock causerebbe **artefatti visivi**: vicino a Θ = ±90° il modello "scatterebbe" tra orientamenti diversi perché piccole variazioni di Φ e Ψ produrrebbero grandi variazioni nella matrice risultante.
+
+Per questo il rendering usa i **quaternioni**. Un quaternione è un numero ipercomplesso a 4 componenti:
+
+```
+q = w + x·i + y·j + z·k       dove i² = j² = k² = ijk = −1
+```
+
+oppure in notazione vettoriale: `q = (w, x, y, z)` con `w` parte scalare e `(x, y, z)` parte vettoriale.
+
+Un quaternione unitario (|q| = 1) rappresenta una rotazione di un angolo θ attorno a un asse û come:
+
+```
+q = cos(θ/2) + sin(θ/2)·(ux·i + uy·j + uz·k)
+  = (cos(θ/2),  sin(θ/2)·ux,  sin(θ/2)·uy,  sin(θ/2)·uz)
+```
+
+**Perché i quaternioni non soffrono di gimbal lock**: la rappresentazione a 4 parametri con il vincolo |q| = 1 definisce una varietà (la 3-sfera S³) che è **liscia e senza singolarità**. Ogni orientamento fisico corrisponde esattamente a due quaternioni (q e −q, che rappresentano la stessa rotazione) ma non esiste alcun orientamento che causi degenerazione. La mappa dai quaternioni alle rotazioni è un rivestimento doppio di SO(3), regolare ovunque.
+
+La composizione di rotazioni con i quaternioni si fa tramite il **prodotto di Hamilton**, che è associativo e non commutativo (come le rotazioni):
+
+```
+q₁ ⊗ q₂ = (w₁w₂ − x₁x₂ − y₁y₂ − z₁z₂,
+            w₁x₂ + x₁w₂ + y₁z₂ − z₁y₂,
+            w₁y₂ − x₁z₂ + y₁w₂ + z₁x₂,
+            w₁z₂ + x₁y₂ − y₁x₂ + z₁w₂)
+```
+
+#### Implementazione nel codice di rendering
+
+Il codice in `FlightDisplay::DrawAircraftModel()` converte gli angoli di Eulero (provenienti dal motore fisico) in quaternioni per il rendering:
+
+```cpp
+// ── Quaternion body rotation (avoids gimbal lock) ──────────
+// Chain: Yaw(Y) → Pitch(-X) → Roll(Z)
+Quaternion qYaw   = QuaternionFromAxisAngle({0.0f, 1.0f, 0.0f},  data.yaw);
+Quaternion qPitch = QuaternionFromAxisAngle({1.0f, 0.0f, 0.0f}, -data.pitch);
+Quaternion qRoll  = QuaternionFromAxisAngle({0.0f, 0.0f, 1.0f},  data.roll);
+Quaternion q      = QuaternionMultiply(QuaternionMultiply(qYaw, qPitch), qRoll);
+```
+
+Il procedimento è:
+
+1. **Tre quaternioni elementari**: ciascuno rappresenta una singola rotazione attorno a un asse coordinato. `QuaternionFromAxisAngle({0,1,0}, Ψ)` costruisce il quaternione `(cos(Ψ/2), 0, sin(Ψ/2), 0)` — rotazione di Ψ attorno a Y (yaw nel sistema di coordinate Raylib).
+
+2. **Composizione**: i tre quaternioni vengono moltiplicati con il prodotto di Hamilton nell'ordine Yaw → Pitch → Roll. Questo produce un singolo quaternione `q` che codifica l'intera rotazione body→world **senza passare per una matrice di Eulero intermedia**.
+
+3. **Conversione a matrice**: il quaternione risultante viene convertito in una matrice 4×4 per OpenGL:
+
+```cpp
+Matrix rotMat = QuaternionToMatrix(q);
+rlMultMatrixf(MatrixToFloat(rotMat));
+```
+
+La matrice di rotazione estratta da un quaternione unitario è:
+
+```
+        ┌ 1−2(y²+z²)    2(xy−wz)      2(xz+wy)   ┐
+R(q) =  │ 2(xy+wz)      1−2(x²+z²)    2(yz−wx)   │
+        └ 2(xz−wy)      2(yz+wx)      1−2(x²+y²)  ┘
+```
+
+Questa matrice è sempre una rotazione valida (ortonormale, determinante +1) indipendentemente dai valori degli angoli di Eulero originali — anche a Θ = ±90°.
+
+#### Riepilogo: divisione dei ruoli
+
+| Componente | Rappresentazione | Perché |
+|-----------|------------------|--------|
+| Motore fisico (FCC) | Angoli di Eulero (Φ, Θ, Ψ) | Coerenza con il modello MATLAB, equazioni di Stevens & Lewis, Θ < 90° garantito in volo realistico |
+| Rendering 3D (FlightDisplay) | Quaternioni | Nessun gimbal lock visivo, interpolazione liscia, numericamente stabile a qualsiasi orientamento |
+
+La conversione Eulero → quaternione avviene ad ogni frame nel rendering ed è un'operazione a costo trascurabile (6 chiamate a sin/cos + 3 prodotti di Hamilton). Il motore fisico non necessita di quaternioni perché lavora sulle velocità angolari (p, q, r) che sono definite nel body frame e non soffrono di gimbal lock — la singolarità appare solo nella relazione cinematica (p,q,r) → (Φ̇,Θ̇,Ψ̇), dove è gestita dal clamp.
 
 ### 9.2 Velocità body → posizione terrestre (DCM)
 
