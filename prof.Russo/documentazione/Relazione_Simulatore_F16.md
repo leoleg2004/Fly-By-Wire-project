@@ -474,18 +474,109 @@ q̇ = [M − (I_xx − I_zz)·p·r − I_xz·(p² − r²)] / I_yy
 
 ### 8.3 Integrazione RK4
 
-Le equazioni vengono integrate con il metodo di **Runge-Kutta del 4° ordine**. Il vettore di stato integrato è `[u, v, w, p, q, r]`:
+Le equazioni del moto formano un sistema di 6 ODE accoppiate del primo ordine. Il vettore di stato integrato è:
 
 ```
-k1 = f(u, v, w, p, q, r)
-k2 = f(u + k1·dt/2, ...)
-k3 = f(u + k2·dt/2, ...)
-k4 = f(u + k3·dt, ...)
-
-u_new = u + dt·(k1 + 2·k2 + 2·k3 + k4)/6
+y = [u, v, w, p, q, r]
 ```
 
-L'integrazione è **semi-implicita**: le forze e i momenti aerodinamici vengono calcolati una sola volta all'inizio dello step e congelati durante i quattro substep RK4. A 60 Hz (dt ≈ 0.017 s) l'errore introdotto è trascurabile.
+dove le prime tre componenti sono le velocità lineari nel body frame e le ultime tre le velocità angolari. La funzione `f(y)` che calcola le derivate è definita come:
+
+```
+f₁ = u̇ = (Fx_aero + Thrust + W_x)/m + r·v − q·w
+f₂ = v̇ = (Fy_aero + W_y)/m           + p·w − r·u
+f₃ = ẇ = (Fz_aero + W_z)/m           + q·u − p·v
+
+f₄ = ṗ = [I_zz·L + I_xz·N − (I_xz·(I_yy−I_xx−I_zz)·p + (I_xz²+I_zz·(I_zz−I_yy)))·q·r] / Γ
+f₅ = q̇ = [M − (I_xx−I_zz)·p·r − I_xz·(p²−r²)] / I_yy
+f₆ = ṙ = [I_xz·L + I_xx·N + (I_xz·(I_yy−I_xx−I_zz)·r + (I_xz²+I_xx·(I_xx−I_yy)))·p·q] / Γ
+
+dove  Γ = I_xx·I_zz − I_xz²
+```
+
+Si noti che le equazioni traslazionali (f₁, f₂, f₃) e rotazionali (f₄, f₅, f₆) sono **mutuamente accoppiate**: le accelerazioni lineari dipendono dalle velocità angolari (termini di Coriolis r·v, q·w, ...) e le accelerazioni angolari dipendono dalle velocità angolari stesse (termini giroscopici q·r, p·r, p·q). Questo accoppiamento rende il sistema **non lineare** e giustifica l'uso di un integratore di ordine elevato.
+
+#### Perché Runge-Kutta del 4° ordine
+
+L'integrazione di Eulero esplicita (del 1° ordine) approssima:
+
+```
+y(t+dt) ≈ y(t) + dt · f(y(t))
+```
+
+Questo equivale a usare la pendenza al punto iniziale per estrapolare lo stato al punto successivo. Per un sistema non lineare con accoppiamento inerziale come l'F-16, la curvatura della traiettoria nello spazio degli stati è significativa: la pendenza cambia apprezzabilmente tra l'inizio e la fine del passo temporale. Con dt = 0.017 s e velocità angolari che possono variare rapidamente durante le manovre, l'errore di troncamento locale di O(dt²) si accumula e può portare a **drift energetico** (l'energia cinetica del sistema cresce artificialmente) e potenziale **instabilità numerica**.
+
+Il metodo RK4 campiona la pendenza in **quattro punti** all'interno dell'intervallo [t, t+dt]:
+
+```
+k₁ = f(y)                           ← pendenza all'inizio
+k₂ = f(y + k₁·dt/2)                 ← pendenza a metà, usando la stima di k₁
+k₃ = f(y + k₂·dt/2)                 ← pendenza a metà, corretta con k₂
+k₄ = f(y + k₃·dt)                   ← pendenza alla fine, usando la stima di k₃
+
+y(t+dt) = y(t) + dt · (k₁ + 2·k₂ + 2·k₃ + k₄) / 6
+```
+
+I pesi (1, 2, 2, 1)/6 sono quelli della quadratura di Simpson, che integra esattamente i polinomi fino al 3° grado. L'errore di troncamento locale è O(dt⁵) — tre ordini di grandezza migliore di Eulero. Per dt = 0.017 s:
+
+- Eulero: errore ∝ dt² ≈ 2.9 × 10⁻⁴
+- RK4: errore ∝ dt⁵ ≈ 1.4 × 10⁻⁹
+
+Questa differenza di cinque ordini di grandezza è ciò che permette al simulatore di funzionare stabilmente a 60 Hz senza dover ricorrere a passi temporali più piccoli (che imporrebbero un costo computazionale incompatibile con il real-time).
+
+#### Applicazione concreta nel codice
+
+Il codice C++ definisce una lambda `compute_accel` che implementa `f(y)`:
+
+```cpp
+auto compute_accel = [&](float su, float sv, float sw,
+                         float sp, float sq, float sr)
+    -> std::array<float, 6>
+{
+  // Accelerazioni lineari (f₁, f₂, f₃)
+  float au = (Fx_aero + thrust_force + W_x) / MASS_KG + sr*sv - sq*sw;
+  float av = (Fy_aero + W_y) / MASS_KG + sp*sw - sr*su;
+  float aw = (Fz_aero + W_z) / MASS_KG + sq*su - sp*sv;
+
+  // Accelerazioni angolari (f₄, f₅, f₆) — Stevens & Lewis
+  float ap = (I_ZZ*L_tot + I_XZ*N_tot
+            - (I_XZ*(I_YY-I_XX-I_ZZ)*sp
+             + (I_XZ*I_XZ + I_ZZ*(I_ZZ-I_YY))) * sq*sr) / denom;
+  float aq = (M_tot - (I_XX-I_ZZ)*sp*sr
+            - I_XZ*(sp*sp - sr*sr)) / I_YY;
+  float ar = (I_XZ*L_tot + I_XX*N_tot
+            + (I_XZ*(I_YY-I_XX-I_ZZ)*sr
+             + (I_XZ*I_XZ + I_XX*(I_XX-I_YY))) * sp*sq) / denom;
+
+  return {au, av, aw, ap, aq, ar};
+};
+```
+
+Poi i quattro substep RK4:
+
+```cpp
+auto k1 = compute_accel(su, sv, sw, sp, sq, sr);
+
+float h2 = dt * 0.5f;
+auto k2 = compute_accel(su+k1[0]*h2, sv+k1[1]*h2, sw+k1[2]*h2,
+                         sp+k1[3]*h2, sq+k1[4]*h2, sr+k1[5]*h2);
+auto k3 = compute_accel(su+k2[0]*h2, sv+k2[1]*h2, sw+k2[2]*h2,
+                         sp+k2[3]*h2, sq+k2[4]*h2, sr+k2[5]*h2);
+auto k4 = compute_accel(su+k3[0]*dt, sv+k3[1]*dt, sw+k3[2]*dt,
+                         sp+k3[3]*dt, sq+k3[4]*dt, sr+k3[5]*dt);
+
+constexpr float S6 = 1.0f / 6.0f;
+snap.u          += dt * S6 * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]);
+snap.v          += dt * S6 * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]);
+snap.w          += dt * S6 * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]);
+snap.roll_rate  += dt * S6 * (k1[3] + 2*k2[3] + 2*k3[3] + k4[3]);
+snap.pitch_rate += dt * S6 * (k1[4] + 2*k2[4] + 2*k3[4] + k4[4]);
+snap.yaw_rate   += dt * S6 * (k1[5] + 2*k2[5] + 2*k3[5] + k4[5]);
+```
+
+Si noti un dettaglio cruciale: ad ogni substep k₂, k₃, k₄ il vettore di stato viene **perturbato** (ad esempio `su+k1[0]*h2` per k₂), ma le forze e i momenti aerodinamici (`Fx_aero`, `Fy_aero`, ..., `L_tot`, `M_tot`, `N_tot`) restano **congelati** al valore calcolato all'inizio dello step. Questo perché ricalcolare l'aerodinamica (44 tabelle di interpolazione) ad ogni substep quadruplicherebbe il costo computazionale. I termini che **vengono** rivalutati ad ogni substep sono quelli di Coriolis (`sr*sv`, `sq*sw`, ...) e giroscopici (`sq*sr`, `sp*sr`, ...) perché dipendono direttamente dalle variabili di stato perturbate.
+
+Questa scelta (forze congelate, accoppiamenti rivalutati) è un compromesso tra accuratezza e prestazioni: i termini aerodinamici variano lentamente rispetto al passo temporale (le forze dipendono da α e β che cambiano poco in 17 ms), mentre i termini inerziali di accoppiamento possono generare oscillazioni rapide che necessitano della risoluzione RK4 per essere catturate correttamente.
 
 ---
 
@@ -503,23 +594,114 @@ La relazione tra le velocità angolari nel body frame (p, q, r) e le derivate de
 
 Nota: la formula per Ψ̇ ha una singolarità a Θ = ±90° (gimbal lock). Il codice protegge con `cos_th_safe = max(|cos(Θ)|, 0.001)`.
 
-### 9.2 Velocità body → posizione terrestre
+### 9.2 Velocità body → posizione terrestre (DCM)
 
-La trasformazione usa la matrice DCM (Direction Cosine Matrix) completa per proiettare le velocità del body frame nel riferimento terrestre NED (North-East-Down):
+Le velocità (u, v, w) sono espresse nel **body frame**, solidale all'aereo. Per aggiornare la posizione nel **riferimento terrestre** NED (North-East-Down) serve una matrice di rotazione che trasformi un vettore dal body frame all'Earth frame. Questa matrice è la **Direction Cosine Matrix** (DCM), costruita come prodotto di tre rotazioni elementari attorno agli angoli di Eulero (Φ, Θ, Ψ).
+
+#### Costruzione della DCM
+
+La DCM body→Earth si ottiene componendo tre rotazioni nell'ordine ZYX (convenzione aeronautica standard):
+
+1. **Rotazione di Ψ (yaw)** attorno all'asse Z_Earth — allinea l'asse X dal Nord alla prua:
 
 ```
-ẋ_North = u·cos(Θ)·cos(Ψ)
+R_z(Ψ) = ┌ cos(Ψ)  −sin(Ψ)   0  ┐
+          │ sin(Ψ)   cos(Ψ)   0  │
+          └    0        0      1  ┘
+```
+
+2. **Rotazione di Θ (pitch)** attorno al nuovo asse Y — inclina l'asse X rispetto all'orizzonte:
+
+```
+R_y(Θ) = ┌  cos(Θ)    0    sin(Θ) ┐
+          │     0      1       0   │
+          └ −sin(Θ)    0    cos(Θ) ┘
+```
+
+3. **Rotazione di Φ (roll)** attorno al nuovo asse X — inclina lateralmente:
+
+```
+R_x(Φ) = ┌  1      0        0    ┐
+          │  0   cos(Φ)  −sin(Φ)  │
+          └  0   sin(Φ)   cos(Φ)  ┘
+```
+
+La trasformazione **Earth→Body** è la composizione `R_x(Φ) · R_y(Θ) · R_z(Ψ)` applicata nell'ordine inverso (prima yaw, poi pitch, poi roll). Poiché le matrici di rotazione sono ortogonali, la trasformazione inversa **Body→Earth** è semplicemente la trasposta:
+
+```
+C_b→e = [R_x(Φ) · R_y(Θ) · R_z(Ψ)]ᵀ = R_z(Ψ)ᵀ · R_y(Θ)ᵀ · R_x(Φ)ᵀ
+```
+
+Eseguendo il prodotto matriciale si ottiene la DCM completa body→Earth:
+
+```
+         ┌ cΘ·cΨ    sΦ·sΘ·cΨ − cΦ·sΨ    cΦ·sΘ·cΨ + sΦ·sΨ  ┐
+C_b→e =  │ cΘ·sΨ    sΦ·sΘ·sΨ + cΦ·cΨ    cΦ·sΘ·sΨ − sΦ·cΨ  │
+         └ −sΘ       sΦ·cΘ                cΦ·cΘ               ┘
+```
+
+dove cΦ = cos(Φ), sΦ = sin(Φ), cΘ = cos(Θ), sΘ = sin(Θ), cΨ = cos(Ψ), sΨ = sin(Ψ).
+
+#### Applicazione: velocità nel riferimento terrestre
+
+Moltiplicando la DCM per il vettore delle velocità body si ottengono le velocità nel riferimento terrestre:
+
+```
+┌ V_North ┐         ┌ u ┐
+│ V_East  │ = C_b→e │ v │
+└ V_Down  ┘         └ w ┘
+```
+
+Ovvero, elemento per elemento:
+
+```
+V_North = u·cos(Θ)·cos(Ψ)
         + v·[sin(Φ)·sin(Θ)·cos(Ψ) − cos(Φ)·sin(Ψ)]
         + w·[cos(Φ)·sin(Θ)·cos(Ψ) + sin(Φ)·sin(Ψ)]
 
-ẋ_East  = u·cos(Θ)·sin(Ψ)
+V_East  = u·cos(Θ)·sin(Ψ)
         + v·[sin(Φ)·sin(Θ)·sin(Ψ) + cos(Φ)·cos(Ψ)]
         + w·[cos(Φ)·sin(Θ)·sin(Ψ) − sin(Φ)·cos(Ψ)]
 
-ẋ_Down  = −u·sin(Θ) + v·sin(Φ)·cos(Θ) + w·cos(Φ)·cos(Θ)
+V_Down  = −u·sin(Θ) + v·sin(Φ)·cos(Θ) + w·cos(Φ)·cos(Θ)
 ```
 
-L'altitudine cresce verso l'alto: `altitude += −ẋ_Down × dt` (NED ha l'asse Z verso il basso).
+**Verifica intuitiva**: in volo livellato rettilineo (Φ = 0, Θ = 0, Ψ = 0 cioè prua Nord), la DCM diventa la matrice identità e si ottiene V_North = u, V_East = v, V_Down = w — esattamente quello che ci si aspetta: la velocità forward dell'aereo punta a Nord.
+
+Altro caso: con Ψ = 90° (prua Est) e Φ = Θ = 0, si ottiene V_North = 0, V_East = u, V_Down = w — tutta la velocità forward viene proiettata sulla direzione Est, come atteso.
+
+#### Implementazione nel codice
+
+```cpp
+float cos_ps = std::cos(snap.yaw);
+float sin_ps = std::sin(snap.yaw);
+cos_th = std::cos(snap.pitch);
+sin_th = std::sin(snap.pitch);
+cos_ph = std::cos(snap.roll);
+sin_ph = std::sin(snap.roll);
+
+// Riga 1 della DCM: proiezione su Nord
+float x_dot_e = snap.u * cos_th * cos_ps
+              + snap.v * (sin_ph*sin_th*cos_ps - cos_ph*sin_ps)
+              + snap.w * (cos_ph*sin_th*cos_ps + sin_ph*sin_ps);
+
+// Riga 2 della DCM: proiezione su Est
+float y_dot_e = snap.u * cos_th * sin_ps
+              + snap.v * (sin_ph*sin_th*sin_ps + cos_ph*cos_ps)
+              + snap.w * (cos_ph*sin_th*sin_ps - sin_ph*cos_ps);
+
+// Riga 3 della DCM: proiezione su Down
+float z_dot_e = snap.u * (-sin_th)
+              + snap.v * sin_ph * cos_th
+              + snap.w * cos_ph * cos_th;
+
+// Integrazione posizione (Eulero esplicito — vedi nota sotto)
+snap.z += x_dot_e * dt;        // Nord
+snap.x += y_dot_e * dt;        // Est
+snap.altitude -= z_dot_e * dt; // Quota = −Down
+```
+
+**Perché qui si usa Eulero esplicito e non RK4**: l'integrazione della posizione è una semplice quadratura — la derivata (V_North, V_East, V_Down) non dipende dalla posizione stessa. Non c'è retroazione: la posizione dell'aereo non influenza le forze aerodinamiche (si assume atmosfera uniforme e Terra piatta). In assenza di accoppiamento non lineare, l'errore di Eulero esplicito è proporzionale alla variazione della velocità durante lo step, che a 60 Hz è trascurabile. L'RK4 è riservato al sistema accoppiato [u,v,w,p,q,r] dove è realmente necessario.
 
 ---
 
