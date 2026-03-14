@@ -936,40 +936,268 @@ La differenza principale è che il MATLAB usa il solutore ODE di Simulink (tipic
 
 ## 14. Predisposizione per la tesi (Outer Loop PID)
 
-Il simulatore è **esplicitamente progettato** per essere esteso con un controllore outer-loop. Tutto è pronto:
+Il simulatore è **esplicitamente progettato** per essere esteso con un controllore outer-loop. Prima di descrivere l'implementazione specifica, è necessario capire in profondità il principio di funzionamento di un controllore PID e come si inserisce nell'architettura di controllo a due livelli dell'F-16.
 
-### Cosa c'è già
+### 14.1 Principio del controllore PID
 
-- La struct `OuterLoopState` con tutti i campi PID (errori, integrali, derivate, comandi di rate)
-- Il metodo `compute_outer_loop()` con la struttura PID completa (proporzionale + integrale + derivativo)
-- Anti-windup con clamp sull'integrale (±1 rad·s)
-- La logica di engagement/disengagement sulla transizione landing_mode
-- Il SAS che già accetta `p_cmd` e `q_cmd` dall'outer loop come riferimento
+Un controllore **PID** (Proporzionale–Integrale–Derivativo) è il blocco di controllo ad anello chiuso più diffuso nell'ingegneria del controllo automatico. Data una variabile da controllare `y(t)` e un riferimento desiderato `y_ref`, definisce l'**errore**:
 
-### Cosa manca (da implementare per la tesi)
+```
+e(t) = y_ref − y(t)
+```
 
-1. **Assegnare i gain PID** — attualmente tutti a zero:
+L'uscita del controllore (il comando correttivo `u`) è:
+
+```
+u(t) = Kp · e(t)  +  Ki · ∫₀ᵗ e(τ)dτ  +  Kd · de/dt
+       ─────────     ────────────────     ──────────────
+       Termine P       Termine I           Termine D
+```
+
+#### Termine Proporzionale (Kp)
+
+Il termine P genera un comando **proporzionale all'errore istantaneo**. È il termine di reazione immediata: se l'aereo devia di 10° dall'assetto di riferimento, il comando è Kp × 10°. Un Kp alto reagisce rapidamente ma può introdurre **overshoot** (il sistema supera il riferimento prima di stabilizzarsi) e potenzialmente oscillazioni. Un Kp basso è lento e lascia un **errore a regime** (offset residuo).
+
+#### Termine Integrale (Ki)
+
+Il termine I accumula l'errore nel tempo. La sua funzione fondamentale è **eliminare l'errore a regime**: se il termine P da solo non riesce a portare l'errore a zero (ad esempio perché ci sono disturbi costanti come il vento), l'integrale cresce finché il comando non è abbastanza grande da annullare completamente l'errore. Ki alto accelera questa correzione ma può causare **windup** — l'accumulo eccessivo dell'integrale durante le saturazioni degli attuatori, che produce sovracomandi ritardati pericolosi.
+
+#### Termine Derivativo (Kd)
+
+Il termine D reagisce alla **velocità di variazione dell'errore**. Anticipa il comportamento futuro: se l'errore sta crescendo rapidamente, il termine D aumenta il comando prima che l'errore diventi grande. Fisicamente introduce uno **smorzamento predittivo** che riduce l'overshoot e accelera la convergenza. Kd alto, però, amplifica il rumore di misura (la derivata di un segnale rumoroso è molto rumorosa), quindi in pratica viene spesso filtrato.
+
+#### Schema a blocchi
+
+```
+                 e(t)     ┌──────┐
+y_ref ─►(+)──────────────►│  Kp  ├─┐
+         │(-) ▲           └──────┘  │
+         │    │           ┌──────┐  ├──► u(t) ──► Impianto ──► y(t)
+         │    └──y(t)     │Ki/s  ├─┤                             │
+         │                └──────┘  │                             │
+         │                ┌──────┐  │                             │
+         │                │ Kd·s ├─┘                             │
+         │                └──────┘                               │
+         └───────────────────────────────────────────────────────┘
+                         Retroazione (feedback)
+```
+
+La chiusura del loop di retroazione è ciò che rende il sistema in grado di **correggere autonomamente** le deviazioni dall'assetto desiderato senza intervento del pilota.
+
+### 14.2 Architettura a due livelli (Cascade Control)
+
+L'F-16 usa un'architettura di controllo **in cascata** (cascade control) con due loop annidati, che risolve un problema fondamentale: non si può comandare direttamente l'assetto dell'aereo (Φ, Θ) perché le superfici di controllo agiscono sui **momenti** (L, M, N), che producono **accelerazioni angolari** (ṗ, q̇, ṙ), che producono **velocità angolari** (p, q, r), che producono **variazioni di assetto** (Φ̇, Θ̇, Ψ̇). La catena ha quattro integrazioni: comandare direttamente l'assetto con un unico PID sarebbe instabile ad alti gain.
+
+La soluzione è separare il problema in due loop:
+
+```
+                    OUTER LOOP (lento, ~1 Hz)
+          ┌─────────────────────────────────────┐
+          │                                     │
+Φ_ref ──►(+)──► PID_Φ ──► p_cmd               │
+          │                    │                │
+Θ_ref ──►(+)──► PID_Θ ──► q_cmd               │
+          │                    │                │
+          │     INNER LOOP (veloce, ~20 Hz)     │
+          │     ┌──────────────────────────┐    │
+          │     │  p_cmd ──►(+)──► K_p ──► δ_ail_sas ─► Attuatore ─► Flaperoni │
+          │     │             │(-) ▲                                             │
+          │     │             └──── p (roll rate misurato) ◄─────────────────── │
+          │     │                                                                 │
+          │     │  q_cmd ──►(+)──► K_q ──► δ_ele_sas ─► Attuatore ─► Stabilatore│
+          │     │             │(-) ▲                                             │
+          │     │             └──── q (pitch rate misurato) ◄────────────────── │
+          │     └──────────────────────────────────────────────────────────────┘
+          │                                     ▲
+          └────── Φ, Θ (assetto misurato) ──────┘
+```
+
+L'**outer loop** controlla l'assetto (angoli Φ e Θ) e genera comandi di **velocità angolare** (p_cmd e q_cmd) come riferimento per l'inner loop. L'**inner loop** (SAS) controlla le velocità angolari e genera le **deflessioni delle superfici**. Questa separazione funziona perché la dinamica interna (tassi angolari) è molto più veloce di quella esterna (angoli di assetto): il SAS può seguire i comandi di rate con tempi di risposta di ~50 ms, mentre l'assetto cambia in secondi.
+
+### 14.3 I due PID e le superfici di controllo
+
+#### PID di Rollio (canale Φ → Flaperoni)
+
+```
+e_Φ(t)  = Φ_ref − Φ(t)
+p_cmd   = KP_PHI · e_Φ  +  KI_PHI · ∫e_Φ dt  +  KD_PHI · de_Φ/dt
+```
+
+Il comando `p_cmd` viene passato al SAS, che calcola:
+
+```
+δ_ail_sas = KP_ROLL × (p_cmd − p)
+```
+
+Questo genera la deflessione dei **flaperoni** (δ_ail). I flaperoni sono superfici miste aileron/flap: una deflessione positiva (ala sinistra giù, ala destra su) genera un momento di rollio L > 0 che fa rollare l'aereo verso destra, aumentando Φ. Il loop chiuso tende quindi a portare Φ verso Φ_ref.
+
+**Effetto sulla stabilità**: l'F-16 in rollio libero ha una costante di tempo τ_roll ≈ 0.5 s (smorzamento naturale). Il PID di rollio:
+- Con Kp adeguato: riduce τ_roll effettivo a ~0.1–0.2 s (risposta più rapida)
+- Con Ki: elimina l'errore stazionario dovuto ad asimmetrie (es. carichi esterni diversi)
+- Con Kd: riduce l'overshoot nel transitorio
+
+#### PID di Beccheggio (canale Θ → Stabilatore)
+
+```
+e_Θ(t)  = Θ_ref − Θ(t)
+q_cmd   = KP_THETA · e_Θ  +  KI_THETA · ∫e_Θ dt  +  KD_THETA · de_Θ/dt
+```
+
+Il SAS calcola:
+
+```
+δ_ele_sas = KQ_PITCH × (q_cmd − q)
+```
+
+Questo genera la deflessione dello **stabilatore** (δ_ele). Il canale longitudinale è il più critico perché l'F-16 è **staticamente instabile** in beccheggio (CG a 0.30 c̄ avanti del punto neutro 0.35 c̄). Il coefficiente Cm_α > 0: una perturbazione positiva di α genera un momento di beccheggio che amplifica ulteriormente α, portando a divergenza esponenziale in ~300 ms senza controllo.
+
+Il PID di Θ in cascata con il SAS deve:
+1. Contrastare questa instabilità statica (già gestita parzialmente dal SAS con KQ_PITCH = −2.0)
+2. Mantenere Θ al valore di riferimento contro disturbi atmosferici
+3. Seguire eventuali rampe di Θ_ref (climb/descent)
+
+**Effetto sulla stabilità**: il sistema non controllato ha un polo instabile a circa +3.3 rad/s nel piano dei poli (modo di periodo corto instabile). Il SAS già sposta questo polo a sinistra dell'asse immaginario. Il PID di Θ chiude un loop esterno che garantisce convergenza dell'assetto nel lungo periodo.
+
+#### Yaw (canale r → Timone — no PID outer loop)
+
+Il canale di imbardata non ha un PID outer loop nel progetto attuale. Il SAS fornisce solo yaw damping:
+
+```
+δ_rud_sas = KR_YAW × (0 − r)   con KR_YAW = −1.5
+```
+
+Il timone viene così usato unicamente per smorzare le oscillazioni di imbardata (Dutch roll), non per mantenere un heading Ψ_ref. L'eventuale controllo di rotta è un'estensione futura.
+
+### 14.4 Implementazione nel codice
+
+La struttura dati dell'outer loop in `FlightControlLaw.hpp`:
+
+```cpp
+struct OuterLoopState {
+  float phi_ref   = 0.0f;  // Assetto di riferimento rollio (rad)
+  float theta_ref = 0.0f;  // Assetto di riferimento beccheggio (rad)
+
+  float phi_error      = 0.0f;  // e_Φ = phi_ref − Φ
+  float phi_integral   = 0.0f;  // ∫e_Φ dt  (con anti-windup)
+  float phi_error_prev = 0.0f;  // e_Φ al passo precedente (per derivata)
+
+  float theta_error      = 0.0f;
+  float theta_integral   = 0.0f;
+  float theta_error_prev = 0.0f;
+
+  float p_cmd = 0.0f;  // Comando di roll rate → SAS inner loop
+  float q_cmd = 0.0f;  // Comando di pitch rate → SAS inner loop
+};
+```
+
+La funzione `compute_outer_loop()` in `FlightControlLaw.cpp`:
+
+```cpp
+void FlightControlLaw::compute_outer_loop(const FlightState &s, float dt) {
+  if (!m_outer_loop_engaged || dt <= 0.0f) return;
+
+  // --- PID Rollio (Φ) ---
+  m_outer.phi_error = m_outer.phi_ref - s.roll;
+
+  // Termine Integrale con anti-windup (clamp ±1 rad·s)
+  m_outer.phi_integral += m_outer.phi_error * dt;
+  m_outer.phi_integral = std::clamp(m_outer.phi_integral, -INTEGRAL_MAX, INTEGRAL_MAX);
+
+  // Termine Derivativo (differenze finite)
+  float phi_deriv = (m_outer.phi_error - m_outer.phi_error_prev) / dt;
+  m_outer.phi_error_prev = m_outer.phi_error;
+
+  // Uscita PID → p_cmd [rad/s]
+  m_outer.p_cmd = KP_PHI * m_outer.phi_error
+                + KI_PHI * m_outer.phi_integral
+                + KD_PHI * phi_deriv;
+
+  // --- PID Beccheggio (Θ) --- (struttura identica)
+  m_outer.theta_error = m_outer.theta_ref - s.pitch;
+  m_outer.theta_integral += m_outer.theta_error * dt;
+  m_outer.theta_integral = std::clamp(m_outer.theta_integral, -INTEGRAL_MAX, INTEGRAL_MAX);
+  float theta_deriv = (m_outer.theta_error - m_outer.theta_error_prev) / dt;
+  m_outer.theta_error_prev = m_outer.theta_error;
+
+  m_outer.q_cmd = KP_THETA * m_outer.theta_error
+                + KI_THETA * m_outer.theta_integral
+                + KD_THETA * theta_deriv;
+}
+```
+
+Il termine derivativo è calcolato con **differenze finite all'indietro** (`(e[k] − e[k−1]) / dt`), che è equivalente a una derivata discreta senza anticipare il futuro. A 60 Hz questo è sufficiente; in produzione si potrebbe aggiungere un filtro passa-basso sul termine D per ridurre l'amplificazione del rumore.
+
+### 14.5 Anti-windup
+
+Il **windup integrale** è un problema critico nei sistemi con saturazione degli attuatori. Consideriamo lo scenario: l'aereo ha un grande errore di assetto (es. Θ_ref = 20°, Θ = 0° → e = 20°). Il termine integrale cresce rapidamente, ma lo stabilatore è già saturato a ±25°. Quando l'errore inizia a ridursi, l'integrale è diventato molto grande: anche se l'errore diventa zero o negativo, l'integrale continua a spingere il comando in avanti, generando un **overshoot severo** prima che l'integrale si scarichi.
+
+La protezione anti-windup nel codice è un semplice **clamp sull'integrale**:
+
+```cpp
+m_outer.phi_integral = std::clamp(m_outer.phi_integral, -INTEGRAL_MAX, INTEGRAL_MAX);
+// con INTEGRAL_MAX = 1.0f rad·s
+```
+
+Questo limita la massima "memoria" dell'integrale. Con Ki = 0.5 rad/s/(rad·s), il massimo contributo integrativo è 1.0 × 0.5 = 0.5 rad/s su p_cmd — un valore ragionevole che non causa overshoot pericolosi.
+
+### 14.6 Logica di engagement e disengagement
+
+L'outer loop si attiva e disattiva automaticamente sulla **transizione della modalità atterraggio** in `FlightControlLaw::compute()`:
+
+```cpp
+bool in_flight = pilot.engines_on && !pilot.landing_mode;
+
+// Transizione landing_mode: true → false (pilota pronto al volo libero)
+if (in_flight && m_prev_landing_mode) {
+  m_outer.phi_ref   = state.roll;   // Cattura assetto corrente come riferimento
+  m_outer.theta_ref = state.pitch;
+  m_outer.phi_integral   = 0.0f;   // Reset integrali (no windup ereditato)
+  m_outer.theta_integral = 0.0f;
+  m_outer_loop_engaged = true;
+}
+
+// Transizione: engines off o rientro in landing_mode
+if (!in_flight && !m_prev_landing_mode) {
+  m_outer_loop_engaged = false;
+  reset_outer_loop();  // Azzera tutto lo stato
+}
+```
+
+Il **bumpless transfer** (il fatto che al momento dell'engagement il riferimento venga catturato dall'assetto corrente) garantisce che non ci sia un salto nel comando: al momento zero l'errore è zero, quindi p_cmd = q_cmd = 0, e il SAS continua a operare come se nulla fosse cambiato. L'outer loop inizia a generare correzioni solo se l'aereo si discosta dall'assetto catturato.
+
+### 14.7 Cosa serve per la tesi
+
+La struttura è completamente pronta. I passi necessari per implementare il controllore dalla tesi sono:
+
+1. **Ricavare i gain PID** dalla linearizzazione del modello (`trim_and_linearize.m` genera la matrice A, B del sistema linearizzato attorno al punto di trim). Le tecniche di progetto applicabili sono:
+   - **Pole placement**: scegliere dove collocare i poli del sistema in catena chiusa
+   - **LQR** (Linear Quadratic Regulator): minimizzazione di un indice di costo quadratico su errore e comando
+   - **Sintesi in frequenza**: margini di guadagno e fase sul diagramma di Bode
+
+2. **Assegnare i sei gain** nel file `FlightControlLaw.hpp`:
    ```cpp
-   static constexpr float KP_PHI   = ???;  // da tesi
-   static constexpr float KI_PHI   = ???;
-   static constexpr float KD_PHI   = ???;
-   static constexpr float KP_THETA = ???;
-   static constexpr float KI_THETA = ???;
-   static constexpr float KD_THETA = ???;
+   static constexpr float KP_PHI   = ???;  // [rad/s / rad]
+   static constexpr float KI_PHI   = ???;  // [rad/s / (rad·s)]
+   static constexpr float KD_PHI   = ???;  // [rad/s / (rad/s)]
+   static constexpr float KP_THETA = ???;  // [rad/s / rad]
+   static constexpr float KI_THETA = ???;  // [rad/s / (rad·s)]
+   static constexpr float KD_THETA = ???;  // [rad/s / (rad/s)]
    ```
 
-2. **Generare i riferimenti** — attualmente `phi_ref` e `theta_ref` sono catturati al momento dell'engagement. Per un autopilota, dovrebbero venire da un path planner o dal pilota.
+3. **Verificare la stabilità** in simulazione: con i gain non nulli il sistema è in anello chiuso. Partendo dal trim, applicare una perturbazione di assetto e verificare che Φ e Θ convergano al riferimento senza oscillazioni divergenti.
 
-3. **Verifica stabilità** — con gain non nulli il loop è chiuso e va verificato che non diverga. Il modello linearizzato dal MATLAB (`trim_and_linearize.m`) può aiutare.
+### 14.8 Effetto atteso sulla stabilità dell'aereo
 
-### Come attivarlo
+Una volta implementati, i due PID avranno i seguenti effetti osservabili:
 
-Una volta assegnati i gain, l'outer loop si attiva automaticamente quando il pilota:
-1. Accende i motori (tasto E)
-2. Attende il warmup (20 s)
-3. Disattiva la modalità atterraggio (tasto L)
+| Situazione | Senza outer loop PID | Con outer loop PID |
+|-----------|---------------------|-------------------|
+| Aereo in volo livellato, pilota lascia i comandi | L'aereo tende lentamente a divergere in beccheggio (instabilità statica) | Mantiene automaticamente Φ e Θ al valore catturato all'engagement |
+| Raffica di vento laterale (disturbo su Φ) | Il SAS smorza il rate ma Φ deriva lentamente | Il PID di rollio riporta Φ a Φ_ref compensando il disturbo |
+| Pilot stick-push (Θ_ref aggiornato) | Il SAS risponde ma senza memoria integrale | Il PID di beccheggio segue il nuovo riferimento con errore a regime nullo |
+| Manovra con grande bank angle | Il SAS smorza p, ma Φ non ritorna a 0 senza stick | Il PID riporta Φ a Φ_ref (bank angle hold) |
 
-In quel momento `m_outer_loop_engaged` diventa `true` e il PID inizia a generare `p_cmd` e `q_cmd` che il SAS usa come riferimento. L'aereo cercherà di mantenere l'assetto catturato al momento dell'attivazione.
+Il risultato finale è un **autopilota di assetto** (attitude hold): l'aereo mantiene l'orientamento selezionato senza intervento del pilota, resistendo a disturbi e alla propria instabilità statica longitudinale. Questo è il blocco fondamentale su cui si costruiscono funzioni più avanzate come il controllo di rotta (heading hold), il mantenimento della quota (altitude hold) e la navigazione autonoma waypoint-to-waypoint.
 
 ---
 

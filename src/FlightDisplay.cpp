@@ -38,7 +38,7 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string &title) {
 
   // Sky dome
   skyTexture = LoadTexture(
-      "free_-_skybox_cliffside/textures/Scene_-_Root_diffuse.png");
+      "sky/textures/lambert1_emissive.png");
   if (skyTexture.id > 0) {
     skyLoaded  = true;
     Mesh sphere = GenMeshSphere(90000.0f, 64, 64);
