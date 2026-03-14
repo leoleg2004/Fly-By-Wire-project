@@ -1,0 +1,70 @@
+flowchart TD
+    START([Inizio FCC.step]) --> DT["Clamp dt nell'intervallo 0.001 - 0.05 s"]
+
+    DT --> LOCK["Lock mutex\nsnap = m_state  copia locale dello stato"]
+
+    LOCK --> SYSUPD["snap.system_active = engines_on\nsnap.landing_mode  = landing_mode"]
+
+    SYSUPD --> FCL["FlightControlLaw::compute\nOuter Loop PID placeholder + Inner SAS\nRitorna: ControlSurfaces cmd"]
+
+    FCL --> MODEUPD["snap.mode        = evaluate_mode\nsnap.protections = protection_status"]
+
+    MODEUPD --> ACTUATOR["update_actuators cmd, dt\nPer ogni superficie:\n  rate = clamp( error / tau, -rate_max, +rate_max )\n  delta_actual += rate * dt\n  delta_actual  = clamp( delta_actual, -pos_max, +pos_max )"]
+
+    ACTUATOR --> ISA["Atmosfera ISA Standard\nT = 288.15 - 0.0065 * alt\nrho = rho0 * T/T0 elevato 4.2561"]
+
+    ISA --> VT["Calcola velocita totale\nV_T = sqrt( u^2 + v^2 + w^2 )"]
+
+    VT --> VTCHECK{V_T maggiore di 1 m/s?}
+
+    VTCHECK -->|Si| ANGLES["alpha = atan2( w, u )\nbeta  = asin( clamp( v / V_T ) )"]
+    VTCHECK -->|No| ANGLEZERO["alpha = 0,  beta = 0\nvelivolo fermo o quasi"]
+
+    ANGLES --> QBAR["Pressione dinamica\nq_bar = 0.5 * rho * V_T^2"]
+    ANGLEZERO --> QBAR
+
+    QBAR --> ENGCHECK{system_active\nAND engine_ready?}
+
+    ENGCHECK -->|Si| THRUST["Modello propulsore F100-PW-200\nThrust = T_min + thr * T_max - T_min\nRange: 1000 - 19000 lbf convertiti in Newton"]
+    ENGCHECK -->|No| NOTHRUST["Thrust = 0 N\nMotori spenti o in warmup"]
+
+    THRUST --> AEROFM["F16AeroFM  replica NASA TP-1538\nInput:  V_T, alpha, beta, p, q, r,\n        q_bar, ele, ail, rud, lef\nOutput: Fx, Fy, Fz  forze aerodinamiche\n        L, M, N     momenti aerodinamici\n44 lookup table + interpolazione"]
+    NOTHRUST --> AEROFM
+
+    AEROFM --> GRAV["Gravita nel body frame\nW_x = -m*g * sin theta\nW_y =  m*g * cos theta * sin phi\nW_z =  m*g * cos theta * cos phi"]
+
+    GRAV --> RK4_SETUP["Setup RK4\ndenom = I_xx * I_zz - I_xz^2\nForze aerodinamiche congelate durante i substep"]
+
+    RK4_SETUP --> K1["k1 = compute_accel( u, v, w, p, q, r )"]
+    K1 --> K2["k2 = compute_accel( stato + k1 * dt/2 )"]
+    K2 --> K3["k3 = compute_accel( stato + k2 * dt/2 )"]
+    K3 --> K4["k4 = compute_accel( stato + k3 * dt )"]
+
+    K4 --> INTEGRATE["Integrazione RK4  Stevens and Lewis con accoppiamento I_xz\nu, v, w, p, q, r  +=  dt * k1 + 2*k2 + 2*k3 + k4  / 6"]
+
+    INTEGRATE --> KINEMATICS["Cinematica Eulero\nPhi_dot   = p + sin phi * tan theta * q + cos phi * tan theta * r\nTheta_dot = cos phi * q - sin phi * r\nPsi_dot   = sin phi * q + cos phi * r  / cos theta\nAggiorna phi, theta, psi\nWrapping angoli in -pi pi  e  clamp theta in -pi/2 pi/2"]
+
+    KINEMATICS --> EARTHPOS["Trasformazione Body to Earth  DCM\nCalcola x_dot_e, y_dot_e, z_dot_e\nAggiorna  z Nord,  x Est,  altitude = altitude - z_dot_e * dt"]
+
+    EARTHPOS --> GROUNDCHECK{altitude minore\no uguale a 0?}
+
+    GROUNDCHECK -->|Si| GROUNDCLAMP["Ground Clamp\naltitude = 0\nSe w maggiore 0: w = 0\nroll  *= 0.9  smorzamento\npitch *= 0.9  smorzamento"]
+    GROUNDCHECK -->|No| NUMSAFETY["Controllo Numerico\nisfinite su u, v, w, p, q, r\nSe NaN o Inf: imposta a 0"]
+
+    GROUNDCLAMP --> NUMSAFETY
+
+    NUMSAFETY --> EICAS{Determina\nstatus_msg}
+
+    EICAS -->|landing_mode| LAND["ILS LANDING MODE ACTIVE"]
+    EICAS -->|system_active false| ENGOFF["ENGINES SHUT DOWN"]
+    EICAS -->|alpha_floor true| STALL["STALL WARNING - HIGH ALPHA"]
+    EICAS -->|condizione normale| NORMAL["NORMAL FLIGHT 6-DOF F-16"]
+
+    LAND --> PKTINC["packet_id++"]
+    ENGOFF --> PKTINC
+    STALL --> PKTINC
+    NORMAL --> PKTINC
+
+    PKTINC --> UNLOCK["Unlock mutex\nm_state = snap  commit atomico thread-safe"]
+
+    UNLOCK --> END([Fine FCC.step])

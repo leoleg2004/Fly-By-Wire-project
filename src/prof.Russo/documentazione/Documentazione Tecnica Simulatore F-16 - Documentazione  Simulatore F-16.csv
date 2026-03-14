@@ -1,7 +1,0 @@
-MATLAB,File,C++ Classe,Metodo/Campo
-load_F16_params.m,header,FlightControlComputer,"MASS_KG, I_XX, S_WING, B_SPAN, C_BAR"
-F16AeroFM.m,core,FlightControlComputer,F16AeroFM() (static)
-F16AeroData.h5,data,F16AeroData.hpp,44 lookup tables TBL_*
-trim_and_linearize.m,config,FlightControlComputer,"ACT_RATE_ELE, ACT_TAU; FlightControlLaw"
-preprocess_F16_AeroData.m,build,F16AeroData.hpp,"Breakpoints ALPHA1, BETA1, DH1"
-Stevens & Lewis (Book),reference,FlightControlComputer,"EOM 6-DOF (RK4), eq. rotazionali"

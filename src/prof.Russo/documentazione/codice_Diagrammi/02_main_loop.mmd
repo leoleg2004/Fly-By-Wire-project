@@ -1,0 +1,27 @@
+flowchart TD
+    Start([Main Loop Start]) -->|60 FPS| GetDt["float dt = GetFrameTime()"]
+    GetDt --> ClampDt["Clamp dt a 0.001 - 0.1 s"]
+    ClampDt --> PopA["A: populate_plane_data()"]
+    PopA -->|Extract FlightState + Actuators| PopADone["PlaneData aggiornato"]
+    PopADone --> InputHandle["B: display.HandleInput()"]
+    InputHandle -->|Read keyboard| KbdRoll["Se A/D: aggiusta stick_roll"]
+    KbdRoll --> KbdPitch["Se W/S: aggiusta stick_pitch"]
+    KbdPitch --> KbdRudder["Se Frecce: aggiusta rudder"]
+    KbdRudder --> KbdThrottle["Se Su/Giu: aggiusta throttle"]
+    KbdThrottle --> KbdSpecial["E: toggle engines\nL: toggle landing\nG: toggle gear"]
+    KbdSpecial --> Audio["Gestione audio\nengine loop, allarmi"]
+    Audio --> PhysicsStep["C: g_fcc.step( pilot_input, dt )"]
+    PhysicsStep --> PopD["D: populate_plane_data()"]
+    PopD -->|Estrai stato aggiornato| PopDDone["PlaneData con nuovi dati fisici"]
+    PopDDone --> Draw["E: display.Draw( PlaneData )"]
+    Draw --> Raylib["Raylib: scena 3D + overlay HUD"]
+    Raylib --> Debug{Intervallo debug\nsuperiore a 2.0 s?}
+    Debug -->|Si| DebugPrint["g_fcc.debug_print()\nstampa stato FCC e input"]
+    Debug -->|No| NoDebug["(skip)"]
+    DebugPrint --> IsActive{window.IsActive?}
+    NoDebug --> IsActive
+    IsActive -->|Si| GetDt
+    IsActive -->|No| Shutdown["g_running = false"]
+    Shutdown --> JoinDDS["dds_thread.join()"]
+    JoinDDS --> CleanupDDS["Cancella writers, topic, participant"]
+    CleanupDDS --> End([Return 0])

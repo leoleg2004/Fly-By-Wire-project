@@ -38,7 +38,7 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string &title) {
 
   // Sky dome
   skyTexture = LoadTexture(
-      "sky_pano_-_monument_valley_lookout(1)/textures/lambert1_emissive.png");
+      "free_-_skybox_cliffside/textures/Scene_-_Root_diffuse.png");
   if (skyTexture.id > 0) {
     skyLoaded  = true;
     Mesh sphere = GenMeshSphere(90000.0f, 64, 64);
@@ -48,7 +48,7 @@ FlightDisplay::FlightDisplay(int width, int height, const std::string &title) {
     skyModel.materials[0].maps[MATERIAL_MAP_ALBEDO].texture = skyTexture;
     skyModel.materials[0].maps[MATERIAL_MAP_ALBEDO].color   = WHITE;
   } else {
-    TraceLog(LOG_WARNING, "ATTENZIONE: Impossibile caricare lambert1_emissive.png");
+    TraceLog(LOG_WARNING, "ATTENZIONE: Impossibile caricare Scene_-_Root_diffuse.png");
   }
 
   // Aircraft model

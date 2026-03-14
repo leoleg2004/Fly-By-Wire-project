@@ -1,0 +1,231 @@
+classDiagram
+    direction TB
+
+    class FBWMode {
+        <<enumeration>>
+        NORMAL_LAW
+        ALTERNATE_LAW
+        DIRECT_LAW
+    }
+
+    class PilotInput {
+        +float stick_roll
+        +float stick_pitch
+        +float rudder
+        +float throttle_input
+        +bool engines_on
+        +bool engine_ready
+        +bool landing_mode
+        +bool gear_deploy
+    }
+
+    class ControlSurfaces {
+        +float stabilator_deflection
+        +float flaperon_deflection
+        +float rudder_deflection
+        +float leading_edge_flap
+        +float thrust_normalized
+    }
+
+    class ProtectionStatus {
+        +bool alpha_floor
+        +bool overspeed
+        +bool high_altitude
+        +bool terrain_avoidance
+        +bool bank_angle_limit
+        +bool load_factor_limit
+    }
+
+    class FlightState {
+        +float roll
+        +float pitch
+        +float yaw
+        +float roll_rate
+        +float pitch_rate
+        +float yaw_rate
+        +float u
+        +float v
+        +float w
+        +float alpha
+        +float beta
+        +float x
+        +float z
+        +float altitude
+        +FBWMode mode
+        +ProtectionStatus protections
+        +bool system_active
+        +bool landing_mode
+        +char status_msg
+        +uint32_t packet_id
+        +FlightState()
+    }
+
+    class SASOutput {
+        <<struct>>
+        +float delta_ele
+        +float delta_ail
+        +float delta_rud
+    }
+
+    class OuterLoopState {
+        <<struct>>
+        +float phi_ref
+        +float theta_ref
+        +float phi_error
+        +float phi_integral
+        +float phi_error_prev
+        +float theta_error
+        +float theta_integral
+        +float theta_error_prev
+        +float p_cmd
+        +float q_cmd
+    }
+
+    class FlightControlLaw {
+        -ProtectionStatus m_prot
+        -float m_pitch_integrator
+        -OuterLoopState m_outer
+        -bool m_outer_loop_engaged
+        -bool m_prev_landing_mode
+        -float KQ_PITCH$
+        -float KP_ROLL$
+        -float KR_YAW$
+        -float KP_PHI$
+        -float KI_PHI$
+        -float KD_PHI$
+        -float KP_THETA$
+        -float KI_THETA$
+        -float KD_THETA$
+        +FlightControlLaw()
+        +compute(PilotInput, FlightState, float) ControlSurfaces
+        +evaluate_mode(FlightState) FBWMode
+        +protection_status() ProtectionStatus
+        -normal_law(PilotInput, FlightState, float) ControlSurfaces
+        -alternate_law(PilotInput) ControlSurfaces
+        -direct_law(PilotInput) ControlSurfaces
+        -compute_sas(FlightState) SASOutput
+        -compute_outer_loop(FlightState, float) void
+        -reset_outer_loop() void
+        -apply_protections(ControlSurfaces, FlightState, PilotInput) void
+    }
+
+    class ActuatorOut {
+        <<struct>>
+        +float ele
+        +float ail
+        +float rud
+        +float lef
+        +float thr
+    }
+
+    class ActuatorState {
+        <<struct>>
+        +float ele
+        +float ail
+        +float rud
+        +float lef
+        +float thr
+    }
+
+    class FlightControlComputer {
+        -FlightControlLaw m_law
+        -FlightState m_state
+        -mutex m_mtx
+        -ActuatorState m_actuator
+        -float MASS_KG$
+        -float I_XX$
+        -float I_YY$
+        -float I_ZZ$
+        -float I_XZ$
+        -float ACT_RATE_ELE$
+        -float ACT_RATE_AIL$
+        -float ACT_RATE_RUD$
+        -float ACT_TAU$
+        -float GRAVITY$
+        +FlightControlComputer()
+        +step(PilotInput, float) void
+        +get_state() FlightState
+        +get_actuator_state() ActuatorOut
+        +set_initial_state(FlightState) void
+        +debug_print() void
+        -update_actuators(ControlSurfaces, float) void
+    }
+
+    class PlaneData {
+        +float roll
+        +float pitch
+        +float yaw
+        +float roll_rate
+        +float pitch_rate
+        +float yaw_rate
+        +float u
+        +float v
+        +float w
+        +float alpha
+        +float beta
+        +float altitude
+        +float x
+        +float z
+        +float speed
+        +float speed_kts
+        +float mach
+        +float nz
+        +float act_ele
+        +float act_ail
+        +float act_rud
+        +float act_lef
+        +float act_thr
+        +char status_msg
+        +bool system_active
+        +bool landing_mode
+    }
+
+    class FlightDisplay {
+        -Camera3D camera
+        -Vector3 cameraPositionLag
+        -Model modelF16
+        -Model skyModel
+        -Model mapModel
+        -Sound sndEngineStart
+        -Sound sndEngineLoop
+        -Sound sndWarning
+        -Sound sndPullUp
+        -bool modelLoaded
+        +FlightDisplay(int, int, string)
+        +~FlightDisplay()
+        +IsActive() bool
+        +HandleInput(PlaneData, PilotInput) void
+        +Draw(PlaneData) void
+        -UpdateChaseCamera(PlaneData) void
+        -DrawAircraftModel(PlaneData) void
+        -DrawMapWorld(PlaneData) void
+        -DrawSky(Vector3) void
+        -DrawHUD(PlaneData) void
+        -DrawPitchLadder(PlaneData) void
+        -DrawSpeedTape(PlaneData) void
+        -DrawAltitudeTape(PlaneData) void
+        -DrawHeadingTape(PlaneData) void
+        -DrawAlphaGMeter(PlaneData) void
+        -DrawWarnings(PlaneData) void
+    }
+
+    %% Composizione
+    FlightState *-- FBWMode
+    FlightState *-- ProtectionStatus
+    FlightControlLaw *-- OuterLoopState
+    FlightControlLaw *-- ProtectionStatus
+    FlightControlComputer *-- FlightControlLaw
+    FlightControlComputer *-- FlightState
+    FlightControlComputer *-- ActuatorState
+
+    %% Dipendenze
+    FlightControlLaw ..> SASOutput : produces
+    FlightControlLaw ..> ControlSurfaces : produces
+    FlightControlLaw ..> FBWMode : evaluates
+    FlightControlComputer ..> PilotInput : receives
+    FlightControlComputer ..> ControlSurfaces : processes
+    FlightControlComputer ..> ActuatorOut : exposes
+    FlightDisplay ..> PlaneData : reads
+    FlightDisplay ..> PilotInput : writes
+    PlaneData ..> FlightState : populated from
+    PlaneData ..> ActuatorOut : populated from

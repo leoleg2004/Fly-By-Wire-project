@@ -1,0 +1,23 @@
+flowchart TD
+    ComputeStart([FCL.compute chiamato]) --> CheckTrans["Controlla transizione landing_mode"]
+    CheckTrans --> TransDet{"landing false\ndiventato true?"}
+    TransDet -->|Si| Engage["Aggancia outer loop\nCaptura phi_ref e theta_ref\nReset integrali"]
+    TransDet -->|No| CheckDis{"landing true\ndiventato false?"}
+    CheckDis -->|Si| Disengage["Sgancia outer loop\nm_outer_loop_engaged = false\nreset_outer_loop()"]
+    CheckDis -->|No| SkipTrans["(nessuna transizione)"]
+    Engage --> UpdatePrev["m_prev_landing_mode = landing_mode"]
+    Disengage --> UpdatePrev
+    SkipTrans --> UpdatePrev
+    UpdatePrev --> OuterLoop["compute_outer_loop( state, dt )\nSe agganciato: PID su phi e theta"]
+    OuterLoop --> EvalMode["evaluate_mode( state )"]
+    EvalMode --> ModeCheck{"system_active?"}
+    ModeCheck -->|No| DirectMode["DIRECT_LAW"]
+    ModeCheck -->|Si| NormalMode["NORMAL_LAW"]
+    DirectMode --> DirectLaw["direct_law( pilot )\ncmd = stick * MAX_DEF\nNessun SAS, nessun LEF"]
+    NormalMode --> SAS["compute_sas( state )\ndelta_ele = KQ * ( q_cmd - pitch_rate )\ndelta_ail = KP * ( p_cmd - roll_rate )\ndelta_rud = KR * ( 0 - yaw_rate )"]
+    SAS --> NormalLaw["normal_law():\nEle = stick_pitch * MAX_ELEV + delta_ele SAS\nAil = stick_roll  * MAX_AIL  + delta_ail SAS\nRud = rudder      * MAX_RUD  + delta_rud SAS\nLEF = clamp( alpha_deg * 1.38, 0, MAX_LEF )\nThr = throttle_input"]
+    DirectLaw --> ApplyProt["apply_protections()"]
+    NormalLaw --> ApplyProt
+    ApplyProt --> SetFlags["Calcola protezioni:\nalpha_floor, overspeed\nterrain_avoidance\nhigh_altitude, bank_angle_limit"]
+    SetFlags --> StructClamp["Clamp strutturale\nele in -25 a +25 deg\nail in -21.5 a +21.5 deg\nrud in -30 a +30 deg\nlef in 0 a +25 deg"]
+    StructClamp --> ComputeEnd([Ritorna ControlSurfaces])

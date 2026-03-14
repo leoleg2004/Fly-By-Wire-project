@@ -1,0 +1,33 @@
+sequenceDiagram
+    participant Main as Main Render Loop 60 FPS
+    participant FCC as FlightControlComputer
+    participant DDS as DDS Publish Thread 20 Hz
+    participant Broker as eProsima Broker
+
+    Main ->> FCC: step(pilot_input, dt)
+    Note over FCC: Control Law + Actuators<br/>F16AeroFM + EOM 6-DOF RK4
+    FCC ->> FCC: m_state aggiornato, packet_id++
+
+    par Render loop e DDS thread in parallelo
+        loop Ogni 50ms (20 Hz)
+            DDS ->> FCC: get_state()
+            FCC -->> DDS: FlightState snapshot
+            DDS ->> FCC: get_actuator_state()
+            FCC -->> DDS: ActuatorOut snapshot
+            DDS ->> DDS: Popola F16Kinematics
+            DDS ->> DDS: Popola F16AeroState
+            DDS ->> DDS: Popola F16Actuators
+            DDS ->> Broker: write(F16KinematicsTopic)
+            Broker -->> DDS: ack RELIABLE
+            DDS ->> Broker: write(F16AeroStateTopic)
+            Broker -->> DDS: ack RELIABLE
+            DDS ->> Broker: write(F16ActuatorsTopic)
+            Broker -->> DDS: ack RELIABLE
+            DDS ->> DDS: sleep 50ms
+        end
+    and
+        Main ->> Main: populate_plane_data()
+        Main ->> FCC: get_state()
+        FCC -->> Main: FlightState
+        Main ->> Main: display.Draw(PlaneData)
+    end
