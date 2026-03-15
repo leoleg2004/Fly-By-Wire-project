@@ -1,0 +1,4 @@
+//comando per posto isolato per usare vphyton
+
+source ambiente_isolato/bin/activate
+
