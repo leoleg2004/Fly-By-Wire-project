@@ -17,3 +17,6 @@ https://www.youtube.com/watch?v=dShtlMl69kY
 https://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node5.html
 
 
+//preso codice python per runge kutta e eulero
+https://trinket.io/glowscript/1fe7d9cdd6
+
