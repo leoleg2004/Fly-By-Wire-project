@@ -500,19 +500,73 @@ Le equazioni di forza nel codice sono **corrette** e coincidono con la derivazio
 
 ### 8.2 Equazioni di momento (accelerazioni angolari) — derivazione con I_xz ≠ 0
 
-Le equazioni di momento derivano dalla **legge di Eulero** per un corpo rigido:
+#### Il tensore d'inerzia
+
+Il **tensore d'inerzia** (o matrice d'inerzia) è un oggetto matematico di rango 2 — cioè una matrice 3×3 — che descrive come la massa di un corpo rigido è distribuita nello spazio rispetto a un sistema di assi. Non è semplicemente un numero scalare (come la massa), né un vettore: è un operatore lineare che trasforma la velocità angolare ω nel momento angolare H:
 
 ```
-dH/dt|_inerziale = dH/dt|_body + ω × H = M_esterno
+H = I · ω
 ```
 
-dove H è il **vettore momento angolare**. Per l'F-16, con il piano xz come piano di simmetria (quindi I_xy = I_yz = 0, ma I_xz ≠ 0), il momento angolare nel body frame è:
+Fisicamente, il tensore d'inerzia risponde alla domanda: "se il corpo ruota con velocità angolare ω, qual è il momento angolare risultante?" La risposta non è in generale parallela a ω perché la massa può essere distribuita asimmetricamente.
+
+La forma generale del tensore d'inerzia rispetto a un sistema di assi (x, y, z) con origine nel centro di massa è:
 
 ```
-Hx = I_xx·p − I_xz·r
-Hy = I_yy·q
-Hz = I_zz·r − I_xz·p
+        ┌  I_xx   −I_xy   −I_xz ┐
+I =     │ −I_xy    I_yy   −I_yz │
+        └ −I_xz   −I_yz    I_zz ┘
 ```
+
+I termini sulla diagonale principale sono i **momenti d'inerzia assiali**:
+
+```
+I_xx = ∫(y² + z²) dm   (resistenza alla rotazione attorno all'asse x)
+I_yy = ∫(x² + z²) dm   (resistenza alla rotazione attorno all'asse y)
+I_zz = ∫(x² + y²) dm   (resistenza alla rotazione attorno all'asse z)
+```
+
+I termini fuori diagonale sono i **prodotti d'inerzia** (con il segno negativo per convenzione di Stevens & Lewis):
+
+```
+I_xy = ∫xy dm,   I_xz = ∫xz dm,   I_yz = ∫yz dm
+```
+
+Un prodotto d'inerzia diverso da zero indica un **accoppiamento inerziale**: una rotazione attorno a un asse genera momento angolare anche attorno agli altri assi. Per l'F-16, il piano xz è piano di simmetria, quindi I_xy = I_yz = 0, ma **I_xz ≠ 0** perché il motore e le masse lungo l'asse x non sono distribuiti simmetricamente rispetto al piano xy (il baricentro dell'aereo è più vicino al suolo che al soffitto quando visto frontalmente, ossia le masse sono più concentrate in basso rispetto al piano xz).
+
+#### Matrici di rotazione per il cambio di sistema di riferimento nell'F-16
+
+Nel simulatore F-16, i vettori fisici (velocità, forze, accelerazioni) devono essere trasformati tra tre sistemi di riferimento principali:
+
+- **Body Frame (B)**: solidale all'aereo, asse x verso il muso, y verso l'ala destra, z verso il basso.
+- **Inertial/NED Frame (I)**: fisso con la Terra (North-East-Down), considerato inerziale per voli subsonici.
+- **Wind/Stability Frame (W)**: asse x allineato con la velocità relativa del vento; usato per il calcolo aerodinamico.
+
+La rotazione da Body Frame a NED Frame (e viceversa) è parametrizzata dagli **angoli di Eulero** (Ψ = yaw, Θ = pitch, Φ = roll) applicati nell'ordine 3-2-1 (yaw → pitch → roll), che è la convenzione standard in meccanica del volo.
+
+**Forward Matrix (Body → NED)** — trasforma vettori dal body frame al frame inerziale NED:
+
+```
+        ┌ cΘ·cΨ           cΘ·sΨ           −sΘ      ┐
+L_BI =  │ sΦ·sΘ·cΨ−cΦ·sΨ  sΦ·sΘ·sΨ+cΦ·cΨ  sΦ·cΘ   │
+        └ cΦ·sΘ·cΨ+sΦ·sΨ  cΦ·sΘ·sΨ−sΦ·cΨ  cΦ·cΘ   ┘
+```
+
+dove c = cos, s = sin, e gli angoli sono Φ (roll), Θ (pitch), Ψ (yaw).
+
+**Backward Matrix (NED → Body)** — trasforma vettori dal frame inerziale NED al body frame. Poiché la matrice di rotazione è ortogonale (L_BI⁻¹ = L_BI^T), si ottiene semplicemente trasposta:
+
+```
+         ┌ cΘ·cΨ           sΦ·sΘ·cΨ−cΦ·sΨ   cΦ·sΘ·cΨ+sΦ·sΨ ┐
+L_IB =   │ cΘ·sΨ           sΦ·sΘ·sΨ+cΦ·cΨ   cΦ·sΘ·sΨ−sΦ·cΨ │
+         └ −sΘ             sΦ·cΘ             cΦ·cΘ           ┘
+```
+
+Uso tipico nel simulatore:
+- La **forza peso** W è nota nel frame NED (W_NED = [0, 0, m·g]^T). Si trasforma nel body frame con L_IB: `W_body = L_IB · W_NED`.
+- Le **posizioni** (x_N, x_E, h) si integrano nel frame NED. La velocità nel body frame (u, v, w) si converte con L_BI: `[ṡN, ṡE, ḣ]^T = L_BI · [u, v, w]^T`.
+
+Il codice C++ (`FlightControlComputer.cpp`) applica questa rotazione nella funzione `compute_accel` per proiettare la forza peso nei tre assi del body frame prima di sommarla alle forze aerodinamiche.
 
 **Convenzione del segno di I_xz — critica per la coerenza delle equazioni.**
 
