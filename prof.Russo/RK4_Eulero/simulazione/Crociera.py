@@ -36,15 +36,17 @@ Gamma = Ixx * Izz - Ixz**2
 # Simulazione
 # ─────────────────────────────────────────────────────────────────────────────
 DT_DEFAULT = 1.0 / 60.0
-T_END      = 55.0
+T_END = 20.0
 
-IC = np.array([500.0, 0.0, 0.0,    # u, v, w  [ft/s]
-               2.0,   0.5, 0.0])   # p, q, r  [rad/s]
-
+# [u, v, w, p, q, r]
+# u = 800 ft/s (Alta velocità, volo livellato), nessuna rotazione iniziale
+IC = np.array([800.0, 0.0, 0.0,    
+               0.0,   0.0, 0.0])   
 
 def compute_aero(state):
+    # In crociera spinta e resistenza si annullano perfettamente.
+    # Restituiamo zero forze nette per mantenere l'aereo stabilizzato.
     return 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-
 
 def derivatives(state, Fx, Fy, Fz, L, M, N):
     u, v, w, p, q, r = state

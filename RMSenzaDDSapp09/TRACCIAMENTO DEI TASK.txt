@@ -62,6 +62,11 @@ creato il file parser.cpp che serve per fare la lettura da file
 (comando per aggiornare le modifiche del parser)
 g++ parser.cpp -o parser
 
+-----------------------------------------------------------------------------
+https://man7.org/linux/man-pages/man1/trace-cmd.1.html
+
+------------------------------------------------------------------------------
+https://walac.github.io/kernel-tracing/
 
 
 
