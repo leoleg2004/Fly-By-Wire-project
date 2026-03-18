@@ -70,3 +70,80 @@ https://walac.github.io/kernel-tracing/
 
 
 
+--------------------------------------------------------------------------------------------
+COSTO COMPUTAZIONALE DEI TASK DURANTE L'ESECUZIONE(RIPORTA PE RPERIODO IL COSOT COMPUTAIZNALE DELLE DUE ATTIVITA E SE VENOG EFFETIVMANETE SEGUITE ALL'INTENRO DI UN PERIODO)
+sudo trace-cmd report | LC_ALL=C awk '
+BEGIN { 
+    p1 = 1; p2 = 1; 
+    cost1 = 0; cost2 = 0; 
+    print_idx = 1;
+    
+    # Intestazione della tabella
+    printf "\n=======================================================\n"
+    printf "%-10s | %-18s | %-18s\n", "PERIODO", "COSTO ACTIVITY 1", "COSTO ACTIVITY 2"
+    printf "=======================================================\n"
+}
+{
+    # Trova il tempo in modo sicuro
+    if (match($0, /[0-9]+\.[0-9]+:/)) {
+        t = substr($0, RSTART, RLENGTH - 1);
+    } else {
+        next;
+    }
+}
+
+# --- ACTIVITY 1 ---
+/==> Activity_1:/ { start1 = t; }
+
+/sched_switch:[ \t]+Activity_1:/ && start1 != "" {
+    cost1 += (t - start1);
+    start1 = "";
+    
+    if ($0 ~ / \[[0-9]+\] [SDX] ==>/) {
+        act1_cost[p1] = cost1 * 1000;
+        p1++;
+        cost1 = 0;
+        
+        # Stampa la riga della tabella se anche Activity 2 ha finito questo periodo
+        while (print_idx in act1_cost && print_idx in act2_cost) {
+            printf "%-10d | %7.3f ms       | %7.3f ms\n", print_idx, act1_cost[print_idx], act2_cost[print_idx];
+            print_idx++;
+        }
+    }
+}
+
+# --- ACTIVITY 2 ---
+/==> Activity_2:/ { start2 = t; }
+
+/sched_switch:[ \t]+Activity_2:/ && start2 != "" {
+    cost2 += (t - start2);
+    start2 = "";
+    
+    if ($0 ~ / \[[0-9]+\] [SDX] ==>/) {
+        act2_cost[p2] = cost2 * 1000;
+        p2++;
+        cost2 = 0;
+        
+        # Stampa la riga della tabella se anche Activity 1 ha finito questo periodo
+        while (print_idx in act1_cost && print_idx in act2_cost) {
+            printf "%-10d | %7.3f ms       | %7.3f ms\n", print_idx, act1_cost[print_idx], act2_cost[print_idx];
+            print_idx++;
+        }
+    }
+}
+
+END {
+    # Stampa i periodi rimasti a metà al momento dell interruzione (CTRL+C)
+    if (print_idx < p1 || print_idx < p2) {
+        printf "-------------------------------------------------------\n"
+        printf " TRACCIAMENTO INTERROTTO (I task non hanno finito)\n"
+        printf "-------------------------------------------------------\n"
+    }
+    while (print_idx < p1 || print_idx < p2) {
+        val1 = (print_idx in act1_cost) ? sprintf("%7.3f ms", act1_cost[print_idx]) : "Incompleta";
+        val2 = (print_idx in act2_cost) ? sprintf("%7.3f ms", act2_cost[print_idx]) : "Incompleta";
+        printf "%-10d | %-18s | %-18s\n", print_idx, val1, val2;
+        print_idx++;
+    }
+    printf "=======================================================\n\n"
+}' > report_tabella.txt
