@@ -28,6 +28,7 @@
 typedef struct activity_parameters {
   char name[15];
   int period;
+  long int deadline;
   int parameter;
 } t_activity_par;
 
@@ -60,16 +61,18 @@ void *PeriodicTask(void *ptr) {
 
   // Obtain the current time: this is the beginning of the first period
   clock_gettime(CLOCK_MONOTONIC, &exec_release_time);
+  uint64_t sim_start_time = time_to_millisecs(&exec_release_time);
 
   while (1) {
     time_add_millisecs(&exec_release_time, activity.period);
 
     exec_next_release_time = time_to_millisecs(&exec_release_time);
+    uint64_t relative_deadline = exec_next_release_time - sim_start_time;
 
     char marker_start[128];
     snprintf(marker_start, sizeof(marker_start),
              "=== PERIOD_START: %s (Period=%d ms, Deadline=%ld) ===\n",
-             activity.name, activity.period, exec_next_release_time);
+             activity.name, activity.period, activity.deadline);
     write_trace_marker(marker_start);
 
     exec_start_time = time_current_millisecs();
@@ -157,6 +160,7 @@ int main(int argc, char *argv[]) {
   t_activity_par activity_1;
   sprintf(activity_1.name, "Activity_1");
   activity_1.period = 1800;
+  activity_1.deadline = 1800;
   activity_1.parameter = 20;
 
   // Imposto la priorità (Periodo 1800ms a Priorità più bassa)
@@ -177,6 +181,7 @@ int main(int argc, char *argv[]) {
   t_activity_par activity_2;
   sprintf(activity_2.name, "Activity_2");
   activity_2.period = 800;
+  activity_2.deadline = 800;
   activity_2.parameter = 10;
 
   // Imposto la priorità (Periodo 800ms -> Priorità più alta)

@@ -1,22 +1,21 @@
 #!/bin/bash
 
-# Controlla se è stato passato un eseguibile come argomento
-if [ "$#" -ne 1 ]; then
-    echo "Uso corretto: $0 <percorso_eseguibile>"
-    echo "Esempio: $0 ./build/app09b"
-    exit 1
+# Se non passato come argomento, chiediamo l'eseguibile interattivamente
+if [ "$#" -eq 0 ]; then
+    read -p "Inserisci l'eseguibile da tracciare (es. ./build/nomefile): " EXECUTABLE
+else
+    EXECUTABLE=$1
 fi
-
-EXECUTABLE=$1
-APP_NAME=$(basename "$EXECUTABLE")
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-OUTPUT_DIR="trace_results_${APP_NAME}_${TIMESTAMP}"
 
 # Verifica che l'eseguibile esista
 if [ ! -f "$EXECUTABLE" ]; then
     echo "Errore: Eseguibile '$EXECUTABLE' non trovato!"
     exit 1
 fi
+
+APP_NAME=$(basename "$EXECUTABLE")
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+OUTPUT_DIR="trace_results_${APP_NAME}_${TIMESTAMP}"
 
 echo "========================================================="
 echo " Inizio tracciamento per: $APP_NAME"
@@ -53,11 +52,11 @@ awk '{
 
 # 4. Compila il parser ed eseguilo per analizzare i dati
 echo "[4/4] Avvio parser C++ per calcolo costi computazionali... "
-(cd src && g++ parser.cpp -o parser)
+(cd src && g++ parser_batch.cpp -o parser_batch)
 
 echo ""
 echo "================ RISULTATI SIMULAZIONE =================="
-./src/parser "$OUTPUT_DIR/trace_colonne.txt" | tee "$OUTPUT_DIR/risultati_finali.txt"
+./src/parser_batch "$OUTPUT_DIR/trace_colonne.txt" | tee "$OUTPUT_DIR/risultati_finali.txt"
 echo "========================================================="
 
 echo ""

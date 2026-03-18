@@ -1,0 +1,335 @@
+
+================== SCHEDULATORE CRONOLOGICO ==================
+TEMPO (s)       | EVENTO
+---------------------------------------------------------------------------
+3183.588572     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+
+..............................................................
+3183.588673     | [NUOVO PERIODO] Task Activity_1 Inizia [Period=1800 ms, Deadline=1800]
+3183.588700     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+
+..............................................................
+3183.588812     | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+3183.589142     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.589143     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3183.589148     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3183.590141     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3183.592140     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.610909     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.659443     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.659545     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.659606     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.659608     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.659681     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.659909     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.659910     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.660143     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.668150     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.668152     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.668397     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.668745     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.668746     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.669289     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.669464     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.669465     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.670280     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.677172     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.677174     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.677412     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.685659     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.685660     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.685897     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.689710     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.689711     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.689938     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.771827     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.772691     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.773248     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.788063     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.788065     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.788376     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.890465     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.890466     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.890763     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.891284     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.891285     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.891517     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.891690     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.891691     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.891959     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.892404     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.892405     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.894357     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.903373     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.903375     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.903927     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.927598     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.927600     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.927603     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.931597     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3183.931603     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+3183.933263     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.933265     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.933517     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3183.992878     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3183.992880     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3183.993181     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.051555     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.051557     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.051635     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.051952     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.051953     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.052188     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.052494     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.052495     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.052725     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.053121     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.053122     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.053380     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.053568     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.053570     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.053648     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.053968     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.053969     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.054251     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.062323     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.062324     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.062612     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.062861     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.062861     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.063087     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.063372     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.063373     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.063607     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.072454     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.072455     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.072962     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.075562     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.075563     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.076693     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.076752     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.076753     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.077043     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.077219     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.077221     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.077302     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.077442     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.077443     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.077475     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.077629     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.077630     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.077862     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.078312     | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+3184.078386     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.078397     | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 146.794000 ms
+3184.085694     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.085702     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.086366     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.086419     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.086420     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.086452     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.086689     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.086690     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.086920     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.090195     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.090196     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.090440     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.095262     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.095263     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.095748     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.133256     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.133258     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.133529     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.197681     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.197682     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.197971     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.300089     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.300090     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.300377     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.301017     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.301018     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.301250     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.301423     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.301424     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.301691     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.302190     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.302191     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.302495     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.302504     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.302505     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.302571     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.302910     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.302911     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.303180     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.318774     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.318775     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.319020     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.340298     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.340299     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.340538     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.388667     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.388668     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+
+..............................................................
+3184.388677     | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+3184.389915     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.390997     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.402499     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.402500     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.402737     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.504900     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.504903     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3184.505206     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3184.564555     | [FINE LOGICA]   Task Activity_1 completa l'attivita' computazionale.
+3184.564564     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.564571     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.564577     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.564582     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3184.564586     | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 889.417000 ms
+3184.565978     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.863096     | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+3184.863107     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.863112     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.863116     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.863119     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3184.863123     | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 474.455000 ms
+3185.188527     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3185.188530     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+
+..............................................................
+3185.188545     | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+3185.189858     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3185.191801     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3185.218852     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3185.388352     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.388353     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+
+..............................................................
+3185.388361     | [NUOVO PERIODO] Task Activity_1 Inizia [Period=1800 ms, Deadline=1800]
+3185.388821     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.389351     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.426452     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.426454     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.426503     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.528863     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.528865     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.528913     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.556844     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.556845     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.556880     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.557180     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.557181     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.557220     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.565932     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.565933     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.565983     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.631271     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.631273     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.631339     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.690164     | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+3185.690175     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3185.690182     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3185.690189     | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 501.659000 ms
+3185.691768     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.733654     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.733657     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.733721     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.836055     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.836057     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.836116     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.938455     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.938457     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.938513     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.939392     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3185.939393     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3185.939463     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3185.988394     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3185.988403     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+
+..............................................................
+3185.988428     | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+3185.988716     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3185.990314     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.040880     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.040882     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3186.040929     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3186.143499     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.143501     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3186.143555     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3186.245659     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.245661     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3186.245725     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3186.285639     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.285641     | [PREEMPT]       Task Activity_1 interrotto temporaneamente.
+3186.285709     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3186.327542     | [FINE LOGICA]   Task Activity_1 completa l'attivita' computazionale.
+3186.327553     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.327564     | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 938.442000 ms
+3186.327917     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.327920     | [PREEMPT]       Task Activity_2 interrotto temporaneamente.
+3186.328029     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+3186.328070     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.328071     | [PREEMPT]       Task Activity_2 interrotto temporaneamente.
+3186.328172     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+3186.328656     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.329893     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.329895     | [PREEMPT]       Task Activity_2 interrotto temporaneamente.
+3186.329990     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+3186.457765     | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+3186.457775     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.457780     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.457788     | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 469.080000 ms
+3186.741213     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.741216     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741217     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3186.741221     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+3186.741234     | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 0.017000 ms
+3186.741241     | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 0.020000 ms
+3186.741246     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741247     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+3186.741251     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741253     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3186.741261     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.741265     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741272     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.741278     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741285     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.741289     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741293     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.741310     | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 0.063000 ms
+3186.741313     | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 0.060000 ms
+3186.741333     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741336     | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+3186.741341     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741343     | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+3186.741351     | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+3186.741358     | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+3186.741385     | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 0.042000 ms
+3186.741392     | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 0.056000 ms
+
+==============================================================
+
+================ RISULTATI COMPUTAZIONALI PER 2 THREAD ================
+
+--- SCHEDA RIASSUNTIVA: Activity_1 ---
+PERIODO    | COSTO COMPUTAZIONALE
+--------------------------------------------
+1          |   889.417000 ms
+2          |   938.442000 ms
+3          |     0.017000 ms
+4          |     0.060000 ms
+5          |     0.042000 ms
+
+--- SCHEDA RIASSUNTIVA: Activity_2 ---
+PERIODO    | COSTO COMPUTAZIONALE
+--------------------------------------------
+1          |   146.794000 ms
+2          |   474.455000 ms
+3          |   501.659000 ms
+4          |   469.080000 ms
+5          |     0.020000 ms
+6          |     0.063000 ms
+7          |     0.056000 ms
+
+========================================================================
+
