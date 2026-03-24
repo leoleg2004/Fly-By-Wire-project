@@ -1,0 +1,14 @@
+TARGET = time_library
+
+all: $(TARGET).a clean
+
+$(TARGET).a: $(TARGET).o
+	ar rcs $@ $^
+	
+$(TARGET).o: time_library.c time_library.h
+	gcc -c -o $@ $<
+     
+clean:
+	rm -f *.o
+
+

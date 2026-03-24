@@ -14,7 +14,7 @@
 
 #include "../lib/time_library.h"
 #include "../lib/trace_marker.h"
-
+/* */
 #define handle_error(en, msg)                                                  \
   if (en != 0) {                                                               \
     errno = en;                                                                \

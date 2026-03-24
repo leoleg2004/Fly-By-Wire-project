@@ -1,0 +1,17 @@
+TARGET = app12
+
+all: $(TARGET) clean print
+
+$(TARGET): app12_main.o  ../lib/activity_library.a ../lib/time_library.a
+	gcc -g -Wall -pthread  $^ -o $@  -lm
+	
+	
+app12_main.o: app12_main.c
+	gcc -c $< -o $@
+     
+clean:
+	rm -f *.o
+
+print:
+	@echo "to run: ./app12"
+

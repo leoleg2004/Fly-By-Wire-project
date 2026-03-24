@@ -1,0 +1,14 @@
+TARGET = print_library
+
+all: $(TARGET).a clean
+
+$(TARGET).a: $(TARGET).o
+	ar rcs $@ $^
+	
+$(TARGET).o: print_library.c print_library.h
+	gcc -c -o $@ $<
+     
+clean:
+	rm -f *.o
+
+

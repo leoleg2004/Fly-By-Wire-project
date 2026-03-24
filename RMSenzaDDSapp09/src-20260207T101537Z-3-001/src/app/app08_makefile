@@ -1,0 +1,17 @@
+TARGET = app08
+
+all: $(TARGET) clean print
+
+$(TARGET): app08_main.o ../lib/time_library.a
+	gcc -g -Wall -pthread  $^ -o $@  -lm
+	
+	
+app08_main.o: app08_main.c
+	gcc -c $< -o $@
+     
+clean:
+	rm -f *.o
+
+print:
+	@echo "to run: ./app08"
+

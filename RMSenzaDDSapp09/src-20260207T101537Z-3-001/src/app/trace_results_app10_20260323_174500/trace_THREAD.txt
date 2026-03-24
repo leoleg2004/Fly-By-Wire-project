@@ -1,0 +1,575 @@
+      Activity_1-10173 [005]  4605.963084: sched_switch:         app10:10173 [120] R ==> migration/5:65 [0]
+      Activity_1-10173 [001]  4605.963095: sched_switch:         app10:10173 [120] S ==> swapper/1:0 [120]
+      Activity_1-10173 [001]  4605.963125: print:                tracing_mark_write: START_Activity_1
+      Activity_2-10174 [007]  4605.963159: sched_switch:         app10:10174 [120] R ==> migration/7:83 [0]
+      Activity_2-10174 [000]  4605.963170: sched_switch:         app10:10174 [120] S ==> swapper/0:0 [120]
+      Activity_2-10174 [000]  4605.963182: print:                tracing_mark_write: START_Activity_2
+      Activity_2-10174 [000]  4605.963916: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_1-10173 [001]  4605.963952: sched_switch:         Activity_1:10173 [120] R ==> rcu_preempt:19 [98]
+     rcu_preempt-19    [001]  4605.963957: sched_switch:         rcu_preempt:19 [98] I ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4605.964916: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_2-10174 [000]  4605.964917: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_1-10173 [001]  4605.964926: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+      Activity_2-10174 [000]  4605.964930: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/1-30    [001]  4605.964935: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+     ksoftirqd/0-16    [000]  4605.964949: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4605.965916: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_2-10174 [000]  4605.965916: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_1-10173 [001]  4605.965924: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+      Activity_2-10174 [000]  4605.965924: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/0-21    [000]  4605.965931: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+       ktimers/1-31    [001]  4605.965931: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4605.966920: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4605.966925: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4605.966932: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4605.967030: sched_switch:         Activity_1:10173 [120] R ==> rcu_preempt:19 [98]
+     rcu_preempt-19    [001]  4605.967035: sched_switch:         rcu_preempt:19 [98] I ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4605.967915: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_1-10173 [001]  4605.967915: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4605.967922: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+      Activity_2-10174 [000]  4605.967922: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/1-30    [001]  4605.967931: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+          rcuc/0-21    [000]  4605.967932: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4605.968915: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_1-10173 [001]  4605.968915: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_2-10174 [000]  4605.968922: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+      Activity_1-10173 [001]  4605.968924: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+          rcuc/0-21    [000]  4605.968928: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+       ktimers/1-31    [001]  4605.968930: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4605.969914: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_2-10174 [000]  4605.969919: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+     kworker/0:2-241   [000]  4605.969929: sched_switch:         kworker/0:2:241 [120] I ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4605.971037: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4605.971039: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4605.971049: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4605.971730: sched_wakeup:         irq/168-nvme0q8:293 [49] CPU:002
+      Activity_1-10173 [001]  4605.971815: sched_wakeup:         irq/168-nvme0q8:293 [49] CPU:002
+      Activity_1-10173 [001]  4605.971914: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4605.971922: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4605.971931: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4605.974385: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4605.974388: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4605.974401: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4605.975930: sched_switch:         Activity_1:10173 [120] R ==> rcu_preempt:19 [98]
+     rcu_preempt-19    [001]  4605.975941: sched_switch:         rcu_preempt:19 [98] I ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4605.976916: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_2-10174 [000]  4605.976921: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/0-21    [000]  4605.976929: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4605.977229: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4605.977231: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4605.977242: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4605.997358: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4605.997362: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4605.997638: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.010916: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.010919: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.010925: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.025916: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.025918: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.025923: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.026913: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.026916: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+     kworker/0:2-241   [000]  4606.026927: sched_switch:         kworker/0:2:241 [120] I ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.034743: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.034744: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.034750: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.035013: sched_wakeup:         irq/9-acpi:104 [49] CPU:001
+      Activity_1-10173 [001]  4606.035015: sched_switch:         Activity_1:10173 [120] R ==> irq/9-acpi:104 [49]
+      irq/9-acpi-104   [001]  4606.035125: sched_switch:         irq/9-acpi:104 [49] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.035160: sched_wakeup:         irq/9-acpi:104 [49] CPU:001
+      Activity_1-10173 [001]  4606.035161: sched_switch:         Activity_1:10173 [120] R ==> irq/9-acpi:104 [49]
+      irq/9-acpi-104   [001]  4606.035258: sched_switch:         irq/9-acpi:104 [49] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.035922: sched_switch:         Activity_1:10173 [120] R ==> rcu_preempt:19 [98]
+     rcu_preempt-19    [001]  4606.035924: sched_switch:         rcu_preempt:19 [98] I ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.036913: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_2-10174 [000]  4606.036914: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_1-10173 [001]  4606.036915: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.036917: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.036918: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/0-21    [000]  4606.036921: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.036990: sched_wakeup:         irq/9-acpi:104 [49] CPU:001
+      Activity_1-10173 [001]  4606.036991: sched_switch:         Activity_1:10173 [120] R ==> irq/9-acpi:104 [49]
+      irq/9-acpi-104   [001]  4606.037102: sched_switch:         irq/9-acpi:104 [49] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.037913: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_2-10174 [000]  4606.037917: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/0-21    [000]  4606.037919: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.040913: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4606.040915: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4606.040919: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.044921: sched_switch:         Activity_1:10173 [120] R ==> rcu_preempt:19 [98]
+     rcu_preempt-19    [001]  4606.044925: sched_switch:         rcu_preempt:19 [98] I ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.045914: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_2-10174 [000]  4606.045917: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/0-21    [000]  4606.045920: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.050913: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.050915: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.050918: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.063915: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.063916: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.063919: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.073914: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.073915: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.073918: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.088915: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.088917: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.088920: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.090913: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.090915: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+     kworker/0:2-241   [000]  4606.090945: sched_switch:         kworker/0:2:241 [120] I ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.091913: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4606.091915: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+     kworker/1:0-33    [001]  4606.091935: sched_switch:         kworker/1:0:33 [120] I ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.099787: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4606.099788: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4606.100073: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.136915: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.136916: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.136919: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.151914: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.151915: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.151918: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.154913: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.154916: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+     kworker/0:2-241   [000]  4606.154921: sched_switch:         kworker/0:2:241 [120] I ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.199915: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.199916: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.199918: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.202174: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4606.202175: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4606.202448: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.214915: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.214916: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.214918: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.258914: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.258916: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.258918: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.262916: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.262917: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.262919: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.277916: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.277917: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.277919: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.304590: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4606.304592: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4606.304868: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.318916: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.318917: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.318919: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.325916: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.325917: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.325919: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.340916: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.342917: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.342919: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.346915: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4606.346918: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4606.346923: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.348916: sched_switch:         Activity_1:10173 [120] R ==> kworker/1:0:33 [120]
+     kworker/1:0-33    [001]  4606.348919: sched_switch:         kworker/1:0:33 [120] I ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.361396: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.361397: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.361408: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.362915: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.362917: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.362919: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.388916: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.388917: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.388919: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.398643: print:                tracing_mark_write: END_Activity_2
+      Activity_2-10174 [000]  4606.398703: sched_wakeup:         kworker/u16:1:6915 [120] CPU:004
+      Activity_2-10174 [000]  4606.398709: sched_wakeup:         kworker/u16:3:4864 [120] CPU:005
+      Activity_2-10174 [000]  4606.398716: sched_switch:         Activity_2:10174 [120] S ==> swapper/0:0 [120]
+      Activity_1-10173 [001]  4606.398924: sched_switch:         Activity_1:10173 [120] R ==> rcu_preempt:19 [98]
+     rcu_preempt-19    [001]  4606.398926: sched_switch:         rcu_preempt:19 [98] I ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.399916: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4606.399919: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.399921: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.403917: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4606.403922: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4606.403927: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.405918: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4606.405928: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.405935: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.406918: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4606.406923: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.406926: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+     ksoftirqd/1-32    [001]  4606.406936: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.407917: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4606.407922: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.407926: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.410917: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4606.410923: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.410927: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.469920: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.469921: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.469925: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.471916: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4606.471919: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.471921: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.472916: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4606.472919: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.472920: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.479916: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4606.479918: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.479920: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.483771: sched_switch:         Activity_1:10173 [120] R ==> rtkit-daemon:1540 [0]
+    rtkit-daemon-1540  [001]  4606.483808: sched_switch:         rtkit-daemon:1540 [0] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.532917: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.532918: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.532921: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.541789: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4606.541790: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4606.541798: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.595918: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.595920: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.595922: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.658918: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.658919: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.658921: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.721920: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.721921: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.721925: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.724919: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.724920: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.724921: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+       ktimers/0-17    [000]  4606.763246: sched_wakeup:         Activity_2:10174 [120] CPU:000
+       ktimers/0-17    [000]  4606.763249: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.763260: print:                tracing_mark_write: START_Activity_2
+      Activity_2-10174 [000]  4606.764920: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.766943: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.766949: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.770683: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.770684: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.770689: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.779918: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.779920: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.779923: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.784920: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4606.784921: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4606.784923: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4606.796920: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_2-10174 [000]  4606.796920: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_1-10173 [001]  4606.796922: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+      Activity_2-10174 [000]  4606.796923: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/1-30    [001]  4606.796925: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+          rcuc/0-21    [000]  4606.796926: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.797918: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_2-10174 [000]  4606.797919: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_1-10173 [001]  4606.797920: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4606.797922: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.797922: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/0-21    [000]  4606.797924: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.800919: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_2-10174 [000]  4606.800919: sched_wakeup:         rcuc/0:21 [98] CPU:000
+      Activity_1-10173 [001]  4606.800922: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+      Activity_2-10174 [000]  4606.800923: sched_switch:         Activity_2:10174 [120] R ==> rcuc/0:21 [98]
+          rcuc/1-30    [001]  4606.800923: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+          rcuc/0-21    [000]  4606.800925: sched_switch:         rcuc/0:21 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.804775: sched_wakeup:         irq/167-nvme0q7:292 [49] CPU:000
+      Activity_2-10174 [000]  4606.804777: sched_switch:         Activity_2:10174 [120] R ==> irq/167-nvme0q7:292 [49]
+ irq/167-nvme0q7-292   [000]  4606.804786: sched_switch:         irq/167-nvme0q7:292 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.804812: sched_wakeup:         irq/167-nvme0q7:292 [49] CPU:000
+      Activity_2-10174 [000]  4606.804814: sched_switch:         Activity_2:10174 [120] R ==> irq/167-nvme0q7:292 [49]
+ irq/167-nvme0q7-292   [000]  4606.804852: sched_switch:         irq/167-nvme0q7:292 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.804880: sched_wakeup:         irq/167-nvme0q7:292 [49] CPU:000
+      Activity_2-10174 [000]  4606.804881: sched_switch:         Activity_2:10174 [120] R ==> irq/167-nvme0q7:292 [49]
+ irq/167-nvme0q7-292   [000]  4606.804883: sched_switch:         irq/167-nvme0q7:292 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.804921: sched_wakeup:         irq/167-nvme0q7:292 [49] CPU:000
+      Activity_2-10174 [000]  4606.804923: sched_switch:         Activity_2:10174 [120] R ==> irq/167-nvme0q7:292 [49]
+ irq/167-nvme0q7-292   [000]  4606.804927: sched_switch:         irq/167-nvme0q7:292 [49] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4606.804955: print:                tracing_mark_write: END_Activity_1
+      Activity_1-10173 [001]  4606.804959: sched_switch:         Activity_1:10173 [120] S ==> swapper/1:0 [120]
+      Activity_2-10174 [000]  4606.804960: sched_wakeup:         irq/167-nvme0q7:292 [49] CPU:000
+      Activity_2-10174 [000]  4606.804961: sched_switch:         Activity_2:10174 [120] R ==> irq/167-nvme0q7:292 [49]
+ irq/167-nvme0q7-292   [000]  4606.804963: sched_switch:         irq/167-nvme0q7:292 [49] S ==> Activity_2:10174 [120]
+       ktimers/1-31    [001]  4606.804964: sched_wakeup:         Activity_1:10173 [120] CPU:001
+       ktimers/1-31    [001]  4606.804966: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4606.804967: sched_wakeup:         irq/167-nvme0q7:292 [49] CPU:000
+      Activity_2-10174 [000]  4606.804968: sched_switch:         Activity_2:10174 [120] R ==> irq/167-nvme0q7:292 [49]
+      Activity_1-10173 [001]  4606.804971: sched_switch:         Activity_1:10173 [120] S ==> swapper/1:0 [120]
+ irq/167-nvme0q7-292   [000]  4606.805008: sched_switch:         irq/167-nvme0q7:292 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.814919: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.814920: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.814927: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.816579: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4606.816580: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4606.816815: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.816816: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4606.816817: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4606.817050: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.818277: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4606.818278: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4606.818748: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.823920: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.823921: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.823924: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.856196: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4606.856197: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4606.856426: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.882919: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.882920: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.882923: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.886920: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.886921: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.886923: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.918990: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4606.918991: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4606.919265: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.949920: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4606.949921: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4606.949923: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4606.986920: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4606.986922: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4606.986923: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.010920: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.010921: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4607.010924: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.012920: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.012921: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.012923: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.021371: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4607.021372: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4607.021645: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.075921: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.075922: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.075924: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.090920: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.090922: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4607.090924: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.114921: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.114924: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4607.114930: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.115635: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4607.115636: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+     kworker/0:2-241   [000]  4607.115753: sched_switch:         kworker/0:2:241 [120] I ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.116239: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4607.116240: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4607.116668: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.123774: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4607.123775: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4607.124030: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.138922: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.138922: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.138925: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.167409: print:                tracing_mark_write: END_Activity_2
+      Activity_2-10174 [000]  4607.167417: sched_wakeup:         kworker/u16:1:6915 [120] CPU:006
+      Activity_2-10174 [000]  4607.167425: sched_switch:         Activity_2:10174 [120] S ==> swapper/0:0 [120]
+       ktimers/1-31    [001]  4607.563283: sched_wakeup:         Activity_1:10173 [120] CPU:001
+       ktimers/0-17    [000]  4607.563284: sched_wakeup:         Activity_2:10174 [120] CPU:000
+       ktimers/1-31    [001]  4607.563290: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+       ktimers/0-17    [000]  4607.563290: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.563317: print:                tracing_mark_write: START_Activity_2
+      Activity_1-10173 [001]  4607.563317: print:                tracing_mark_write: START_Activity_1
+      Activity_2-10174 [000]  4607.563935: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_1-10173 [001]  4607.563939: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.566426: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4607.566431: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+     ksoftirqd/1-32    [001]  4607.566455: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.566933: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.566941: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.567928: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.567931: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.567938: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.572886: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4607.572889: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4607.572901: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4607.579928: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.579931: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.579938: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.611925: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.611930: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4607.611936: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.618066: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4607.618069: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4607.618078: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4607.626926: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4607.626932: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+     kworker/1:0-33    [001]  4607.626947: sched_switch:         kworker/1:0:33 [120] I ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.627925: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.627930: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4607.627938: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.629927: sched_switch:         Activity_2:10174 [120] R ==> kworker/0:2:241 [120]
+     kworker/0:2-241   [000]  4607.629975: sched_switch:         kworker/0:2:241 [120] I ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.630926: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.630928: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.630932: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.635783: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4607.635785: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+       ktimers/0-17    [000]  4607.636087: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.642926: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.642927: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.642929: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4607.643926: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.643926: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.643928: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.693926: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.693927: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.693929: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.705926: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.705927: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.705929: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.714925: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.714927: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4607.714929: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.738176: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4607.738177: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4607.738460: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.756926: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.756927: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.756929: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.759926: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.759927: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.759929: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.768926: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.768927: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.768930: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.776750: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.776751: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4607.776755: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.818927: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4607.818930: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4607.818934: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.819926: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.819928: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.819929: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+     ksoftirqd/0-16    [000]  4607.819937: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.821927: sched_switch:         Activity_1:10173 [120] R ==> kworker/1:0:33 [120]
+     kworker/1:0-33    [001]  4607.821943: sched_switch:         kworker/1:0:33 [120] I ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4607.831927: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.831928: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.831930: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.840577: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4607.840579: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4607.840851: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.882927: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.882928: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.882930: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.894927: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.894928: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.894930: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4607.898927: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.898928: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.898930: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4607.923926: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4607.923928: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4607.923930: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.942992: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4607.942993: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4607.943279: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4607.945927: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4607.945928: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4607.945930: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4607.946258: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4607.946259: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4607.946266: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4607.957927: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4607.957928: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4607.957931: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_2-10174 [000]  4608.004373: print:                tracing_mark_write: END_Activity_2
+      Activity_2-10174 [000]  4608.004382: sched_wakeup:         kworker/u16:3:4864 [120] CPU:005
+      Activity_2-10174 [000]  4608.004386: sched_wakeup:         kworker/u16:1:6915 [120] CPU:006
+      Activity_2-10174 [000]  4608.004392: sched_switch:         Activity_2:10174 [120] S ==> swapper/0:0 [120]
+      Activity_1-10173 [001]  4608.020928: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4608.020929: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4608.020932: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.053997: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4608.053998: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+       ktimers/1-31    [001]  4608.054004: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.056930: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.056934: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.056938: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.057928: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.057930: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.057932: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.058928: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.058930: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.058932: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.062927: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.062930: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.062932: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.063928: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.063930: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.063932: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.068928: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.068930: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.068931: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.074928: sched_wakeup:         ktimers/1:31 [98] CPU:001
+      Activity_1-10173 [001]  4608.074931: sched_switch:         Activity_1:10173 [120] R ==> ktimers/1:31 [98]
+     kworker/1:0-33    [001]  4608.074944: sched_switch:         kworker/1:0:33 [120] I ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.083929: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4608.083930: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4608.083932: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.146929: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4608.146930: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4608.146931: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.153929: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4608.153930: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4608.153931: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.209929: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4608.209930: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4608.209932: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.252929: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.252931: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.252932: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.253929: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.253931: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.253932: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.260929: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.260930: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.260931: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.272930: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4608.272931: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4608.272932: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.311930: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.311933: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.311936: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.312930: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.312932: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.312935: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.319930: sched_wakeup:         rcuc/1:30 [98] CPU:001
+      Activity_1-10173 [001]  4608.319933: sched_switch:         Activity_1:10173 [120] R ==> rcuc/1:30 [98]
+          rcuc/1-30    [001]  4608.319935: sched_switch:         rcuc/1:30 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.335930: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4608.335931: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4608.335933: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+       ktimers/0-17    [000]  4608.363258: sched_wakeup:         Activity_2:10174 [120] CPU:000
+       ktimers/0-17    [000]  4608.363261: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4608.363271: print:                tracing_mark_write: START_Activity_2
+      Activity_2-10174 [000]  4608.363933: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4608.365514: sched_wakeup:         migration/0:22 [0] CPU:000
+      Activity_2-10174 [000]  4608.365516: sched_switch:         Activity_2:10174 [120] R ==> migration/0:22 [0]
+     ksoftirqd/0-16    [000]  4608.365522: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_1-10173 [001]  4608.369514: sched_wakeup:         migration/1:29 [0] CPU:001
+      Activity_1-10173 [001]  4608.369515: sched_switch:         Activity_1:10173 [120] R ==> migration/1:29 [0]
+     migration/1-29    [001]  4608.369518: sched_switch:         migration/1:29 [0] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.398931: sched_wakeup:         ksoftirqd/1:32 [120] CPU:001
+      Activity_1-10173 [001]  4608.398932: sched_switch:         Activity_1:10173 [120] R ==> ksoftirqd/1:32 [120]
+     ksoftirqd/1-32    [001]  4608.398934: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.408618: print:                tracing_mark_write: END_Activity_1
+      Activity_1-10173 [001]  4608.408623: sched_switch:         Activity_1:10173 [120] S ==> swapper/1:0 [120]
+       ktimers/1-31    [001]  4608.408627: sched_wakeup:         Activity_1:10173 [120] CPU:001
+       ktimers/1-31    [001]  4608.408628: sched_switch:         ktimers/1:31 [98] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.408632: sched_switch:         Activity_1:10173 [120] S ==> swapper/1:0 [120]
+      Activity_2-10174 [000]  4608.408935: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4608.408936: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4608.408942: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4608.416931: sched_wakeup:         ksoftirqd/0:16 [120] CPU:000
+      Activity_2-10174 [000]  4608.416933: sched_switch:         Activity_2:10174 [120] R ==> ksoftirqd/0:16 [120]
+     ksoftirqd/0-16    [000]  4608.416936: sched_switch:         ksoftirqd/0:16 [120] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4608.442930: sched_wakeup:         ktimers/0:17 [98] CPU:000
+      Activity_2-10174 [000]  4608.442932: sched_switch:         Activity_2:10174 [120] R ==> ktimers/0:17 [98]
+       ktimers/0-17    [000]  4608.442935: sched_switch:         ktimers/0:17 [98] S ==> Activity_2:10174 [120]
+      Activity_2-10174 [000]  4608.455007: sched_wakeup:         irq/171-rtw88_p:804 [49] CPU:000
+      Activity_2-10174 [000]  4608.455008: sched_switch:         Activity_2:10174 [120] R ==> irq/171-rtw88_p:804 [49]
+ irq/171-s-rtw88-805   [000]  4608.455282: sched_switch:         irq/171-s-rtw88:805 [49] S ==> Activity_2:10174 [120]
+   kworker/u16:3-4864  [005]  4608.476954: sched_wakeup:         Activity_1:10173 [120] CPU:001
+     ksoftirqd/1-32    [001]  4608.476956: sched_switch:         ksoftirqd/1:32 [120] S ==> Activity_1:10173 [120]
+      Activity_1-10173 [001]  4608.476960: sched_wakeup:         Activity_2:10174 [120] CPU:000
+      Activity_2-10174 [000]  4608.476963: sched_wakeup:         Activity_1:10173 [120] CPU:001
+           app10-10172 [006]  4608.476964: sched_wakeup:         Activity_1:10173 [120] CPU:001
+      Activity_1-10173 [001]  4608.476966: sched_wakeup:         app10:10172 [120] CPU:006
+      Activity_1-10173 [001]  4608.476967: sched_wakeup:         app10:10172 [120] CPU:006
+      Activity_1-10173 [001]  4608.476969: sched_wakeup:         app10:10172 [120] CPU:006
+      Activity_2-10174 [000]  4608.476984: sched_wakeup:         Activity_1:10173 [120] CPU:001
+      Activity_2-10174 [000]  4608.477002: sched_switch:         Activity_2:10174 [120] X ==> swapper/0:0 [120]
+      Activity_1-10173 [001]  4608.477004: sched_switch:         Activity_1:10173 [120] X ==> swapper/1:0 [120]

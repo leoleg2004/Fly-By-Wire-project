@@ -1,0 +1,62 @@
+LIB_NAME  	= math
+LIB_SRC   	= math_library.c
+
+# ERTS libraries 
+ERTS_LIB_DIR         = ./
+ERTS_INCLUDE_DIR     = ./
+ERTS_LIBs        	= -ltime
+
+
+CPPFLAGS = -c -Wall -fpic -m64 -O2 -std=c++0x
+LDFLAGS= -m64
+
+CPP= g++
+
+LN= g++
+AR=ar
+
+SYSLIBS= -ldl -lm -lpthread -lrt
+
+
+INCLUDES = -I.
+
+ERTS_LIBS =  -ltime
+
+Static_LIBS  = -L. $(ERTS_LIBs)
+
+
+DIRECTORIES= output.dir 
+
+all: $(DIRECTORIES) $(LIB_NAME) clean
+
+
+LIB_TARGET= ./lib$(LIB_NAME).so
+LIB_TARGET_Z= ./lib$(LIB_NAME).a
+
+LIB_OBJS    = $(LIB_SRC:%.c=output/%.o)
+
+$(LIB_TARGET): $(LIB_OBJS)
+	$(LN) $(LDFLAGS) -shared -o $(LIB_TARGET) $(LIB_OBJS)  $(Static_LIBS) $(SYSLIBS)
+
+$(LIB_TARGET_Z): $(LIB_OBJS)
+	$(AR) -cru $(LIB_TARGET_Z) $(LIB_OBJS)
+
+$(LIB_NAME): $(LIB_TARGET) $(LIB_TARGET_Z)
+
+output/%.o:%.c
+	$(CPP) $(CPPFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
+
+.PHONY: $(LIB_NAME) 
+
+
+clean:
+	@rm -r output
+
+install:
+
+%.dir : 
+	@echo "Checking directory $*"
+	@if [ ! -d $* ]; then \
+		echo "Making directory $*"; \
+		mkdir -p $* ; \
+	fi;

@@ -1,0 +1,16 @@
+TARGET = app05
+
+all: $(TARGET) clean print
+
+$(TARGET): app05_main.o ../lib/matrix_library.a
+	gcc $^ -o $@
+	
+app05_main.o: app05_main.c
+	gcc -c $< -o $@
+     
+clean:
+	rm -f *.o
+
+print:
+	@echo "to run: ./app05 <rows cols>"
+

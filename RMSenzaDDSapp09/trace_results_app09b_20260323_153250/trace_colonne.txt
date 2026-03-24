@@ -1,0 +1,688 @@
+Activity_1-7443           | [003] | 2442.391875  | sched_switch    | app09b:7443 [120] R ==> migration/3:47 [0] 
+Activity_1-7443           | [000] | 2442.391917  | sched_switch    | app09b:7443 [98] S ==> swapper/0:0 [120] 
+Activity_1-7443           | [000] | 2442.391940  | print           | tracing_mark_write: === PERIOD_START: Activity_1 (Period=1800 ms, Deadline=1800) === 
+Activity_2-7444           | [003] | 2442.391962  | sched_switch    | app09b:7444 [120] R ==> migration/3:47 [0] 
+Activity_2-7444           | [003] | 2442.391964  | sched_wakeup    | migration/3:47 [0] CPU:003 
+Activity_2-7444           | [003] | 2442.391965  | sched_switch    | app09b:7444 [120] R ==> migration/3:47 [0] 
+Activity_2-7444           | [001] | 2442.391976  | print           | tracing_mark_write: === PERIOD_START: Activity_2 (Period=800 ms, Deadline=800) === 
+Activity_1-7443           | [000] | 2442.392596  | sched_wakeup    | rcuc/0:21 [98] CPU:000 
+Activity_2-7444           | [001] | 2442.392596  | sched_wakeup    | rcuc/1:30 [98] CPU:001 
+Activity_1-7443           | [000] | 2442.392597  | sched_wakeup    | ksoftirqd/0:16 [120] CPU:000 
+Activity_2-7444           | [001] | 2442.392598  | sched_wakeup    | ksoftirqd/1:32 [120] CPU:001 
+Activity_1-7443           | [000] | 2442.426494  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.426495  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.426558  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.437217  | sched_wakeup    | ktimers/0:17 [98] CPU:000 
+Activity_1-7443           | [000] | 2442.442771  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.442772  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.442802  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.443105  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.443106  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.443145  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.443152  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.443153  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.443190  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_2-7444           | [001] | 2442.450803  | sched_wakeup    | ktimers/1:31 [98] CPU:001 
+Activity_1-7443           | [000] | 2442.578922  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.578923  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.578953  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.579305  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.579305  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.579344  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.579346  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.579346  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.579390  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.631316  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.631317  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.631357  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_2-7444           | [001] | 2442.705213  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.705215  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.705335  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.706652  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.706653  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.706744  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.706882  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.706883  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.706979  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.707018  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.707019  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.707113  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.707255  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.707256  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.707356  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.707392  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.707393  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.707485  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.707503  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.707504  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.707599  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.707635  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.707635  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.707728  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.707745  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.707746  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.707840  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.707924  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.707924  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.708009  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.708330  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.708331  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.708434  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.708470  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.708470  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.708567  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.708614  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.708614  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.708709  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.708726  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.708727  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.708822  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.708869  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.708870  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.708962  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.708979  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.708980  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.709073  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.709169  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.709170  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.709269  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.709286  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.709287  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.709384  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.709423  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.709424  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.709514  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.709533  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.709533  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.709647  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.709688  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.709689  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.709781  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.709798  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.709799  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.709892  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.709982  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.709983  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.710074  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.710092  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.710092  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.710189  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.710228  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.710229  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.710330  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.710348  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.710348  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.710432  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.710652  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.710652  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.710745  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.710865  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.710866  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.710957  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.710981  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.710981  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.711077  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.711146  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.711147  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.711239  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.711256  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.711257  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.711354  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.711393  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.711393  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.711484  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.711502  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.711502  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.711597  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.711673  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.711673  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.711766  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.711804  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.711805  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.711901  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.711919  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.711919  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.712012  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.712057  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.712058  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.712150  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.712167  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.712168  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.712260  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.712303  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.712304  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.712389  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.712987  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.712988  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.713086  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.713125  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.713126  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.713221  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.713360  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.713360  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.713451  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.713469  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.713469  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.713567  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.713623  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.713624  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.713719  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.713745  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.713746  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.713838  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.713901  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.713902  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.713994  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.714038  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.714039  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.714132  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.714150  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.714151  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.714251  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.714288  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.714289  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.714391  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.714408  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.714409  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.714501  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.714551  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.714552  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.714641  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.714959  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.714960  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.715059  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.715102  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.715103  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.715198  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.715265  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.715266  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.715362  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.715380  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.715381  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.715478  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.715524  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.715524  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.715626  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.715643  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.715644  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.715740  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.715803  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.715804  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.715896  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.715913  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.715914  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.716010  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.716056  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.716057  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.716149  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.716166  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.716167  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.716273  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.716320  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.716321  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.716413  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.716451  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.716452  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.716543  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.716560  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.716561  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.716659  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.716694  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.716694  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.716785  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.716803  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.716804  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.716896  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.716931  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.716932  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.717015  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.717264  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.717265  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.717354  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.717987  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.717988  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.718094  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.718136  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2442.718137  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2442.718232  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2442.718973  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_2 --- 
+Activity_2-7444           | [001] | 2442.719006  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:006 
+Activity_2-7444           | [001] | 2442.719009  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:003 
+Activity_2-7444           | [001] | 2442.719014  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:003 
+Activity_2-7444           | [001] | 2442.719016  | sched_switch    | Activity_2:7444 [80] S ==> rcuc/1:30 [98] 
+Activity_1-7443           | [000] | 2442.733712  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.733714  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.733785  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.786794  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.786794  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.786825  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.787143  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.787143  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.787183  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.787198  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.787198  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.787236  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.923042  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.923043  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.923074  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2442.941228  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2442.941229  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2442.941303  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2443.027336  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2443.027336  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2443.027376  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2443.040914  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2443.040915  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2443.040963  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2443.043868  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_1 --- 
+Activity_1-7443           | [000] | 2443.043876  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:007 
+Activity_1-7443           | [000] | 2443.043880  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:006 
+Activity_1-7443           | [000] | 2443.043887  | sched_switch    | Activity_1:7443 [98] S ==> rcuc/0:21 [98] 
+<idle>-0                  | [001] | 2443.192103  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+<idle>-0                  | [001] | 2443.192118  | sched_switch    | swapper/1:0 [120] R ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2443.192145  | print           | tracing_mark_write: === PERIOD_START: Activity_2 (Period=800 ms, Deadline=800) === 
+Activity_2-7444           | [001] | 2443.192601  | sched_wakeup    | ksoftirqd/1:32 [120] CPU:001 
+Activity_2-7444           | [001] | 2443.210579  | sched_wakeup    | ktimers/1:31 [98] CPU:001 
+Activity_2-7444           | [001] | 2443.514958  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_2 --- 
+Activity_2-7444           | [001] | 2443.514966  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:006 
+Activity_2-7444           | [001] | 2443.514973  | sched_switch    | Activity_2:7444 [80] S ==> ktimers/1:31 [98] 
+<idle>-0                  | [001] | 2443.991965  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+<idle>-0                  | [001] | 2443.991979  | sched_switch    | swapper/1:0 [120] R ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2443.991999  | print           | tracing_mark_write: === PERIOD_START: Activity_2 (Period=800 ms, Deadline=800) === 
+Activity_2-7444           | [001] | 2443.992572  | sched_wakeup    | rcuc/1:30 [98] CPU:001 
+Activity_2-7444           | [001] | 2443.994570  | sched_wakeup    | ksoftirqd/1:32 [120] CPU:001 
+Activity_2-7444           | [001] | 2444.044897  | sched_wakeup    | ktimers/1:31 [98] CPU:001 
+Activity_2-7444           | [001] | 2444.049480  | sched_wakeup    | migration/1:29 [0] CPU:001 
+Activity_2-7444           | [001] | 2444.049481  | sched_switch    | Activity_2:7444 [80] R ==> migration/1:29 [0] 
+migration/1-29            | [001] | 2444.049483  | sched_switch    | migration/1:29 [0] S ==> Activity_2:7444 [80] 
+<idle>-0                  | [000] | 2444.191918  | sched_wakeup    | Activity_1:7443 [98] CPU:000 
+<idle>-0                  | [000] | 2444.191927  | sched_switch    | swapper/0:0 [120] R ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.191942  | print           | tracing_mark_write: === PERIOD_START: Activity_1 (Period=1800 ms, Deadline=1800) === 
+Activity_1-7443           | [000] | 2444.193560  | sched_wakeup    | ksoftirqd/0:16 [120] CPU:000 
+Activity_1-7443           | [000] | 2444.196559  | sched_wakeup    | ktimers/0:17 [98] CPU:000 
+Activity_1-7443           | [000] | 2444.215714  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.215715  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.215748  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.277701  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.277702  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.277734  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.308919  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.308920  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.308946  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_2-7444           | [001] | 2444.327492  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_2 --- 
+Activity_2-7444           | [001] | 2444.327499  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:005 
+Activity_2-7444           | [001] | 2444.327503  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:007 
+Activity_2-7444           | [001] | 2444.327509  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:005 
+Activity_2-7444           | [001] | 2444.327513  | sched_switch    | Activity_2:7444 [80] S ==> rcuc/1:30 [98] 
+Activity_1-7443           | [000] | 2444.328560  | sched_wakeup    | rcuc/0:21 [98] CPU:000 
+Activity_1-7443           | [000] | 2444.374824  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.374826  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.374914  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.471311  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.471312  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.471358  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.474531  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.474532  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.474588  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.514789  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.514790  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.514819  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.515144  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.515145  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.515185  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.515186  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.515186  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.515224  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.532055  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.532056  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.532095  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.536904  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.536904  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.536963  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.567709  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.567710  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.567737  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.587369  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.587370  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.587413  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.587925  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.587926  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.587966  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.588502  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.588503  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.588549  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.629697  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.629698  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.629732  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.660996  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.660996  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.661023  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.665337  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.665338  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.665426  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.667924  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.667924  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.667963  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.679308  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.679309  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.679348  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2444.781735  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2444.781736  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2444.781810  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+<idle>-0                  | [001] | 2444.791929  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+<idle>-0                  | [001] | 2444.791930  | sched_switch    | swapper/1:0 [120] R ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2444.791945  | print           | tracing_mark_write: === PERIOD_START: Activity_2 (Period=800 ms, Deadline=800) === 
+Activity_2-7444           | [001] | 2444.792548  | sched_wakeup    | ksoftirqd/1:32 [120] CPU:001 
+Activity_1-7443           | [000] | 2444.854978  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_1 --- 
+Activity_1-7443           | [000] | 2444.854985  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:006 
+Activity_1-7443           | [000] | 2444.854993  | sched_switch    | Activity_1:7443 [98] S ==> ktimers/0:17 [98] 
+Activity_2-7444           | [001] | 2444.856547  | sched_wakeup    | rcuc/1:30 [98] CPU:001 
+Activity_2-7444           | [001] | 2444.867546  | sched_wakeup    | ktimers/1:31 [98] CPU:001 
+Activity_2-7444           | [001] | 2445.117650  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_2 --- 
+Activity_2-7444           | [001] | 2445.117660  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:005 
+Activity_2-7444           | [001] | 2445.117664  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:006 
+Activity_2-7444           | [001] | 2445.117669  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:005 
+Activity_2-7444           | [001] | 2445.117675  | sched_switch    | Activity_2:7444 [80] S ==> rcuc/1:30 [98] 
+<idle>-0                  | [001] | 2445.591914  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+<idle>-0                  | [001] | 2445.591915  | sched_switch    | swapper/1:0 [120] R ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.591925  | print           | tracing_mark_write: === PERIOD_START: Activity_2 (Period=800 ms, Deadline=800) === 
+Activity_2-7444           | [001] | 2445.595531  | sched_wakeup    | ksoftirqd/1:32 [120] CPU:001 
+Activity_2-7444           | [001] | 2445.690528  | sched_wakeup    | ktimers/1:31 [98] CPU:001 
+Activity_2-7444           | [001] | 2445.737298  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.737300  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.737406  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.738590  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.738591  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.738684  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.738864  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.738865  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.738989  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.739019  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.739031  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.739150  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.739268  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.739269  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.739397  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.739426  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.739430  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.739558  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.739572  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.739573  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.739682  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.739711  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.739712  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.739827  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.739842  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.739843  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.739955  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.739979  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.739979  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.740114  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.740397  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.740405  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.740511  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.740533  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.740534  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.740646  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.740681  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.740681  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.740802  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.740816  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.740817  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.740925  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.740950  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.740950  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.741070  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.741080  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.741080  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.741219  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.741293  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.741294  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.741385  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.741403  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.741404  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.741500  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.741554  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.741555  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.741647  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.741664  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.741665  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.741762  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.741816  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.741817  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.741912  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.741930  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.741930  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.742023  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.742122  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.742123  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.742214  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.742232  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.742232  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.742329  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.742383  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.742384  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.742480  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.742736  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.742737  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.742832  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.742989  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.742989  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.743081  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.743104  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.743105  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.743207  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.743272  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.743273  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.743365  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.743382  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.743383  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.743479  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.743530  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.743532  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.743624  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.743641  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.743642  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.743734  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.743810  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.743811  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.743903  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.743952  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.743953  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.744045  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.744062  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.744063  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.744154  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.744203  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.744203  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.744295  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.744313  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.744313  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.744406  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.744459  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.744459  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.744546  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.745187  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.745188  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.745280  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.745326  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.745327  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.745419  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.745550  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.745551  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.745643  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.745660  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.745661  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.745760  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.745815  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.745815  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.745911  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.745929  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.745929  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.746022  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.746073  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.746080  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.746210  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.746219  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.746221  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.746311  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.746328  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.746329  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.746432  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.746461  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.746462  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.746576  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.746589  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.746590  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.746688  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.746717  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.746717  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.746838  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.747135  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.747136  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.747257  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.747272  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.747272  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.747376  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.747405  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.747406  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.747525  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.747536  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.747537  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.747674  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.747711  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.747712  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.747832  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.747844  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.747845  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.747983  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.748062  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.748063  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.748199  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.748217  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.748218  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.748346  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.748400  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.748401  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.748493  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.748511  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.748512  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.748609  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.748655  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.748656  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.748748  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.748797  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.748797  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.748893  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.748910  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.748911  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.749003  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.749058  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.749059  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.749151  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.749483  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.749483  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.749587  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.749716  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.749717  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.749813  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.749834  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.749835  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.749931  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.751528  | sched_wakeup    | rcuc/1:30 [98] CPU:001 
+Activity_2-7444           | [001] | 2445.751705  | sched_wakeup    | irq/9-acpi:103 [49] CPU:001 
+Activity_2-7444           | [001] | 2445.751706  | sched_switch    | Activity_2:7444 [80] R ==> irq/9-acpi:103 [49] 
+irq/9-acpi-103            | [001] | 2445.751802  | sched_switch    | irq/9-acpi:103 [49] S ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2445.928553  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_2 --- 
+Activity_2-7444           | [001] | 2445.928561  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:004 
+Activity_2-7444           | [001] | 2445.928565  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:006 
+Activity_2-7444           | [001] | 2445.928568  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:004 
+Activity_2-7444           | [001] | 2445.928570  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:006 
+Activity_2-7444           | [001] | 2445.928574  | sched_switch    | Activity_2:7444 [80] S ==> ktimers/1:31 [98] 
+<idle>-0                  | [000] | 2445.991877  | sched_wakeup    | Activity_1:7443 [98] CPU:000 
+<idle>-0                  | [000] | 2445.991886  | sched_switch    | swapper/0:0 [120] R ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2445.991903  | print           | tracing_mark_write: === PERIOD_START: Activity_1 (Period=1800 ms, Deadline=1800) === 
+Activity_1-7443           | [000] | 2445.992524  | sched_wakeup    | ksoftirqd/0:16 [120] CPU:000 
+Activity_1-7443           | [000] | 2446.010525  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.010526  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.010586  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.090520  | sched_wakeup    | ktimers/0:17 [98] CPU:000 
+Activity_1-7443           | [000] | 2446.130530  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.130531  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.130571  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.140754  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.140755  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.140794  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.172454  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.172455  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.172495  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.177559  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.177560  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.177600  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.186114  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.186115  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.186154  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.191600  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.191601  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.191640  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.215348  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.215349  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.215388  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.237737  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.237738  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.237777  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.317724  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.317725  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.317764  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.348516  | sched_wakeup    | rcuc/0:21 [98] CPU:000 
+<idle>-0                  | [001] | 2446.391905  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+<idle>-0                  | [001] | 2446.391914  | sched_switch    | swapper/1:0 [120] R ==> Activity_2:7444 [80] 
+Activity_2-7444           | [001] | 2446.391921  | print           | tracing_mark_write: === PERIOD_START: Activity_2 (Period=800 ms, Deadline=800) === 
+Activity_2-7444           | [001] | 2446.392515  | sched_wakeup    | ksoftirqd/1:32 [120] CPU:001 
+Activity_1-7443           | [000] | 2446.420125  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.420126  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.420167  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_2-7444           | [001] | 2446.480687  | sched_wakeup    | ktimers/1:31 [98] CPU:001 
+Activity_1-7443           | [000] | 2446.522521  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.522525  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.522566  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.570769  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.570770  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.570809  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.571667  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.571667  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.571702  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.624935  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.624936  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.624976  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.637588  | sched_wakeup    | irq/171-rtw88_p:817 [49] CPU:000 
+Activity_1-7443           | [000] | 2446.637588  | sched_switch    | Activity_1:7443 [98] R ==> irq/171-rtw88_p:817 [49] 
+irq/171-s-rtw88-818       | [000] | 2446.637628  | sched_switch    | irq/171-s-rtw88:818 [49] S ==> Activity_1:7443 [98] 
+Activity_1-7443           | [000] | 2446.650338  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_1 --- 
+Activity_1-7443           | [000] | 2446.650346  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:004 
+Activity_1-7443           | [000] | 2446.650351  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:006 
+Activity_1-7443           | [000] | 2446.650357  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:004 
+Activity_1-7443           | [000] | 2446.650361  | sched_wakeup    | kworker/u16:5:7134 [120] CPU:004 
+Activity_1-7443           | [000] | 2446.650364  | sched_switch    | Activity_1:7443 [98] S ==> ktimers/0:17 [98] 
+Activity_2-7444           | [001] | 2446.651509  | sched_wakeup    | rcuc/1:30 [98] CPU:001 
+Activity_2-7444           | [001] | 2446.732920  | print           | tracing_mark_write: --- COMPUTATION_END: Activity_2 --- 
+Activity_2-7444           | [001] | 2446.732931  | sched_wakeup    | kworker/u16:2:7424 [120] CPU:007 
+Activity_2-7444           | [001] | 2446.732940  | sched_switch    | Activity_2:7444 [80] S ==> ktimers/1:31 [98] 
+kworker/u16:2-7424        | [007] | 2446.842614  | sched_wakeup    | Activity_1:7443 [98] CPU:000 
+<idle>-0                  | [000] | 2446.842614  | sched_switch    | swapper/0:0 [120] R ==> Activity_1:7443 [98] 
+kworker/u16:2-7424        | [007] | 2446.842615  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+<idle>-0                  | [001] | 2446.842617  | sched_switch    | swapper/1:0 [120] R ==> Activity_2:7444 [80] 
+app09b-7442               | [005] | 2446.842621  | sched_wakeup    | Activity_1:7443 [98] CPU:000 
+Activity_2-7444           | [001] | 2446.842622  | sched_wakeup    | Activity_1:7443 [98] CPU:000 
+Activity_1-7443           | [000] | 2446.842626  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+Activity_2-7444           | [001] | 2446.842627  | sched_wakeup    | Activity_1:7443 [98] CPU:000 
+Activity_1-7443           | [000] | 2446.842629  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+Activity_2-7444           | [001] | 2446.842631  | sched_wakeup    | Activity_1:7443 [98] CPU:000 
+Activity_1-7443           | [000] | 2446.842633  | sched_wakeup    | app09b:7442 [120] CPU:005 
+Activity_2-7444           | [001] | 2446.842635  | sched_wakeup    | Activity_1:7443 [98] CPU:000 
+Activity_1-7443           | [000] | 2446.842638  | sched_wakeup    | app09b:7442 [120] CPU:005 
+Activity_1-7443           | [000] | 2446.842641  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+Activity_2-7444           | [001] | 2446.842644  | sched_wakeup    | app09b:7442 [120] CPU:005 
+Activity_1-7443           | [000] | 2446.842653  | sched_wakeup    | Activity_2:7444 [80] CPU:001 
+Activity_1-7443           | [000] | 2446.842666  | sched_switch    | Activity_1:7443 [98] X ==> swapper/0:0 [120] 
+Activity_2-7444           | [001] | 2446.842667  | sched_switch    | Activity_2:7444 [80] X ==> swapper/1:0 [120] 

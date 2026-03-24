@@ -1,0 +1,14 @@
+TARGET = activity_library
+
+all: $(TARGET).a clean
+
+$(TARGET).a: $(TARGET).o time_library.a
+	ar rcs $@ $^
+	
+$(TARGET).o: activity_library.c activity_library.h
+	gcc -c -o $@ $<
+     
+clean:
+	rm -f *.o
+
+

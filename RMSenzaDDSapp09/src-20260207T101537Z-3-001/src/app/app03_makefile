@@ -1,0 +1,16 @@
+TARGET = app03
+
+all: $(TARGET) clean print
+
+$(TARGET): app03_main.o ../lib/print_library.a
+	gcc $^ -o $@
+	
+app03_main.o: app03_main.c
+	gcc -c $< -o $@
+     
+clean:
+	rm -f *.o
+
+print:
+	@echo "to run: ./app03 <parameters>"
+

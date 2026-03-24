@@ -47,6 +47,7 @@ std::string trim(const std::string &str) {
   return str.substr(first, (last - first + 1));
 }
 
+//serve eper prendere esattamente l'attività collegata al marker che legge kernelshark
 std::string extract_task_name(const std::string &task_pid,
                               const std::string &details) {
   std::string combined = task_pid + " " + details;
@@ -176,6 +177,12 @@ int main(int argc, char *argv[]) {
       continue;
     rec.details = trim(token);
 
+    /*rec.task_pid = "Activity_1-1234"
+
+    rec.timestamp = 1234.567890
+
+    rec.event = "sched_switch"
+    		*/
     std::string task_name = extract_task_name(rec.task_pid, rec.details);
     if (task_name.empty())
       continue;

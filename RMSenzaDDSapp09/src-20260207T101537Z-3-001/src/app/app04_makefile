@@ -1,0 +1,16 @@
+TARGET = app04
+
+all: $(TARGET) clean print
+
+$(TARGET): app04_main.o ../lib/math_library.a
+	gcc $^ -o $@
+	
+app04_main.o: app04_main.c
+	gcc -c $< -o $@
+     
+clean:
+	rm -f *.o
+
+print:
+	@echo "to run: ./app04 <sum/max>"
+

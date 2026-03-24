@@ -1,0 +1,144 @@
+
+================== SCHEDULATORE CRONOLOGICO ==================
+TEMPO (s)       | EVENTO
+---------------------------------------------------------------------------
+
+..............................................................
+203.673766      | [NUOVO PERIODO] Task Activity_1 Inizia [Period=1800 ms, Deadline=1800]
+203.673804      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+
+..............................................................
+203.673816      | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+203.674690      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+203.674691      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+203.674693      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+203.675691      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+203.675709      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+203.714690      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+203.979200      | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+203.979229      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+204.101610      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+204.101614      | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+204.286088      | [FINE LOGICA]   Task Activity_1 completa l'attivita' computazionale.
+204.286095      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+204.286103      | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 184.489000 ms
+204.473830      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+204.473840      | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+
+..............................................................
+204.473866      | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+204.474705      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+204.610691      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+204.652691      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+204.796423      | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+204.796431      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+204.796434      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+204.796438      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+204.796440      | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 322.600000 ms
+205.273825      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+205.273830      | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+
+..............................................................
+205.273846      | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+205.274701      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+205.438552      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+205.473789      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+205.473794      | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+
+..............................................................
+205.473799      | [NUOVO PERIODO] Task Activity_1 Inizia [Period=1800 ms, Deadline=1800]
+205.592992      | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+205.592999      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+205.593005      | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 319.175000 ms
+205.826691      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+205.986691      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+206.073819      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.073820      | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+
+..............................................................
+206.073826      | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+206.074692      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.082690      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.084949      | [FINE LOGICA]   Task Activity_1 completa l'attivita' computazionale.
+206.084955      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+206.084958      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+206.084964      | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 611.170000 ms
+206.086693      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.379266      | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+206.379271      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.379278      | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 305.458000 ms
+206.873922      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.873937      | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+
+..............................................................
+206.873964      | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+206.874711      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.876195      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.925031      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.925357      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+206.925692      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+207.184704      | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+207.184712      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+207.184735      | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 310.798000 ms
+207.273817      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+207.273828      | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+
+..............................................................
+207.273854      | [NUOVO PERIODO] Task Activity_1 Inizia [Period=1800 ms, Deadline=1800]
+207.275698      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+207.276402      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+207.673818      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+207.673819      | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+
+..............................................................
+207.673824      | [NUOVO PERIODO] Task Activity_2 Inizia [Period=800 ms, Deadline=800]
+207.674691      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+207.682690      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+207.743691      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+207.743691      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+207.900401      | [FINE LOGICA]   Task Activity_1 completa l'attivita' computazionale.
+207.900410      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+207.900417      | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 626.589000 ms
+207.981317      | [FINE LOGICA]   Task Activity_2 completa l'attivita' computazionale.
+207.981324      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+207.981328      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+207.981332      | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 307.513000 ms
+208.087614      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+208.087619      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+208.087622      | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+208.087635      | [CPU DISPATCH]  Task Activity_2 entra in esecuzione fisica.
+208.087660      | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 0.038000 ms
+208.087664      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+208.087668      | [CPU DISPATCH]  Task Activity_1 entra in esecuzione fisica.
+208.087685      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+208.087696      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+208.087705      | [WAKEUP SCED.]  Task Activity_1 viene svegliato dal kernel.
+208.087706      | [WAKEUP SCED.]  Task Activity_2 viene svegliato dal kernel.
+208.087741      | [SLEEP SCED.]   Task Activity_1 va a riposo. Costo Reale: 0.073000 ms
+208.087749      | [SLEEP SCED.]   Task Activity_2 va a riposo. Costo Reale: 0.114000 ms
+
+==============================================================
+
+================ RISULTATI COMPUTAZIONALI PER 2 THREAD ================
+
+--- SCHEDA RIASSUNTIVA: Activity_1 ---
+PERIODO    | COSTO COMPUTAZIONALE
+--------------------------------------------
+1          |   184.489000 ms
+2          |   611.170000 ms
+3          |   626.589000 ms
+4          |     0.038000 ms
+5          |     0.073000 ms
+
+--- SCHEDA RIASSUNTIVA: Activity_2 ---
+PERIODO    | COSTO COMPUTAZIONALE
+--------------------------------------------
+1          |   322.600000 ms
+2          |   319.175000 ms
+3          |   305.458000 ms
+4          |   310.798000 ms
+5          |   307.513000 ms
+6          |     0.114000 ms
+
+========================================================================
+

@@ -1,0 +1,16 @@
+TARGET = app02
+
+all: $(TARGET) clean print
+
+$(TARGET): app02_main.o
+	gcc $^ -o $@
+	
+app02_main.o: app02_main.c
+	gcc -c $< -o $@
+     
+clean:
+	rm -f *.o
+
+print:
+	@echo "to run: ./app02 <parameters>"
+

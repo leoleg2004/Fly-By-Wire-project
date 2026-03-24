@@ -1,0 +1,118 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\title{Sviluppo di un Sistema di Simulazione con Scheduling Rate Monotonic e Tracciamento Real-Time interno al Kernel Linux}
+\author{Leonardo}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\chapter{Introduzione}
+Questo elaborato presenta l'architettura, la progettazione e l'implementazione di un simulatore computazionale basato su un modello a task periodici. Il sistema è stato sviluppato in linguaggio C++ e non fa uso di framework ausiliari come Data Distribution Service (DDS), garantendo perciò un controllo capillare delle routine di basso livello. 
+
+L'obiettivo primario di tale architettura è l'implementazione dello scheduling Rate Monotonic in ambiente Linux per sistemi real-time soft e hard, unito allo sviluppo di un sistema di tracciamento analitico avanzato basato sul motore interno \textbf{ftrace} del Kernel Linux e su script automatizzati di elaborazione in streaming.
+
+\chapter{Gestione dei Thread e Schedulazione Real-Time}
+\section{Integrazione della libreria POSIX Threads}
+Per sfruttare appieno l'architettura concorrente e gestire l'esecuzione parallela delle attività (\textit{Activity\_1}, \textit{Activity\_2}, ecc.), il sistema fa ampio utilizzo della libreria \texttt{pthread} unita agli attributi del sistema \texttt{sched.h} resi disponibili dal kernel Linux.
+Ciascun thread viene configurato tramite specifici descrittori (attributi) necessari per convertire le prassi di esecuzione tipiche in policy orientate al tempo reale matematico e predicibile. 
+
+\section{Configurazione della Policy SCHED\_FIFO}
+Prima dell'instanziazione dei thread, ogni attributo (\verb!pthread_attr_t!) subisce una profonda alterazione, disconnettendolo dall'eredità dello scheduler standard del processo genitore (il \verb!main!) tramite l'uso della funzione \verb!pthread_attr_setinheritsched! con il flag \verb!PTHREAD_EXPLICIT_SCHED!.
+Conseguentemente viene imposta l'algoritmo di esecuzione temporale di tipo \textbf{Real-Time FIFO} mediabile con \verb!pthread_attr_setschedpolicy! assegnata come \verb!SCHED_FIFO!.
+Questo è il requisito fondamentale per l'implementazione corretta dell'algoritmo Rate Monotonic.
+
+\section{Assegnazione delle Priorità secondo Rate Monotonic}
+In un sistema Rate Monotonic, la priorità di ciascun task è inversamente proporzionale alla durata del suo periodo: task con periodi più brevi richiedono priorità di esecuzione più alte. 
+Il codice C++ automatizza il settaggio di questa dinamica matematica:
+\begin{lstlisting}[language=C++]
+// Esempio: Periodo 800ms vs Priorita
+param2.sched_priority = 99 - (activity_2.period / 10);
+\end{lstlisting}
+Tale priorità viene "iniettata" nel foglio attributi tramite la funzione \verb!pthread_attr_setschedparam!. 
+
+\section{CPU Affinity e Partizionamento Multi-Core}
+Data la necessità di gestire al microsecondo le latenze derivanti dai context-switch e di comprendere l'impatto strutturale del caching del processore su core eterogenei o singoli, l'applicativo fa uso intensivo della \textit{CPU Affinity}. Tramite \verb!pthread_attr_setaffinity_np!, l'esecuzione di uno specifico thread temporale è indissolubilmente "incatenata" (pinned) a uno specifico processore logico (ad esempio Core 0 o Core 1).
+Ciò permette di strutturare scenari dimostrativi in Single-Core (dove emerge con naturalezza la visibilità della preemption) e scenari in Multi-Core per l'estrazione totale della potenza computazionale.
+
+\chapter{Il Motore di Tracciamento Real-Time interno (ftrace)}
+\section{Patching Dinamico e Ring Buffer}
+Il tracciamento dei processi non si basa su dispendiosi e intrusivi software esterni operanti in modalità user-space. Al contrario, si è deciso di ascoltare direttamente "il cuore" del Kernel Linux.
+L'ascolto avviene tramite approccio a Patching Dinamico del codice (Tracepoints): normalmente i sensori di tracciamento sparsi nel Kernel sono istruzioni vuote (\textit{Nop}). L'attivazione di \textbf{ftrace} ordina al Kernel di modificarsi a caldo, intercettando ogni chiamata. Per prevenire impatti latenti sui thread \verb!SCHED_FIFO!, le informazioni generatisi sono compattate all'interno di un \textit{Ring Buffer} mantenuto strettamente nella RAM.
+
+\section{Gli Eventi Intercettati}
+Il sistema analizza i fondamentali eventi di rilascio del modello Rate Monotonic:
+\begin{itemize}
+    \item \textbf{sched\_wakeup}: Segnala il risveglio logico di un processo (Da \textit{Sleep/S} a \textit{Ready/R}). Corrisponde temporalmente all'inizio fisico del periodo.
+    \item \textbf{sched\_switch}: Misura a che istante un thread inizia l'esecuzione (\textit{Run}) o subisce \textit{preemption} da un processo a priorità più alta, calcolando al nanosecondo la sua permanenza computazionale reale sulla CPU.
+\end{itemize}
+
+\section{Marcatori nello Spazio Utente: \texttt{trace\_marker}}
+Per consentire un mapping preciso tra il logging testuale Kernel e logiche matematiche della simulazione C++ (scadenza di un timing o compimento di una iterazione), i processi C++ iniettano comunicazioni asincrone dentro un canale Kernel (pipe \verb!/sys/kernel/debug/tracing/trace_marker!).  La funzione libreria \verb!write_trace_marker! propaga codici di riconoscimento (come \verb!PERIOD_START! e \verb!DEADLINE_MISS!). In via ingegneristica, ai fini di soddisfare il flusso dei Parser nativi, il C++ duplica istantaneamente la scrittura su due canali virtuali paralleli.
+
+\chapter{Automazione ed Esecuzione in Singolo Terminale (Bash Scripts)}
+L'orchestrazione delle esecuzioni, per semplificare l'estrazione analitica, si affida a robusti script Bash che gestiscono autonomamente esecuzioni cicliche e salvataggi e operano concesso da una singola finestra di Terminale Utente.
+
+\section{Elaborazione Offline (\texttt{run\_trace.sh})}
+Progettato per ottenere performance inalterate durante la simulazione computazionale pura, questo script effettua misurazioni "muto": lancia l'applicativo, comanda l'intercettazione dati al Kernel via binario (\verb!trace-cmd record!), e attende pacatamente il completamento del run. 
+Solo a chiusura completata interviene disaggregando i log generati, e inoltrandoli ad \verb!awk! per la formattazione tabellare atta poi ad alimentare lo strumento grafico KernelShark o il Parser d'estrazione C++.
+
+\section{Streaming Live In-Vivo (\texttt{live\_trace.sh})}
+Riconosciuta l'astuzia nell'interrogare il Kernel senza bloccare la registrazione asincrona standard del programma genitore \verb!trace-cmd!, l'applicativo crea all'interno del file system protetto \verb!/sys/! un istanza "fantasma" chiamata \verb!live_trace_inst!. Assieme allo script vi si attiva un "rubinetto infinito" (\verb!trace_pipe!) dedicato esclusivamente al tracciatore locale, e si elaborano le direttive tramite inoltro alla pipe ed estrattore C++ dedicato al real-time, il tutto munito da routine autonoma intelligente (\textit{cleanup}) che interrompe armoniosamente e senza errori sia il loop del sensore Pipe sia l'esecutivo se uno dei task simulati conclude la sua attività o giunge in eccezione.
+
+\chapter{Parsing C++ e Analisi Dinamica del Costo Computazionale}
+L'apice concettuale dell'ambiente elaborativo consiste in due potentissimi e specializzati applicativi fusi sotto uno stesso paradigma orientato agli oggetti: il \textbf{Parser Batch} C++ e il \textbf{Parser Live} C++.
+
+\section{Gestione Memoria e Registri Virtuali Dinamici}
+I log in innumerevoli stream testuali estratti dalle regex sono canalizzati verso un costrutto array Vettoriale \verb!std::vector<SimulationData>! caricato dinamicamente nella memoria. Questa architettura matriciale incarna l'attività del thread associando un proprio costrutto vitale estrapolando dati essenziali come \textit{Wakeup Time}, \textit{Period Range}, e \textit{Execution Offset}.
+
+\section{Modello Computazionale: Sdoppiamento Batch e Live}
+La differenza comportamentale risulta essere la vetrina visibile:
+\begin{enumerate}
+    \item \textbf{\texttt{parser\_batch.cpp} (Il Contabile Offline)}: Subentrando a script completato, divora l'intero trace in frazioni minime di secondo analizzando decine di migliaia di frame statici per esporre all'utente report tabellari numerici purificati da noise ed eccezionali nella metrica dell'elapsed rate micro-computazionale.
+    \item \textbf{\texttt{parser\_live.cpp} (Il Visualizzatore Real-Time)}: Collegato permanentemente allo script "In-Vivo", interpreta in diretta al terminale l'andamento del context-switch del sistema. Richiamando funzioni come \verb!print_single_event()!, offre cronaca testuale animata dei respiri dei Thread e allarmi scattati (il celebre e temuto scatto di \verb!DEADLINE_MISS! o il subentro \verb!PREEMPT! da task superiore). 
+\end{enumerate}
+
+\section{La Metrica Computazionale Reale e Validazione KernelShark}
+Tutti i processori Parser determinano il Costo Reale tramite pure intersezioni logiche sequenziali: al \textit{Wakeup} viene impostato uno split timer. Lo start del task (\textit{Sched\_Switch}) fa attivare le differenze nanosecondo. Al manifestarsi di condizioni di \textit{Preempt}, l'orologio dell'oggetto array interessato congela per attendere la riceduta di controllo della CPU. 
+Le prove matematiche a riga di comando sono rese visivamente impeccabili grazie all'integrazione di questi log su KernelShark dove la temporizzazione grafica è garantita e rispecchia per intero lo storico analizzato.
+
+\chapter{Conclusioni}
+[Da completare ad elaborato concluso]
+
+\end{document}
