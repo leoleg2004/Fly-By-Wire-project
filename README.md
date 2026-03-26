@@ -73,6 +73,24 @@ L'avvenuto isolamento dei canali ha frammentato il sistema multivariabile in loo
 
 ---
 
+## 🎛️ Strategie di Controllo: Dal PID al Model Predictive Control (MPC)
+
+A valle dell'analisi dinamica e del disaccoppiamento, il progetto esplora due paradigmi di controllo avanzati per la stabilizzazione e la navigazione autonoma del velivolo, confrontando un approccio classico decentralizzato con un approccio ottimo multivariabile.
+
+### 1. Controllo Classico Decentralizzato (PID)
+Sfruttando la matrice di disaccoppiamento in avanti $W$ precedentemente calcolata, l'impianto MIMO viene matematicamente ridotto a un set di canali SISO paralleli. Questo permette l'implementazione di classici regolatori **PID (Proporzionale-Integrale-Derivativo)**:
+* **Auto-Throttle (Controllo $V_t$):** Un controllore PI/PID viene sintonizzato per inseguire i riferimenti di velocità. L'azione integrale garantisce l'annullamento dell'errore a regime permanente, mentre il guadagno proporzionale definisce la prontezza del transitorio, tenendo conto dell'inerzia termica e meccanica della turbina.
+* **Pitch SAS (Controllo Assetto e Beccheggio):** Un PID sul canale del rateo di beccheggio ($q$) funge da *Stability Augmentation System*. Il suo scopo primario è stabilizzare il polo aperiodico divergente dell'F-16 e fornire alla dinamica di beccheggio le qualità di volo desiderate (smorzamento e frequenza naturale del Corto Periodo).
+I PID operano in logica *reattiva*: correggono l'errore basandosi esclusivamente sull'istante presente e sul passato, rendendo necessarie logiche aggiuntive (come l'*Anti-Windup*) per gestire eventuali saturazioni fisiche degli attuatori.
+
+### 2. Controllo Ottimo Predittivo (MPC - Model Predictive Control)
+Per superare i limiti strutturali dell'architettura decentralizzata, viene introdotto l'uso del **Model Predictive Control (MPC)**. L'MPC è intrinsecamente multivariabile: non necessita della matrice di pre-disaccoppiamento $W$, poiché risolve e gestisce i forti accoppiamenti aerodinamici (cross-coupling) direttamente nel suo nucleo algoritmico.
+* **Orizzonte Predittivo:** Sfruttando la rappresentazione in spazio di stato ($A, B, C, D$), l'MPC simula l'evoluzione futura delle dinamiche dell'aereo su un orizzonte temporale definito (es. i successivi 2-5 secondi), agendo in modo *proattivo* anziché puramente reattivo.
+* **Gestione Nativa dei Vincoli (Constraints):** A differenza del PID, l'MPC incorpora matematicamente i limiti fisici del velivolo e degli attuatori. Durante il calcolo, impone rigorosamente che la deflessione dell'equilibratore non superi i suoi limiti fisici (es. $\pm 25^\circ$) e che i ratei di comando rispettino la banda passante dei servomeccanismi, scongiurando stalli o cedimenti strutturali.
+* **Ottimizzazione Convessa:** A ogni istante di campionamento ($T_s$), il controllore risolve un problema di ottimizzazione (Quadratic Programming) minimizzando una funzione di costo $J$. Questa funzione bilancia sapientemente due obiettivi in contrasto: minimizzare l'errore di inseguimento della traiettoria desiderata e minimizzare lo sforzo degli attuatori (risparmiando energia propulsiva e usura meccanica). Solo il primo vettore della sequenza di comandi ottimi calcolata viene inviato all'impianto (*Receding Horizon*).
+
+---
+
 ## 📊 Metriche Analizzate
 
 Durante l'esecuzione, il core Hard Real-Time stampa in standard output i log di volo per ogni ciclo di attivazione, tracciando tre parametri ingegneristici fondamentali:
