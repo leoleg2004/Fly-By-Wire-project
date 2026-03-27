@@ -1,4 +1,3 @@
-
 # ✈️ Real-Time Flight Telemetry System: RM & EDF Scheduling with Fast DDS and Graphical Simulation
 
 Il presente progetto esplora le prestazioni dei sistemi **Hard Real-Time** in ambiente Linux (su kernel con patch `PREEMPT_RT`), confrontando le logiche di scheduling **Rate Monotonic (RM)** ed **Earliest Deadline First (EDF)**. 
@@ -22,9 +21,6 @@ Per garantire un determinismo temporale assoluto, il progetto fa un uso estensiv
   Il protocollo RM è realizzato sfruttando l'intestazione `<sched.h>` e applicando la policy preemptive `SCHED_FIFO`. Le priorità statiche vengono assegnate a runtime in modo inversamente proporzionale al periodo del task, avvalendosi della struttura `sched_param` e della funzione `pthread_attr_setschedparam()`.
 * **Implementazione Earliest Deadline First (EDF):**
   Poiché lo standard POSIX di base non espone nativamente un'interfaccia per lo scheduling su base deadline, il software interagisce direttamente con il kernel Linux tramite `<sys/syscall.h>`. Utilizzando la chiamata `syscall(__NR_sched_setattr)`, il progetto applica la policy `SCHED_DEADLINE`, configurando dinamicamente la banda di calcolo attraverso i parametri `sched_runtime`, `sched_deadline` e `sched_period`.
-
-
-
 * **Controllo Deterministico del Tempo:**
   La periodicità rigorosa dei task è governata dalla libreria `<time.h>`. L'attivazione dei thread sfrutta la funzione `clock_nanosleep()` agganciata al clock hardware `CLOCK_MONOTONIC` in modalità assoluta (`TIMER_ABSTIME`). Questo approccio matematico previene il fenomeno di *drifting* (deriva temporale) causato dall'accumulo di ritardi iterativi.
 * **Prevenzione del Page-Faulting (Memory Locking):**
@@ -54,6 +50,45 @@ Il sistema è compartimentato in tre moduli asincroni principali. I task avionic
 
 Primary Flight Display Simulato in Raylib
 <img width="1024" height="559" alt="immagine" src="https://github.com/user-attachments/assets/087f69e2-57ec-4894-b5d8-f08cf77b3a09" />
+
+---
+
+## 🛩️ Dinamica di Volo e Controllo Longitudinale (F-16)
+
+Parallelamente all'infrastruttura informatica, il progetto integra la modellazione matematica e la sintesi delle leggi di controllo di un velivolo F-16, sviluppate in ambiente MATLAB per la futura esecuzione nei nodi di controllo.
+
+### 1. Estrazione del Modello e Analisi di Stabilità
+A partire da un modello non lineare a 6 gradi di libertà (6-DOF), è stata isolata la dinamica longitudinale del velivolo. Il partizionamento delle matrici in spazio di stato ha permesso di estrarre le quattro variabili di stato fondamentali ($\theta$, $q$, $U$, $W$) e i comandi attivi (Manetta, Equilibratore, Flap al bordo d'attacco), trattando le raffiche di vento come disturbi esogeni. L'analisi agli autovalori sulla realizzazione minima del sistema ha confermato l'intrinseca instabilità aperiodica del caccia (polo a parte reale positiva), rendendo imperativo l'uso di un sistema *Fly-By-Wire* in retroazione.
+
+### 2. Analisi Multivariabile (RGA) e Disaccoppiamento MIMO
+L'analisi della matrice RGA (*Relative Gain Array*) sull'impianto ad anello aperto ha rivelato un profondo accoppiamento cinematico e aerodinamico (es. l'equilibratore degrada drasticamente la velocità $V_t$). Essendo il sistema sottoattuato (5 ingressi fisici per 6 uscite monitorate), si è resa necessaria la sintesi di un pre-compensatore statico in avanti ($W$). 
+Sfruttando la **pseudo-inversa di Moore-Penrose**, è stata calcolata la matrice ottima ai minimi quadrati:
+
+$$W = K_{tot}^\dagger$$
+
+L'applicazione di questa rete di disaccoppiamento ha permesso di convertire gli attuatori fisici in **Comandi Virtuali** indipendenti. L'RGA post-disaccoppiamento certifica una diagonalizzazione perfetta ($1.000$ sulla diagonale principale) per i canali di navigazione primari (Velocità, Incidenza, Beccheggio).
+
+### 3. Sintesi del Flight Control System
+L'avvenuto isolamento dei canali ha frammentato il sistema multivariabile in loop SISO (*Single-Input Single-Output*) indipendenti. Ciò costituisce la base matematica per la sintesi decentralizzata dei controllori PID, demandando il controllo della velocità a un *Auto-Throttle* e la stabilizzazione dell'assetto a un *Pitch Stability Augmentation System (SAS)*.
+
+---
+
+## 🎛️ Strategie di Controllo: Dal PID al Model Predictive Control (MPC)
+
+A valle dell'analisi dinamica e del disaccoppiamento, il progetto esplora due paradigmi di controllo avanzati per la stabilizzazione e la navigazione autonoma del velivolo, confrontando un approccio classico decentralizzato con un approccio ottimo multivariabile.
+
+### 1. Controllo Classico Decentralizzato (PID)
+Sfruttando la matrice di disaccoppiamento in avanti $W$ precedentemente calcolata, l'impianto MIMO viene matematicamente ridotto a un set di canali SISO paralleli. Questo permette l'implementazione di classici regolatori **PID (Proporzionale-Integrale-Derivativo)**:
+* **Auto-Throttle (Controllo $V_t$):** Un controllore PI/PID viene sintonizzato per inseguire i riferimenti di velocità. L'azione integrale garantisce l'annullamento dell'errore a regime permanente, mentre il guadagno proporzionale definisce la prontezza del transitorio, tenendo conto dell'inerzia termica e meccanica della turbina.
+* **Pitch SAS (Controllo Assetto e Beccheggio):** Un PID sul canale del rateo di beccheggio ($q$) funge da *Stability Augmentation System*. Il suo scopo primario è stabilizzare il polo aperiodico divergente dell'F-16 e fornire alla dinamica di beccheggio le qualità di volo desiderate (smorzamento e frequenza naturale del Corto Periodo).
+I PID operano in logica *reattiva*: correggono l'errore basandosi esclusivamente sull'istante presente e sul passato, rendendo necessarie logiche aggiuntive (come l'*Anti-Windup*) per gestire eventuali saturazioni fisiche degli attuatori.
+
+### 2. Controllo Ottimo Predittivo (MPC - Model Predictive Control)
+Per superare i limiti strutturali dell'architettura decentralizzata, viene introdotto l'uso del **Model Predictive Control (MPC)**. L'MPC è intrinsecamente multivariabile: non necessita della matrice di pre-disaccoppiamento $W$, poiché risolve e gestisce i forti accoppiamenti aerodinamici (cross-coupling) direttamente nel suo nucleo algoritmico.
+* **Orizzonte Predittivo:** Sfruttando la rappresentazione in spazio di stato ($A, B, C, D$), l'MPC simula l'evoluzione futura delle dinamiche dell'aereo su un orizzonte temporale definito (es. i successivi 2-5 secondi), agendo in modo *proattivo* anziché puramente reattivo.
+* **Gestione Nativa dei Vincoli (Constraints):** A differenza del PID, l'MPC incorpora matematicamente i limiti fisici del velivolo e degli attuatori. Durante il calcolo, impone rigorosamente che la deflessione dell'equilibratore non superi i suoi limiti fisici (es. $\pm 25^\circ$) e che i ratei di comando rispettino la banda passante dei servomeccanismi, scongiurando stalli o cedimenti strutturali.
+* **Ottimizzazione Convessa:** A ogni istante di campionamento ($T_s$), il controllore risolve un problema di ottimizzazione (Quadratic Programming) minimizzando una funzione di costo $J$. Questa funzione bilancia sapientemente due obiettivi in contrasto: minimizzare l'errore di inseguimento della traiettoria desiderata e minimizzare lo sforzo degli attuatori (risparmiando energia propulsiva e usura meccanica). Solo il primo vettore della sequenza di comandi ottimi calcolata viene inviato all'impianto (*Receding Horizon*).
+
 ---
 
 ## 📊 Metriche Analizzate
@@ -63,9 +98,6 @@ Durante l'esecuzione, il core Hard Real-Time stampa in standard output i log di 
 * **Tempo di Risposta (Response Time / CPU time):** Il delta temporale effettivo richiesto dal thread per completare l'intera computazione (dal risveglio al completamento della logica applicativa).
 * **Jitter (Latenza di Attivazione):** La discrepanza temporale assoluta tra il momento teorico di schedulazione del task e la reale acquisizione della CPU, fortemente influenzata dall'overhead del middleware DDS e dalle preemption del kernel.
 * **Deadline Miss:** Conteggio cumulativo delle violazioni temporali assolute (istanti in cui il response time eccede la deadline di progettazione).
-
-
-
 
 ---
 
