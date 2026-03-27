@@ -1,0 +1,14 @@
+TARGET = math_library
+
+all: $(TARGET).a clean
+
+$(TARGET).a: $(TARGET).o
+	ar rcs $@ $^
+	
+$(TARGET).o: math_library.c math_library.h
+	gcc -c -o $@ $<
+     
+clean:
+	rm -f *.o
+
+

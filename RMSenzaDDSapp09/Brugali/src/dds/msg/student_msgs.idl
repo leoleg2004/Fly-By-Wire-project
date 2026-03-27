@@ -1,0 +1,6 @@
+struct Student
+{
+	string name;
+	string surname;
+	long id;
+};

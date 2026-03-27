@@ -1,0 +1,14 @@
+TARGET = matrix_library
+
+all: $(TARGET).a clean
+
+$(TARGET).a: $(TARGET).o
+	ar rcs $@ $^
+	
+$(TARGET).o: matrix_library.c matrix_library.h
+	gcc -c -o $@ $<
+     
+clean:
+	rm -f *.o
+
+
