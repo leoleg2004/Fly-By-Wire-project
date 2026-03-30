@@ -1,0 +1,56 @@
+
+================ RISULTATI MULTI-THREAD ================
+ Filtro CPU: TUTTE LE CPU
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.013 ms  |  Avg:      0.004 ms
+ [Job Totale]WCRT :      0.013 ms  |  Avg:      0.004 ms
+ [Periodo]   Avg  :    105.354 ms  |  Jitter: 282.485 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:         25  |  Avg:    105.351 ms  |  Max: 1340.495 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/1:0H (PID: 26)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.043 ms  |  Avg:      0.034 ms
+ [Job Totale]WCRT :    740.054 ms  |  Avg:    740.054 ms
+ [Periodo]   Avg  :     52.858 ms  |  Jitter: 118.487 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/1:1 (PID: 82)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.045 ms  |  Avg:      0.006 ms
+ [Job Totale]WCRT :   2633.920 ms  |  Avg:   2633.920 ms
+ [Periodo]   Avg  :     42.483 ms  |  Jitter: 123.573 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:         26  |  Avg:      0.004 ms  |  Max: 0.013 ms
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 6299)
+----------------------------------------------------------
+ [Esecuzione]WCET :    345.093 ms  |  Avg:     44.515 ms
+ [Job Totale]WCRT :   2135.334 ms  |  Avg:    533.875 ms
+ [Periodo]   Avg  :    199.099 ms  |  Jitter: 369.514 ms
+ [Deadline]  Miss :          1      |  (Atteso dal .c: 1800.000 ms)
+ [Sleep]     Count:          3  |  Avg:    482.808 ms  |  Max: 1448.392 ms
+ [Preempt]   Count:         15  |  Avg:     85.981 ms  |  Max: 455.233 ms
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 6300)
+----------------------------------------------------------
+ [Esecuzione]WCET :    455.233 ms  |  Avg:     88.230 ms
+ [Job Totale]WCRT :    455.233 ms  |  Avg:    423.544 ms
+ [Periodo]   Avg  :    139.185 ms  |  Jitter: 232.485 ms
+ [Deadline]  Miss :          0      |  (Atteso dal .c: 800.000 ms)
+ [Sleep]     Count:          4  |  Avg:    365.949 ms  |  Max: 385.076 ms
+ [Preempt]   Count:         19  |  Avg:      0.011 ms  |  Max: 0.071 ms
+
+==========================================================
+[+] Dati esportati su timeline.csv

@@ -45,6 +45,14 @@ struct PlaneData {
   char status_msg[64] = {};
   bool system_active  = false;
   bool landing_mode   = true;
+
+  // Flag di volo — aggiornati in HandleInput, usati da DrawWarnings
+  // airborne  : diventa true quando alt > 150m, reset a terra (< 10m)
+  // above_3km : diventa true quando alt > 3500m → ARMA l'allarme bassa quota.
+  //             Senza questo flag, l'allarme suonerebbe durante tutta la salita
+  //             iniziale (0→3000m), che è corretto fisicamente ma molto fastidioso.
+  bool airborne  = false;
+  bool above_3km = false;  // arma allarme bassa quota solo dopo aver superato 3500m
 };
 
 class FlightDisplay {

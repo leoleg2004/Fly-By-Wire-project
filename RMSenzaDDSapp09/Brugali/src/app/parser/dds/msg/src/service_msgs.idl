@@ -1,0 +1,14 @@
+struct Request
+{
+	long id;
+	string operation;
+	double data_a; 
+	double data_b;
+};
+
+struct Reply
+{
+	long id;
+	boolean correct;
+	double result;
+};

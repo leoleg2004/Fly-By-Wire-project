@@ -1,0 +1,10 @@
+struct ThreadEvent
+{
+	string task_name;
+	long thread_id;
+	double start_time_ms;
+	double end_time_ms;
+	double cost_ms;
+	long period_ms;
+	boolean missed_deadline;
+};

@@ -107,13 +107,21 @@ void FlightDisplay::HandleInput(PlaneData &data, PilotInput &pilot_out) {
   float dt = GetFrameTime();
 
   static double engineStartTime = 0.0;
-  static bool   hasTakenOff     = false;
   static bool   engineReady     = false;
 
-  if (data.altitude > 100.0f) hasTakenOff = true;
+  // ── Aggiornamento flag di volo ────────────────────────────────────────
+  // airborne: true quando siamo in aria (alt > 150m), reset a terra
+  if (data.altitude > 150.0f) data.airborne = true;
+  if (data.altitude <  10.0f) { data.airborne = false; data.above_3km = false; }
 
-  // Auto-shutdown on landing
-  if (hasTakenOff && data.altitude < 2.0f && data.speed <= 1.0f &&
+  // above_3km: si arma quando superiamo 3500m per la PRIMA VOLTA dopo il decollo.
+  // Questo fa sì che l'allarme bassa quota NON suoni durante la salita iniziale
+  // (che passa necessariamente attraverso 0→3000m), ma SOLO quando scendiamo
+  // sotto 3000m durante la crociera o l'avvicinamento.
+  if (data.airborne && data.altitude > 3500.0f) data.above_3km = true;
+
+  // Auto-shutdown al touch-down: motori off quando airborne + alt < 2m + fermo
+  if (data.airborne && data.altitude < 2.0f && data.speed <= 1.0f &&
       data.system_active) {
     data.system_active = false;
     engineReady        = false;
@@ -123,7 +131,8 @@ void FlightDisplay::HandleInput(PlaneData &data, PilotInput &pilot_out) {
     PlaySound(sndEngineDown);
     StopSound(sndLanding); StopSound(sndAir);
     StopSound(sndWarning); StopSound(sndPullUp);
-    hasTakenOff = false;
+    data.airborne  = false;
+    data.above_3km = false;
   }
 
   // Landing mode toggle
@@ -181,11 +190,12 @@ void FlightDisplay::HandleInput(PlaneData &data, PilotInput &pilot_out) {
   if (IsKeyDown(KEY_Z))     pilot_out.rudder      = -1.0f;
   if (IsKeyDown(KEY_X))     pilot_out.rudder      = +1.0f;
 
-  // Throttle
+  // Throttle — 0.8/s normale, 2.0/s con SHIFT per risposta rapida
   static float current_throttle = 0.0f;
   if (data.system_active && engineReady) {
-    if (IsKeyDown(KEY_W))       current_throttle += 0.5f * dt;
-    else if (IsKeyDown(KEY_S))  current_throttle -= 0.5f * dt;
+    float thr_rate = IsKeyDown(KEY_LEFT_SHIFT) ? 2.0f : 0.8f;
+    if (IsKeyDown(KEY_W))       current_throttle += thr_rate * dt;
+    else if (IsKeyDown(KEY_S))  current_throttle -= thr_rate * dt;
     current_throttle = std::clamp(current_throttle, 0.0f, 1.0f);
   } else {
     current_throttle = 0.0f;
@@ -196,24 +206,46 @@ void FlightDisplay::HandleInput(PlaneData &data, PilotInput &pilot_out) {
   pilot_out.landing_mode   = data.landing_mode;
   pilot_out.gear_deploy    = gearOpen;
 
-  // ── Voice Warning System ─────────────────────────────────
+  // ── Voice Warning System ──────────────────────────────────────────────
+  //
+  // LOGICA CORRETTA ALLARMI (come simulatore di volo reale):
+  //
+  // Bassa quota: suona SOLO se above_3km=true (siamo già saliti sopra i 3500m
+  //   e ora scendiamo sotto 3000m). NON suona durante la salita iniziale.
+  //
+  // Alta quota: suona quando superiamo 12000m in crociera.
+  //   NON silenziato in landing_mode (scendere da alta quota richiede avviso).
+  //
+  // Bank angle: avviso oltre 60° quando in volo (airborne + !landing_mode).
+  //
+  // Landing approach: suono ILS quando alt < 600m in landing_mode.
+  //
   if (data.system_active) {
-    bool dangerPullUp = hasTakenOff && !data.landing_mode &&
-                        (data.altitude < 2000.0f || data.altitude > 12500.0f);
-    bool dangerBank   = !data.landing_mode && fabsf(data.roll) > 0.8f;
+    bool inFlight = data.airborne && !data.landing_mode;
+
+    // Bassa quota: armato solo dopo aver superato 3500m (above_3km)
+    bool dangerLowAlt  = inFlight && data.above_3km && data.altitude < 3000.0f;
+    // Alta quota: sempre attivo se in volo e > 12000m
+    bool dangerHighAlt = inFlight && data.altitude > 12000.0f;
+    // Bank angle 60° — solo in volo non-landing
+    bool dangerBank    = inFlight && fabsf(data.roll) > 1.047f;
+
+    bool dangerPullUp = dangerLowAlt || dangerHighAlt;
 
     if (dangerPullUp) {
       StopSound(sndWarning);
       if (!IsSoundPlaying(sndPullUp)) PlaySound(sndPullUp);
     } else if (dangerBank) {
+      StopSound(sndPullUp);
       if (!IsSoundPlaying(sndWarning)) PlaySound(sndWarning);
     } else {
-      if (IsSoundPlaying(sndPullUp)) StopSound(sndPullUp);
+      if (IsSoundPlaying(sndPullUp))  StopSound(sndPullUp);
       if (IsSoundPlaying(sndWarning)) StopSound(sndWarning);
     }
 
-    if (data.landing_mode && data.altitude < 2000.0f &&
-        data.altitude > 15.0f && hasTakenOff) {
+    // ILS approach — suono quando in avvicinamento finale (< 600m, landing_mode on)
+    if (data.landing_mode && data.airborne &&
+        data.altitude < 600.0f && data.altitude > 10.0f) {
       if (!IsSoundPlaying(sndLanding)) PlaySound(sndLanding);
     } else {
       if (IsSoundPlaying(sndLanding)) StopSound(sndLanding);
@@ -610,44 +642,53 @@ void FlightDisplay::DrawSpeedTape(const PlaneData &data) {
 }
 
 // ============================================================
-// DrawAltitudeTape — right side, MSL altitude in feet
+// DrawAltitudeTape — right side
+// METRI come valore principale (soglie allarmi in metri!),
+// piedi come secondario per riferimento.
 // ============================================================
 void FlightDisplay::DrawAltitudeTape(const PlaneData &data) {
   int sw  = GetScreenWidth();
   int sh  = GetScreenHeight();
   int cy  = sh / 2;
-  int tw  = 90, th = 220;
+  int tw  = 105, th = 220;  // allargata per mostrare metri
   int tx  = sw - 30 - tw;
   int ty  = cy - th / 2;
 
   DrawRectangle(tx, ty, tw, th, HUD_BG);
   DrawRectangleLines(tx, ty, tw, th, HUD_DIM);
 
-  float altFt = data.altitude * 3.28084f; // m → ft
-  const float PPF = 0.015f; // pixels per foot (500ft per 100px)
-  const float PPF_STEP = 500.0f;
+  // Tape graduata in METRI (100m minor, 500m major)
+  float altM  = data.altitude;
+  const float PPM = 0.04f; // pixel per metro (500m per 20px = 0.04)
 
   BeginScissorMode(tx + 2, ty + 2, tw - 4, th - 4);
-  for (int ft = 0; ft <= 100000; ft += 100) {
-    float dy    = (altFt - ft) * PPF;
+  for (int m = 0; m <= 60000; m += 100) {
+    float dy    = (altM - m) * PPM;
     float lineY = cy + dy;
     if (lineY < ty || lineY > ty + th) continue;
-    bool major = (ft % 500 == 0);
+    bool major = (m % 500 == 0);
     int  ll    = major ? 14 : 7;
     DrawLineEx({(float)tx, lineY}, {(float)(tx + ll), lineY}, 1.5f, HUD_GREEN);
     if (major) {
-      const char *lbl = TextFormat("%d", ft);
-      DrawText(lbl, tx + 18, (int)lineY - 5, 9, HUD_GREEN);
+      DrawText(TextFormat("%d", m), tx + 18, (int)lineY - 5, 9, HUD_GREEN);
     }
   }
   EndScissorMode();
 
-  // Current value box
-  DrawRectangle(tx, cy - 13, tw, 26, Fade({0, 20, 10, 255}, 0.95f));
-  DrawRectangleLines(tx, cy - 13, tw, 26, HUD_GREEN);
-  DrawText(TextFormat("%05.0f", altFt), tx + 4, cy - 9, 16, HUD_WHITE);
+  // Colore del box: ambra se in zona allarme quota
+  bool lowWarn  = (data.altitude < 3000.0f && data.system_active && data.speed > 20.0f);
+  bool highWarn = (data.altitude > 12000.0f && data.system_active);
+  Color boxCol  = (lowWarn || highWarn) ? HUD_AMBER : HUD_GREEN;
 
-  DrawText("FT", tx, ty - 14, 9, HUD_DIM);
+  // Box principale: METRI (grande, leggibile, è il valore usato dagli allarmi)
+  DrawRectangle(tx, cy - 16, tw, 32, Fade({0, 20, 10, 255}, 0.95f));
+  DrawRectangleLines(tx, cy - 16, tw, 32, boxCol);
+  DrawText(TextFormat("%5.0f m", altM), tx + 3, cy - 12, 18, HUD_WHITE);
+
+  // Secondario: piedi in piccolo
+  float altFt = altM * 3.28084f;
+  DrawText("M", tx, ty - 14, 9, boxCol);
+  DrawText(TextFormat("%.0fft", altFt), tx + 2, ty + th + 4, 9, HUD_DIM);
 }
 
 // ============================================================
@@ -719,7 +760,14 @@ void FlightDisplay::DrawAlphaGMeter(const PlaneData &data) {
 }
 
 // ============================================================
-// DrawWarnings — blink overlay + message box
+// DrawWarnings — overlay allarmi + barra status quota sempre visibile
+//
+// SOGLIE IN METRI (leggibili dal box altimetrico sulla destra):
+//   Bassa quota:  ALLARME 1000m–3000m | AP PITCH-UP  sotto 1000m
+//   Alta quota:   ALLARME 12000m–15000m | AP PITCH-DOWN sopra 15000m
+//   Bank angle:   WARNING >60° | LIMIT >75°
+//
+// LANDING MODE ON → green border, nessun allarme, AP quota off.
 // ============================================================
 void FlightDisplay::DrawWarnings(const PlaneData &data) {
   int sw = GetScreenWidth();
@@ -728,31 +776,93 @@ void FlightDisplay::DrawWarnings(const PlaneData &data) {
 
   bool blink = ((int)(GetTime() * 8) % 2 == 0);
 
+  // ── Barra status quota — sempre visibile, mostra la zona corrente ──
+  // Logica identica al voice warning: allarme bassa quota solo se above_3km
+  {
+    const char *zoneLbl = nullptr;
+    Color zoneCol = HUD_DIM;
+    bool inFlt = data.system_active && data.airborne && !data.landing_mode;
+
+    if (!data.airborne) {
+      zoneLbl = "A TERRA — decollo: W + freccia SU";
+      zoneCol = HUD_DIM;
+    } else if (inFlt && data.above_3km && data.altitude < 1000.0f) {
+      zoneLbl = "AP QUOTA: PITCH UP ATTIVO (<1000m)";
+      zoneCol = HUD_AMBER;
+    } else if (inFlt && data.above_3km && data.altitude < 3000.0f) {
+      zoneLbl = "!! ALLARME BASSA QUOTA (<3000m) !!";
+      zoneCol = HUD_RED;
+    } else if (inFlt && data.altitude > 15000.0f) {
+      zoneLbl = "AP QUOTA: PITCH DOWN ATTIVO (>15000m)";
+      zoneCol = HUD_AMBER;
+    } else if (inFlt && data.altitude > 12000.0f) {
+      zoneLbl = "!! ALLARME ALTA QUOTA (>12000m) !!";
+      zoneCol = HUD_RED;
+    } else if (!data.above_3km && data.airborne) {
+      zoneLbl = "SALITA — allarme bassa quota non armato";
+      zoneCol = HUD_DIM;
+    } else if (data.system_active) {
+      zoneLbl = "QUOTA OK";
+      zoneCol = HUD_DIM;
+    }
+    if (zoneLbl) {
+      int lw = MeasureText(zoneLbl, 10);
+      DrawText(zoneLbl, cx - lw / 2, sh - 56, 10, zoneCol);
+    }
+  }
+
+  // ── Landing Mode ──────────────────────────────────────────────────
   if (data.landing_mode) {
     DrawRectangleLinesEx({0, 0, (float)sw, (float)sh}, 5.0f, HUD_GREEN);
-    const char *msg = "LANDING MODE ENGAGED";
-    int msgW = MeasureText(msg, 18);
-    DrawRectangle(cx - msgW / 2 - 10, sh / 2 + 120, msgW + 20, 32, HUD_BG);
-    DrawRectangleLines(cx - msgW / 2 - 10, sh / 2 + 120, msgW + 20, 32, HUD_GREEN);
-    DrawText(msg, cx - msgW / 2, sh / 2 + 128, 18, HUD_GREEN);
+    const char *msg = "LANDING MODE  [L = esci]  —  AP QUOTA OFF";
+    int msgW = MeasureText(msg, 15);
+    DrawRectangle(cx - msgW / 2 - 8, sh / 2 + 120, msgW + 16, 28, HUD_BG);
+    DrawRectangleLines(cx - msgW / 2 - 8, sh / 2 + 120, msgW + 16, 28, HUD_GREEN);
+    DrawText(msg, cx - msgW / 2, sh / 2 + 126, 15, HUD_GREEN);
     return;
   }
 
+  // ── Allarmi in volo — stessa logica della parte audio ─────────────
+  // inFlight: airborne + system_active + !landing_mode
+  bool inFlight = data.system_active && data.airborne && !data.landing_mode;
+
   const char *warn = nullptr;
-  if      (data.altitude < 2000.0f)          warn = "TERRAIN PULL UP";
-  else if (data.altitude > 12500.0f)         warn = "MAX ALT — PUSH DOWN";
-  else if (fabsf(data.roll) > 1.6f)          warn = "BANK ANGLE LIMIT";
-  else if (data.nz > 8.5f)                   warn = "G LIMIT EXCEEDED";
+  bool        isAP = false;
+
+  if (inFlight) {
+    // Bassa quota: solo se above_3km (armato dopo aver superato 3500m)
+    if (data.above_3km && data.altitude < 1000.0f) {
+      warn = TextFormat("AP PITCH UP  alt=%.0fm (< 1000m)", data.altitude);
+      isAP = true;
+    } else if (data.above_3km && data.altitude < 3000.0f) {
+      warn = TextFormat("!! PULL UP !!  alt=%.0fm  soglia 3000m", data.altitude);
+    }
+    // Alta quota (sempre armato in crociera)
+    else if (data.altitude > 15000.0f) {
+      warn = TextFormat("AP PITCH DOWN  alt=%.0fm (> 15000m)", data.altitude);
+      isAP = true;
+    } else if (data.altitude > 12000.0f) {
+      warn = TextFormat("!! PUSH DOWN !!  alt=%.0fm  soglia 12000m", data.altitude);
+    }
+    // Bank angle
+    else if (fabsf(data.roll) > 1.309f) {
+      warn = TextFormat("BANK LIMIT 75deg  phi=%.0fdeg", fabsf(data.roll) * RAD2DEG);
+    } else if (fabsf(data.roll) > 1.047f) {
+      warn = TextFormat("BANK ANGLE 60deg  phi=%.0fdeg", fabsf(data.roll) * RAD2DEG);
+    } else if (data.nz > 8.5f) {
+      warn = TextFormat("G LIMIT  nz=%.1fG", data.nz);
+    }
+  }
 
   if (warn) {
+    Color borderCol = isAP ? HUD_AMBER : HUD_RED;
     DrawRectangleLinesEx({0, 0, (float)sw, (float)sh}, 5.0f,
-                         blink ? HUD_RED : Fade(HUD_RED, 0.3f));
-    const char *full = TextFormat("! ! !  %s  ! ! !", warn);
-    int fw = MeasureText(full, 20);
-    DrawRectangle(cx - fw / 2 - 12, sh / 2 + 120, fw + 24, 36,
-                  blink ? Fade(HUD_RED, 0.45f) : HUD_BG);
-    DrawRectangleLines(cx - fw / 2 - 12, sh / 2 + 120, fw + 24, 36, HUD_RED);
-    DrawText(full, cx - fw / 2, sh / 2 + 128, 20, blink ? WHITE : HUD_RED);
+                         blink ? borderCol : Fade(borderCol, 0.3f));
+    int fw = MeasureText(warn, 17);
+    DrawRectangle(cx - fw / 2 - 12, sh / 2 + 118, fw + 24, 34,
+                  blink ? Fade(borderCol, 0.35f) : HUD_BG);
+    DrawRectangleLines(cx - fw / 2 - 12, sh / 2 + 118, fw + 24, 34, borderCol);
+    DrawText(warn, cx - fw / 2, sh / 2 + 126, 17, blink ? WHITE : borderCol);
   }
 }
 

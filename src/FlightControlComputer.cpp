@@ -244,13 +244,26 @@ void FlightControlComputer::step(const PilotInput &input, float dt) {
 
   float q_bar = 0.5f * rho * V_T * V_T;
 
-  // ===== Propulsione: F100-PW-200 =====
+  // ===== Propulsione: F100-PW-200 (mil power + parziale afterburner) =====
+  // T_MIN = idle (1000 lbf), T_MAX = 23000 lbf ≈ mil power + ~20% AB
+  // Rapporto spinta/peso a massa piena: 102270 N / (9298 kg * 9.806) ≈ 1.12
+  // Questo garantisce T/W > 1 per decollo e climb accettabili.
   constexpr float LBF2N = 4.44822f;
-  constexpr float T_MIN = 1000.0f  * LBF2N;
-  constexpr float T_MAX = 19000.0f * LBF2N;
+  constexpr float T_MIN = 1000.0f  * LBF2N;  // [N] idle
+  constexpr float T_MAX = 23000.0f * LBF2N;  // [N] mil power (era 19000)
   float thrust_force = 0.0f;
   if (snap.system_active && input.engine_ready) {
     thrust_force = T_MIN + m_actuator.thr * (T_MAX - T_MIN);
+  }
+
+  // ===== Drag carrello (gear drag) =====
+  // Quando il carrello è esteso e l'aereo è in moto aggiunge resistenza parassite.
+  // CD_gear_equiv ~ 0.05 → Forza = 0.5 * rho * V² * S_wing * CD_gear
+  // Applicato come forza contraria a u (direzione avanzamento body frame).
+  float gear_drag = 0.0f;
+  if (input.gear_deploy) {
+    constexpr float CD_GEAR = 0.05f; // coefficiente di resistenza aggiuntivo
+    gear_drag = 0.5f * rho * (snap.u * snap.u) * (27.87f) * CD_GEAR; // [N]
   }
 
   // ===== STEP 3: Aerodinamica (δ_actual post-attuatore → F16AeroFM) =====
@@ -282,7 +295,7 @@ void FlightControlComputer::step(const PilotInput &input, float dt) {
   auto compute_accel = [&](float su, float sv, float sw,
                            float sp, float sq, float sr)
       -> std::array<float, 6> {
-    float au = (Fx_aero + thrust_force + W_x) / MASS_KG + sr*sv - sq*sw;
+    float au = (Fx_aero + thrust_force - gear_drag + W_x) / MASS_KG + sr*sv - sq*sw;
     float av = (Fy_aero + W_y) / MASS_KG + sp*sw - sr*su;
     float aw = (Fz_aero + W_z) / MASS_KG + sq*su - sp*sv;
 
@@ -385,16 +398,28 @@ void FlightControlComputer::step(const PilotInput &input, float dt) {
   if (!std::isfinite(snap.pitch_rate)) snap.pitch_rate = 0.0f;
   if (!std::isfinite(snap.yaw_rate))   snap.yaw_rate = 0.0f;
 
-  // ===== EICAS =====
+  // ===== EICAS — messaggi di stato operativo =====
   snap.packet_id++;
   if (snap.landing_mode) {
-    strncpy(snap.status_msg, "ILS LANDING MODE ACTIVE", 63);
+    strncpy(snap.status_msg, "ILS LANDING MODE  [L per uscire]", 63);
   } else if (!snap.system_active) {
     strncpy(snap.status_msg, "ENGINES SHUT DOWN", 63);
   } else if (snap.protections.alpha_floor) {
-    strncpy(snap.status_msg, "STALL WARNING - HIGH ALPHA", 63);
+    strncpy(snap.status_msg, "!! STALL WARNING — HIGH ALPHA !!", 63);
+  } else if (snap.altitude < 1000.0f && snap.altitude > 50.0f) {
+    // Autopilota quota bassa attivo
+    strncpy(snap.status_msg, "AP QUOTA: PITCH UP ATTIVO  (<1000m)", 63);
+  } else if (snap.altitude > 15000.0f) {
+    // Autopilota quota alta attivo
+    strncpy(snap.status_msg, "AP QUOTA: PITCH DOWN ATTIVO (>15km)", 63);
+  } else if (snap.altitude < 3000.0f) {
+    // Zona allarme bassa quota (1000m..3000m): solo warning, no AP
+    strncpy(snap.status_msg, "CAUTION: BASSA QUOTA (< 3000m)", 63);
+  } else if (snap.altitude > 12000.0f) {
+    // Zona allarme alta quota (12000m..15000m): solo warning, no AP
+    strncpy(snap.status_msg, "CAUTION: ALTA QUOTA (> 12000m)", 63);
   } else {
-    strncpy(snap.status_msg, "NORMAL FLIGHT (6-DOF F-16)", 63);
+    strncpy(snap.status_msg, "VOLO NORMALE — 6-DOF F-16", 63);
   }
   snap.status_msg[63] = '\0';
 

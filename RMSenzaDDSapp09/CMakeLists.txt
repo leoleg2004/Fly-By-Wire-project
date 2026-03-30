@@ -11,11 +11,23 @@ set_target_properties(time_library PROPERTIES
     POSITION_INDEPENDENT_CODE ON
 )
 
-add_executable(app09c src/app09c.cpp)
-target_link_libraries(app09c time_library pthread m)
+# === AUTOMAZIONE COMPLETAMENTE DINAMICA ===
+# Il CMake cercherà automaticamente tutti i file .cpp dentro src/ e per ognuno creerà l'eseguibile!
+# In questo modo, che tu aggiunga app10b, app10c, o modifichi i parser, basta fare `make -j4`
+file(GLOB ALL_SOURCES "src/*.cpp")
 
-add_executable(app09b src/app09b.cpp)
-target_link_libraries(app09b time_library pthread m)
-
-add_custom_command(TARGET app09c POST_BUILD COMMAND chmod +x $<TARGET_FILE:app09c>)
-add_custom_command(TARGET app09b POST_BUILD COMMAND chmod +x $<TARGET_FILE:app09b>)
+foreach(SRC_FILE ${ALL_SOURCES})
+    # Estrae il nome puro es: "app09b" o "parser_live"
+    get_filename_component(TARGET_NAME ${SRC_FILE} NAME_WE)
+    
+    # Crea un eseguibile per ognuno di essi!
+    add_executable(${TARGET_NAME} ${SRC_FILE})
+    
+    # Linka la libreria del tempo, il multithreading e la matematica a tutti quanti automaticamente
+    target_link_libraries(${TARGET_NAME} time_library pthread m)
+    
+    # Li rende eseguibili in bash
+    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD COMMAND chmod +x $<TARGET_FILE:${TARGET_NAME}>)
+    
+    message(STATUS "-> [AUTOMAZIONE CMake]: Trovato e generato eseguibile: ${TARGET_NAME}")
+endforeach()

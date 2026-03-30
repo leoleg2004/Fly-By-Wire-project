@@ -50,11 +50,25 @@ private:
   };
   SASOutput compute_sas(const FlightState &s) const;
 
-  // Gain SAS inner loop (proporzionali sui ratei body)
-  // Segno: feedback negativo → δ = -K * rate → smorzamento
-  static constexpr float KQ_PITCH = -2.0f;  // [deg/(rad/s)] pitch damper
-  static constexpr float KP_ROLL  = -0.4f;  // [deg/(rad/s)] roll damper
-  static constexpr float KR_YAW   = -1.5f;  // [deg/(rad/s)] yaw damper
+  // =====================================================================
+  // Gain SAS inner loop — FEEDBACK NEGATIVO (smorzamento)
+  //
+  // Formula: δ_sas = K * (rate_cmd - rate_actual)
+  // Con rate_cmd=0 (loop manuale): δ_sas = -K * rate_actual
+  // Per smorzare (feedback negativo): K > 0, così δ_sas si oppone al rate.
+  //
+  // NOTA: i gain devono essere POSITIVI per feedback negativo.
+  // Con K>0: quando rate>0 → δ_sas<0 → momento correttivo opposto. ✓
+  // =====================================================================
+  static constexpr float KQ_PITCH = +1.5f;  // [deg/(rad/s)] pitch damper (era -2.0, segno corretto)
+  static constexpr float KP_ROLL  = +0.3f;  // [deg/(rad/s)] roll damper  (era -0.4, segno corretto)
+  static constexpr float KR_YAW   = +1.2f;  // [deg/(rad/s)] yaw damper   (era -1.5, segno corretto)
+
+  // Virata coordinata
+  // K_COORD_RUD: frazione di stick_roll → timone (virata coordinata)
+  // K_TURN_PITCH: compensazione portanza nella virata [deg/rad^2]
+  static constexpr float K_COORD_RUD  = 0.15f; // [adim]
+  static constexpr float K_TURN_PITCH = 1.0f;  // [deg/rad^2]
 
   // =====================================================================
   // OUTER LOOP — PID Attitude Hold (PLACEHOLDER — Tesi prof.Russo)
@@ -108,23 +122,55 @@ private:
   void reset_outer_loop();
 
   // =====================================================================
+  // SAFETY PITCH HOLD — attivo all'uscita da landing mode
+  //
+  // Il problema: uscendo da landing_mode con m_pitch_integrator=0,
+  // il comando elevatore diventa neutro. L'F-16 ha margine statico
+  // NEGATIVO → senza trim, il muso cade per gravità → schianto.
+  //
+  // Soluzione: al momento della transizione si attiva un controller P
+  // sull'angolo di pitch che mantiene l'aereo in assetto sicuro
+  // (almeno SAFETY_THETA_MIN gradi di cabrata) finché:
+  //   a) il pilota prende il controllo (|stick_pitch| > 0.05)
+  //   b) l'aereo raggiunge quota sicura (alt > 3000m)
+  // =====================================================================
+  struct SafetyPitchHold {
+    bool  active    = false;
+    float theta_ref = 0.0f; // [rad] pitch target
+  };
+  SafetyPitchHold m_safety{};
+
+  // Guadagno proporzionale del safety hold: 10 deg di elevatore per rad di errore
+  static constexpr float K_SAFETY_PITCH  = 10.0f;  // [deg/rad]
+  // Pitch minimo di riferimento al momento dell'uscita da landing mode
+  static constexpr float SAFETY_THETA_MIN = 0.08f; // [rad] ≈ 4.5° nose-up
+
+  // =====================================================================
   // Stato interno e costanti
   // =====================================================================
   ProtectionStatus m_prot{};
   float m_pitch_integrator = 0.0f; // C* law integrator
 
   // Limiti superfici F-16 (trim_and_linearize.m / NASA TP-1538)
-  static constexpr float MAX_ROLL_RATE  = 1.5f;   // [rad/s] Normal Law
-  static constexpr float MAX_PITCH_RATE = 0.5f;    // [rad/s] Normal Law
+  // Comandi di rateo massimi in Normal Law — aumentati per miglior risposta
+  static constexpr float MAX_ROLL_RATE  = 2.0f;   // [rad/s] ~115 deg/s (era 1.5)
+  static constexpr float MAX_PITCH_RATE = 0.75f;  // [rad/s] ~43 deg/s  (era 0.5)
   static constexpr float MAX_AIL_DEG  = 21.5f;     // δa max
   static constexpr float MAX_ELEV_DEG = 25.0f;     // δh max
   static constexpr float MAX_RUD_DEG  = 30.0f;     // δr max
   static constexpr float MAX_LEF_DEG  = 25.0f;     // δlef max
 
   // Envelope protection thresholds
-  static constexpr float BANK_LIMIT = 1.17f;       // 67° [rad]
+  static constexpr float BANK_LIMIT      = 1.047f;  // 60° [rad] — soglia allarme bank angle F-16
+  static constexpr float BANK_HARD_LIMIT = 1.309f;  // 75° [rad] — limite assoluto Normal Law
   static constexpr float ALPHA_MIN_SPEED = 60.0f;   // [m/s]
   static constexpr float VMO = 290.0f;              // [m/s]
   static constexpr float ALT_MAX = 13000.0f;        // [m]
-  static constexpr float GPWS_ALT = 2000.0f;        // [m]
+  static constexpr float GPWS_ALT = 300.0f;         // [m] — GPWS pull-up hardware
+
+  // Soglie quota per allarmi e autopilota
+  static constexpr float ALT_WARN_LOW    = 3000.0f;  // [m] allarme bassa quota
+  static constexpr float ALT_AP_PULLUP   = 1000.0f;  // [m] autopilota pitch-up
+  static constexpr float ALT_WARN_HIGH   = 12000.0f; // [m] allarme alta quota
+  static constexpr float ALT_AP_PUSHDOWN = 15000.0f; // [m] autopilota pitch-down
 };

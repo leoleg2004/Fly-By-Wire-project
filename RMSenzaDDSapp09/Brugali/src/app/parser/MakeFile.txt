@@ -1,0 +1,35 @@
+# 1. ELENCO DELLE APP DA COMPILARE (Aggiungine altre qui se serve, es: app10 app10b app10c)
+TARGETS = app10 app10b
+
+# 2. LIBRERIE E FLAG DI COMPILAZIONE
+LIBS = ../lib/activity_library.a ../lib/time_library.a
+CFLAGS = -g -Wall -pthread
+LDFLAGS = -lm
+
+# 3. REGOLA PRINCIPALE (Quello che succede quando scrivi solo "make" o "make -j4")
+all: $(TARGETS) clean_objs print
+
+# 4. LA REGOLA "MAGICA": 
+# Dice a Make: "Per ogni nome in TARGETS (es. app10), cerca il suo file .o (es. app10_main.o)
+# e compilalo insieme alle LIBS per creare l'eseguibile"
+$(TARGETS): % : %_main.o $(LIBS)
+	gcc $(CFLAGS) $^ -o $@ $(LDFLAGS)
+
+# 5. REGOLA PER I FILE OGGETTO: Compila i .c in .o
+%_main.o: %_main.c
+	gcc $(CFLAGS) -c $< -o $@
+
+# 6. PULIZIA INTERMEDIA: Cancella i .o dopo aver creato l'eseguibile
+clean_objs:
+	rm -f *.o
+
+# 7. PULIZIA TOTALE: Cancella tutto se scrivi "make clean"
+clean:
+	rm -f *.o $(TARGETS)
+
+# 8. MESSAGGIO FINALE
+print:
+	@echo "=========================================================="
+	@echo " Compilazione Multipla Completata!"
+	@echo " Eseguibili generati e aggiornati: $(TARGETS)"
+	@echo "=========================================================="
