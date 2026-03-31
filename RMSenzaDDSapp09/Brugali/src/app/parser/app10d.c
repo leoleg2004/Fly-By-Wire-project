@@ -1,3 +1,4 @@
+
 #define _GNU_SOURCE
 #include <sched.h>
 #include <stdio.h>
@@ -101,7 +102,7 @@ int main(int argc, char* argv[]) {
 
     // Thread 8: Core 1, Estremo
     activities[7].function = ActivityExtreme;
-    activities[7].period = 450;
+    activities[7].period = 800;
     activities[7].parameter = 45;
     sprintf(activities[7].name, "Activity_8");
 

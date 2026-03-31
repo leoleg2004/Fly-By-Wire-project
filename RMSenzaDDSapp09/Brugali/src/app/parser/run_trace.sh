@@ -29,8 +29,10 @@ if [ ! -f "$SRC_FILE" ]; then
     exit 1
 fi
 
-# Creiamo il percorso assoluto al sorgente
+# Creiamo il percorso assoluto al sorgente e allo script Python
 SRC_FILE_ABS="$PWD/$SRC_FILE"
+# AGGIORNATO CON IL NOME CORRETTO DEL TUO FILE PYTHON
+MONITOR_SCRIPT_ABS="$PWD/monitorRealTime.py"
 
 echo ""
 read -p "Vuoi filtrare per una CPU specifica? (Inserisci 0, 1... [Invio] per tutte): " CPU_FILTER
@@ -48,7 +50,7 @@ echo "========================================================="
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "[1/4] Avvio simulatore e registrazione trace-cmd..."
+echo "[1/5] Avvio simulatore e registrazione trace-cmd..."
 sudo trace-cmd record -e sched:sched_switch -e sched:sched_wakeup  -o "$OUTPUT_DIR/trace.dat" "$EXECUTABLE"
 
 if [ ! -f "$OUTPUT_DIR/trace.dat" ]; then
@@ -58,10 +60,10 @@ fi
 
 sudo chmod 666 "$OUTPUT_DIR/trace.dat"
 
-echo "[2/4] Generazione del report testuale..."
+echo "[2/5] Generazione del report testuale..."
 trace-cmd report "$OUTPUT_DIR/trace.dat" > "$OUTPUT_DIR/trace_output.txt"
 
-echo "[3/4] Compilazione analizzatore C++..."
+echo "[3/5] Compilazione analizzatore C++..."
 PARSER_SRC="thread_analysis.cpp" 
 PARSER_EXE="$OUTPUT_DIR/thread_analysis"
 
@@ -72,13 +74,26 @@ else
     PARSER_EXE=""
 fi
 
-echo "[4/4] Avvio Analisi (Lettura periodi dal codice C in corso)... "
+echo "[4/5] Avvio Analisi (Lettura periodi dal codice C in corso)... "
 if [ -n "$PARSER_EXE" ]; then
     echo ""
     cd "$OUTPUT_DIR" || exit
     
     # Passiamo al C++ il log testuale, il file .c originale e la CPU!
     ./thread_analysis "trace_output.txt" "$SRC_FILE_ABS" "$CPU_FILTER" | tee "risultati_finali.txt"
+    
+    # =========================================================================
+    # NUOVA FASE: AVVIO DEL MONITOR PYTHON
+    # =========================================================================
+    echo ""
+    echo "[5/5] Avvio monitor visivo (Python)..."
+    if [ -f "$MONITOR_SCRIPT_ABS" ]; then
+        # Eseguiamo lo script Python. Poiché siamo nella cartella OUTPUT_DIR, 
+        # Python leggerà automaticamente il timeline.csv appena generato qui dentro.
+        python3 "$MONITOR_SCRIPT_ABS"
+    else
+        echo "ATTENZIONE: Non trovo lo script $MONITOR_SCRIPT_ABS. Grafico non generato."
+    fi
     
     cd ..
 fi
