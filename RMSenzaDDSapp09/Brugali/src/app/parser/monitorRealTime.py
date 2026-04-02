@@ -245,7 +245,14 @@ def analyse_periods(task: str, markers: pd.DataFrame,
     else:
         deadline_ms = None
 
-    n_dm = int(mk["type"].str.contains("DEADLINE_MISS", na=False).sum())
+    # ── FUNCTION_END markers: used for correct response-time / slack / miss ─
+    # The C code writes FUNCTION_END right after the work finishes.
+    # A deadline miss is: (FUNCTION_END - PERIOD_START) > deadline
+    # This is exactly what the C code checks: exec_end_time > exec_next_release_time
+    # (since exec_next_release_time = period_start + period = period_start + deadline
+    #  when deadline == period, which is always the case here).
+    func_ends = mk[mk["type"].str.contains("FUNCTION_END", na=False)]["start"] \
+                  .sort_values().values
 
     # ── Helper: sum state durations overlapping [t_lo, t_hi] ─────────────
     def _state_time_in(stype: str, t_lo: float, t_hi: float) -> float:
@@ -273,24 +280,45 @@ def analyse_periods(task: str, markers: pd.DataFrame,
         if pe is None and idx + 1 < len(pstart):
             pe = float(pstart[idx + 1])
 
+        # Upper bound for searching FUNCTION_END in this period
+        pe_upper = pe if pe is not None else float("inf")
+
         if pe is not None:
             # Actual RUN and SLEEP from CSV state blocks within this period
-            run_ms   = _state_time_in("RUN",   ps, pe) * 1000.0
-            sleep_ms = _state_time_in("SLEEP", ps, pe) * 1000.0
+            run_ms     = _state_time_in("RUN",     ps, pe) * 1000.0
+            sleep_ms   = _state_time_in("SLEEP",   ps, pe) * 1000.0
             preempt_ms = _state_time_in("PREEMPT", ps, pe) * 1000.0
             elapsed_ms = (pe - ps) * 1000.0
-            # Slack computed from actual run time vs deadline
-            slack_ms = (deadline_ms - run_ms) if deadline_ms else None
-            miss     = (slack_ms < 0) if slack_ms is not None else False
         else:
-            run_ms = sleep_ms = preempt_ms = elapsed_ms = slack_ms = None
-            miss = False
+            run_ms = sleep_ms = preempt_ms = elapsed_ms = None
+
+        # ── Response time and slack ───────────────────────────────────────
+        # Use FUNCTION_END (wall-clock finish of work) for correct semantics.
+        # Periods where skip=True (no FUNCTION_END present) are NOT misses —
+        # the miss was already counted in the previous period.
+        fe_cands = func_ends[(func_ends > ps) & (func_ends < pe_upper)]
+        if len(fe_cands) > 0:
+            func_end_t   = float(fe_cands[-1])          # last FUNCTION_END in period
+            response_ms  = (func_end_t - ps) * 1000.0
+            if deadline_ms is not None:
+                slack_ms = deadline_ms - response_ms
+                miss     = slack_ms < 0
+            else:
+                slack_ms = None
+                miss     = False
+        else:
+            # Skip period (no function executed) — not a miss for THIS period
+            response_ms = None
+            slack_ms    = None
+            miss        = False
+
         instances.append(dict(start=ps, end=pe,
                               run_ms=run_ms, sleep_ms=sleep_ms,
                               preempt_ms=preempt_ms, elapsed_ms=elapsed_ms,
+                              response_ms=response_ms,
                               slack_ms=slack_ms, miss=miss))
 
-    n_misses = max(sum(1 for i in instances if i["miss"]), n_dm)
+    n_misses = sum(1 for i in instances if i["miss"])
 
     return dict(period_ms=period_ms, measured_ms=measured_ms,
                 deadline_ms=deadline_ms,
@@ -321,10 +349,20 @@ def build_stats(task: str, states: pd.DataFrame, markers: pd.DataFrame,
         has_gaps = False; max_gap = 0.0; n_gaps = 0
 
     rms = sub[sub["type"] == "RUN"]["duration_ms"].values
-    if len(rms) > 0:
-        wcet, acet, rmin, n_run = float(rms.max()), float(rms.mean()), float(rms.min()), len(rms)
+    n_run = len(rms)
+
+    # WCET/ACET must be per-period total RUN time, NOT max of individual RUN
+    # segments. A task preempted 10 times in one period has 10 segments, but
+    # its actual execution cost is their SUM, which is what matters for
+    # schedulability analysis.
+    inst_runs_wcet = [i["run_ms"] for i in pi["instances"]
+                      if i["run_ms"] is not None and i["run_ms"] > 0]
+    if inst_runs_wcet:
+        wcet = float(max(inst_runs_wcet))
+        acet = float(np.mean(inst_runs_wcet))
+        rmin = float(min(inst_runs_wcet))
     else:
-        wcet = acet = rmin = 0.0; n_run = 0
+        wcet = acet = rmin = 0.0
 
     pms       = sub[sub["type"] == "PREEMPT"]["duration_ms"].values
     n_preempt = len(pms)
@@ -510,7 +548,77 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  7.  MAIN CHART
+#  7.  DEADLINE MISS LOG PANEL
+# ═══════════════════════════════════════════════════════════════════════════════
+def _draw_miss_log(ax, all_misses: list, t0: float) -> None:
+    """Draw a compact table of all deadline misses inside a dedicated axes."""
+    ax.set_xlim(0, 1)
+    n = len(all_misses)
+    row_h = 1.0
+    total_h = n + 1.5
+    ax.set_ylim(-0.5, total_h)
+    ax.set_yticks([])
+    ax.xaxis.set_visible(False)
+    for sp in ax.spines.values():
+        sp.set_visible(False)
+    ax.set_facecolor("#FFF8F8")
+
+    # Title
+    ax.text(0.5, total_h - 0.1,
+            f"Deadline Miss Log  —  {n} miss{'es' if n != 1 else ''}",
+            fontsize=10, fontweight="bold", color=C["MISS"],
+            va="center", ha="center", clip_on=False)
+
+    cols = [
+        ("#",              0.005),
+        ("Task",           0.045),
+        ("Period",         0.185),
+        ("t_start (abs s)",0.255),
+        ("t_start (rel ms)", 0.385),
+        ("Deadline (ms)",  0.530),
+        ("Response (ms)",  0.655),
+        ("Overshoot (ms)", 0.790),
+    ]
+
+    # Header row
+    header_y = total_h - 0.75
+    ax.add_patch(mpatches.Rectangle(
+        (0, header_y - 0.15), 1, 0.60,
+        facecolor=C["WARN"], zorder=1, clip_on=False))
+    for lbl, x0 in cols:
+        ax.text(x0, header_y + 0.08, lbl,
+                fontsize=7.5, fontweight="bold", color="white",
+                va="center", ha="left", zorder=2, clip_on=False)
+
+    for i, m in enumerate(all_misses):
+        ry  = (total_h - 1.5) - i * row_h
+        bg  = "#FFEBEE" if i % 2 == 0 else "#FFCDD2"
+        ax.add_patch(mpatches.Rectangle(
+            (0, ry - 0.45), 1, 0.90,
+            facecolor=bg, edgecolor="#EF9A9A", linewidth=0.3, zorder=0))
+
+        vals = [
+            str(i + 1),
+            m["task"],
+            str(m["period_idx"]),
+            f"{m['ps_abs']:.3f}",
+            f"{m['ps_rel'] * 1000:.1f}",
+            f"{m['deadline_ms']:.1f}",
+            f"{m['response_ms']:.1f}",
+            f"+{m['overshoot_ms']:.1f}",
+        ]
+        clrs = [C["MISS"], C["HEADER"], C["TEXT"], C["TEXT"],
+                C["TEXT"], C["ACCENT"], C["WARN"], C["MISS"]]
+        bolds = [True, True, False, False, False, False, True, True]
+
+        for (lbl, x0), val, col, bold in zip(cols, vals, clrs, bolds):
+            ax.text(x0, ry + 0.05, val,
+                    fontsize=8, fontweight="bold" if bold else "normal",
+                    color=col, va="center", ha="left", clip_on=True)
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#  8.  MAIN CHART
 # ═══════════════════════════════════════════════════════════════════════════════
 def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
 
@@ -539,18 +647,68 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
     stats_map  = {t: build_stats(t, states, markers, csv_span_s, period_map[t])
                   for t in all_tasks}
 
+    # ── Collect all deadline misses (adjusted for t0 offset) ────────────────
+    all_misses = []   # list of dicts: task, period_idx, period_start(abs), deadline_x, response_ms, overshoot_ms
+    for task in all_tasks:
+        pi = period_map[task]
+        if not pi["deadline_ms"]:
+            continue
+        dl_s = pi["deadline_ms"] / 1000.0
+        for idx, inst in enumerate(pi["instances"]):
+            if not inst["miss"]:
+                continue
+            ps_rel   = inst["start"]                        # already t0-subtracted
+            dl_x     = ps_rel + dl_s                        # deadline moment (relative)
+            resp_ms  = inst["response_ms"]
+            fe_x     = ps_rel + resp_ms / 1000.0            # FUNCTION_END moment (relative)
+            ps_abs   = inst["start"] + t0                   # absolute timestamp
+            all_misses.append(dict(
+                task=task, period_idx=idx + 1,
+                ps_abs=ps_abs, ps_rel=ps_rel,
+                dl_x=dl_x, fe_x=fe_x,
+                deadline_ms=pi["deadline_ms"],
+                response_ms=resp_ms,
+                overshoot_ms=resp_ms - pi["deadline_ms"],
+            ))
+
+    # ── Print deadline miss log to console ───────────────────────────────────
+    if all_misses:
+        print("\n══ DEADLINE MISS LOG ═══════════════════════════════════════════════")
+        print(f"  {'#':<4} {'Task':<14} {'Period':>6}  {'t_start(abs)':>14}  "
+              f"{'Deadline':>10}  {'Response':>10}  {'Overshoot':>10}")
+        print("  " + "─" * 72)
+        for i, m in enumerate(all_misses, 1):
+            print(f"  {i:<4} {m['task']:<14} {m['period_idx']:>6}  "
+                  f"{m['ps_abs']:>14.3f}s  "
+                  f"{m['deadline_ms']:>9.1f}ms  "
+                  f"{m['response_ms']:>9.1f}ms  "
+                  f"+{m['overshoot_ms']:>8.1f}ms")
+        print("══════════════════════════════════════════════════════════════════════\n")
+    else:
+        print("[OK] No deadline misses detected.\n")
+
     # ── Figure ──────────────────────────────────────────────────────────────
     timeline_h = max(5, n * 0.85 + 2.5)
     table_h    = max(3, n * 0.70 + 2.5)
-    fig_h      = timeline_h + table_h
+    miss_log_h = max(1.8, len(all_misses) * 0.28 + 1.0) if all_misses else 0
+    fig_h      = timeline_h + table_h + miss_log_h
     fig_w      = 30
 
     fig = plt.figure(figsize=(fig_w, fig_h), facecolor="white")
-    gs  = gridspec.GridSpec(2, 1, figure=fig,
-                            height_ratios=[timeline_h, table_h],
-                            hspace=0.15)
-    ax      = fig.add_subplot(gs[0])
-    ax_stat = fig.add_subplot(gs[1])
+    if all_misses:
+        gs = gridspec.GridSpec(3, 1, figure=fig,
+                               height_ratios=[timeline_h, miss_log_h, table_h],
+                               hspace=0.18)
+        ax        = fig.add_subplot(gs[0])
+        ax_miss   = fig.add_subplot(gs[1])
+        ax_stat   = fig.add_subplot(gs[2])
+    else:
+        gs = gridspec.GridSpec(2, 1, figure=fig,
+                               height_ratios=[timeline_h, table_h],
+                               hspace=0.15)
+        ax        = fig.add_subplot(gs[0])
+        ax_miss   = None
+        ax_stat   = fig.add_subplot(gs[1])
     ax.set_facecolor("white")
 
     # ── Zebra stripes ─────────────────────────────────────────────────────
@@ -660,6 +818,49 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
 
             k += 1
 
+    # ── Deadline Miss markers on the Gantt ───────────────────────────────
+    #
+    # For each miss:
+    #  • Red ▼  at the deadline moment  (= period_start + deadline)
+    #  • Red ▬  horizontal bar from deadline to FUNCTION_END showing overshoot
+    #  • "!N" label (N = miss counter per task) above the marker
+    #
+    task_miss_counter: dict = defaultdict(int)
+    for m in all_misses:
+        task = m["task"]
+        if task not in task_to_y:
+            continue
+        yc      = task_to_y[task]
+        dl_x    = m["dl_x"]
+        fe_x    = m["fe_x"]
+        task_miss_counter[task] += 1
+        cnt = task_miss_counter[task]
+
+        # ▼ triangle at the deadline position, top of bar
+        ax.plot(dl_x, yc + BAR_H / 2 + 0.05,
+                marker="v", color=C["MISS"], markersize=10,
+                markeredgecolor="white", markeredgewidth=0.6,
+                zorder=9, clip_on=False)
+
+        # Overshoot bar: thick red line from deadline to FUNCTION_END
+        if fe_x > dl_x:
+            ax.hlines(yc, dl_x, fe_x,
+                      colors=C["MISS"], linewidth=4.5,
+                      zorder=8, alpha=0.75)
+            # Overshoot label in the middle of the bar
+            mid_x = (dl_x + fe_x) / 2.0
+            ov_ms = m["overshoot_ms"]
+            ax.text(mid_x, yc + BAR_H / 2 + 0.25,
+                    f"+{ov_ms:.0f}ms",
+                    fontsize=6.5, color=C["MISS"], fontweight="bold",
+                    va="bottom", ha="center", zorder=10, clip_on=False)
+
+        # "!N" label below the ▼
+        ax.text(dl_x, yc + BAR_H / 2 + 0.42,
+                f"!{cnt}",
+                fontsize=6, color=C["MISS"], fontweight="bold",
+                va="bottom", ha="center", zorder=10, clip_on=False)
+
     # ── Axes ──────────────────────────────────────────────────────────────
     Y_LABEL_MARGIN = 0.60
     ax.set_yticks([task_to_y[t] for t in all_tasks])
@@ -693,11 +894,15 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
         Line2D([0],[0], color=C["MISS"], lw=0, marker="v", markersize=7, label="Deadline Miss"),
     ]
     leg = ax.legend(handles=handles,
-                    loc="upper center", bbox_to_anchor=(0.5, -0.08),
+                    loc="lower center", bbox_to_anchor=(0.5, 1.01),
                     ncol=6, frameon=True, framealpha=0.95,
                     fontsize=9, borderpad=0.9, handlelength=2.2)
     for txt in leg.get_texts():
         txt.set_fontweight("bold")
+
+    # ── Deadline Miss Log panel ───────────────────────────────────────────
+    if ax_miss is not None:
+        _draw_miss_log(ax_miss, all_misses, t0)
 
     # ── Stats table ──────────────────────────────────────────────────────
     draw_stats_table(ax_stat, all_tasks, stats_map)

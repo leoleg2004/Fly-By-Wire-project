@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
   // Affinità Core (Entrambi i thread sul CORE 1 per competere per il tempo
   // macchina)
   CPU_ZERO(&cpuset1);
-  CPU_SET(1, &cpuset1);
+  CPU_SET(0, &cpuset1);
   pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t), &cpuset1);
   pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t), &cpuset1);
 
@@ -156,9 +156,9 @@ int main(int argc, char *argv[]) {
   t_activity_par activity_1;
   sprintf(activity_1.name, "Activity_1");
   activity_1.function = ActivityIncrement;
-  activity_1.period = 1700;
-  activity_1.parameter = 20;
-  activity_1.deadline = 1600;
+  activity_1.period = 2000;
+  activity_1.parameter = 5;
+  activity_1.deadline = 2000;
 
   // Calcolo priorità RM (Periodo 1800)
   param1.sched_priority = 99 - (activity_1.period / 10);
@@ -174,15 +174,26 @@ int main(int argc, char *argv[]) {
   // -- THREAD 2 -- (Più prioritario)
   // ==========================================
   CPU_ZERO(&cpuset1);
-   CPU_SET(0, &cpuset1);
+   CPU_SET(1, &cpuset1);
    pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t), &cpuset1);
    pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t), &cpuset1);
+
+
+
+
+
+
   t_activity_par activity_2;
   sprintf(activity_2.name, "Activity_2");
   activity_2.function = ActivityIncrement;
-  activity_2.period = 1500;
-  activity_2.parameter = 10;
-  activity_2.deadline = 1300;
+  activity_2.period = 250;
+  activity_2.parameter = 2;
+  activity_2.deadline = 250;
+
+
+
+
+
 
   // Calcolo priorità RM (Periodo 800)
   param2.sched_priority = 99 - (activity_2.period / 10);
