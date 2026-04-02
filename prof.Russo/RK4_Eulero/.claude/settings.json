@@ -1,8 +1,0 @@
-{
-  "hooks": {
-    "postEdit": {
-      "command": "python3 -c \"import py_compile, sys; py_compile.compile(sys.argv[1], doraise=True)\" $CLAUDE_FILE_PATH",
-      "description": "Syntax-check Python files after editing"
-    }
-  }
-}
