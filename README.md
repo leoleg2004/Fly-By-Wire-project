@@ -1,117 +1,82 @@
-# ✈️ Real-Time Flight Telemetry System: RM & EDF Scheduling with Fast DDS and Graphical Simulation
+✈️ Real-Time Flight Telemetry System: RM & EDF Scheduling with Fast DDS
+Questo progetto analizza i paradigmi di computazione Hard Real-Time in ambiente Linux (ottimizzato con patch PREEMPT_RT), mettendo a confronto le prestazioni delle politiche di scheduling Rate Monotonic (RM) ed Earliest Deadline First (EDF).
 
-Il presente progetto esplora le prestazioni dei sistemi **Hard Real-Time** in ambiente Linux (su kernel con patch `PREEMPT_RT`), confrontando le logiche di scheduling **Rate Monotonic (RM)** ed **Earliest Deadline First (EDF)**. 
+L'architettura modella un ecosistema avionico distribuito dove il determinismo temporale e l'affidabilità della comunicazione IPC (Inter-Process Communication) sono requisiti critici. Il sistema è orchestrato tramite il middleware eProsima Fast DDS, che garantisce lo scambio di dati telemetrici ad alte prestazioni tra nodi computazionali isolati.
 
-L'architettura del software modella un sistema avionico Fly-By-Wire: un modulo sensoriale di telemetria (Publisher) aggiorna l'altitudine del velivolo, mentre un nodo di controllo (Subscriber) analizza la serie temporale dei dati per comandare manovre correttive (PULL UP, PULL DOWN) o mantenere l'assetto (STABLE). Il transito delle informazioni avviene tramite il middleware di grado industriale **eProsima Fast DDS**, consentendo un'analisi meticolosa dell'overhead di comunicazione Inter-Process (IPC) in scenari ad alta criticità temporale. 
+⚙️ Fondamenti di Schedulazione e Protocolli POSIX
+Per garantire la prevedibilità del sistema (determinismo), il software interagisce con le interfacce a basso livello del kernel Linux e lo standard POSIX.1b.
 
-A corredo del motore computazionale logico, il progetto integra un **Simulatore Grafico basato su Raylib**, che fornisce una validazione visiva della telemetria senza violare l'isolamento e i vincoli temporali rigidi dei task di controllo.
+1. Isolamento Computazionale (CPU Affinity)
 
-Architettura Publish/Subscribe in Fast DDS
-<img width="1024" height="559" alt="immagine" src="https://github.com/user-attachments/assets/fdd56291-ca06-49c0-9b32-92fccde148ed" />
+Per minimizzare l'interferenza causata dallo scheduler generico (OS Noise) e massimizzare l'efficienza delle cache, il sistema implementa il partizionamento dei core. Utilizzando le macro CPU_SET e la funzione pthread_attr_setaffinity_np(), ogni thread critico viene vincolato a una CPU fisica specifica, riducendo drasticamente i cache miss e i context switch involontari.
 
----
+2. Rate Monotonic Scheduling (RM)
 
-## ⚙️ Fondamenti di Schedulazione e API POSIX
+La politica RM è implementata come schema a priorità fissa preventiva (fixed-priority preemptive).
 
-Per garantire un determinismo temporale assoluto, il progetto fa un uso estensivo delle API di sistema POSIX e delle chiamate di sistema (syscall) a basso livello del kernel Linux.
+Meccanismo: Viene utilizzata la classe di scheduling SCHED_FIFO tramite la struttura sched_param.
 
-* **Gestione dei Thread e Isolamento (CPU Affinity):**
-  L'ambiente di esecuzione è gestito tramite la libreria `<pthread.h>`. Al fine di mitigare l'OS Noise e il costo del context switch, il sistema implementa l'allocazione statica dei thread su core fisici isolati (es. Core 0 e Core 2). Tale partizionamento è garantito dalle macro `CPU_SET` e dalla funzione `pthread_attr_setaffinity_np()`.
-* **Implementazione Rate Monotonic (RM):**
-  Il protocollo RM è realizzato sfruttando l'intestazione `<sched.h>` e applicando la policy preemptive `SCHED_FIFO`. Le priorità statiche vengono assegnate a runtime in modo inversamente proporzionale al periodo del task, avvalendosi della struttura `sched_param` e della funzione `pthread_attr_setschedparam()`.
-* **Implementazione Earliest Deadline First (EDF):**
-  Poiché lo standard POSIX di base non espone nativamente un'interfaccia per lo scheduling su base deadline, il software interagisce direttamente con il kernel Linux tramite `<sys/syscall.h>`. Utilizzando la chiamata `syscall(__NR_sched_setattr)`, il progetto applica la policy `SCHED_DEADLINE`, configurando dinamicamente la banda di calcolo attraverso i parametri `sched_runtime`, `sched_deadline` e `sched_period`.
-* **Controllo Deterministico del Tempo:**
-  La periodicità rigorosa dei task è governata dalla libreria `<time.h>`. L'attivazione dei thread sfrutta la funzione `clock_nanosleep()` agganciata al clock hardware `CLOCK_MONOTONIC` in modalità assoluta (`TIMER_ABSTIME`). Questo approccio matematico previene il fenomeno di *drifting* (deriva temporale) causato dall'accumulo di ritardi iterativi.
-* **Prevenzione del Page-Faulting (Memory Locking):**
-  L'utilizzo di `<sys/mman.h>` e del comando `mlockall(MCL_CURRENT | MCL_FUTURE)` vincola l'intero spazio di indirizzamento del processo all'interno della memoria RAM fisica, eludendo i ritardi catastrofici intrinsechi nelle operazioni di swapping del sistema operativo.
+Assegnazione: Le priorità vengono calcolate secondo il teorema di Liu e Layland, assegnando priorità superiori ai task con periodi più brevi.
 
----
+API: pthread_attr_setschedparam() e pthread_attr_setschedpolicy().
 
-## 🛠️ Architettura del Sistema e Separazione delle Criticità
+3. Earliest Deadline First (EDF)
 
-Il sistema è compartimentato in tre moduli asincroni principali. I task avionici operano per una durata pre-calcolata (es. 20 secondi), sincronizzando matematicamente la propria terminazione per evitare inconsistenze dei dati residui (data starvation).
+Per scenari a priorità dinamica, il sistema sfrutta SCHED_DEADLINE, una politica basata sull'algoritmo Constant Bandwidth Server (CBS).
 
-1. **Il Sensore di Volo (Publisher / LOW_RECOVERY):**
-   * **Vincolo:** Hard Real-Time.
-   * **Ruolo:** Modella la cinematica dell'aereo, calcolando variazioni di altitudine tra 1.000m e 15.000m.
-   * **Azione:** Pubblica il dato aggiornato sul Topic DDS `TelemetryTopic` e inietta un carico computazionale deterministico (`burn_cpu`) per simulare il tempo di acquisizione hardware.
+Meccanismo: Poiché non è esposto direttamente da pthread, si interagisce con il kernel tramite la syscall __NR_sched_setattr.
 
-2. **Il Sistema di Controllo (Subscriber / HIGH_RECOVERY):**
-   * **Vincolo:** Hard Real-Time.
-   * **Ruolo:** Esegue il polling deterministico dei dati telemetrici.
-   * **Azioni Logiche:** * Altitudine < 2500m ➔ Comando `[PULL UP ATTIVO]` (Carico CPU massivo per simulare la recovery)
-     * Altitudine > 13000m ➔ Comando `[PULL DW ATTIVO]` (Carico CPU massivo per simulare la recovery)
-     * Volo Standard ➔ Comando `[CLIMB]` o `[STABLE]` (Carico CPU nominale)
+Parametri: Il task viene definito dalla terna (Runtime,Deadline,Period), permettendo al kernel di garantire una frazione di CPU dedicata ed eseguire sempre il task con la scadenza più prossima.
 
-3. **Il Simulatore Visivo (MonitorApp / FlightSim):**
-   * **Vincolo:** Soft Real-Time (Best-Effort).
-   * **Ruolo:** Sviluppato in **Raylib**, opera come un nodo DDS Listener passivo. Intercetta i campioni sul `TelemetryTopic` e aggiorna un *Primary Flight Display* (PFD). L'architettura software garantisce che le fluttuazioni del framerate (es. colli di bottiglia della GPU) non generino *backpressure* o latenza sui nodi di controllo critici.
+4. Gestione Temporale e Memory Locking
 
-Primary Flight Display Simulato in Raylib
-<img width="1024" height="559" alt="immagine" src="https://github.com/user-attachments/assets/087f69e2-57ec-4894-b5d8-f08cf77b3a09" />
+Precisione al Nanosecondo: Per evitare la deriva temporale (drifting), la periodicità è garantita da clock_nanosleep() con il clock CLOCK_MONOTONIC e flag TIMER_ABSTIME. Ciò assicura che il risveglio avvenga su un istante assoluto rispetto all'epoca di avvio.
 
----
+Resilienza della Memoria: Il comando mlockall(MCL_CURRENT | MCL_FUTURE) disabilita il paging della memoria virtuale su disco (swapping). Questo previene latenze non deterministiche causate da page faults durante l'accesso a variabili critiche.
 
-## 🛩️ Dinamica di Volo e Controllo Longitudinale (F-16)
+🏗️ Architettura del Sistema Distribuiti (DDS)
+Il sistema è suddiviso in moduli funzionali che comunicano attraverso il protocollo Data Distribution Service (DDS), seguendo lo standard DCPS (Data Centric Publish-Subscribe).
 
-Parallelamente all'infrastruttura informatica, il progetto integra la modellazione matematica e la sintesi delle leggi di controllo di un velivolo F-16, sviluppate in ambiente MATLAB per la futura esecuzione nei nodi di controllo.
+1. Telemetry Provider (Publisher - Task Periodico)
 
-### 1. Estrazione del Modello e Analisi di Stabilità
-A partire da un modello non lineare a 6 gradi di libertà (6-DOF), è stata isolata la dinamica longitudinale del velivolo. Il partizionamento delle matrici in spazio di stato ha permesso di estrarre le quattro variabili di stato fondamentali ($\theta$, $q$, $U$, $W$) e i comandi attivi (Manetta, Equilibratore, Flap al bordo d'attacco), trattando le raffiche di vento come disturbi esogeni. L'analisi agli autovalori sulla realizzazione minima del sistema ha confermato l'intrinseca instabilità aperiodica del caccia (polo a parte reale positiva), rendendo imperativo l'uso di un sistema *Fly-By-Wire* in retroazione.
+Criticità: Hard Real-Time.
 
-### 2. Analisi Multivariabile (RGA) e Disaccoppiamento MIMO
-L'analisi della matrice RGA (*Relative Gain Array*) sull'impianto ad anello aperto ha rivelato un profondo accoppiamento cinematico e aerodinamico (es. l'equilibratore degrada drasticamente la velocità $V_t$). Essendo il sistema sottoattuato (5 ingressi fisici per 6 uscite monitorate), si è resa necessaria la sintesi di un pre-compensatore statico in avanti ($W$). 
-Sfruttando la **pseudo-inversa di Moore-Penrose**, è stata calcolata la matrice ottima ai minimi quadrati:
+Funzione: Modella l'acquisizione dati dai sensori di bordo. Genera campioni telemetrici (altitudine, assetto) e li pubblica sul TelemetryTopic.
 
-$$W = K_{tot}^\dagger$$
+Simulazione Carico: Include una funzione di CPU burning deterministica per simulare il tempo di computazione necessario alla lettura fisica dei sensori.
 
-L'applicazione di questa rete di disaccoppiamento ha permesso di convertire gli attuatori fisici in **Comandi Virtuali** indipendenti. L'RGA post-disaccoppiamento certifica una diagonalizzazione perfetta ($1.000$ sulla diagonale principale) per i canali di navigazione primari (Velocità, Incidenza, Beccheggio).
+2. Control & Analysis Node (Subscriber - Task Critico)
 
-### 3. Sintesi del Flight Control System
-L'avvenuto isolamento dei canali ha frammentato il sistema multivariabile in loop SISO (*Single-Input Single-Output*) indipendenti. Ciò costituisce la base matematica per la sintesi decentralizzata dei controllori PID, demandando il controllo della velocità a un *Auto-Throttle* e la stabilizzazione dell'assetto a un *Pitch Stability Augmentation System (SAS)*.
+Criticità: Hard Real-Time.
 
----
+Funzione: Riceve i dati in tempo reale e analizza la serie temporale. Monitora le soglie di sicurezza avionica e logga lo stato del sistema.
 
-## 🎛️ Strategie di Controllo: Dal PID al Model Predictive Control (MPC)
+Determinismo IPC: L'overhead introdotto dalla serializzazione dei dati (Fast CDR) e dal trasporto DDS viene misurato per valutare l'impatto sulla latenza end-to-end del loop di controllo.
 
-A valle dell'analisi dinamica e del disaccoppiamento, il progetto esplora due paradigmi di controllo avanzati per la stabilizzazione e la navigazione autonoma del velivolo, confrontando un approccio classico decentralizzato con un approccio ottimo multivariabile.
+3. Flight Visualizer (DDS Listener - Soft Real-Time)
 
-### 1. Controllo Classico Decentralizzato (PID)
-Sfruttando la matrice di disaccoppiamento in avanti $W$ precedentemente calcolata, l'impianto MIMO viene matematicamente ridotto a un set di canali SISO paralleli. Questo permette l'implementazione di classici regolatori **PID (Proporzionale-Integrale-Derivativo)**:
-* **Auto-Throttle (Controllo $V_t$):** Un controllore PI/PID viene sintonizzato per inseguire i riferimenti di velocità. L'azione integrale garantisce l'annullamento dell'errore a regime permanente, mentre il guadagno proporzionale definisce la prontezza del transitorio, tenendo conto dell'inerzia termica e meccanica della turbina.
-* **Pitch SAS (Controllo Assetto e Beccheggio):** Un PID sul canale del rateo di beccheggio ($q$) funge da *Stability Augmentation System*. Il suo scopo primario è stabilizzare il polo aperiodico divergente dell'F-16 e fornire alla dinamica di beccheggio le qualità di volo desiderate (smorzamento e frequenza naturale del Corto Periodo).
-I PID operano in logica *reattiva*: correggono l'errore basandosi esclusivamente sull'istante presente e sul passato, rendendo necessarie logiche aggiuntive (come l'*Anti-Windup*) per gestire eventuali saturazioni fisiche degli attuatori.
+Criticità: Soft Real-Time / Best-Effort.
 
-### 2. Controllo Ottimo Predittivo (MPC - Model Predictive Control)
-Per superare i limiti strutturali dell'architettura decentralizzata, viene introdotto l'uso del **Model Predictive Control (MPC)**. L'MPC è intrinsecamente multivariabile: non necessita della matrice di pre-disaccoppiamento $W$, poiché risolve e gestisce i forti accoppiamenti aerodinamici (cross-coupling) direttamente nel suo nucleo algoritmico.
-* **Orizzonte Predittivo:** Sfruttando la rappresentazione in spazio di stato ($A, B, C, D$), l'MPC simula l'evoluzione futura delle dinamiche dell'aereo su un orizzonte temporale definito (es. i successivi 2-5 secondi), agendo in modo *proattivo* anziché puramente reattivo.
-* **Gestione Nativa dei Vincoli (Constraints):** A differenza del PID, l'MPC incorpora matematicamente i limiti fisici del velivolo e degli attuatori. Durante il calcolo, impone rigorosamente che la deflessione dell'equilibratore non superi i suoi limiti fisici (es. $\pm 25^\circ$) e che i ratei di comando rispettino la banda passante dei servomeccanismi, scongiurando stalli o cedimenti strutturali.
-* **Ottimizzazione Convessa:** A ogni istante di campionamento ($T_s$), il controllore risolve un problema di ottimizzazione (Quadratic Programming) minimizzando una funzione di costo $J$. Questa funzione bilancia sapientemente due obiettivi in contrasto: minimizzare l'errore di inseguimento della traiettoria desiderata e minimizzare lo sforzo degli attuatori (risparmiando energia propulsiva e usura meccanica). Solo il primo vettore della sequenza di comandi ottimi calcolata viene inviato all'impianto (*Receding Horizon*).
+Tecnologia: Sviluppato con Raylib.
 
----
+Isolamento: Questo modulo opera come un osservatore passivo. Grazie alle proprietà di QoS (Quality of Service) di DDS, il visualizzatore grafico non può rallentare o bloccare i nodi Hard Real-Time, garantendo l'integrità dei task di controllo anche in caso di sovraccarico della GPU.
 
-## 📊 Metriche Analizzate
+📊 Analisi delle Prestazioni e Metriche RT
+L'efficacia del sistema viene validata attraverso la raccolta di metriche ingegneristiche ad ogni ciclo di esecuzione:
 
-Durante l'esecuzione, il core Hard Real-Time stampa in standard output i log di volo per ogni ciclo di attivazione, tracciando tre parametri ingegneristici fondamentali:
+Response Time (Tempo di Risposta): Misura l'intervallo tra l'istante di rilascio del task e il suo completamento. Fornisce indicazioni sulla capacità del sistema di soddisfare il carico computazionale.
 
-* **Tempo di Risposta (Response Time / CPU time):** Il delta temporale effettivo richiesto dal thread per completare l'intera computazione (dal risveglio al completamento della logica applicativa).
-* **Jitter (Latenza di Attivazione):** La discrepanza temporale assoluta tra il momento teorico di schedulazione del task e la reale acquisizione della CPU, fortemente influenzata dall'overhead del middleware DDS e dalle preemption del kernel.
-* **Deadline Miss:** Conteggio cumulativo delle violazioni temporali assolute (istanti in cui il response time eccede la deadline di progettazione).
+Release Jitter (Variazione di Rilascio): Analizza la stabilità temporale del risveglio del thread. Un jitter elevato indica interferenze da parte degli interrupt di sistema o configurazioni errate della patch PREEMPT_RT.
 
----
+Deadline Miss Rate: Monitora la frequenza con cui i task superano la propria scadenza temporale. In configurazione Hard Real-Time, questa metrica deve tendere a zero.
 
-## 💻 Configurazione, Compilazione ed Esecuzione
+🛠️ Toolchain e Requisiti Tecnici
+Requisiti
 
-Il progetto si avvale di **CMake** per la generazione automatizzata dei Makefile e il linking delle librerie dipendenti.
+Kernel: Linux con patch RT-Preempt.
 
-### 1. Requisiti di Sistema
-* Sistema Operativo: Linux Ubuntu (kernel raccomandato: `PREEMPT_RT`).
-* Toolchain: `g++` (C++17), `CMake`.
-* Dipendenze: `Fast DDS`, `Fast CDR`, `Raylib`, `pthread`.
+Middleware: eProsima Fast DDS (v2.x o superiore).
 
-### 2. Build del Progetto
-```bash
-mkdir build && cd build
-cmake ..
-make -j4
+Grafica: Raylib (per il modulo di monitoraggio).
+
+Linguaggio: C++17.
