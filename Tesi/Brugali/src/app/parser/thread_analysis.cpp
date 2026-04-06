@@ -62,7 +62,8 @@ int main(int argc, char *argv[]) {
   if (src_file.is_open()) {
     std::string src_line;
 
-    // Regex aggiornate per accettare sia variabili semplici che array (es. activities[0])
+    // Regex aggiornate per accettare sia variabili semplici che array (es.
+    // activities[0])
     std::regex name_re(
         R"DELIM(sprintf\s*\(\s*([a-zA-Z0-9_\[\]]+)\.name\s*,\s*"([^"]+)"\s*\))DELIM");
     std::regex period_re(
@@ -107,25 +108,45 @@ int main(int argc, char *argv[]) {
       R"DELIM(.*?:(\d+)\s+\[\d+\]\s+([A-Z]).*?==>\s+.*?:(\d+)\s+\[)DELIM");
 
   std::string line;
-  
+
   // Troviamo i PID delle Activity e dei thread del kernel richiesti
   while (std::getline(file, line)) {
     std::smatch m;
     if (std::regex_search(line, m, line_re)) {
       std::string comm = m[1];
       int pid = std::stoi(m[2]);
-      
-      // Filtro espanso per includere i thread del kernel
-      if (comm.find("Activity_") != std::string::npos || 
-          comm.find("kworker/1") != std::string::npos || 
+
+      // Filtro dinamico per thread del sistema e custom
+      bool is_tracked = false;
+      std::string full_name = comm;
+
+      if (comm.find("kworker/1") != std::string::npos ||
           comm.find("ksoftirqd/1") != std::string::npos ||
           comm.find("swapper/1") != std::string::npos) {
-          
+        is_tracked = true;
+      } else {
+        // Cerchiamo nei nomi custom (come Activity_X o Ciao). Gestiamo il
+        // limite di 15 chars di Linux
+        for (const auto &kv : expected_periods) {
+          if (kv.first.find(comm) == 0) {
+            is_tracked = true;
+            full_name = kv.first; // ripristina il nome completo originale
+            break;
+          }
+        }
+        // Se non lo trova ma inizia per Activity_ lo forziamo (es. senza
+        // periodo specificato)
+        if (!is_tracked && comm.find("Activity_") == 0) {
+          is_tracked = true;
+        }
+      }
+
+      if (is_tracked) {
         if (tasks.count(pid) == 0) {
-          tasks[pid].name = comm;
+          tasks[pid].name = full_name;
           // Assegnamo il periodo estratto dal C!
-          if (expected_periods.count(comm)) {
-            tasks[pid].expected_period_sec = expected_periods[comm];
+          if (expected_periods.count(full_name)) {
+            tasks[pid].expected_period_sec = expected_periods[full_name];
           }
         }
       }
@@ -314,7 +335,7 @@ int main(int argc, char *argv[]) {
     std::cout << " [Periodo]   Avg  : " << std::setw(10) << avg_period * 1e3
               << " ms  |  Jitter: " << std::setw(7) << jitter * 1e3 << " ms\n";
 
-    // Mostra la riga Miss solo se il periodo è noto (Activity_). 
+    // Mostra la riga Miss solo se il periodo è noto (Activity_).
     // Per i thread del kernel mostrerà N/A.
     if (tdata.expected_period_sec > 0) {
       std::cout << " [Deadline]  Miss : " << std::setw(10) << correct_misses

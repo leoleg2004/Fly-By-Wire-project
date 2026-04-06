@@ -1,0 +1,46 @@
+
+================ RISULTATI MULTI-THREAD ================
+ Filtro CPU: TUTTE LE CPU
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.019 ms  |  Avg:      0.006 ms
+ [Job Totale]WCRT :      0.019 ms  |  Avg:      0.006 ms
+ [Periodo]   Avg  :    167.311 ms  |  Jitter: 179.009 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:         25  |  Avg:    167.304 ms  |  Max: 678.875 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/1:1H (PID: 185)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.035 ms  |  Avg:      0.018 ms
+ [Job Totale]WCRT :   3098.283 ms  |  Avg:   3098.283 ms
+ [Periodo]   Avg  :    258.190 ms  |  Jitter: 250.858 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/1:2 (PID: 12597)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.049 ms  |  Avg:      0.011 ms
+ [Job Totale]WCRT :   3967.783 ms  |  Avg:   3967.783 ms
+ [Periodo]   Avg  :    136.820 ms  |  Jitter: 129.004 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          1  |  Avg:      0.005 ms  |  Max: 0.005 ms
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 16047)
+----------------------------------------------------------
+ [Esecuzione]WCET :    180.210 ms  |  Avg:    148.326 ms
+ [Job Totale]WCRT :    180.210 ms  |  Avg:    173.048 ms
+ [Periodo]   Avg  :    216.785 ms  |  Jitter:  71.287 ms
+ [Deadline]  Miss :          0      |  (Atteso dal .c: 250.000 ms)
+ [Sleep]     Count:         17  |  Avg:     74.590 ms  |  Max: 79.832 ms
+ [Preempt]   Count:          3  |  Avg:      0.006 ms  |  Max: 0.013 ms
+
+==========================================================
+[+] Dati esportati su timeline.csv

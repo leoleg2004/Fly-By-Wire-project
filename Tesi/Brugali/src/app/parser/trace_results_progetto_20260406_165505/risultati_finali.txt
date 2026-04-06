@@ -1,0 +1,266 @@
+
+================ RISULTATI MULTI-THREAD ================
+ Filtro CPU: TUTTE LE CPU
+
+----------------------------------------------------------
+ TASK: ksoftirqd/0 (PID: 14)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.012 ms  |  Avg:      0.007 ms
+ [Job Totale]WCRT :      0.012 ms  |  Avg:      0.007 ms
+ [Periodo]   Avg  :    940.990 ms  |  Jitter: 555.446 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          3  |  Avg:    940.985 ms  |  Max: 1717.536 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.018 ms  |  Avg:      0.009 ms
+ [Job Totale]WCRT :      0.018 ms  |  Avg:      0.009 ms
+ [Periodo]   Avg  :    237.756 ms  |  Jitter: 269.518 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:         17  |  Avg:    237.747 ms  |  Max: 961.959 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: ksoftirqd/2 (PID: 30)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.023 ms  |  Avg:      0.011 ms
+ [Job Totale]WCRT :      0.023 ms  |  Avg:      0.011 ms
+ [Periodo]   Avg  :    697.302 ms  |  Jitter: 337.646 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          3  |  Avg:    697.288 ms  |  Max: 1168.953 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: ksoftirqd/3 (PID: 36)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.032 ms  |  Avg:      0.030 ms
+ [Job Totale]WCRT :      0.032 ms  |  Avg:      0.030 ms
+ [Periodo]   Avg  :   1389.980 ms  |  Jitter:   0.000 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          1  |  Avg:   1389.952 ms  |  Max: 1389.952 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: ksoftirqd/5 (PID: 48)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.003 ms  |  Avg:      0.003 ms
+ [Job Totale]WCRT :      0.003 ms  |  Avg:      0.003 ms
+ [Periodo]   Avg  :      0.000 ms  |  Jitter:   0.000 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: ksoftirqd/6 (PID: 54)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.009 ms  |  Avg:      0.009 ms
+ [Job Totale]WCRT :      0.009 ms  |  Avg:      0.009 ms
+ [Periodo]   Avg  :      0.000 ms  |  Jitter:   0.000 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: ksoftirqd/7 (PID: 60)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.014 ms  |  Avg:      0.010 ms
+ [Job Totale]WCRT :      0.014 ms  |  Avg:      0.010 ms
+ [Periodo]   Avg  :    267.989 ms  |  Jitter: 185.428 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:         14  |  Avg:    267.980 ms  |  Max: 532.992 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/0:1H (PID: 91)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.021 ms  |  Avg:      0.011 ms
+ [Job Totale]WCRT :   3166.645 ms  |  Avg:   3166.645 ms
+ [Periodo]   Avg  :   1055.546 ms  |  Jitter: 583.148 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/2:1H (PID: 102)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.030 ms  |  Avg:      0.024 ms
+ [Job Totale]WCRT :   2482.655 ms  |  Avg:   2482.655 ms
+ [Periodo]   Avg  :    354.661 ms  |  Jitter: 485.348 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/5:1H (PID: 168)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.026 ms  |  Avg:      0.025 ms
+ [Job Totale]WCRT :    599.681 ms  |  Avg:    599.681 ms
+ [Periodo]   Avg  :    599.655 ms  |  Jitter:   0.000 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/4:1H (PID: 184)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.038 ms  |  Avg:      0.027 ms
+ [Job Totale]WCRT :    499.797 ms  |  Avg:    499.797 ms
+ [Periodo]   Avg  :    249.889 ms  |  Jitter: 233.221 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/7:1H (PID: 188)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.022 ms  |  Avg:      0.021 ms
+ [Job Totale]WCRT :    999.691 ms  |  Avg:    999.691 ms
+ [Periodo]   Avg  :    499.835 ms  |  Jitter: 283.248 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/u32:2 (PID: 11815)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.201 ms  |  Avg:      0.028 ms
+ [Job Totale]WCRT :   2391.415 ms  |  Avg:   1771.730 ms
+ [Periodo]   Avg  :     71.489 ms  |  Jitter: 170.198 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          1  |  Avg:    102.470 ms  |  Max: 102.470 ms
+ [Preempt]   Count:          1  |  Avg:      0.007 ms  |  Max: 0.007 ms
+
+----------------------------------------------------------
+ TASK: kworker/5:0 (PID: 11880)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.093 ms  |  Avg:      0.027 ms
+ [Job Totale]WCRT :   3966.940 ms  |  Avg:   3966.940 ms
+ [Periodo]   Avg  :    264.459 ms  |  Jitter: 283.179 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/0:1 (PID: 12192)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.027 ms  |  Avg:      0.013 ms
+ [Job Totale]WCRT :   3166.668 ms  |  Avg:   3166.668 ms
+ [Periodo]   Avg  :    226.189 ms  |  Jitter: 197.328 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          1  |  Avg:      0.060 ms  |  Max: 0.060 ms
+
+----------------------------------------------------------
+ TASK: kworker/2:0 (PID: 12365)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.028 ms  |  Avg:      0.011 ms
+ [Job Totale]WCRT :   3455.900 ms  |  Avg:   3455.900 ms
+ [Periodo]   Avg  :    287.989 ms  |  Jitter: 273.250 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/3:1 (PID: 12446)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.050 ms  |  Avg:      0.016 ms
+ [Job Totale]WCRT :   3493.911 ms  |  Avg:   3493.911 ms
+ [Periodo]   Avg  :    205.523 ms  |  Jitter: 148.806 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/1:2 (PID: 12597)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.166 ms  |  Avg:      0.025 ms
+ [Job Totale]WCRT :   4175.949 ms  |  Avg:   4175.949 ms
+ [Periodo]   Avg  :    278.396 ms  |  Jitter: 252.037 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/u33:0 (PID: 12599)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.836 ms  |  Avg:      0.033 ms
+ [Job Totale]WCRT :    508.974 ms  |  Avg:    111.746 ms
+ [Periodo]   Avg  :     41.704 ms  |  Jitter:  85.693 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:         33  |  Avg:      4.924 ms  |  Max: 16.201 ms
+ [Preempt]   Count:          1  |  Avg:      0.006 ms  |  Max: 0.006 ms
+
+----------------------------------------------------------
+ TASK: kworker/7:0 (PID: 12686)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.038 ms  |  Avg:      0.010 ms
+ [Job Totale]WCRT :   3909.163 ms  |  Avg:   3909.163 ms
+ [Periodo]   Avg  :     55.845 ms  |  Jitter: 107.242 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          2  |  Avg:      0.011 ms  |  Max: 0.015 ms
+
+----------------------------------------------------------
+ TASK: kworker/u32:6 (PID: 13605)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.457 ms  |  Avg:      0.036 ms
+ [Job Totale]WCRT :   2964.780 ms  |  Avg:   2057.475 ms
+ [Periodo]   Avg  :     51.449 ms  |  Jitter:  57.264 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          1  |  Avg:    103.897 ms  |  Max: 103.897 ms
+ [Preempt]   Count:          2  |  Avg:      0.049 ms  |  Max: 0.093 ms
+
+----------------------------------------------------------
+ TASK: kworker/4:2 (PID: 15461)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.037 ms  |  Avg:      0.009 ms
+ [Job Totale]WCRT :   4229.600 ms  |  Avg:   4229.600 ms
+ [Periodo]   Avg  :    264.350 ms  |  Jitter: 221.781 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/6:0 (PID: 15557)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.044 ms  |  Avg:      0.010 ms
+ [Job Totale]WCRT :   4036.969 ms  |  Avg:   4036.969 ms
+ [Periodo]   Avg  :    448.552 ms  |  Jitter: 386.376 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/u32:3 (PID: 15783)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.222 ms  |  Avg:      0.031 ms
+ [Job Totale]WCRT :   1084.714 ms  |  Avg:    798.367 ms
+ [Periodo]   Avg  :     61.418 ms  |  Jitter: 103.987 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          1  |  Avg:      0.134 ms  |  Max: 0.134 ms
+ [Preempt]   Count:          2  |  Avg:      0.008 ms  |  Max: 0.010 ms
+
+----------------------------------------------------------
+ TASK: Ciao (PID: 16273)
+----------------------------------------------------------
+ [Esecuzione]WCET :    102.140 ms  |  Avg:     15.938 ms
+ [Job Totale]WCRT :    494.221 ms  |  Avg:    296.593 ms
+ [Periodo]   Avg  :    111.343 ms  |  Jitter: 351.365 ms
+ [Deadline]  Miss :          0      |  (Atteso dal .c: 2000.000 ms)
+ [Sleep]     Count:          3  |  Avg:   1014.944 ms  |  Max: 1536.076 ms
+ [Preempt]   Count:         35  |  Avg:     16.137 ms  |  Max: 280.775 ms
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 16274)
+----------------------------------------------------------
+ [Esecuzione]WCET :    284.527 ms  |  Avg:    128.382 ms
+ [Job Totale]WCRT :    284.527 ms  |  Avg:    135.516 ms
+ [Periodo]   Avg  :    235.044 ms  |  Jitter:  63.062 ms
+ [Deadline]  Miss :          8      |  (Atteso dal .c: 250.000 ms)
+ [Sleep]     Count:         17  |  Avg:    105.385 ms  |  Max: 248.771 ms
+ [Preempt]   Count:          1  |  Avg:      0.036 ms  |  Max: 0.036 ms
+
+==========================================================
+[+] Dati esportati su timeline.csv

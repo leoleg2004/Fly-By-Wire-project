@@ -82,10 +82,10 @@ def _detect_app_variant(csv_path: str) -> str | None:
     """
     Extract app variant from trace directory name.
     e.g. 'trace_results_app10f_20260330_183511' → 'app10f'
-         'trace_results_app10_20260327_155144'  → 'app10'
+         'trace_results_progetto_20260327_155144'  → 'progetto'
     """
     dirname = Path(csv_path).resolve().parent.name
-    m = re.search(r'(app\d+[a-zA-Z]*)', dirname)
+    m = re.search(r'trace_results_(.*?)_\d{8}_\d{6}', dirname)
     return m.group(1) if m else None
 
 
@@ -107,11 +107,11 @@ def _parse_one_c_file(fpath: str) -> dict:
     except (OSError, UnicodeDecodeError):
         return result
 
-    # Match both  sprintf(VAR.name, "Activity_N")  and
-    #             sprintf(ARR[IDX].name, "Activity_N")
+    # Match both  sprintf(VAR.name, "QualsiasiNome")  and
+    #             sprintf(ARR[IDX].name, "QualsiasiNome")
     # Capture the full accessor (e.g. "activity_1" or "activities[0]")
     p_name = re.compile(
-        r'sprintf\s*\(\s*([\w\[\]]+)\.name\s*,\s*"(Activity_\d+)"\s*\)')
+        r'sprintf\s*\(\s*([\w\[\]]+)\.name\s*,\s*"([^"]+)"\s*\)')
     # Match both  VAR.period = N  and  ARR[IDX].period = N
     p_per  = re.compile(r'([\w\[\]]+)\.period\s*=\s*(\d+)')
     p_dl   = re.compile(r'([\w\[\]]+)\.deadline\s*=\s*(\d+)')

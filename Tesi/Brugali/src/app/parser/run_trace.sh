@@ -34,9 +34,7 @@ SRC_FILE_ABS="$PWD/$SRC_FILE"
 # AGGIORNATO CON IL NOME CORRETTO DEL TUO FILE PYTHON
 MONITOR_SCRIPT_ABS="$PWD/monitorRealTime.py"
 
-echo ""
-read -p "Vuoi filtrare per una CPU specifica? (Inserisci 0, 1... [Invio] per tutte): " CPU_FILTER
-CPU_FILTER=${CPU_FILTER:-ALL}
+CPU_FILTER="ALL"
 
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 OUTPUT_DIR="trace_results_${APP_NAME}_${TIMESTAMP}"
@@ -44,7 +42,6 @@ OUTPUT_DIR="trace_results_${APP_NAME}_${TIMESTAMP}"
 echo "========================================================="
 echo " Inizio tracciamento per: $APP_NAME"
 echo " Sorgente C trovato: $SRC_FILE"
-echo " Filtro CPU: $CPU_FILTER"
 echo " Cartella di output: $OUTPUT_DIR"
 echo "========================================================="
 
@@ -79,8 +76,8 @@ if [ -n "$PARSER_EXE" ]; then
     echo ""
     cd "$OUTPUT_DIR" || exit
     
-    # Passiamo al C++ il log testuale, il file .c originale e la CPU!
-    ./thread_analysis "trace_output.txt" "$SRC_FILE_ABS" "$CPU_FILTER" | tee "risultati_finali.txt"
+    # Passiamo al C++ il log testuale, il file originale e la CPU. Salviamo il testo in background!
+    ./thread_analysis "trace_output.txt" "$SRC_FILE_ABS" "$CPU_FILTER" > "risultati_finali.txt"
     
     # =========================================================================
     # NUOVA FASE: AVVIO DEL MONITOR PYTHON
