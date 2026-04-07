@@ -8,7 +8,7 @@ else
 fi
 
 if [[ ! "$EXECUTABLE" == ./* ]] && [[ ! "$EXECUTABLE" == /* ]]; then
-    EXECUTABLE="./$EXECUTABLE"
+    EXECUTABLE="eseguibili/$EXECUTABLE"
 fi
 
 if [ ! -f "$EXECUTABLE" ]; then
@@ -19,9 +19,9 @@ fi
 APP_NAME=$(basename "$EXECUTABLE")
 
 # Troviamo il file sorgente .c da dare in pasto all'analizzatore!
-SRC_FILE="${APP_NAME}.c"
+SRC_FILE="sorgenti/${APP_NAME}.c"
 if [ ! -f "$SRC_FILE" ]; then
-    SRC_FILE="${APP_NAME}_main.c"
+    SRC_FILE="sorgenti/${APP_NAME}_main.c"
 fi
 
 if [ ! -f "$SRC_FILE" ]; then
@@ -37,7 +37,7 @@ MONITOR_SCRIPT_ABS="$PWD/monitorRealTime.py"
 CPU_FILTER="ALL"
 
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-OUTPUT_DIR="trace_results_${APP_NAME}_${TIMESTAMP}"
+OUTPUT_DIR="output/traces/trace_results_${APP_NAME}_${TIMESTAMP}"
 
 echo "========================================================="
 echo " Inizio tracciamento per: $APP_NAME"

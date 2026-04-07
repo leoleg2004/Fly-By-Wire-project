@@ -1,23 +1,24 @@
 #!/usr/bin/env python3
 """
-Real-Time Monitor — Logic Analyzer / Gantt Chart  v9.0
+Real-Time Monitor — Logic Analyzer / Gantt Chart  v10.0
 =======================================================
 Reads timeline.csv  (columns: task, type, start, end, duration_ms)
+which contains state rows (RUN, PREEMPT, SLEEP), marker rows (MARKER_*),
+and pre-computed statistics rows (STAT_*) and miss log rows (MISS_LOG).
+
+The C++ thread_analysis generates the CSV with all analysis already done.
+This script is purely a visualisation frontend.
 
 Layout:  TOP  = timeline (RUN / PREEMPT / SLEEP + period-end lines)
          BOT  = full-width statistics table
 
-C source matching:  the trace directory name (e.g. trace_results_app10f_*)
-                    selects ONLY app10f.c for parameter extraction.
-
 Usage
 -----
-  python monitorRealTime.py  <timeline.csv>  [output.png]  [source_dir]
+  python monitorRealTime.py  [timeline.csv]  [output.png]
 """
 
-import sys, re, os, glob
+import sys, re, os
 from collections import defaultdict
-from pathlib import Path
 
 import numpy  as np
 import pandas as pd
@@ -46,12 +47,21 @@ LANE_H = 1.0
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  1.  CSV LOADING
+#  1.  CSV LOADING  — separates state/marker rows from STAT_ and MISS_LOG
 # ═══════════════════════════════════════════════════════════════════════════════
-def load_csv(path: str) -> pd.DataFrame:
+def load_csv(path: str):
+    """
+    Returns (df, stats_map, all_misses).
+      df         — DataFrame with state+marker rows (same as old timeline.csv)
+      stats_map  — {task: {stat_key: value, ...}}
+      all_misses — list of miss-log dicts
+    """
     rows = []
+    stats_raw = {}   # task -> {key -> val}
+    misses = []
+
     with open(path, "r") as fh:
-        fh.readline()
+        fh.readline()  # skip header
         for line in fh:
             line = line.strip()
             if not line:
@@ -59,124 +69,93 @@ def load_csv(path: str) -> pd.DataFrame:
             parts = line.split(",")
             if len(parts) < 5:
                 continue
-            try:
-                dur   = float(parts[-1])
-                end   = float(parts[-2])
-                start = float(parts[-3])
-            except ValueError:
-                continue
-            prefix = parts[: len(parts) - 3]
-            task   = prefix[0].strip()
-            etype  = ",".join(prefix[1:]).strip()
-            rows.append((task, etype, start, end, dur))
+
+            task  = parts[0].strip()
+            etype = parts[1].strip()
+
+            if etype.startswith("STAT_"):
+                stat_key = etype[5:].lower()   # e.g. "STAT_WCET" -> "wcet"
+                val = float(parts[4])
+                stats_raw.setdefault(task, {})[stat_key] = val
+
+            elif etype == "MISS_LOG":
+                # format: task,MISS_LOG,ps_abs,ps_rel,{dl_ms}|{resp_ms}|{overshoot_ms}|{period_idx}
+                ps_abs = float(parts[2])
+                ps_rel = float(parts[3])
+                fields = parts[4].split("|")
+                if len(fields) >= 4:
+                    misses.append(dict(
+                        task=task,
+                        ps_abs=ps_abs, ps_rel=ps_rel,
+                        deadline_ms=float(fields[0]),
+                        response_ms=float(fields[1]),
+                        overshoot_ms=float(fields[2]),
+                        period_idx=int(fields[3]),
+                    ))
+            else:
+                # Normal row: state or marker
+                try:
+                    dur   = float(parts[-1])
+                    end   = float(parts[-2])
+                    start = float(parts[-3])
+                except ValueError:
+                    continue
+                prefix = parts[: len(parts) - 3]
+                task   = prefix[0].strip()
+                etype  = ",".join(prefix[1:]).strip()
+                rows.append((task, etype, start, end, dur))
+
     df = pd.DataFrame(rows, columns=["task", "type", "start", "end", "duration_ms"])
     df.sort_values("start", kind="mergesort", inplace=True)
     df.reset_index(drop=True, inplace=True)
-    return df
+
+    # Build stats_map with the same keys the old build_stats() produced
+    stats_map = {}
+    for task, raw in stats_raw.items():
+        s = raw
+        period_ms   = s.get("period", 0);    period_ms   = period_ms if period_ms > 0 else None
+        measured_ms = s.get("measured", -1);  measured_ms = measured_ms if measured_ms > 0 else None
+        deadline_ms = s.get("deadline", 0);   deadline_ms = deadline_ms if deadline_ms > 0 else None
+        jitter_ms   = s.get("jitter", -1);    jitter_ms   = jitter_ms if jitter_ms > 0 else None
+        ws          = s.get("wslack", -999999); worst_slack = ws if ws > -99999 else None
+
+        run_tot = s.get("runtot", 0)
+        pre_tot = s.get("pretot", 0)
+        slp_tot = s.get("slptot", 0)
+
+        stats_map[task] = dict(
+            total_state = (run_tot + pre_tot + slp_tot) / 1000.0,  # seconds
+            dur = {
+                "RUN":     run_tot / 1000.0,
+                "PREEMPT": pre_tot / 1000.0,
+                "SLEEP":   slp_tot / 1000.0,
+                "RESOURCE_WAIT": 0.0,
+                "RESOURCE_LOCK": 0.0,
+            },
+            has_gaps    = s.get("hgaps", 0) > 0.5,
+            n_gaps      = int(s.get("ngaps", 0)),
+            max_gap_ms  = s.get("maxgap", 0),
+            n_run       = int(s.get("nrun", 0)),
+            wcet        = s.get("wcet", 0),
+            acet        = s.get("acet", 0),
+            n_preempt   = int(s.get("npre", 0)),
+            preempt_tot = pre_tot,
+            n_sleep     = int(s.get("nslp", 0)),
+            period_ms   = period_ms,
+            measured_ms = measured_ms,
+            deadline_ms = deadline_ms,
+            jitter_ms   = jitter_ms,
+            n_periods   = 0,
+            n_misses    = int(s.get("nmiss", 0)),
+            utilization = s.get("util", 0),
+            worst_slack = worst_slack,
+        )
+
+    return df, stats_map, misses
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  2.  C SOURCE PARSER  — match ONLY the file for this trace variant
-# ═══════════════════════════════════════════════════════════════════════════════
-def _detect_app_variant(csv_path: str) -> str | None:
-    """
-    Extract app variant from trace directory name.
-    e.g. 'trace_results_app10f_20260330_183511' → 'app10f'
-         'trace_results_progetto_20260327_155144'  → 'progetto'
-    """
-    dirname = Path(csv_path).resolve().parent.name
-    m = re.search(r'trace_results_(.*?)_\d{8}_\d{6}', dirname)
-    return m.group(1) if m else None
-
-
-def _parse_one_c_file(fpath: str) -> dict:
-    """
-    Parse a single C/CPP file. Returns {task_name: {period_ms, deadline_ms}}.
-
-    Handles TWO code styles:
-      Style A (named vars):  sprintf(activity_1.name, "Activity_1");
-                              activity_1.period = 1800;
-      Style B (array):       sprintf(activities[0].name, "Activity_1");
-                              activities[0].period = 200;
-    """
-    result = {}
-
-    try:
-        with open(fpath) as f:
-            text = f.read()
-    except (OSError, UnicodeDecodeError):
-        return result
-
-    # Match both  sprintf(VAR.name, "QualsiasiNome")  and
-    #             sprintf(ARR[IDX].name, "QualsiasiNome")
-    # Capture the full accessor (e.g. "activity_1" or "activities[0]")
-    p_name = re.compile(
-        r'sprintf\s*\(\s*([\w\[\]]+)\.name\s*,\s*"([^"]+)"\s*\)')
-    # Match both  VAR.period = N  and  ARR[IDX].period = N
-    p_per  = re.compile(r'([\w\[\]]+)\.period\s*=\s*(\d+)')
-    p_dl   = re.compile(r'([\w\[\]]+)\.deadline\s*=\s*(\d+)')
-
-    # Build accessor → Activity_N mapping
-    accessor_to_name: dict = {}
-    for m in p_name.finditer(text):
-        accessor = m.group(1).strip()      # e.g. "activities[0]" or "activity_1"
-        act_name = m.group(2)              # e.g. "Activity_1"
-        accessor_to_name[accessor] = act_name
-
-    for m in p_per.finditer(text):
-        accessor = m.group(1).strip()
-        name = accessor_to_name.get(accessor)
-        if name:
-            result.setdefault(name, {})["period_ms"] = int(m.group(2))
-
-    for m in p_dl.finditer(text):
-        accessor = m.group(1).strip()
-        name = accessor_to_name.get(accessor)
-        if name:
-            result.setdefault(name, {})["deadline_ms"] = int(m.group(2))
-
-    return result
-
-
-def parse_c_sources(src_dir: str, csv_path: str) -> dict:
-    """
-    Scan C source files, but ONLY the one matching the trace variant.
-    Falls back to scanning all files if no match is found.
-    """
-    variant = _detect_app_variant(csv_path)
-
-    if variant:
-        # Try exact match first: app10f.c, app10f.cpp
-        for ext in (".c", ".cpp"):
-            candidate = os.path.join(src_dir, variant + ext)
-            if os.path.isfile(candidate):
-                result = _parse_one_c_file(candidate)
-                if result:
-                    print(f"[..] C source: {os.path.basename(candidate)}  (matched variant '{variant}')")
-                    return result
-
-        # Try subdirectory: src_dir/app10f/*.c
-        subdir = os.path.join(src_dir, variant)
-        if os.path.isdir(subdir):
-            merged = {}
-            for ext in ("*.c", "*.cpp"):
-                for fpath in glob.glob(os.path.join(subdir, ext)):
-                    merged.update(_parse_one_c_file(fpath))
-            if merged:
-                print(f"[..] C source: {variant}/  (matched variant '{variant}')")
-                return merged
-
-    # Fallback: scan all, but warn
-    print(f"[..] C source: no exact match for variant '{variant}', scanning all files")
-    merged = {}
-    for ext in ("*.c", "*.cpp"):
-        for fpath in glob.glob(os.path.join(src_dir, "**", ext), recursive=True):
-            merged.update(_parse_one_c_file(fpath))
-    return merged
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-#  3.  TASK ORDERING
+#  2.  TASK ORDERING
 # ═══════════════════════════════════════════════════════════════════════════════
 def _nsuf(n: str):
     m = re.search(r"(\d+)$", n)
@@ -190,217 +169,7 @@ def order_tasks(tasks: list) -> list:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  4.  PERIOD ANALYSIS
-# ═══════════════════════════════════════════════════════════════════════════════
-def analyse_periods(task: str, markers: pd.DataFrame,
-                    states: pd.DataFrame, c_params: dict) -> dict:
-    """
-    Analyse periods using PERIOD_START/END markers from the CSV and
-    compute per-instance actual RUN/SLEEP times from the state blocks.
-    """
-    mk = markers[markers["task"] == task]
-    st = states[states["task"] == task].sort_values("start")
-
-    pstart = mk[mk["type"].str.contains("PERIOD_START", na=False)]["start"] \
-               .sort_values().values
-    pend   = mk[mk["type"].str.contains("PERIOD_END", na=False)]["start"] \
-               .sort_values().values
-
-    # app10e-style inline params
-    marker_period_ms = marker_deadline_ms = None
-    fps = mk[mk["type"].str.contains("PERIOD_START", na=False)]
-    if not fps.empty:
-        sample = fps.iloc[0]["type"]
-        mp = re.search(r"Period\s*=\s*(\d+)", sample)
-        md = re.search(r"Deadline\s*=\s*(\d+)", sample)
-        if mp: marker_period_ms   = int(mp.group(1))
-        if md: marker_deadline_ms = int(md.group(1))
-
-    # ── Expected period (from C source or marker text) ────────────────────
-    if task in c_params and "period_ms" in c_params[task]:
-        expected_period_ms = float(c_params[task]["period_ms"])
-    elif marker_period_ms:
-        expected_period_ms = float(marker_period_ms)
-    else:
-        expected_period_ms = None
-
-    # ── Measured period (from PERIOD_START gaps) ──────────────────────────
-    if len(pstart) >= 2:
-        gaps          = np.diff(pstart)
-        measured_ms   = float(np.median(gaps) * 1000.0)
-        jitter_ms     = float(np.std(gaps) * 1000.0)
-    else:
-        measured_ms   = None
-        jitter_ms     = None
-
-    period_ms = expected_period_ms if expected_period_ms else measured_ms
-
-    # ── Deadline ──────────────────────────────────────────────────────────
-    if task in c_params and "deadline_ms" in c_params[task]:
-        deadline_ms = float(c_params[task]["deadline_ms"])
-    elif marker_deadline_ms:
-        deadline_ms = float(marker_deadline_ms)
-    elif period_ms is not None:
-        deadline_ms = period_ms
-    else:
-        deadline_ms = None
-
-    # ── FUNCTION_END markers: used for correct response-time / slack / miss ─
-    # The C code writes FUNCTION_END right after the work finishes.
-    # A deadline miss is: (FUNCTION_END - PERIOD_START) > deadline
-    # This is exactly what the C code checks: exec_end_time > exec_next_release_time
-    # (since exec_next_release_time = period_start + period = period_start + deadline
-    #  when deadline == period, which is always the case here).
-    func_ends = mk[mk["type"].str.contains("FUNCTION_END", na=False)]["start"] \
-                  .sort_values().values
-
-    # ── Helper: sum state durations overlapping [t_lo, t_hi] ─────────────
-    def _state_time_in(stype: str, t_lo: float, t_hi: float) -> float:
-        sub = st[st["type"] == stype]
-        if sub.empty:
-            return 0.0
-        s_start = sub["start"].values
-        s_end   = sub["end"].values
-        lo = np.maximum(s_start, t_lo)
-        hi = np.minimum(s_end, t_hi)
-        overlap = np.maximum(hi - lo, 0.0)
-        return float(overlap.sum())
-
-    # ── Per-period instances (using PERIOD_END markers from CSV) ──────────
-    instances = []
-    for idx in range(len(pstart)):
-        ps = pstart[idx]
-        pe = None
-        # Match this PERIOD_START to the next PERIOD_END
-        if len(pend) > 0:
-            cands = pend[pend > ps]
-            if len(cands) > 0:
-                pe = float(cands[0])
-        # Fallback: next PERIOD_START
-        if pe is None and idx + 1 < len(pstart):
-            pe = float(pstart[idx + 1])
-
-        # Upper bound for searching FUNCTION_END in this period
-        pe_upper = pe if pe is not None else float("inf")
-
-        if pe is not None:
-            # Actual RUN and SLEEP from CSV state blocks within this period
-            run_ms     = _state_time_in("RUN",     ps, pe) * 1000.0
-            sleep_ms   = _state_time_in("SLEEP",   ps, pe) * 1000.0
-            preempt_ms = _state_time_in("PREEMPT", ps, pe) * 1000.0
-            elapsed_ms = (pe - ps) * 1000.0
-        else:
-            run_ms = sleep_ms = preempt_ms = elapsed_ms = None
-
-        # ── Response time and slack ───────────────────────────────────────
-        # Use FUNCTION_END (wall-clock finish of work) for correct semantics.
-        # Periods where skip=True (no FUNCTION_END present) are NOT misses —
-        # the miss was already counted in the previous period.
-        fe_cands = func_ends[(func_ends > ps) & (func_ends < pe_upper)]
-        if len(fe_cands) > 0:
-            func_end_t   = float(fe_cands[-1])          # last FUNCTION_END in period
-            response_ms  = (func_end_t - ps) * 1000.0
-            if deadline_ms is not None:
-                slack_ms = deadline_ms - response_ms
-                miss     = slack_ms < 0
-            else:
-                slack_ms = None
-                miss     = False
-        else:
-            # Skip period (no function executed) — not a miss for THIS period
-            response_ms = None
-            slack_ms    = None
-            miss        = False
-
-        instances.append(dict(start=ps, end=pe,
-                              run_ms=run_ms, sleep_ms=sleep_ms,
-                              preempt_ms=preempt_ms, elapsed_ms=elapsed_ms,
-                              response_ms=response_ms,
-                              slack_ms=slack_ms, miss=miss))
-
-    n_misses = sum(1 for i in instances if i["miss"])
-
-    return dict(period_ms=period_ms, measured_ms=measured_ms,
-                deadline_ms=deadline_ms,
-                jitter_ms=jitter_ms, n_periods=len(pstart),
-                instances=instances, n_misses=n_misses)
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-#  5.  PER-TASK STATISTICS
-# ═══════════════════════════════════════════════════════════════════════════════
-def build_stats(task: str, states: pd.DataFrame, markers: pd.DataFrame,
-                csv_span_s: float, pi: dict) -> dict:
-    sub = states[states["task"] == task].sort_values("start")
-
-    dur = {}
-    for t in STATE_TYPES:
-        dur[t] = float((sub[sub["type"] == t]["end"] -
-                         sub[sub["type"] == t]["start"]).sum())
-    total_state = sum(dur.values())
-    task_span   = float(sub["end"].max() - sub["start"].min()) if not sub.empty else 0.0
-
-    if sub.shape[0] > 1:
-        gs       = sub["start"].values[1:] - sub["end"].values[:-1]
-        has_gaps = bool((gs > 1e-6).any())
-        max_gap  = float(gs.max() * 1000.0)
-        n_gaps   = int((gs > 1e-6).sum())
-    else:
-        has_gaps = False; max_gap = 0.0; n_gaps = 0
-
-    rms = sub[sub["type"] == "RUN"]["duration_ms"].values
-    n_run = len(rms)
-
-    # WCET/ACET must be per-period total RUN time, NOT max of individual RUN
-    # segments. A task preempted 10 times in one period has 10 segments, but
-    # its actual execution cost is their SUM, which is what matters for
-    # schedulability analysis.
-    inst_runs_wcet = [i["run_ms"] for i in pi["instances"]
-                      if i["run_ms"] is not None and i["run_ms"] > 0]
-    if inst_runs_wcet:
-        wcet = float(max(inst_runs_wcet))
-        acet = float(np.mean(inst_runs_wcet))
-        rmin = float(min(inst_runs_wcet))
-    else:
-        wcet = acet = rmin = 0.0
-
-    pms       = sub[sub["type"] == "PREEMPT"]["duration_ms"].values
-    n_preempt = len(pms)
-    pre_tot   = float(pms.sum()) if n_preempt else 0.0
-
-    n_sleep = len(sub[sub["type"] == "SLEEP"])
-
-    # Utilization: use EXPECTED period (from C source)
-    if pi["period_ms"] and pi["n_periods"] >= 2:
-        denom = (pi["n_periods"] - 1) * (pi["period_ms"] / 1000.0)
-        util  = dur["RUN"] / denom if denom > 0 else 0.0
-    else:
-        util = dur["RUN"] / csv_span_s if csv_span_s > 0 else 0.0
-
-    slacks = [i["slack_ms"] for i in pi["instances"] if i["slack_ms"] is not None]
-    worst_slack = min(slacks) if slacks else None
-
-    # Per-period run/sleep aggregates
-    inst_runs   = [i["run_ms"]   for i in pi["instances"] if i["run_ms"]   is not None]
-    inst_sleeps = [i["sleep_ms"] for i in pi["instances"] if i["sleep_ms"] is not None]
-    avg_run_ms  = float(np.mean(inst_runs))  if inst_runs  else None
-    avg_sleep_ms = float(np.mean(inst_sleeps)) if inst_sleeps else None
-
-    return dict(
-        total_state=total_state, task_span=task_span, dur=dur,
-        has_gaps=has_gaps, n_gaps=n_gaps, max_gap_ms=max_gap,
-        n_run=n_run, wcet=wcet, acet=acet, rmin=rmin,
-        n_preempt=n_preempt, preempt_tot=pre_tot, n_sleep=n_sleep,
-        period_ms=pi["period_ms"], measured_ms=pi["measured_ms"],
-        deadline_ms=pi["deadline_ms"],
-        jitter_ms=pi["jitter_ms"], n_periods=pi["n_periods"],
-        n_misses=pi["n_misses"], utilization=util,
-        worst_slack=worst_slack,
-    )
-
-
-# ═══════════════════════════════════════════════════════════════════════════════
-#  6.  STATS TABLE  (dedicated bottom panel)
+#  3.  STATS TABLE  (dedicated bottom panel)  — identical to v9.0
 # ═══════════════════════════════════════════════════════════════════════════════
 def draw_stats_table(ax, all_tasks: list, stats_map: dict):
     n = len(all_tasks)
@@ -428,7 +197,6 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
         ("nSLP",             0.733),
         ("Miss",             0.783),
         ("W.Slack\n(ms)",    0.840),
-        ("Gaps",             0.920),
     ]
 
     # Header
@@ -457,39 +225,37 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
             (0, ry - 0.45), 1, 0.90,
             facecolor=bg, edgecolor=C["BORDER"], linewidth=0.3, zorder=0))
 
-        s  = stats_map[task]
-        ws = s["worst_slack"]
+        s  = stats_map.get(task, {})
+        ws = s.get("worst_slack")
 
-        warn_wcet = s["wcet"] > (s["deadline_ms"] if s["deadline_ms"] else 1e12)
-        warn_util = s["utilization"] > 0.90
-        warn_pre  = s["n_preempt"] > 0
-        warn_miss = s["n_misses"] > 0
+        warn_wcet = s.get("wcet", 0) > (s.get("deadline_ms") if s.get("deadline_ms") else 1e12)
+        warn_util = s.get("utilization", 0) > 0.90
+        warn_pre  = s.get("n_preempt", 0) > 0
+        warn_miss = s.get("n_misses", 0) > 0
         warn_ws   = ws is not None and ws < 0
-        # measured vs expected drift
-        drift = (s["measured_ms"] is not None and s["period_ms"] is not None
+        drift = (s.get("measured_ms") is not None and s.get("period_ms") is not None
                  and abs(s["measured_ms"] - s["period_ms"]) > s["period_ms"] * 0.05)
 
         vals = [
             task,
-            fm(s["period_ms"]),
-            fm(s["measured_ms"]),
-            fm(s["deadline_ms"]),
-            fm(s["wcet"]),
-            fm(s["acet"]),
-            fm(s["jitter_ms"]),
-            fp(s["utilization"]),
-            fi(s["n_run"]),
-            fi(s["n_preempt"]),
-            fi(s["n_sleep"]),
-            fi(s["n_misses"]),
+            fm(s.get("period_ms")),
+            fm(s.get("measured_ms")),
+            fm(s.get("deadline_ms")),
+            fm(s.get("wcet")),
+            fm(s.get("acet")),
+            fm(s.get("jitter_ms")),
+            fp(s.get("utilization")),
+            fi(s.get("n_run", 0)),
+            fi(s.get("n_preempt", 0)),
+            fi(s.get("n_sleep", 0)),
+            fi(s.get("n_misses", 0)),
             fm(ws, 1) if ws is not None else "—",
-            f"{s['n_gaps']}x{s['max_gap_ms']:.0f}" if s["has_gaps"] else "—",
         ]
         clrs = [
             C["HEADER"],
-            C["ACCENT"] if s["period_ms"] else C["DIM"],
-            C["WARN"] if drift else (C["TEXT"] if s["measured_ms"] else C["DIM"]),
-            C["ACCENT"] if s["deadline_ms"] else C["DIM"],
+            C["ACCENT"] if s.get("period_ms") else C["DIM"],
+            C["WARN"] if drift else (C["TEXT"] if s.get("measured_ms") else C["DIM"]),
+            C["ACCENT"] if s.get("deadline_ms") else C["DIM"],
             C["WARN"] if warn_wcet else C["TEXT"],
             C["TEXT"],
             C["DIM"],
@@ -499,12 +265,11 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
             C["TEXT"],
             C["MISS"] if warn_miss else C["OK"],
             C["MISS"] if warn_ws else (C["SLACK"] if ws is not None else C["DIM"]),
-            C["WARN"] if s["has_gaps"] else C["DIM"],
         ]
         bolds = [True, True, drift,
                  True, warn_wcet, False, False,
                  True, False, warn_pre, False,
-                 warn_miss, warn_ws or (ws is not None), s["has_gaps"]]
+                 warn_miss, warn_ws or (ws is not None)]
 
         for (lbl, x0), val, col, bold in zip(cols, vals, clrs, bolds):
             ax.text(x0, ry + 0.05, val,
@@ -514,10 +279,11 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
 
         # Stacked minibar
         bx, by, bw, bh = 0.005, ry - 0.38, 0.99, 0.20
-        denom = s["total_state"] if s["total_state"] > 1e-9 else 1.0
+        total_state = s.get("total_state", 0)
+        denom = total_state if total_state > 1e-9 else 1.0
         cx = bx
         for tt in ("RUN", "PREEMPT", "SLEEP"):
-            frac = s["dur"].get(tt, 0.0) / denom
+            frac = s.get("dur", {}).get(tt, 0.0) / denom
             if frac < 1e-6:
                 continue
             ax.add_patch(mpatches.Rectangle(
@@ -548,7 +314,7 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  7.  DEADLINE MISS LOG PANEL
+#  4.  DEADLINE MISS LOG PANEL  — identical to v9.0
 # ═══════════════════════════════════════════════════════════════════════════════
 def _draw_miss_log(ax, all_misses: list, t0: float) -> None:
     """Draw a compact table of all deadline misses inside a dedicated axes."""
@@ -563,7 +329,6 @@ def _draw_miss_log(ax, all_misses: list, t0: float) -> None:
         sp.set_visible(False)
     ax.set_facecolor("#FFF8F8")
 
-    # Title
     ax.text(0.5, total_h - 0.1,
             f"Deadline Miss Log  —  {n} miss{'es' if n != 1 else ''}",
             fontsize=10, fontweight="bold", color=C["MISS"],
@@ -580,7 +345,6 @@ def _draw_miss_log(ax, all_misses: list, t0: float) -> None:
         ("Overshoot (ms)", 0.790),
     ]
 
-    # Header row
     header_y = total_h - 0.75
     ax.add_patch(mpatches.Rectangle(
         (0, header_y - 0.15), 1, 0.60,
@@ -618,9 +382,10 @@ def _draw_miss_log(ax, all_misses: list, t0: float) -> None:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  8.  MAIN CHART
+#  5.  MAIN CHART  — identical to v9.0  (reads stats_map instead of computing)
 # ═══════════════════════════════════════════════════════════════════════════════
-def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
+def build_chart(df: pd.DataFrame, output: str,
+                stats_map: dict, all_misses: list) -> None:
 
     states  = df[df["type"].isin(STATE_TYPES)].copy()
     markers = df[~df["type"].isin(STATE_TYPES)].copy()
@@ -643,35 +408,14 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
     y_bot  = -LANE_H * 0.6
     y_top  = (n - 1) * LANE_H + LANE_H * 0.6
 
-    period_map = {t: analyse_periods(t, markers, states, c_params) for t in all_tasks}
-    stats_map  = {t: build_stats(t, states, markers, csv_span_s, period_map[t])
-                  for t in all_tasks}
+    # ── Compute miss overlay positions (relative to t0) ──────────────────
+    for m in all_misses:
+        m["ps_rel_adj"] = m["ps_abs"] - t0   # relative to trace start
+        dl_s = m["deadline_ms"] / 1000.0
+        m["dl_x"]  = m["ps_rel_adj"] + dl_s
+        m["fe_x"]  = m["ps_rel_adj"] + m["response_ms"] / 1000.0
 
-    # ── Collect all deadline misses (adjusted for t0 offset) ────────────────
-    all_misses = []   # list of dicts: task, period_idx, period_start(abs), deadline_x, response_ms, overshoot_ms
-    for task in all_tasks:
-        pi = period_map[task]
-        if not pi["deadline_ms"]:
-            continue
-        dl_s = pi["deadline_ms"] / 1000.0
-        for idx, inst in enumerate(pi["instances"]):
-            if not inst["miss"]:
-                continue
-            ps_rel   = inst["start"]                        # already t0-subtracted
-            dl_x     = ps_rel + dl_s                        # deadline moment (relative)
-            resp_ms  = inst["response_ms"]
-            fe_x     = ps_rel + resp_ms / 1000.0            # FUNCTION_END moment (relative)
-            ps_abs   = inst["start"] + t0                   # absolute timestamp
-            all_misses.append(dict(
-                task=task, period_idx=idx + 1,
-                ps_abs=ps_abs, ps_rel=ps_rel,
-                dl_x=dl_x, fe_x=fe_x,
-                deadline_ms=pi["deadline_ms"],
-                response_ms=resp_ms,
-                overshoot_ms=resp_ms - pi["deadline_ms"],
-            ))
-
-    # ── Print deadline miss log to console ───────────────────────────────────
+    # ── Print deadline miss log to console ───────────────────────────────
     if all_misses:
         print("\n══ DEADLINE MISS LOG ═══════════════════════════════════════════════")
         print(f"  {'#':<4} {'Task':<14} {'Period':>6}  {'t_start(abs)':>14}  "
@@ -718,7 +462,7 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
                    facecolor=C["BG_EVEN"] if i % 2 == 0 else C["BG_ODD"],
                    alpha=0.60, zorder=0)
 
-    # ── State blocks (NO boundary ticks) ──────────────────────────────────
+    # ── State blocks ──────────────────────────────────────────────────────
     type_color = {t: C[t] for t in STATE_TYPES}
     for _, row in states.iterrows():
         task = row["task"]
@@ -731,26 +475,7 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
                        facecolors=col, edgecolors="black",
                        linewidth=0.35, zorder=2)
 
-    # ── Period / Deadline lines — IDEAL GRID from C-configured values ────
-    #
-    # From the C code:
-    #   clock_gettime(CLOCK_MONOTONIC, &exec_release_time)  ← thread start
-    #   while(1) {
-    #     PERIOD_START marker
-    #     time_add_millisecs(&exec_release_time, period)    ← next release
-    #     ... compute + sleep ...
-    #     PERIOD_END marker                                 ← actual wake-up
-    #   }
-    #
-    # The ideal grid starts at the task's first state-block start time
-    # (= when the thread actually began running) and repeats every
-    # period_ms, regardless of any preemption drift in the CSV.
-    #
-    # Lines:
-    #   Fine Periodo (black solid)  = t0_task + k * period_ms/1000
-    #   Deadline (red dashed)       = t0_task + (k-1)*period_ms/1000 + deadline_ms/1000
-    #                                 (only drawn if deadline != period)
-    #
+    # ── Period / Deadline lines — IDEAL GRID from stats ──────────────────
     use_ms = x_span < 0.5
     MIN_LBL_GAP = x_span * 0.008
     placed_p: dict = defaultdict(list)
@@ -760,22 +485,20 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
         if task not in task_to_y:
             continue
         yc = task_to_y[task]
-        pi = period_map[task]
-        period_ms   = pi["period_ms"]
-        deadline_ms = pi["deadline_ms"]
+        s = stats_map.get(task, {})
+        period_ms   = s.get("period_ms")
+        deadline_ms = s.get("deadline_ms")
 
         if period_ms is None:
-            continue    # no period info — skip (system threads)
+            continue
 
         period_s = period_ms / 1000.0
 
-        # Task start = first state-block start for this task
         task_states = states[states["task"] == task]
         if task_states.empty:
             continue
         t0_task = float(task_states["start"].min())
 
-        # Generate ideal grid from t0_task to x_max
         k = 1
         while True:
             fp_x = t0_task + k * period_s
@@ -786,7 +509,7 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
             ax.plot([fp_x, fp_x], [yc - LANE_H/2, yc + LANE_H/2],
                     color=C["PEND"], linewidth=1.8,
                     solid_capstyle="butt", zorder=5)
-            # Time label below axis
+
             too_close = any(abs(fp_x - px) < MIN_LBL_GAP
                             for px in placed_p[task])
             if not too_close:
@@ -799,7 +522,6 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
 
             # ── Deadline line (red dashed, only if deadline != period) ─
             if deadline_ms is not None and deadline_ms != period_ms:
-                # Deadline for period k: starts at beginning of period k
                 period_start_x = t0_task + (k - 1) * period_s
                 dl_x = period_start_x + deadline_ms / 1000.0
                 if dl_x <= x_max + x_span * 0.01:
@@ -819,12 +541,6 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
             k += 1
 
     # ── Deadline Miss markers on the Gantt ───────────────────────────────
-    #
-    # For each miss:
-    #  • Red ▼  at the deadline moment  (= period_start + deadline)
-    #  • Red ▬  horizontal bar from deadline to FUNCTION_END showing overshoot
-    #  • "!N" label (N = miss counter per task) above the marker
-    #
     task_miss_counter: dict = defaultdict(int)
     for m in all_misses:
         task = m["task"]
@@ -836,18 +552,15 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
         task_miss_counter[task] += 1
         cnt = task_miss_counter[task]
 
-        # ▼ triangle at the deadline position, top of bar
         ax.plot(dl_x, yc + BAR_H / 2 + 0.05,
                 marker="v", color=C["MISS"], markersize=10,
                 markeredgecolor="white", markeredgewidth=0.6,
                 zorder=9, clip_on=False)
 
-        # Overshoot bar: thick red line from deadline to FUNCTION_END
         if fe_x > dl_x:
             ax.hlines(yc, dl_x, fe_x,
                       colors=C["MISS"], linewidth=4.5,
                       zorder=8, alpha=0.75)
-            # Overshoot label in the middle of the bar
             mid_x = (dl_x + fe_x) / 2.0
             ov_ms = m["overshoot_ms"]
             ax.text(mid_x, yc + BAR_H / 2 + 0.25,
@@ -855,7 +568,6 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
                     fontsize=6.5, color=C["MISS"], fontweight="bold",
                     va="bottom", ha="center", zorder=10, clip_on=False)
 
-        # "!N" label below the ▼
         ax.text(dl_x, yc + BAR_H / 2 + 0.42,
                 f"!{cnt}",
                 fontsize=6, color=C["MISS"], fontweight="bold",
@@ -884,7 +596,7 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
     ax.spines["top"].set_visible(False)
     ax.spines["right"].set_visible(False)
 
-    # ── Legend ──────────────────────────────────────────────────────────────
+    # ── Legend ────────────────────────────────────────────────────────────
     handles = [
         mpatches.Patch(facecolor=C["RUN"],     edgecolor="black", lw=0.4, label="RUN"),
         mpatches.Patch(facecolor=C["PREEMPT"], edgecolor="black", lw=0.4, label="PREEMPT"),
@@ -900,36 +612,31 @@ def build_chart(df: pd.DataFrame, output: str, c_params: dict) -> None:
     for txt in leg.get_texts():
         txt.set_fontweight("bold")
 
-    # ── Deadline Miss Log panel ───────────────────────────────────────────
+    # ── Deadline Miss Log panel ──────────────────────────────────────────
     if ax_miss is not None:
         _draw_miss_log(ax_miss, all_misses, t0)
 
     # ── Stats table ──────────────────────────────────────────────────────
     draw_stats_table(ax_stat, all_tasks, stats_map)
 
-    # ── Save ─────────────────────────────────────────────────────────────
+    # ── Save & Show ──────────────────────────────────────────────────────
     plt.savefig(output, dpi=150, bbox_inches="tight", facecolor="white")
     print(f"[OK]  Salvato  →  {output}")
     plt.show()
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-#  8.  VALIDATION
+#  6.  VALIDATION
 # ═══════════════════════════════════════════════════════════════════════════════
 def validate(df: pd.DataFrame) -> None:
     STATE = {"RUN", "PREEMPT", "SLEEP"}
     states = df[df["type"].isin(STATE)].sort_values("start")
-    markers = df[~df["type"].isin(STATE)]
 
     print("\n── CSV Validation Report ─────────────────────────────────────────")
     print(f"   Rows:       {len(df)}")
     print(f"   Span:       {(df['end'].max() - df['start'].min()) * 1000:.1f} ms")
     print(f"   Tasks:      {sorted(states['task'].unique())}")
     print(f"   State cnt:  { {t: int((states['type']==t).sum()) for t in STATE} }")
-    mt = sorted(set(re.sub(r'Activity_\d+.*', 'Activity_N',
-                    re.sub(r'_\d+$', '', r))
-                    for r in markers["type"].unique())) if len(markers) > 0 else []
-    print(f"   Markers:    {mt}")
     issues = 0
     for task in sorted(states["task"].unique()):
         sub = states[states["task"] == task].sort_values("start")
@@ -950,18 +657,19 @@ def validate(df: pd.DataFrame) -> None:
 if __name__ == "__main__":
     csv_path = sys.argv[1] if len(sys.argv) > 1 else "timeline.csv"
     out_path = sys.argv[2] if len(sys.argv) > 2 else "timeline_monitor.png"
-    src_dir  = sys.argv[3] if len(sys.argv) > 3 else str(
-        Path(csv_path).resolve().parent.parent)
+
+    if not os.path.exists(csv_path):
+        print(f"[!] Errore: file {csv_path} non trovato.")
+        sys.exit(1)
 
     print(f"[..] CSV:     {csv_path}")
-    print(f"[..] Source:  {src_dir}")
-    df = load_csv(csv_path)
 
-    c_params = parse_c_sources(src_dir, csv_path)
-    if c_params:
-        print(f"[..] C params: {c_params}")
+    df, stats_map, all_misses = load_csv(csv_path)
+
+    if stats_map:
+        print(f"[..] Stats trovate per: {list(stats_map.keys())}")
     else:
-        print("[..] C params: none found")
+        print("[..] Nessuna statistica STAT_* trovata nel CSV.")
 
     validate(df)
-    build_chart(df, out_path, c_params)
+    build_chart(df, out_path, stats_map, all_misses)

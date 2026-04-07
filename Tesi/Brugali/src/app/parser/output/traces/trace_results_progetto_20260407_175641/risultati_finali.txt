@@ -1,0 +1,66 @@
+
+================ RISULTATI MULTI-THREAD ================
+ Filtro CPU: TUTTE LE CPU
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.021 ms  |  Avg:      0.008 ms
+ [Job Totale]WCRT :      0.021 ms  |  Avg:      0.008 ms
+ [Periodo]   Avg  :     37.718 ms  |  Jitter:  65.621 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:         32  |  Avg:     37.711 ms  |  Max: 311.998 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/1:1H (PID: 122)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.019 ms  |  Avg:      0.013 ms
+ [Job Totale]WCRT :   1232.921 ms  |  Avg:   1232.921 ms
+ [Periodo]   Avg  :     82.194 ms  |  Jitter: 125.648 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: kworker/1:4 (PID: 133)
+----------------------------------------------------------
+ [Esecuzione]WCET :      0.191 ms  |  Avg:      0.021 ms
+ [Job Totale]WCRT :   1100.961 ms  |  Avg:   1100.961 ms
+ [Periodo]   Avg  :     78.640 ms  |  Jitter:  75.969 ms
+ [Deadline]  Miss :        N/A      |  (Periodo non trovato nel .c)
+ [Sleep]     Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: Ciao (PID: 8052)
+----------------------------------------------------------
+ [Esecuzione]WCET :    101.256 ms  |  Avg:     21.593 ms
+ [Job Totale]WCRT :    748.793 ms  |  Avg:    249.670 ms
+ [Periodo]   Avg  :    141.699 ms  |  Jitter: 156.251 ms
+ [Deadline]  Miss :          0      |  (Atteso dal .c: 2000.000 ms)
+ [Sleep]     Count:          2  |  Avg:    263.248 ms  |  Max: 526.477 ms
+ [Preempt]   Count:          7  |  Avg:     76.154 ms  |  Max: 226.874 ms
+
+----------------------------------------------------------
+ TASK: altitudine (PID: 8053)
+----------------------------------------------------------
+ [Esecuzione]WCET :    117.100 ms  |  Avg:     70.757 ms
+ [Job Totale]WCRT :    117.100 ms  |  Avg:     70.757 ms
+ [Periodo]   Avg  :    208.336 ms  |  Jitter:  93.163 ms
+ [Deadline]  Miss :          0      |  (Atteso dal .c: 250.000 ms)
+ [Sleep]     Count:          6  |  Avg:    129.886 ms  |  Max: 166.556 ms
+ [Preempt]   Count:          0  |  Avg:      0.000 ms  |  Max: 0.000 ms
+
+----------------------------------------------------------
+ TASK: rollio (PID: 8054)
+----------------------------------------------------------
+ [Esecuzione]WCET :     97.046 ms  |  Avg:     19.326 ms
+ [Job Totale]WCRT :    226.843 ms  |  Avg:    172.842 ms
+ [Periodo]   Avg  :     67.114 ms  |  Jitter: 125.981 ms
+ [Deadline]  Miss :          0      |  (Atteso dal .c: 500.000 ms)
+ [Sleep]     Count:          2  |  Avg:    378.327 ms  |  Max: 383.290 ms
+ [Preempt]   Count:         17  |  Avg:      7.766 ms  |  Max: 100.168 ms
+
+==========================================================
+[+] Dati esportati su timeline.csv
