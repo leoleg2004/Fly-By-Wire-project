@@ -18,14 +18,23 @@ fi
 
 APP_NAME=$(basename "$EXECUTABLE")
 
-# Troviamo il file sorgente .c da dare in pasto all'analizzatore!
+# Troviamo il file sorgente .c o .cpp da dare in pasto all'analizzatore!
 SRC_FILE="sorgenti/${APP_NAME}.c"
 if [ ! -f "$SRC_FILE" ]; then
     SRC_FILE="sorgenti/${APP_NAME}_main.c"
 fi
 
+# Fallback C++
 if [ ! -f "$SRC_FILE" ]; then
-    echo "ERRORE CRITICO: Non trovo il file sorgente ($APP_NAME.c) per leggere i periodi!"
+    SRC_FILE="sorgenti/${APP_NAME}.cpp"
+fi
+
+if [ ! -f "$SRC_FILE" ]; then
+    SRC_FILE="sorgenti/${APP_NAME}_main.cpp"
+fi
+
+if [ ! -f "$SRC_FILE" ]; then
+    echo "ERRORE CRITICO: Non trovo il file sorgente ($APP_NAME.c o .cpp) per leggere i periodi!"
     exit 1
 fi
 

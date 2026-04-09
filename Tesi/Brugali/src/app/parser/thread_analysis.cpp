@@ -487,6 +487,45 @@ int main(int argc, char *argv[]) {
     csv << tdata.name << ",STAT_RUNTOT,0,0," << total_run_ms << "\n";
     csv << tdata.name << ",STAT_PRETOT,0,0," << total_pre_ms << "\n";
     csv << tdata.name << ",STAT_SLPTOT,0,0," << total_slp_ms << "\n";
+
+    // --- Output Terminale Esteso ---
+    std::cout
+        << "\n----------------------------------------------------------\n";
+    std::cout << " TASK: " << tdata.name << " (PID: " << pair.first << ")\n";
+    std::cout << "----------------------------------------------------------\n";
+    std::cout << std::fixed << std::setprecision(3);
+
+    std::cout << " [Esecuzione] WCET : " << std::setw(10) << wcet_ms
+              << " ms  |  ACET: " << std::setw(10) << acet_ms << " ms\n";
+    std::cout << " [T.Risposta] WCRT : " << std::setw(10)
+              << (worst_slack_ms >= 1e9
+                      ? 0.0
+                      : ((calc_deadline_sec * 1000.0) - worst_slack_ms))
+              << " ms\n";
+    std::cout << " [Periodo]    Mis. : " << std::setw(10)
+              << (measured_ms > 0 ? measured_ms : 0)
+              << " ms  |  Jitter: " << std::setw(8)
+              << (jitter_ms > 0 ? jitter_ms : 0) << " ms\n";
+
+    if (calc_period_sec > 0) {
+      std::cout << " [Parametri]  Periodo: " << std::setw(8)
+                << calc_period_sec * 1000
+                << " ms  |  Deadline: " << std::setw(8)
+                << calc_deadline_sec * 1000 << " ms\n";
+      std::cout << " [Scadenze]   Miss   : " << std::setw(8) << n_misses
+                << "      |  Slack Peggiore: " << std::setw(8)
+                << (worst_slack_ms >= 1e9 ? 0.0 : worst_slack_ms) << " ms\n";
+    } else {
+      std::cout << " [Parametri]  Non presenti nel sorgente originale.\n";
+    }
+
+    std::cout << " [Stati]      Sleep  : " << std::setw(8)
+              << tdata.sleep_int.size() << "      |  Preempt: " << std::setw(8)
+              << tdata.preempt_int.size()
+              << "     |  Run n.: " << tdata.run.size() << "\n";
+    std::cout << " [Globale]    Util%  : " << std::setw(8) << util * 100.0
+              << " %    |  Gaps   : " << std::setw(8) << n_gaps << " ("
+              << max_gap_ms << " ms max)\n";
   }
 
   // --- Emetti righe MISS_LOG ---

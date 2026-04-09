@@ -1,0 +1,54 @@
+# Diagramma Architetturale C++ \(\rightarrow\) Python
+
+Questo schema visivo ripercorre visivamente l'infrastruttura discussa, ponendo in essere le logiche condizionali di salvataggio in Mappa e della stesura matematica di Fase 3.
+
+```mermaid
+graph TD
+    Bash[Lancio run_trace.sh] --> CppParser(Avvio thread_analysis.cpp)
+
+    subgraph FASE 1: Lettura File Sorgente
+        CppParser --> LeggiC{Leggi File Sorgente .c}
+        LeggiC -->|Estrai Regex| MappaTemp[Creazione Mappe Temporanee]
+        MappaTemp --> Diz1[Dizionario: expected_periods]
+        MappaTemp --> Diz2[Dizionario: expected_deadlines]
+    end
+
+    subgraph FASE 2: Parsing del Trace.dat
+        CppParser --> LeggiTrace{Leggi trace_output.txt riga per riga}
+        LeggiTrace -->|Estrai Regex| RigaLog[comm, PID, status, tempo]
+        RigaLog --> CheckMatch{comm esiste in Dizionari Fase 1?}
+        
+        CheckMatch -- NOME IGNOTO --> Scarta[Ignora log e passa a riga succ.]
+        CheckMatch -- MATCH TROVATO! --> CheckPID{Esiste l'armadio tasks PID?}
+        
+        CheckPID -- NO --> CreaPID[Crea l'Armadietto tasks PID in RAM]
+        Diz1 -.->|Copia Periodo ereditato| CreaPID
+        Diz2 -.->|Copia Deadline ereditata| CreaPID
+        
+        CreaPID --> Evento
+        CheckPID -- SI (Gia creato) --> Evento[Valuta Azione dello Sched_Switch]
+        
+        Evento -->|Ingresso in CPU| SwIn[Piazza tempo in switch_in]
+        Evento -->|Estromissione CPU| SwOut[Piazza tempo in switch_out]
+        
+        SwIn --> ProssimaRiga[Avanti Prossima riga Linux]
+        SwOut --> ProssimaRiga
+        ProssimaRiga --> LeggiTrace
+    end
+
+    subgraph FASE 3: Logica Vettoriale Matematica Mappa
+        LeggiTrace -->|Fine File EOF| LoopMappa{Ciclo For su tutti i PID in tasks}
+        LoopMappa --> MappaIn[Incrocio vettoriale switch_in / switch_out]
+        MappaIn --> FrazioneRun[Creazione dei blocchi perfetti temporali RUN]
+        FrazioneRun --> Calcoli[Calcolo ACET, WCET, WCRT, Miss, Gaps]
+        Calcoli --> Stampa[Scrittura righe formattate]
+        Stampa --> LoopMappa
+        LoopMappa -->|Finito iterazione PID| CSV[(timeline.csv)]
+    end
+
+    subgraph FASE 4: Rendering GUI
+        CSV --> Py[monitorRealTime.py]
+        Py -->|Libreria Pandas| Pandas[Tabella Dati Univoca Strutturata]
+        Pandas --> Plot[Matplotlib Rendering Colormetrico Screen]
+    end
+```
