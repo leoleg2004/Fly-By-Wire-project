@@ -27,7 +27,7 @@ INCLUDES= -I. -I$(FASTDDS_BUILD_INCLUDE) -I$(FASTCDR_BUILD_INCLUDE)
 
 
 
-LIBS =  -L/home/leonardo/DDS_Monitor/lib -Wl,-rpath=/home/leonardo/DDS_Monitor/lib -lfastcdr -lfastdds $(SYSLIBS)
+LIBS = -lfastcdr -lfastrtps $(SYSLIBS)
 
 DIRECTORIES= output.dir
 
@@ -38,8 +38,7 @@ $(IDL-TYPE)_TARGET= $(LIB_TARGET_DIR)/lib$(IDL-TYPE).so
 $(IDL-TYPE)_TARGET_Z= $(LIB_TARGET_DIR)/lib$(IDL-TYPE).a
 
 $(IDL-TYPE)_IDL_SRC = \
-	$(IDL-TYPE)PubSubTypes.cxx \
-	$(IDL-TYPE)TypeObjectSupport.cxx
+	$(IDL-TYPE)PubSubTypes.cxx
 
 $(IDL-TYPE)_IDL_OBJS    = $($(IDL-TYPE)_IDL_SRC:%.cxx=output/%.o) $($(IDL-TYPE)_COMMON_SRC_CPPFILES:%.cpp=output/%.o)
 

@@ -26,7 +26,7 @@ INCLUDES = -I. -I../include/ -I$(ERTS_INCLUDE_DIR) -I$(IDL_INCLUDE_DIR)
 
 Static_LIBS  = -L$(IDL_LIB_DIR)/ $(IDL_LIBs) -L$(ERTS_LIB_DIR)/ $(ERTS_LIBs)
 
-DDS_LIBS =  -lfastcdr -L/home/leonardo/Fast-DDS-3.2.2/build/src/cpp -L/home/leonardo/Fast-CDR-2.2.0/build/src/cpp -Wl,-rpath=/home/leonardo/Fast-DDS-3.2.2/build/src/cpp -Wl,-rpath=/home/leonardo/Fast-CDR-2.2.0/build/src/cpp -lfastdds 
+DDS_LIBS =  -lfastcdr -lfastrtps -Wl,-rpath=/usr/local/lib
 
 DIRECTORIES= output.dir 
 

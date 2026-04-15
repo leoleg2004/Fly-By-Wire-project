@@ -11,9 +11,17 @@ if [[ ! "$EXECUTABLE" == ./* ]] && [[ ! "$EXECUTABLE" == /* ]]; then
     EXECUTABLE="eseguibili/$EXECUTABLE"
 fi
 
+APP_NAME=$(basename "$EXECUTABLE")
+
 if [ ! -f "$EXECUTABLE" ]; then
-    echo "Errore: Eseguibile '$EXECUTABLE' non trovato!"
-    exit 1
+    # FALLBACK DDS: Cerchiamo l'eseguibile compilato nelle cartelle dds/app
+    DDS_APP=$(find dds/app -type f -executable -name "$APP_NAME" 2>/dev/null | head -n 1)
+    if [ -n "$DDS_APP" ]; then
+        EXECUTABLE="$DDS_APP"
+    else
+        echo "Errore: Eseguibile '$APP_NAME' non trovato né in eseguibili/ né in dds/app/!"
+        exit 1
+    fi
 fi
 
 APP_NAME=$(basename "$EXECUTABLE")
@@ -24,13 +32,26 @@ if [ ! -f "$SRC_FILE" ]; then
     SRC_FILE="sorgenti/${APP_NAME}_main.c"
 fi
 
-# Fallback C++
+# Fallback C++ standard
 if [ ! -f "$SRC_FILE" ]; then
     SRC_FILE="sorgenti/${APP_NAME}.cpp"
 fi
-
 if [ ! -f "$SRC_FILE" ]; then
     SRC_FILE="sorgenti/${APP_NAME}_main.cpp"
+fi
+
+# FALLBACK DDS: ricerca nelle cartelle dds/app
+if [ ! -f "$SRC_FILE" ]; then
+    DDS_SRC=$(find dds/app -name "${APP_NAME}.cpp" -type f 2>/dev/null | head -n 1)
+    if [ -n "$DDS_SRC" ]; then
+        SRC_FILE="$DDS_SRC"
+    fi
+fi
+if [ ! -f "$SRC_FILE" ]; then
+    DDS_SRC=$(find dds/app -name "${APP_NAME}.c" -type f 2>/dev/null | head -n 1)
+    if [ -n "$DDS_SRC" ]; then
+        SRC_FILE="$DDS_SRC"
+    fi
 fi
 
 if [ ! -f "$SRC_FILE" ]; then

@@ -1,0 +1,64 @@
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.021 ms  |  ACET:      0.006 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :      146      |  Preempt:        0     |  Run n.: 147
+ [Globale]    Util%  :    0.005 %    |  Gaps   :      146 (867.041 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:1H (PID: 151)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.031 ms  |  ACET:      0.011 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        0      |  Preempt:        0     |  Run n.: 224
+ [Globale]    Util%  :    0.014 %    |  Gaps   :      223 (932.976 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:0 (PID: 23121)
+----------------------------------------------------------
+ [Esecuzione] WCET :    384.070 ms  |  ACET:     24.298 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :       36      |  Preempt:        3     |  Run n.: 658
+ [Globale]    Util%  :   84.449 %    |  Gaps   :      148 (233.174 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:1 (PID: 24381)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.006 ms  |  ACET:      0.005 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        0      |  Preempt:        0     |  Run n.: 2
+ [Globale]    Util%  :    0.000 %    |  Gaps   :        1 (3046.003 ms max)
+
+----------------------------------------------------------
+ TASK: GeometryBroadcastner (PID: 24667)
+----------------------------------------------------------
+ [Esecuzione] WCET :      4.521 ms  |  ACET:      1.060 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Periodo:  800.000 ms  |  Deadline:  800.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:    0.000 ms
+ [Stati]      Sleep  :        4      |  Preempt:        1     |  Run n.: 6
+ [Globale]    Util%  :    0.034 %    |  Gaps   :        5 (18924.405 ms max)
+
+----------------------------------------------------------
+ TASK: GeometryBroadcastner (PID: 24677)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.057 ms  |  ACET:      0.038 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Periodo:  800.000 ms  |  Deadline:  800.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:    0.000 ms
+ [Stati]      Sleep  :       24      |  Preempt:        1     |  Run n.: 26
+ [Globale]    Util%  :    0.005 %    |  Gaps   :       25 (800.020 ms max)
+
+[+] Dati esportati su timeline.csv

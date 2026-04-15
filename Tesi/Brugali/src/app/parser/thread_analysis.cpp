@@ -159,6 +159,22 @@ int main(int argc, char *argv[]) {
         if (tasks.count(pid) == 0)
           tasks[pid].name = comm;
       }
+
+      // FALLBACK DDS: Registrazione pigra basata unicamente sul nome OS (utile
+      // se mancano i marker)
+      if (tasks.count(pid) == 0) {
+        for (const auto &kv : expected_periods) {
+          if (kv.first.find(comm) == 0) {
+            tasks[pid].name = kv.first;
+            tasks[pid].expected_period_sec = kv.second;
+            if (expected_deadlines.count(kv.first))
+              tasks[pid].expected_deadline_sec = expected_deadlines[kv.first];
+            else
+              tasks[pid].expected_deadline_sec = kv.second;
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -253,6 +269,37 @@ int main(int argc, char *argv[]) {
         j++;
       } else {
         j++;
+      }
+    }
+
+    // --- Costruiamo WCRT/WAIT Fallback se mancano i Marker ---
+    if (tdata.markers.empty() && !tdata.switch_in.empty() &&
+        tdata.expected_period_sec > 0) {
+      double start_period = tdata.switch_in[0];
+
+      for (size_t i = 0; i < tdata.switch_in.size(); i++) {
+        double run_start = tdata.switch_in[i];
+        if (run_start >= start_period + tdata.expected_period_sec) {
+          double elapsed = run_start - start_period;
+          int periods_passed = elapsed / tdata.expected_period_sec;
+          for (int p = 0; p < periods_passed; p++) {
+            csv << tdata.name << ",WAIT," << std::fixed << std::setprecision(6)
+                << start_period << ","
+                << start_period + tdata.expected_period_sec << ",0\n";
+            start_period += tdata.expected_period_sec;
+          }
+        }
+      }
+
+      // Flush residual period boundaries spanning past the final trace
+      if (tdata.switch_out.size() > 0) {
+        double last_time = tdata.switch_out.back().time;
+        while (start_period + tdata.expected_period_sec <= last_time) {
+          csv << tdata.name << ",WAIT," << std::fixed << std::setprecision(6)
+              << start_period << "," << start_period + tdata.expected_period_sec
+              << ",0\n";
+          start_period += tdata.expected_period_sec;
+        }
       }
     }
 

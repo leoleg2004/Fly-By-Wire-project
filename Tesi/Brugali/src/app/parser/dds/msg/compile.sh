@@ -19,10 +19,7 @@ else
    export ERTS_MSG
 
    cd src
-   ../../fastddsgen_tool/scripts/fastddsgen -I ./ $1.idl
-
-   echo "Patching .h -> .hpp per compatibilità FastDDS 3..."
-   python3 ../patch_fastdds3.py .
+   /home/leonardo/TOOLS/eProsima/src/fastddsgen/scripts/fastddsgen -replace -I ./ $1.idl
 
    make -f ../makefile
    cd ..
