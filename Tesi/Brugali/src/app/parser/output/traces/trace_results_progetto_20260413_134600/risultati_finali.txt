@@ -1,0 +1,65 @@
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.034 ms  |  ACET:      0.014 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :       10      |  Preempt:        0     |  Run n.: 11
+ [Globale]    Util%  :    0.004 %    |  Gaps   :       10 (754.135 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:0H (PID: 26)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.046 ms  |  ACET:      0.026 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        0      |  Preempt:        0     |  Run n.: 5
+ [Globale]    Util%  :    0.003 %    |  Gaps   :        4 (139.861 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:2 (PID: 101)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.052 ms  |  ACET:      0.015 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        0      |  Preempt:        0     |  Run n.: 20
+ [Globale]    Util%  :    0.008 %    |  Gaps   :       19 (639.768 ms max)
+
+----------------------------------------------------------
+ TASK: Ciao (PID: 5120)
+----------------------------------------------------------
+ [Esecuzione] WCET :    211.660 ms  |  ACET:    209.068 ms
+ [T.Risposta] WCRT :    392.667 ms
+ [Periodo]    Mis. :   2062.848 ms  |  Jitter:   62.827 ms
+ [Parametri]  Periodo: 2000.000 ms  |  Deadline: 2000.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore: 1607.333 ms
+ [Stati]      Sleep  :        3      |  Preempt:       13     |  Run n.: 17
+ [Globale]    Util%  :   10.462 %    |  Gaps   :       16 (1686.980 ms max)
+
+----------------------------------------------------------
+ TASK: altitudine (PID: 5121)
+----------------------------------------------------------
+ [Esecuzione] WCET :     79.396 ms  |  ACET:     61.492 ms
+ [T.Risposta] WCRT :     79.373 ms
+ [Periodo]    Mis. :    250.011 ms  |  Jitter:    0.067 ms
+ [Parametri]  Periodo:  250.000 ms  |  Deadline:  250.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  170.627 ms
+ [Stati]      Sleep  :       16      |  Preempt:        1     |  Run n.: 18
+ [Globale]    Util%  :   26.072 %    |  Gaps   :       17 (208.879 ms max)
+
+----------------------------------------------------------
+ TASK: rollio (PID: 5122)
+----------------------------------------------------------
+ [Esecuzione] WCET :    117.619 ms  |  ACET:     95.460 ms
+ [T.Risposta] WCRT :    159.925 ms
+ [Periodo]    Mis. :    600.074 ms  |  Jitter:   43.587 ms
+ [Parametri]  Periodo:  600.000 ms  |  Deadline:  500.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  340.075 ms
+ [Stati]      Sleep  :        8      |  Preempt:       18     |  Run n.: 27
+ [Globale]    Util%  :   19.149 %    |  Gaps   :       26 (516.558 ms max)
+
+[+] Dati esportati su timeline.csv

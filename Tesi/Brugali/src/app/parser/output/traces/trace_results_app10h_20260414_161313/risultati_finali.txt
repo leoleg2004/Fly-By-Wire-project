@@ -1,0 +1,44 @@
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.009 ms  |  ACET:      0.009 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        0      |  Preempt:        0     |  Run n.: 1
+ [Globale]    Util%  :    0.000 %    |  Gaps   :        0 (0.000 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:2 (PID: 4298)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.019 ms  |  ACET:      0.008 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        0      |  Preempt:        0     |  Run n.: 22
+ [Globale]    Util%  :    0.006 %    |  Gaps   :       21 (631.079 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 4830)
+----------------------------------------------------------
+ [Esecuzione] WCET :    625.773 ms  |  ACET:    625.773 ms
+ [T.Risposta] WCRT :   1966.834 ms
+ [Periodo]    Mis. :   2000.118 ms  |  Jitter:    0.000 ms
+ [Parametri]  Periodo: 2000.000 ms  |  Deadline: 2000.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:   33.166 ms
+ [Stati]      Sleep  :        2      |  Preempt:       71     |  Run n.: 74
+ [Globale]    Util%  :   48.105 %    |  Gaps   :       73 (186.469 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 4831)
+----------------------------------------------------------
+ [Esecuzione] WCET :    186.466 ms  |  ACET:    167.607 ms
+ [T.Risposta] WCRT :    186.423 ms
+ [Periodo]    Mis. :    250.000 ms  |  Jitter:    0.004 ms
+ [Parametri]  Periodo:  250.000 ms  |  Deadline:  250.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:   63.577 ms
+ [Stati]      Sleep  :       13      |  Preempt:       28     |  Run n.: 42
+ [Globale]    Util%  :   69.756 %    |  Gaps   :       40 (85.265 ms max)
+
+[+] Dati esportati su timeline.csv

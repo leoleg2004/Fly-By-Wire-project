@@ -1,0 +1,54 @@
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.007 ms  |  ACET:      0.005 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        1      |  Preempt:        0     |  Run n.: 2
+ [Globale]    Util%  :    0.000 %    |  Gaps   :        1 (868.861 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:1H (PID: 122)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.036 ms  |  ACET:      0.025 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        0      |  Preempt:        0     |  Run n.: 10
+ [Globale]    Util%  :    0.007 %    |  Gaps   :        9 (259.428 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:2 (PID: 4298)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.455 ms  |  ACET:      0.029 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :       39      |  Preempt:        0     |  Run n.: 45
+ [Globale]    Util%  :    0.038 %    |  Gaps   :       44 (652.991 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 4906)
+----------------------------------------------------------
+ [Esecuzione] WCET :    667.126 ms  |  ACET:    667.126 ms
+ [T.Risposta] WCRT :   2182.829 ms
+ [Periodo]    Mis. :   2182.847 ms  |  Jitter:    0.000 ms
+ [Parametri]  Periodo: 2000.000 ms  |  Deadline: 2000.000 ms
+ [Scadenze]   Miss   :        1      |  Slack Peggiore: -182.829 ms
+ [Stati]      Sleep  :        3      |  Preempt:       58     |  Run n.: 62
+ [Globale]    Util%  :   33.371 %    |  Gaps   :       59 (1218.556 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 4907)
+----------------------------------------------------------
+ [Esecuzione] WCET :    195.469 ms  |  ACET:    175.897 ms
+ [T.Risposta] WCRT :    195.421 ms
+ [Periodo]    Mis. :    250.000 ms  |  Jitter:    0.065 ms
+ [Parametri]  Periodo:  250.000 ms  |  Deadline:  250.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:   54.579 ms
+ [Stati]      Sleep  :       14      |  Preempt:       10     |  Run n.: 25
+ [Globale]    Util%  :   75.014 %    |  Gaps   :       23 (85.482 ms max)
+
+[+] Dati esportati su timeline.csv

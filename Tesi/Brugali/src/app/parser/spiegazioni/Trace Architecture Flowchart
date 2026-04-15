@@ -1,54 +1,105 @@
-# Diagramma Architetturale C++ \(\rightarrow\) Python
-
-Questo schema visivo ripercorre visivamente l'infrastruttura discussa, ponendo in essere le logiche condizionali di salvataggio in Mappa e della stesura matematica di Fase 3.
+# Diagramma Architetturale Ibrido Completo
+*Unisce l'organigramma formale del Professor Brugali (Dataset e Processi) con la complessa topologia algoritmica elaborata per l'analisi dei Thread.*
 
 ```mermaid
-graph TD
-    Bash[Lancio run_trace.sh] --> CppParser(Avvio thread_analysis.cpp)
-
-    subgraph FASE 1: Lettura File Sorgente
-        CppParser --> LeggiC{Leggi File Sorgente .c}
-        LeggiC -->|Estrai Regex| MappaTemp[Creazione Mappe Temporanee]
-        MappaTemp --> Diz1[Dizionario: expected_periods]
-        MappaTemp --> Diz2[Dizionario: expected_deadlines]
+flowchart TD
+    %% ===============================================
+    %% FASE 1: LETTURA SORGENTE -> P1
+    %% ===============================================
+    D1@{ shape: doc, label: "Documento Input D1:\nFile sorgente .c" }
+    
+    subgraph P1 [Elaborazione P1: creazione mappe temporanee]
+        LeggiC[Lettura File Sorgente riga per riga]
+        MappaTemp[Estrazione Regex e Mapping Stringhe]
+        LeggiC --> MappaTemp
     end
+    
+    D2_1@{ shape: doc, label: "Documento Output D2:\nexpected_periods" }
+    D2_2@{ shape: doc, label: "Documento Output D2:\nexpected_deadlines" }
 
-    subgraph FASE 2: Parsing del Trace.dat
-        CppParser --> LeggiTrace{Leggi trace_output.txt riga per riga}
-        LeggiTrace -->|Estrai Regex| RigaLog[comm, PID, status, tempo]
-        RigaLog --> CheckMatch{comm esiste in Dizionari Fase 1?}
+    D1 --> LeggiC
+    MappaTemp --> D2_1
+    MappaTemp --> D2_2
+
+    %% ===============================================
+    %% FASE 2: LINUX TRACE DUMP -> P2
+    %% ===============================================
+    D3@{ shape: doc, label: "Documento Input D3:\ntrace.dat" }
+    
+    subgraph P2 [Elaborazione P2: parsing file e astrazione eventi]
+        EstraiBash[Esecuzione: trace-cmd report]
+    end
+    
+    D4@{ shape: doc, label: "Documento Output D4:\ntrace_output.txt" }
+    
+    D3 --> EstraiBash
+    EstraiBash --> D4
+
+    %% ===============================================
+    %% FASE 3: MATEMATICA E MATCHING C++ -> P3
+    %% ===============================================
+    subgraph P3 [Elaborazione P3: Analisi dei blocchi temporali]
+        LeggiTrace[Lettura testuale riga per riga]
+        RigaLog[Estrazione Valori Regex Log]
+        CheckMatch{Appartiene al Dizionario D2?}
         
-        CheckMatch -- NOME IGNOTO --> Scarta[Ignora log e passa a riga succ.]
-        CheckMatch -- MATCH TROVATO! --> CheckPID{Esiste l'armadio tasks PID?}
+        Scarta[Scarta Stringa e continua]
+        CheckPID{Esiste lo slot in Mappa?}
+        CreaPID[Alloca costrutto 'TaskData' per PID]
+        Evento{Che evento Log è?}
         
-        CheckPID -- NO --> CreaPID[Crea l'Armadietto tasks PID in RAM]
-        Diz1 -.->|Copia Periodo ereditato| CreaPID
-        Diz2 -.->|Copia Deadline ereditata| CreaPID
+        SwIn[Aggancia Timestamp a switch_in]
+        SwOut[Aggancia Timestamp a switch_out]
+        ProssimaRiga[Avanti Prossima Linea]
         
+        InitLoop[Avvio Loop Analitico Vettoriale]
+        LoopMappa{Rimangono PID in Mappa non calcolati?}
+        MappaIn[Accoppiamento switch_in e out]
+        FrazioneRun[Ricava Segmento Fisico RUN]
+        Calcoli[Calcola Statistiche ACET, WCET]
+        Stampa[Scrittura Stringa in Memoria Array]
+        
+        %% Logica P3 (Lettura Linux)
+        LeggiTrace --> RigaLog
+        RigaLog --> CheckMatch
+        CheckMatch -- NOME IGNOTO --> Scarta
+        CheckMatch -- MATCH TROVATO! --> CheckPID
+        CheckPID -- NO --> CreaPID
+        CheckPID -- SI (Già allocato) --> Evento
         CreaPID --> Evento
-        CheckPID -- SI (Gia creato) --> Evento[Valuta Azione dello Sched_Switch]
-        
-        Evento -->|Ingresso in CPU| SwIn[Piazza tempo in switch_in]
-        Evento -->|Estromissione CPU| SwOut[Piazza tempo in switch_out]
-        
-        SwIn --> ProssimaRiga[Avanti Prossima riga Linux]
+        Evento -- Pressione in CPU --> SwIn
+        Evento -- Estromissione --> SwOut
+        SwIn --> ProssimaRiga
         SwOut --> ProssimaRiga
+        Scarta --> ProssimaRiga
         ProssimaRiga --> LeggiTrace
-    end
-
-    subgraph FASE 3: Logica Vettoriale Matematica Mappa
-        LeggiTrace -->|Fine File EOF| LoopMappa{Ciclo For su tutti i PID in tasks}
-        LoopMappa --> MappaIn[Incrocio vettoriale switch_in / switch_out]
-        MappaIn --> FrazioneRun[Creazione dei blocchi perfetti temporali RUN]
-        FrazioneRun --> Calcoli[Calcolo ACET, WCET, WCRT, Miss, Gaps]
-        Calcoli --> Stampa[Scrittura righe formattate]
+        
+        %% Logica P3 (Chiusura Matematica)
+        LeggiTrace -->|End Of File EOF| InitLoop
+        InitLoop --> LoopMappa
+        LoopMappa -- SI --> MappaIn
+        MappaIn --> FrazioneRun
+        FrazioneRun --> Calcoli
+        Calcoli --> Stampa
         Stampa --> LoopMappa
-        LoopMappa -->|Finito iterazione PID| CSV[(timeline.csv)]
     end
+    
+    %% Input al Blocco P3
+    D4 --> LeggiTrace
+    D2_1 -.->|Eredita Limite| CreaPID
+    D2_2 -.->|Eredita Limite| CreaPID
 
-    subgraph FASE 4: Rendering GUI
-        CSV --> Py[monitorRealTime.py]
-        Py -->|Libreria Pandas| Pandas[Tabella Dati Univoca Strutturata]
-        Pandas --> Plot[Matplotlib Rendering Colormetrico Screen]
+    D5@{ shape: doc, label: "Documento Output D5:\ntimeline.csv" }
+    LoopMappa -- NO (Mappa Esaurita) --> D5
+
+    %% ===============================================
+    %% FASE 4: PYTHON RENDER -> P4
+    %% ===============================================
+    subgraph P4 [Elaborazione P4: visualizzazione Python]
+        Py[Avvia monitorRealTime.py]
+        Pandas[Da Pandas a Matplotlib Rendering]
+        Py --> Pandas
     end
+    
+    D5 --> Py
 ```

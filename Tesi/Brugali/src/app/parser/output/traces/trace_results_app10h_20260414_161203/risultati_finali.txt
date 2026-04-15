@@ -1,0 +1,44 @@
+
+----------------------------------------------------------
+ TASK: ksoftirqd/1 (PID: 24)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.020 ms  |  ACET:      0.015 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        2      |  Preempt:        0     |  Run n.: 3
+ [Globale]    Util%  :    0.002 %    |  Gaps   :        2 (397.918 ms max)
+
+----------------------------------------------------------
+ TASK: kworker/1:2 (PID: 4298)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.183 ms  |  ACET:      0.049 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :        0      |  Preempt:        0     |  Run n.: 5
+ [Globale]    Util%  :    0.009 %    |  Gaps   :        4 (1027.080 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 4671)
+----------------------------------------------------------
+ [Esecuzione] WCET :    499.781 ms  |  ACET:    499.781 ms
+ [T.Risposta] WCRT :   1678.556 ms
+ [Periodo]    Mis. :   2000.160 ms  |  Jitter:    0.000 ms
+ [Parametri]  Periodo: 2000.000 ms  |  Deadline: 2000.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  321.444 ms
+ [Stati]      Sleep  :        2      |  Preempt:       39     |  Run n.: 42
+ [Globale]    Util%  :   36.113 %    |  Gaps   :       41 (321.567 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 4672)
+----------------------------------------------------------
+ [Esecuzione] WCET :    195.050 ms  |  ACET:    172.740 ms
+ [T.Risposta] WCRT :    195.028 ms
+ [Periodo]    Mis. :    249.999 ms  |  Jitter:    0.018 ms
+ [Parametri]  Periodo:  250.000 ms  |  Deadline:  250.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:   54.972 ms
+ [Stati]      Sleep  :       11      |  Preempt:        8     |  Run n.: 20
+ [Globale]    Util%  :   75.693 %    |  Gaps   :       19 (85.277 ms max)
+
+[+] Dati esportati su timeline.csv
