@@ -75,14 +75,14 @@ void *DDS_CommThread(void *arg) {
 }
 
 /* ========================================================================
- * Thread 1: DDS_Publish — task periodico (800 ms)
+ * Thread 1: DDS_Publish — task periodico
  * Prepara il messaggio e lo passa a DDS_Comm
  * ======================================================================== */
-void dds_publish_function(void *instance) {
+void dds_publish_function(void *instance, int parameter) {
   (void)instance;
 
   /* carico computazionale (questa parte resta su DDS_Publish) */
-  activity_load(10);
+  activity_load(parameter);
 
   /* prepara il messaggio */
   g_counter += 0.1;
@@ -100,11 +100,11 @@ void dds_publish_function(void *instance) {
 }
 
 /* ========================================================================
- * Thread 2: Computation — task periodico (250 ms)
+ * Thread 2: Computation — task periodico
  * ======================================================================== */
-void computation_function(void *instance) {
+void computation_function(void *instance, int parameter) {
   (void)instance;
-  activity_load(10);
+  activity_load(parameter);
 }
 
 /* ========================================================================
@@ -142,7 +142,7 @@ int main(int argc, char **argv) {
   pthread_setname_np(thread_comm, "DDS_Comm");
   pthread_attr_destroy(&attr_comm);
 
-  /* ── Thread 1: DDS_Publish (periodico 800 ms) ─────────────────── */
+  /* ── Thread 1: DDS_Publish (periodico ) ─────────────────── */
   pthread_t thread1;
   pthread_attr_t attr1;
   struct sched_param param1;
@@ -156,6 +156,7 @@ int main(int argc, char **argv) {
   sprintf(activity_1.name, "DDS_Publish");
   activity_1.function = dds_publish_function;
   activity_1.period = 500;
+  activity_1.parameter = 2;
   activity_1.deadline = 500;
   activity_1.instance = NULL;
   activity_1.print = true;
@@ -171,7 +172,7 @@ int main(int argc, char **argv) {
   pthread_setname_np(thread1, "DDS_Publish");
   pthread_attr_destroy(&attr1);
 
-  /* ── Thread 2: Computation (periodico 250 ms) ─────────────────── */
+  /* ── Thread 2: Computation (periodico) ─────────────────── */
   pthread_t thread2;
   pthread_attr_t attr2;
   struct sched_param param2;
@@ -185,6 +186,7 @@ int main(int argc, char **argv) {
   sprintf(activity_2.name, "Activity_1");
   activity_2.function = computation_function;
   activity_2.period = 1000;
+  activity_2.parameter = 4;
   activity_2.deadline = 1000;
   activity_2.instance = NULL;
   activity_2.print = true;

@@ -52,7 +52,7 @@ void *PeriodicTask(void *ptr) {
       write_trace_marker(marker);
 
       exec_start_time = time_current_millisecs();
-      activity.function(activity.instance);
+      activity.function(activity.instance, activity.parameter);
       exec_end_time = time_current_millisecs();
 
       snprintf(marker, sizeof(marker), "FUNCTION_END_%s", activity.name);

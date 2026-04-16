@@ -25,8 +25,9 @@
  */
 typedef struct activity_parameters {
 	char name[50];
-	void (*function)(void* instance);
+	void (*function)(void* instance, int parameter);
 	int period;
+	int parameter;
 	long int deadline;
 	void* instance;
 	bool print;
