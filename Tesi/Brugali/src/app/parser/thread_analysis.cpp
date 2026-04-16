@@ -172,9 +172,8 @@ int main(int argc, char *argv[]) {
       }
 
       // I thread interni FastDDS (dds.ev, dds.shm, dds.udp, ...) vengono
-      // ignorati. Solo il nostro thread "DDS_Comm" viene tracciato,
-      // perche' scrive marker e quindi viene scoperto automaticamente
-      // al PASSO 2 tramite marker_pids.
+      // ignorati qui. Il thread DDS_Comm dell'applicazione scrive marker
+      // e viene scoperto automaticamente al PASSO 2.
     }
   }
 
@@ -396,7 +395,6 @@ int main(int argc, char *argv[]) {
     }
     double dds_acet_ms = dds_count > 0 ? (dds_sum_ms / dds_count) : 0;
 
-    // Emetti statistiche DDS_MSG nel CSV
     if (dds_count > 0) {
       csv << tdata.name << ",STAT_DDS_COUNT,0,0," << dds_count << "\n";
       csv << tdata.name << ",STAT_DDS_WCET,0,0," << dds_wcet_ms << "\n";

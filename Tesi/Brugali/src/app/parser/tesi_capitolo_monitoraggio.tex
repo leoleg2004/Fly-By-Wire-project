@@ -15,8 +15,9 @@ DDS (Data Distribution Service) per la comunicazione inter-processo.
 Il sistema e' composto da tre componenti principali:
 \begin{enumerate}
     \item Un'\textbf{applicazione C++ strumentata} (\texttt{GeometryBroadcastner})
-          con architettura a tre thread, che emette marker di tracciamento
-          nel kernel Linux tramite ftrace.
+          con due thread periodici applicativi, che emette marker di tracciamento
+          nel kernel Linux tramite ftrace. Il middleware eProsima FastDDS crea
+          automaticamente i propri thread interni per la comunicazione.
     \item Un \textbf{analizzatore C++} (\texttt{thread\_analysis}) che elabora
           i dati grezzi del trace e produce un file CSV strutturato.
     \item Un \textbf{visualizzatore Python} (\texttt{monitorRealTime.py}) che
@@ -31,18 +32,19 @@ l'acquisizione, l'analisi e la visualizzazione in un unico comando.
 \section{Architettura dell'Applicazione Strumentata}
 \label{sec:architettura}
 
-L'applicazione \texttt{GeometryBroadcastner} e' stata progettata con
-un'architettura a \textbf{tre thread}, ciascuno con un ruolo ben definito.
-La struttura e' derivata dal pattern dell'applicazione di riferimento
-\texttt{app10h}, estesa con un thread dedicato alla comunicazione DDS.
+L'applicazione \texttt{GeometryBroadcastner} e' strutturata con
+\textbf{due thread periodici applicativi} e sfrutta il thread interno del
+middleware eProsima FastDDS per la comunicazione sulla rete.
+La struttura dei thread applicativi e' derivata dal pattern dell'applicazione
+di riferimento \texttt{app10h}.
 
 % ............................................................................
-\subsection{I Tre Thread}
+\subsection{I Thread dell'Applicazione}
 \label{subsec:thread}
 
 \begin{table}[htbp]
 \centering
-\caption{Architettura dei thread di GeometryBroadcastner.}
+\caption{Thread visibili nel diagramma temporale.}
 \label{tab:thread}
 \begin{tabular}{llccp{5.5cm}}
 \toprule
@@ -50,41 +52,55 @@ La struttura e' derivata dal pattern dell'applicazione di riferimento
 \midrule
 \texttt{DDS\_Publish} & Periodico & 600\,ms & 39 (RM) &
     Esegue il carico computazionale, prepara il messaggio \texttt{Point}
-    e lo passa al thread di comunicazione. \\
-\texttt{Computation}  & Periodico & 250\,ms & 74 (RM) &
-    Carico computazionale puro, identico ad \texttt{Activity\_2}
+    e chiama \texttt{publish()} sul middleware DDS. \\
+\texttt{Activity\_1}  & Periodico & 250\,ms & 74 (RM) &
+    Carico computazionale puro, identico ad \texttt{Activity\_1}
     nell'applicazione di riferimento \texttt{app10h}. \\
-\texttt{DDS\_Comm}    & Event-driven & --- & 90 (fisso) &
-    Attende la richiesta da \texttt{DDS\_Publish}, esegue la
-    \texttt{publish()} DDS e scrive i marker di tracciamento. \\
+\midrule
+\texttt{DDS\_Comm}    & Event-driven & --- & 120 (default) &
+    Thread \textbf{reale} del middleware eProsima FastDDS
+    (\texttt{dds.ev.0}). Viene creato automaticamente dalla libreria
+    FastDDS al momento dell'inizializzazione del \texttt{DomainParticipant}.
+    Gestisce l'invio effettivo dei messaggi sulla rete. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-La separazione tra \texttt{DDS\_Publish} e \texttt{DDS\_Comm} e' il punto
-chiave dell'architettura: il task periodico non esegue direttamente la
-comunicazione DDS, ma la delega a un thread dedicato. Questo permette di:
+Il punto chiave dell'architettura e' che \texttt{DDS\_Comm} \textbf{non e'
+un thread creato dall'applicazione}: e' il vero thread evento
+(\texttt{dds.ev.0}) del middleware eProsima FastDDS. Quando il task
+periodico \texttt{DDS\_Publish} chiama \texttt{publish()}, il middleware
+serializza i dati e sveglia il proprio thread evento interno per gestire
+l'invio sulla rete. L'analizzatore \texttt{thread\_analysis} lo individua
+automaticamente nel trace tramite il nome OS e lo rinomina
+\texttt{DDS\_Comm} per chiarezza nella visualizzazione.
+
+Questa architettura permette di:
 \begin{itemize}
-    \item \textbf{Isolare} il costo della comunicazione DDS dal costo
-          computazionale del task periodico.
-    \item \textbf{Visualizzare} sulla timeline esattamente quando avviene
-          la comunicazione e quanto tempo impiega.
-    \item \textbf{Analizzare} eventuali interferenze tra il task periodico
-          e la comunicazione DDS (preemption, ritardi, colli di bottiglia).
+    \item \textbf{Osservare} il comportamento reale del middleware DDS
+          senza modificarlo o strumentarlo.
+    \item \textbf{Visualizzare} sulla timeline esattamente quando il
+          thread interno di FastDDS si attiva per inviare il messaggio.
+    \item \textbf{Correlare} l'istante in cui l'applicazione chiama
+          \texttt{publish()} (marker \texttt{DDS\_MSG\_START} sulla corsia
+          \texttt{DDS\_Publish}) con l'istante in cui il middleware
+          effettivamente lavora (blocchi RUN sulla corsia \texttt{DDS\_Comm}).
+    \item \textbf{Analizzare} eventuali ritardi tra la richiesta di invio
+          e l'effettiva trasmissione.
 \end{itemize}
 
 % ............................................................................
 \subsection{Politica di Scheduling}
 \label{subsec:scheduling}
 
-Tutti i thread utilizzano la politica \texttt{SCHED\_FIFO} (scheduling
-real-time POSIX) e sono vincolati alla \textbf{CPU~0} tramite
+I due thread applicativi utilizzano la politica \texttt{SCHED\_FIFO}
+(scheduling real-time POSIX) e sono vincolati alla \textbf{CPU~0} tramite
 \texttt{pthread\_attr\_setaffinity\_np}. Questo vincolo e' intenzionale:
-forzando tutti i thread sullo stesso core, si creano le condizioni per
+forzando entrambi i thread sullo stesso core, si creano le condizioni per
 osservare preemption e competizione per il tempo macchina.
 
 Le priorita' sono assegnate secondo il principio del
-\textbf{Rate Monotonic Scheduling} (RMS) per i task periodici:
+\textbf{Rate Monotonic Scheduling} (RMS):
 \begin{equation}
     \text{priorita'} = 99 - \left\lfloor \frac{\text{periodo\_ms}}{10} \right\rfloor
     \label{eq:rm_priority}
@@ -92,66 +108,67 @@ Le priorita' sono assegnate secondo il principio del
 
 Applicando l'Equazione~\ref{eq:rm_priority}:
 \begin{itemize}
-    \item \texttt{Computation} (periodo 250\,ms): priorita' $99 - 25 = 74$
+    \item \texttt{Activity\_1} (periodo 250\,ms): priorita' $99 - 25 = 74$
     \item \texttt{DDS\_Publish} (periodo 600\,ms): priorita' $99 - 60 = 39$
 \end{itemize}
 
-Il thread \texttt{DDS\_Comm}, non essendo periodico, ha una priorita'
-fissa pari a~90. Questo valore e' scelto in modo che il thread di
-comunicazione possa reagire immediatamente quando il task periodico
-segnala la disponibilita' di un nuovo messaggio.
+Il thread \texttt{DDS\_Comm} (\texttt{dds.ev.0}) e' creato internamente
+dal middleware FastDDS con priorita' di default del sistema operativo
+(SCHED\_OTHER, nice~0). Non avendo vincoli real-time, il suo scheduling
+dipende interamente dal kernel Linux. Questo lo rende particolarmente
+interessante da osservare: eventuali ritardi nell'invio dei messaggi
+possono essere causati dalla preemption da parte dei task real-time
+applicativi.
 
 % ............................................................................
-\subsection{Meccanismo di Comunicazione Inter-Thread}
-\label{subsec:ipc}
+\subsection{Flusso della Comunicazione DDS}
+\label{subsec:dds_flow}
 
-La comunicazione tra \texttt{DDS\_Publish} e \texttt{DDS\_Comm} avviene
-tramite un pattern \textbf{produttore-consumatore} basato su primitive
-POSIX:
-
-\begin{lstlisting}[language=C, caption={Variabili condivise per la comunicazione inter-thread.}, label={lst:shared_vars}]
-static pthread_mutex_t dds_comm_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t  dds_comm_cond  = PTHREAD_COND_INITIALIZER;
-static bool            dds_comm_pending = false;
-static Point           dds_comm_msg;
-\end{lstlisting}
-
-Il flusso e' il seguente:
+La comunicazione tra l'applicazione e la rete avviene attraverso il
+middleware eProsima FastDDS. Il flusso e' il seguente:
 
 \begin{enumerate}
-    \item \texttt{DDS\_Publish} esegue il carico computazionale
+    \item Il thread \texttt{DDS\_Publish} esegue il carico computazionale
           (\texttt{activity\_load}).
     \item Prepara il messaggio \texttt{Point} con le coordinate aggiornate.
-    \item Acquisisce il mutex, copia il messaggio nella variabile condivisa,
-          setta il flag \texttt{dds\_comm\_pending = true}, e segnala la
-          condition variable con \texttt{pthread\_cond\_signal}.
-    \item \texttt{DDS\_Comm}, che era bloccato su \texttt{pthread\_cond\_wait},
-          si sveglia, copia il messaggio in una variabile locale, resetta il
-          flag, rilascia il mutex, e procede con la \texttt{publish()}.
+    \item Scrive il marker \texttt{DDS\_MSG\_START\_DDS\_Publish} su ftrace.
+    \item Chiama \texttt{g\_broadcastner.publish(\&point\_msg)}.
+          Internamente, FastDDS:
+          \begin{enumerate}
+              \item Serializza il messaggio nel formato CDR.
+              \item Inserisce i dati nella history cache del \texttt{DataWriter}.
+              \item Sveglia il proprio thread evento (\texttt{dds.ev.0})
+                    che gestisce l'invio effettivo sulla rete.
+          \end{enumerate}
+    \item La chiamata \texttt{publish()} ritorna al thread applicativo.
+    \item Scrive il marker \texttt{DDS\_MSG\_END\_DDS\_Publish}.
 \end{enumerate}
 
-\begin{lstlisting}[language=C, caption={Lato produttore: DDS\_Publish passa il messaggio.}, label={lst:producer}]
-/* passa il messaggio al thread DDS_Comm */
-pthread_mutex_lock(&dds_comm_mutex);
-dds_comm_msg = point_msg;
-dds_comm_pending = true;
-pthread_cond_signal(&dds_comm_cond);
-pthread_mutex_unlock(&dds_comm_mutex);
-\end{lstlisting}
+\begin{lstlisting}[language=C++, caption={Funzione del task periodico DDS\_Publish.}, label={lst:publish_func}]
+void dds_publish_function(void *instance) {
+    /* carico computazionale */
+    activity_load(10);
 
-\begin{lstlisting}[language=C, caption={Lato consumatore: DDS\_Comm riceve e pubblica.}, label={lst:consumer}]
-pthread_mutex_lock(&dds_comm_mutex);
-while (!dds_comm_pending) {
-    pthread_cond_wait(&dds_comm_cond, &dds_comm_mutex);
+    /* prepara il messaggio */
+    Point point_msg;
+    point_msg.x(1.0 * g_counter);
+    point_msg.y(2.0 * g_counter);
+    point_msg.z(3.0 * g_counter);
+
+    /* comunicazione DDS con marker */
+    write_trace_marker("DDS_MSG_START_DDS_Publish");
+    g_broadcastner.publish(&point_msg);
+    write_trace_marker("DDS_MSG_END_DDS_Publish");
 }
-Point msg = dds_comm_msg;
-dds_comm_pending = false;
-pthread_mutex_unlock(&dds_comm_mutex);
-
-write_trace_marker("DDS_MSG_START_DDS_Comm");
-g_broadcastner.publish(&msg);
-write_trace_marker("DDS_MSG_END_DDS_Comm");
 \end{lstlisting}
+
+I marker \texttt{DDS\_MSG\_START} e \texttt{DDS\_MSG\_END} delimitano
+la chiamata \texttt{publish()} dal punto di vista del thread applicativo.
+Nel frattempo, il thread interno \texttt{dds.ev.0} (visualizzato come
+\texttt{DDS\_Comm}) si attiva in modo asincrono per completare l'invio.
+Confrontando i timestamp dei marker con i blocchi RUN di \texttt{DDS\_Comm}
+e' possibile misurare il ritardo tra la richiesta applicativa e l'effettiva
+trasmissione.
 
 
 % ────────────────────────────────────────────────────────────────────────────
@@ -192,68 +209,79 @@ L'applicazione emette i seguenti marker, suddivisi per thread:
 \label{tab:marker}
 \begin{tabular}{llp{6cm}}
 \toprule
-\textbf{Thread} & \textbf{Marker} & \textbf{Significato} \\
+\textbf{Thread emittente} & \textbf{Marker} & \textbf{Significato} \\
 \midrule
 \texttt{DDS\_Publish} & \texttt{PERIOD\_START\_DDS\_Publish} & Inizio del periodo \\
                        & \texttt{FUNCTION\_START\_DDS\_Publish} & Inizio esecuzione funzione \\
+                       & \texttt{DDS\_MSG\_START\_DDS\_Publish} & Inizio chiamata \texttt{publish()} \\
+                       & \texttt{DDS\_MSG\_END\_DDS\_Publish} & Ritorno dalla \texttt{publish()} \\
                        & \texttt{FUNCTION\_END\_DDS\_Publish} & Fine esecuzione funzione \\
                        & \texttt{SLEEP\_START\_DDS\_Publish} & Inizio attesa prossimo periodo \\
                        & \texttt{PERIOD\_END\_DDS\_Publish} & Fine del periodo \\
 \midrule
-\texttt{Computation}   & \texttt{PERIOD\_START\_Computation} & Inizio del periodo \\
-                       & \texttt{FUNCTION\_START\_Computation} & Inizio esecuzione funzione \\
-                       & \texttt{FUNCTION\_END\_Computation} & Fine esecuzione funzione \\
-                       & \texttt{SLEEP\_START\_Computation} & Inizio attesa prossimo periodo \\
-                       & \texttt{PERIOD\_END\_Computation} & Fine del periodo \\
-\midrule
-\texttt{DDS\_Comm}     & \texttt{DDS\_MSG\_START\_DDS\_Comm} & Inizio comunicazione DDS \\
-                       & \texttt{DDS\_MSG\_END\_DDS\_Comm} & Fine comunicazione DDS \\
+\texttt{Activity\_1}  & \texttt{PERIOD\_START\_Activity\_1} & Inizio del periodo \\
+                       & \texttt{FUNCTION\_START\_Activity\_1} & Inizio esecuzione funzione \\
+                       & \texttt{FUNCTION\_END\_Activity\_1} & Fine esecuzione funzione \\
+                       & \texttt{SLEEP\_START\_Activity\_1} & Inizio attesa prossimo periodo \\
+                       & \texttt{PERIOD\_END\_Activity\_1} & Fine del periodo \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \paragraph{Punto chiave.}
 I marker \texttt{DDS\_MSG\_START} e \texttt{DDS\_MSG\_END} sono scritti
-dal thread \texttt{DDS\_Comm} (non da \texttt{DDS\_Publish}). Poiche'
-ftrace registra automaticamente il PID del thread che scrive, nel file
-di trace il marker appare associato al TID corretto:
+dal thread \texttt{DDS\_Publish} e delimitano la chiamata
+\texttt{publish()} dal punto di vista dell'applicazione.
+Il thread reale del middleware (\texttt{dds.ev.0}, visualizzato come
+\texttt{DDS\_Comm}) \textbf{non scrive marker}: la sua attivita' e'
+visibile unicamente tramite gli eventi di scheduling del kernel
+(\texttt{sched\_switch}), che l'analizzatore registra come blocchi
+RUN, SLEEP e PREEMPT sulla sua corsia nel diagramma.
 
+Nel trace, i marker appaiono cosi':
 \begin{verbatim}
-DDS_Comm-12345  [000]  1132.500123: print: tracing_mark_write: DDS_MSG_START_DDS_Comm
-DDS_Comm-12345  [000]  1132.501456: print: tracing_mark_write: DDS_MSG_END_DDS_Comm
+DDS_Publish-8270 [000] 1132.50012: print: tracing_mark_write: DDS_MSG_START_DDS_Publish
+DDS_Publish-8270 [000] 1132.50145: print: tracing_mark_write: DDS_MSG_END_DDS_Publish
 \end{verbatim}
 
-Questo permette all'analizzatore di associare gli intervalli di comunicazione
-DDS al thread corretto e di visualizzarli su una corsia separata nel
-diagramma temporale.
+E il thread reale FastDDS appare negli eventi di scheduling:
+\begin{verbatim}
+    <idle>-0     [007] 1132.50015: sched_switch: swapper/7:0 R ==> dds.ev.0:11614
+  dds.ev.0-11614 [007] 1132.50018: sched_switch: dds.ev.0:11614 S ==> swapper/7:0
+\end{verbatim}
 
 % ............................................................................
 \subsection{Naming dei Thread con \texttt{pthread\_setname\_np}}
 \label{subsec:naming}
 
-Affinche' ftrace possa identificare i thread con nomi leggibili anziche'
-con semplici PID numerici, ogni thread si auto-nomina all'avvio tramite
-la funzione GNU \texttt{pthread\_setname\_np}:
+I thread applicativi vengono nominati tramite la funzione GNU
+\texttt{pthread\_setname\_np}, sia dall'interno del thread stesso
+(tramite la libreria \texttt{activity\_library}) sia dal main dopo
+la creazione:
 
-\begin{lstlisting}[language=C, caption={Assegnazione del nome al thread DDS\_Comm.}, label={lst:setname}]
-void *DDS_CommThread(void *arg) {
-    pthread_setname_np(pthread_self(), "DDS_Comm");
-    // ...
-}
+\begin{lstlisting}[language=C, caption={Assegnazione del nome ai thread applicativi.}, label={lst:setname}]
+// Nella libreria PeriodicTask:
+pthread_setname_np(pthread_self(), activity.name);
+
+// Nel main, dopo pthread_create:
+pthread_setname_np(thread1, "DDS_Publish");
+pthread_setname_np(thread2, "Activity_1");
 \end{lstlisting}
 
-Il nome viene impostato in due punti per ridondanza:
+Il thread \texttt{dds.ev.0} e' nominato automaticamente dal middleware
+eProsima FastDDS al momento della creazione del \texttt{DomainParticipant}.
+Il nome \texttt{dds.ev.0} segue la convenzione di FastDDS dove:
 \begin{itemize}
-    \item All'interno della funzione del thread (con \texttt{pthread\_self()}).
-    \item Dal thread principale dopo la \texttt{pthread\_create}
-          (con l'handle del thread).
+    \item \texttt{dds.} e' il prefisso comune a tutti i thread del middleware.
+    \item \texttt{ev} indica il thread evento (event loop).
+    \item \texttt{0} e' l'indice del \texttt{DomainParticipant}.
 \end{itemize}
 
-Il nome impostato e' quello che appare nel campo \texttt{comm} del trace:
+Nel trace, i nomi OS appaiono nel campo \texttt{comm}:
 \begin{verbatim}
-     DDS_Comm-12345  [000]  ...
-     DDS_Publish-12346  [000]  ...
-     Computation-12347  [000]  ...
+     DDS_Publish-8270  [000]  ...    (thread applicativo, nome impostato da noi)
+     Activity_1-8271   [000]  ...    (thread applicativo, nome impostato da noi)
+     dds.ev.0-11614    [007]  ...    (thread eProsima FastDDS, nome automatico)
 \end{verbatim}
 
 
@@ -261,7 +289,7 @@ Il nome impostato e' quello che appare nel campo \texttt{comm} del trace:
 \section{Il Task Periodico: Struttura e Funzionamento}
 \label{sec:periodic_task}
 
-I thread \texttt{DDS\_Publish} e \texttt{Computation} eseguono la stessa
+I thread \texttt{DDS\_Publish} e \texttt{Activity\_1} eseguono la stessa
 funzione generica \texttt{PeriodicTask}, definita nella libreria condivisa
 \texttt{activity\_library.c}. Questa funzione implementa un loop periodico
 con le seguenti caratteristiche:
@@ -371,8 +399,8 @@ Ogni riga del file testuale ha il formato:
 Ad esempio:
 \begin{verbatim}
 DDS_Publish-8270 [000] 1131.997662: print: tracing_mark_write: PERIOD_START_DDS_Publish
-Computation-8271 [000] 1131.998123: sched_switch: Computation:8271 [74] S ==> DDS_Comm:8272 [90]
-DDS_Comm-8272    [000] 1132.500123: print: tracing_mark_write: DDS_MSG_START_DDS_Comm
+Activity_1-8271  [000] 1131.998123: sched_switch: Activity_1:8271 [74] S ==> DDS_Publish:8270 [39]
+DDS_Publish-8270 [000] 1132.500123: print: tracing_mark_write: DDS_MSG_START_DDS_Publish
 \end{verbatim}
 
 
@@ -413,14 +441,15 @@ l'analizzatore estrae:
 \textbf{Variabile} & \textbf{Nome} & \textbf{Periodo (ms)} & \textbf{Deadline (ms)} \\
 \midrule
 \texttt{activity\_1} & \texttt{DDS\_Publish} & 600 & 600 \\
-\texttt{activity\_2} & \texttt{Computation}  & 250 & 250 \\
+\texttt{activity\_2} & \texttt{Activity\_1}  & 250 & 250 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Il thread \texttt{DDS\_Comm} non appare in questa tabella perche' non
-ha periodo ne' deadline (e' event-driven). Viene scoperto nella fase
-successiva tramite i marker.
+Il thread \texttt{DDS\_Comm} (\texttt{dds.ev.0}) non appare in questa
+tabella perche' non e' definito nel sorgente dell'applicazione: e' un
+thread interno del middleware eProsima FastDDS. Viene scoperto nella fase
+successiva tramite il suo nome OS nel trace.
 
 % ............................................................................
 \subsection{Fase 2: Discovery Dinamica dei Thread}
@@ -429,40 +458,55 @@ successiva tramite i marker.
 L'analizzatore effettua due passate sul file di trace per scoprire
 tutti i thread da tracciare.
 
-\paragraph{Passata 1: Scoperta via marker.}
+\paragraph{Passata 1: Scoperta dei thread applicativi via marker.}
 Scorre tutte le righe del trace cercando eventi di tipo \texttt{print}
 o \texttt{tracing\_mark\_write}. Per ogni PID che scrive un marker,
 registra la coppia (PID, nome\_OS):
 
-\begin{lstlisting}[language=C++, caption={Scoperta dei thread tramite marker.}, label={lst:discovery1}]
+\begin{lstlisting}[language=C++, caption={Scoperta dei thread applicativi tramite marker.}, label={lst:discovery1}]
 if (event.find("print") != std::string::npos ||
     event.find("tracing_mark_write") != std::string::npos) {
     if (marker_pids.count(pid) == 0)
-        marker_pids[pid] = comm;  // es: marker_pids[8272] = "DDS_Comm"
+        marker_pids[pid] = comm;  // es: marker_pids[8270] = "DDS_Publish"
+}
+\end{lstlisting}
+
+\paragraph{Scoperta del thread evento FastDDS.}
+Nella stessa passata, l'analizzatore cerca specificamente i thread il
+cui nome OS inizia con \texttt{dds.ev} --- il thread evento di eProsima
+FastDDS responsabile dell'invio dei messaggi. Quando lo trova, lo
+registra con il nome \texttt{DDS\_Comm}:
+
+\begin{lstlisting}[language=C++, caption={Scoperta e rinomina del thread reale FastDDS.}, label={lst:discovery_ev}]
+// Tracciamo il thread evento di eProsima (dds.ev.*) che gestisce
+// l'invio dei messaggi. Lo rinominiamo "DDS_Comm" nel CSV.
+if (tasks.count(pid) == 0 && comm.find("dds.ev") == 0) {
+    tasks[pid].name = "DDS_Comm";
+    tasks[pid].expected_period_sec = 0;   // non periodico
+    tasks[pid].expected_deadline_sec = 0;
 }
 \end{lstlisting}
 
 \paragraph{Passata 2: Registrazione con filtro.}
-I PID scoperti vengono registrati come task da tracciare, con un filtro
-che esclude i thread interni del middleware FastDDS
-(\texttt{dds.*}, \texttt{tpool}, \texttt{fastrtps}, etc.):
+I PID che hanno scritto marker vengono registrati come task, con un
+filtro che esclude tutti gli altri thread interni del middleware FastDDS
+(\texttt{dds.shm.*}, \texttt{dds.udp.*}, \texttt{dds.asyn.*}, etc.):
 
-\begin{lstlisting}[language=C++, caption={Filtro dei thread interni FastDDS.}, label={lst:filter}]
-// Ignora thread interni FastDDS
+\begin{lstlisting}[language=C++, caption={Filtro dei thread interni FastDDS non rilevanti.}, label={lst:filter}]
+// Ignora thread interni FastDDS che scrivono marker
+// (es. dds.dsha scrive DDS_READ_START/END per il listener)
 if (comm.find("dds.") == 0 || comm.find("tpool") == 0 ||
     comm.find("fastrtps") == 0 || comm.find("fastdds") == 0) {
     continue;  // non tracciare
 }
-// Thread applicativo: registralo
-tasks[pid].name = full_name;
 \end{lstlisting}
 
 Questo filtro e' fondamentale: il middleware FastDDS crea internamente
-numerosi thread per la gestione della rete
-(\texttt{dds.ev}, \texttt{dds.shm}, \texttt{dds.udp}, etc.)
-che inquinerebbero il diagramma temporale senza fornire informazioni utili.
-Solo il thread \texttt{DDS\_Comm}, che scrive i marker applicativi,
-viene tracciato.
+numerosi thread (\texttt{dds.shm.*} per la shared memory,
+\texttt{dds.udp.*} per il trasporto UDP, \texttt{dds.asyn.*} per il
+flow control, etc.) che inquinerebbero il diagramma temporale.
+Solo il thread evento \texttt{dds.ev.0}, responsabile dell'effettivo
+invio dei messaggi, viene tracciato e rinominato \texttt{DDS\_Comm}.
 
 % ............................................................................
 \subsection{Fase 3: Costruzione degli Intervalli}
@@ -565,8 +609,9 @@ il visualizzatore Python. Contiene tre categorie di righe:
 task,type,start,end,duration_ms
 DDS_Publish,RUN,1131.997662,1132.290601,292.939
 DDS_Publish,SLEEP,1132.290601,1132.797944,507.343
-DDS_Comm,DDS_MSG,1132.500123,1132.501456,1.333
-Computation,PREEMPT,1132.013012,1132.013138,0.126
+DDS_Publish,DDS_MSG,1132.500123,1132.501456,1.333
+DDS_Comm,RUN,1132.500150,1132.500180,0.030
+Activity_1,PREEMPT,1132.013012,1132.013138,0.126
 \end{verbatim}
 
 \paragraph{Righe di marker} (eventi puntuali):
@@ -578,8 +623,8 @@ DDS_Publish,MARKER_PERIOD_START_DDS_Publish,1131.997662,1131.997662,0.0
 \begin{verbatim}
 DDS_Publish,STAT_PERIOD,0,0,600.000000
 DDS_Publish,STAT_WCET,0,0,292.939000
-DDS_Comm,STAT_DDS_COUNT,0,0,6
-DDS_Comm,STAT_DDS_WCET,0,0,1.500000
+DDS_Publish,STAT_DDS_COUNT,0,0,6
+DDS_Publish,STAT_DDS_WCET,0,0,1.500000
 \end{verbatim}
 
 
@@ -612,7 +657,8 @@ Il grafico e' suddiviso verticalmente in piu' pannelli:
 
 Gli intervalli \texttt{DDS\_MSG} vengono visualizzati come
 \textbf{blocchi arancioni} (\texttt{\#FF6F00}) sovrapposti ai blocchi
-di stato nella corsia del thread \texttt{DDS\_Comm}. I blocchi sono:
+di stato nella corsia del thread \texttt{DDS\_Publish} (dove la
+\texttt{publish()} viene chiamata). I blocchi sono:
 
 \begin{itemize}
     \item Leggermente piu' sottili dei blocchi RUN (38\% dell'altezza)
@@ -641,8 +687,9 @@ di stato nella corsia del thread \texttt{DDS\_Comm}. I blocchi sono:
 \textcolor[HTML]{E53935}{Rosso}  & PREEMPT & Il thread e' pronto ma e' stato
     interrotto da un thread a priorita' superiore. \\
 \textcolor[HTML]{90A4AE}{Grigio} & SLEEP & Il thread e' in attesa volontaria. \\
-\textcolor[HTML]{FF6F00}{Arancione} & DDS\_MSG & Intervallo di comunicazione DDS
-    (dalla chiamata \texttt{publish()} al suo ritorno). \\
+\textcolor[HTML]{FF6F00}{Arancione} & DDS\_MSG & Intervallo della chiamata
+    \texttt{publish()} sul thread applicativo (dal momento in cui
+    l'applicazione invoca la funzione al suo ritorno). \\
 Nero (solido)  & Fine Periodo & Linea verticale che segna la fine
     di ogni periodo del task. \\
 Rosso (tratteggiato) & Deadline & Linea verticale alla scadenza della
@@ -742,16 +789,23 @@ Il diagramma temporale prodotto dal sistema permette di rispondere
 alle seguenti domande analitiche:
 
 \begin{enumerate}
-    \item \textbf{Quando avviene la comunicazione DDS?}
-          I blocchi arancioni sulla corsia \texttt{DDS\_Comm} mostrano
-          l'esatto intervallo temporale di ogni chiamata \texttt{publish()}.
-    \item \textbf{Quanto tempo impiega la comunicazione?}
-          La durata in millisecondi e' annotata sopra ogni blocco,
-          e le statistiche WCET/ACET sono nella tabella inferiore.
+    \item \textbf{Quando l'applicazione richiede l'invio?}
+          I blocchi arancioni \texttt{DDS\_MSG} sulla corsia
+          \texttt{DDS\_Publish} mostrano l'intervallo della chiamata
+          \texttt{publish()} dal punto di vista del thread applicativo.
+    \item \textbf{Quando il middleware effettivamente invia?}
+          I blocchi verdi RUN sulla corsia \texttt{DDS\_Comm}
+          (\texttt{dds.ev.0}) mostrano quando il thread reale di
+          eProsima FastDDS si attiva per trasmettere il messaggio.
+    \item \textbf{Qual e' il ritardo tra richiesta e invio?}
+          Confrontando il timestamp di \texttt{DDS\_MSG\_START}
+          (corsia \texttt{DDS\_Publish}) con il primo blocco RUN
+          successivo sulla corsia \texttt{DDS\_Comm}, si misura la
+          latenza introdotta dal middleware.
     \item \textbf{C'e' interferenza tra comunicazione e computazione?}
           Blocchi rossi (PREEMPT) sulla corsia \texttt{DDS\_Comm}
-          indicano che la comunicazione e' stata interrotta da un thread
-          a priorita' superiore.
+          indicano che il thread del middleware e' stato interrotto
+          dai task real-time applicativi a priorita' superiore.
     \item \textbf{Il task periodico rispetta le deadline?}
           Le linee verticali nere (fine periodo) e i triangoli rossi
           (deadline miss) forniscono una risposta immediata.

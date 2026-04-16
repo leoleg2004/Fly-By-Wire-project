@@ -8,11 +8,7 @@
 
 #include "/home/leonardo/eprosima_projects/flight_sensor/flight_sensor/Tesi/Brugali/src/lib/trace_marker.h"
 
-/*
- * periodic task that executes an activity
- * (flusso identico ad app10h: PERIOD_START, FUNCTION_START/END, deadline check,
- *  SLEEP_START, clock_nanosleep, PERIOD_END)
- */
+
 void *PeriodicTask(void *ptr) {
   t_activity_par activity;
   activity = *((t_activity_par *)ptr); // [ms]

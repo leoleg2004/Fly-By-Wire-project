@@ -1,0 +1,34 @@
+
+----------------------------------------------------------
+ TASK: DDS_Comm (PID: 24333)
+----------------------------------------------------------
+ [Esecuzione] WCET :      0.178 ms  |  ACET:      0.051 ms
+ [T.Risposta] WCRT :      0.000 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Non presenti nel sorgente originale.
+ [Stati]      Sleep  :       20      |  Preempt:        0     |  Run n.: 21
+ [Globale]    Util%  :    0.024 %    |  Gaps   :       20 (598.611 ms max)
+
+----------------------------------------------------------
+ TASK: DDS_Publish (PID: 24334)
+----------------------------------------------------------
+ [Esecuzione] WCET :    417.367 ms  |  ACET:    341.268 ms
+ [T.Risposta] WCRT :    420.312 ms
+ [Periodo]    Mis. :    500.008 ms  |  Jitter:    0.012 ms
+ [Parametri]  Periodo:  500.000 ms  |  Deadline:  500.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:   79.688 ms
+ [Stati]      Sleep  :        9      |  Preempt:      161     |  Run n.: 171
+ [Globale]    Util%  :   76.917 %    |  Gaps   :      170 (178.360 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 24335)
+----------------------------------------------------------
+ [Esecuzione] WCET :    128.763 ms  |  ACET:    127.595 ms
+ [T.Risposta] WCRT :    456.370 ms
+ [Periodo]    Mis. :   1012.515 ms  |  Jitter:   55.834 ms
+ [Parametri]  Periodo: 1000.000 ms  |  Deadline: 1000.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  543.630 ms
+ [Stati]      Sleep  :        4      |  Preempt:       24     |  Run n.: 29
+ [Globale]    Util%  :   14.940 %    |  Gaps   :       28 (949.576 ms max)
+
+[+] Dati esportati su timeline.csv

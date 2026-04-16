@@ -32,14 +32,12 @@
 #include <pthread.h>
 #include <sched.h>
 
-/* ========================================================================
- * Stato globale DDS
- * ======================================================================== */
+
 static Broadcastner g_broadcastner;
 static double g_counter = 0.0;
 
 /* ========================================================================
- * Comunicazione tra DDS_Publish (produttore) e DDS_Comm (consumatore)
+ * Comunicazione tra DDS_Publish e DDS_Comm 
  * ======================================================================== */
 static pthread_mutex_t dds_comm_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t dds_comm_cond = PTHREAD_COND_INITIALIZER;
@@ -59,18 +57,18 @@ void *DDS_CommThread(void *arg) {
   pthread_setname_np(pthread_self(), "DDS_Comm");
 
   while (1) {
-    /* ── attendi richiesta dal task periodico ────────────────────── */
+    
     pthread_mutex_lock(&dds_comm_mutex);
     while (!dds_comm_pending) {
       pthread_cond_wait(&dds_comm_cond, &dds_comm_mutex);
     }
 
-    /* copia locale del messaggio e reset flag */
+    
     Point msg = dds_comm_msg;
     dds_comm_pending = false;
     pthread_mutex_unlock(&dds_comm_mutex);
 
-    /* ── comunicazione DDS con marker ───────────────────────────── */
+   
     write_trace_marker("DDS_MSG_START_DDS_Comm");
 
     g_broadcastner.publish(&msg);
@@ -86,7 +84,7 @@ void *DDS_CommThread(void *arg) {
 
 /* ========================================================================
  * Thread 1: DDS_Publish — task periodico (800 ms)
- * Prepara il messaggio e lo passa a DDS_Comm, poi torna a dormire.
+ * Prepara il messaggio e lo passa a DDS_Comm
  * ======================================================================== */
 void dds_publish_function(void *instance) {
   (void)instance;
@@ -114,7 +112,7 @@ void dds_publish_function(void *instance) {
  * ======================================================================== */
 void computation_function(void *instance) {
   (void)instance;
-  activity_load(4);
+  activity_load(10);
 }
 
 /* ========================================================================
@@ -165,8 +163,8 @@ int main(int argc, char **argv) {
   t_activity_par activity_1;
   sprintf(activity_1.name, "DDS_Publish");
   activity_1.function = dds_publish_function;
-  activity_1.period = 600;
-  activity_1.deadline = 600;
+  activity_1.period = 500;
+  activity_1.deadline = 500;
   activity_1.instance = NULL;
   activity_1.print = true;
 
@@ -194,8 +192,8 @@ int main(int argc, char **argv) {
   t_activity_par activity_2;
   sprintf(activity_2.name, "Activity_1");
   activity_2.function = computation_function;
-  activity_2.period = 250;
-  activity_2.deadline = 250;
+  activity_2.period = 1000;
+  activity_2.deadline = 1000;
   activity_2.instance = NULL;
   activity_2.print = true;
 
