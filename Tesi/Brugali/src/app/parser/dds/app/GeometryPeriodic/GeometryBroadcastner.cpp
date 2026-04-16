@@ -3,23 +3,15 @@
  *
  * Architettura a 3 thread:
  *
- *   Thread 1 "DDS_Publish"  (periodico, 800 ms)
+ *   Thread 1 "DDS_Publish"  (periodico)
  *       - Calcola il carico + prepara il messaggio Point
  *       - Passa il messaggio al thread di comunicazione e torna a dormire
  *
- *   Thread 2 "Computation"  (periodico, 250 ms)
+ *   Thread 2 "Activity_1"  (periodico)
  *       - Carico computazionale puro (come Activity_2 di app10h)
  *
- *   Thread 3 "DDS_Comm"     (event-driven, NON periodico)
- *       - Attende la richiesta dal task periodico
- *       - Scrive DDS_MSG_START, esegue publish(), scrive DDS_MSG_END
- *       - I marker sono scritti da QUESTO thread, quindi nel trace appaiono
- *         sulla corsia "DDS_Comm" — separata da "DDS_Publish"
  *
- * Sul grafico finale si vedra':
- *   [DDS_Publish ] ██RUN██────SLEEP────██RUN██────SLEEP────
- *   [DDS_Comm    ]      ▓▓DDS▓▓              ▓▓DDS▓▓
- *   [Computation ] █R█─SLP─█R█─SLP─█R█─SLP─█R█─SLP─█R█─SLP
+ *
  */
 
 #include "GeometryBroadcastner.hpp"
