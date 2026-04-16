@@ -35,6 +35,7 @@ from matplotlib.lines import Line2D
 C = dict(
     RUN      = "#43A047",   PREEMPT  = "#E53935",   SLEEP    = "#90A4AE",
     RESOURCE_WAIT = "#FB8C00",  RESOURCE_LOCK = "#5E35B1",
+    DDS_MSG  = "#FF6F00",   # Amber-dark: blocchi comunicazione DDS sulla timeline
     BG_EVEN  = "#EEF2F7",  BG_ODD   = "#FFFFFF",
     HEADER   = "#263238",   PANEL_BG = "#F8FAFC",   BORDER   = "#CFD8DC",
     TEXT     = "#37474F",   DIM      = "#78909C",    ACCENT   = "#1565C0",
@@ -42,6 +43,7 @@ C = dict(
     SLACK    = "#00C853",   PEND     = "#212121",
 )
 STATE_TYPES = {"RUN", "PREEMPT", "SLEEP", "RESOURCE_WAIT", "RESOURCE_LOCK"}
+DDS_MSG_TYPE = "DDS_MSG"
 BAR_H  = 0.52
 LANE_H = 1.0
 
@@ -149,6 +151,10 @@ def load_csv(path: str):
             n_misses    = int(s.get("nmiss", 0)),
             utilization = s.get("util", 0),
             worst_slack = worst_slack,
+            # DDS communication stats (from STAT_DDS_* rows)
+            dds_count   = int(s.get("dds_count", 0)),
+            dds_wcet    = s.get("dds_wcet", 0),
+            dds_acet    = s.get("dds_acet", 0),
         )
 
     return df, stats_map, misses
@@ -164,8 +170,13 @@ def _nsuf(n: str):
 def order_tasks(tasks: list) -> list:
     act   = sorted([t for t in tasks if t.startswith("Activity_")],
                    key=_nsuf, reverse=True)
-    sys_t = sorted([t for t in tasks if not t.startswith("Activity_")])
-    return act + sys_t
+    dds_app = sorted([t for t in tasks
+                      if t.startswith("DDS_") and not t.startswith("DDS_Internal_")])
+    comp    = sorted([t for t in tasks if t.startswith("Computation")])
+    dds_int = sorted([t for t in tasks if t.startswith("DDS_Internal_")])
+    sys_t   = sorted([t for t in tasks
+                      if t not in set(act + dds_app + comp + dds_int)])
+    return act + dds_app + comp + dds_int + sys_t
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -185,18 +196,21 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
 
     cols = [
         ("Task",             0.005),
-        ("Period\n(ms)",     0.115),
-        ("Measured\n(ms)",   0.185),
-        ("Deadline\n(ms)",   0.265),
-        ("WCET\n(ms)",       0.345),
-        ("ACET\n(ms)",       0.420),
-        ("Jitter\n(ms)",     0.495),
-        ("Util %",           0.570),
-        ("nRUN",             0.633),
-        ("nPRE",             0.683),
-        ("nSLP",             0.733),
-        ("Miss",             0.783),
-        ("W.Slack\n(ms)",    0.840),
+        ("Period\n(ms)",     0.095),
+        ("Measured\n(ms)",   0.155),
+        ("Deadline\n(ms)",   0.225),
+        ("WCET\n(ms)",       0.295),
+        ("ACET\n(ms)",       0.358),
+        ("Jitter\n(ms)",     0.420),
+        ("Util %",           0.480),
+        ("nRUN",             0.533),
+        ("nPRE",             0.578),
+        ("nSLP",             0.623),
+        ("Miss",             0.668),
+        ("W.Slack\n(ms)",    0.718),
+        ("DDS\nCount",       0.790),
+        ("DDS WCET\n(ms)",   0.845),
+        ("DDS ACET\n(ms)",   0.920),
     ]
 
     # Header
@@ -236,6 +250,11 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
         drift = (s.get("measured_ms") is not None and s.get("period_ms") is not None
                  and abs(s["measured_ms"] - s["period_ms"]) > s["period_ms"] * 0.05)
 
+        dds_cnt  = s.get("dds_count", 0)
+        dds_wcet = s.get("dds_wcet", 0)
+        dds_acet = s.get("dds_acet", 0)
+        has_dds  = dds_cnt > 0
+
         vals = [
             task,
             fm(s.get("period_ms")),
@@ -250,6 +269,9 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
             fi(s.get("n_sleep", 0)),
             fi(s.get("n_misses", 0)),
             fm(ws, 1) if ws is not None else "—",
+            fi(dds_cnt) if has_dds else "—",
+            fm(dds_wcet) if has_dds else "—",
+            fm(dds_acet) if has_dds else "—",
         ]
         clrs = [
             C["HEADER"],
@@ -265,11 +287,15 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
             C["TEXT"],
             C["MISS"] if warn_miss else C["OK"],
             C["MISS"] if warn_ws else (C["SLACK"] if ws is not None else C["DIM"]),
+            C["DDS_MSG"] if has_dds else C["DIM"],
+            C["DDS_MSG"] if has_dds else C["DIM"],
+            C["DDS_MSG"] if has_dds else C["DIM"],
         ]
         bolds = [True, True, drift,
                  True, warn_wcet, False, False,
                  True, False, warn_pre, False,
-                 warn_miss, warn_ws or (ws is not None)]
+                 warn_miss, warn_ws or (ws is not None),
+                 has_dds, has_dds, has_dds]
 
         for (lbl, x0), val, col, bold in zip(cols, vals, clrs, bolds):
             ax.text(x0, ry + 0.05, val,
@@ -302,13 +328,14 @@ def draw_stats_table(ax, all_tasks: list, stats_map: dict):
     ly = -0.38
     for lbl, col, xi in [("RUN", C["RUN"], 0.01),
                           ("PREEMPT", C["PREEMPT"], 0.14),
-                          ("SLEEP", C["SLEEP"], 0.30)]:
+                          ("SLEEP", C["SLEEP"], 0.30),
+                          ("DDS_MSG", C["DDS_MSG"], 0.44)]:
         ax.add_patch(mpatches.Rectangle((xi, ly), 0.02, 0.14,
                                          facecolor=col, edgecolor=C["BORDER"],
                                          linewidth=0.4, zorder=2))
         ax.text(xi + 0.025, ly + 0.07, lbl,
                 fontsize=7, va="center", ha="left", color=C["HEADER"])
-    ax.text(0.46, ly + 0.07,
+    ax.text(0.58, ly + 0.07,
             "red = warning       Measured red = drift > 5% from expected period",
             fontsize=6, color=C["WARN"], va="center", ha="left")
 
@@ -475,6 +502,42 @@ def build_chart(df: pd.DataFrame, output: str,
                        facecolors=col, edgecolors="black",
                        linewidth=0.35, zorder=2)
 
+    # ── DDS_MSG overlay blocks ───────────────────────────────────────────
+    # Render DDS communication intervals as amber blocks overlaid on top of
+    # the RUN blocks, slightly thinner and offset upwards so both are visible.
+    DDS_BAR_H = BAR_H * 0.38
+    DDS_OFFSET = BAR_H * 0.28   # shift up within the lane
+    dds_rows = df[df["type"] == DDS_MSG_TYPE].copy()
+    if not dds_rows.empty:
+        for col_adj in ("start", "end"):
+            dds_rows[col_adj] -= t0
+        for _, row in dds_rows.iterrows():
+            task = row["task"]
+            if task not in task_to_y:
+                continue
+            yc  = task_to_y[task]
+            t_s = row["start"]; t_e = row["end"]
+            # Amber block, slightly above center
+            ax.broken_barh(
+                [(t_s, t_e - t_s)],
+                (yc - DDS_BAR_H/2 + DDS_OFFSET, DDS_BAR_H),
+                facecolors=C["DDS_MSG"], edgecolors="#BF360C",
+                linewidth=0.5, zorder=6, alpha=0.92)
+            # Start/End pin markers (vertical lines at edges)
+            for px in (t_s, t_e):
+                ax.plot([px, px],
+                        [yc + DDS_OFFSET - DDS_BAR_H*0.8,
+                         yc + DDS_OFFSET + DDS_BAR_H*0.8],
+                        color="#BF360C", linewidth=0.8, zorder=7)
+            # Duration label above block (only if wide enough to be readable)
+            dur_ms = (t_e - t_s) * 1000.0
+            block_frac = (t_e - t_s) / max(x_span, 1e-9)
+            if block_frac > 0.005:
+                ax.text((t_s + t_e) / 2, yc + DDS_OFFSET + DDS_BAR_H/2 + 0.06,
+                        f"{dur_ms:.2f}ms",
+                        fontsize=5.5, color="#BF360C", fontweight="bold",
+                        va="bottom", ha="center", zorder=8, clip_on=True)
+
     # ── Period / Deadline lines — IDEAL GRID from stats ──────────────────
     use_ms = x_span < 0.5
     MIN_LBL_GAP = x_span * 0.008
@@ -601,13 +664,14 @@ def build_chart(df: pd.DataFrame, output: str,
         mpatches.Patch(facecolor=C["RUN"],     edgecolor="black", lw=0.4, label="RUN"),
         mpatches.Patch(facecolor=C["PREEMPT"], edgecolor="black", lw=0.4, label="PREEMPT"),
         mpatches.Patch(facecolor=C["SLEEP"],   edgecolor="black", lw=0.4, label="SLEEP"),
+        mpatches.Patch(facecolor=C["DDS_MSG"], edgecolor="#BF360C", lw=0.6, label="DDS_MSG"),
         Line2D([0],[0], color=C["PEND"], lw=2.0, ls="-",  label="Fine Periodo"),
         Line2D([0],[0], color=C["WARN"], lw=1.2, ls="--", label="Deadline"),
         Line2D([0],[0], color=C["MISS"], lw=0, marker="v", markersize=7, label="Deadline Miss"),
     ]
     leg = ax.legend(handles=handles,
                     loc="lower center", bbox_to_anchor=(0.5, 1.01),
-                    ncol=6, frameon=True, framealpha=0.95,
+                    ncol=7, frameon=True, framealpha=0.95,
                     fontsize=9, borderpad=0.9, handlelength=2.2)
     for txt in leg.get_texts():
         txt.set_fontweight("bold")

@@ -18,7 +18,7 @@ DDS_LIBS =  -lfastcdr -L/home/leonardo/Fast-DDS-3.2.2/build/src/cpp -L/home/leon
 
 DIRECTORIES= output.dir 
 
-all: $(DIRECTORIES) $(LIB_NAME) clean
+all: $(DIRECTORIES) $(LIB_NAME)
 
 
 LIB_TARGET= ./lib$(LIB_NAME).so

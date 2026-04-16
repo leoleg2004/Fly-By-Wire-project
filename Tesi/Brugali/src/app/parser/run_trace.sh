@@ -85,7 +85,8 @@ if [ ! -f "$OUTPUT_DIR/trace.dat" ]; then
     exit 1
 fi
 
-sudo chmod 666 "$OUTPUT_DIR/trace.dat"
+sudo chown -R "$(id -u):$(id -g)" "$OUTPUT_DIR"
+chmod -R u+rwX "$OUTPUT_DIR"
 
 echo "[2/5] Generazione del report testuale..."
 trace-cmd report "$OUTPUT_DIR/trace.dat" > "$OUTPUT_DIR/trace_output.txt"

@@ -30,7 +30,7 @@ DDS_LIBS =  -lfastcdr -lfastrtps -Wl,-rpath=/usr/local/lib $(SYSLIBS)
 
 DIRECTORIES= output.dir 
 
-all: $(DIRECTORIES) $(APP_TARGET) clean
+all: $(DIRECTORIES) $(APP_TARGET)
 
 
 APP_OBJS    = $(LIB_SRC:%.cpp=output/%.o)

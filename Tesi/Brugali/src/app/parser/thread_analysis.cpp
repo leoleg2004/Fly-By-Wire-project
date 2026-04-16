@@ -152,13 +152,8 @@ int main(int argc, char *argv[]) {
           marker_pids[pid] = comm;
       }
 
-      // Thread del kernel specifici della CPU 1
-      if (comm.find("kworker/1") != std::string::npos ||
-          comm.find("ksoftirqd/1") != std::string::npos ||
-          comm.find("swapper/1") != std::string::npos) {
-        if (tasks.count(pid) == 0)
-          tasks[pid].name = comm;
-      }
+      // Thread kernel (kworker, ksoftirqd, swapper): ignorati.
+      // Tracciamo solo i thread applicativi.
 
       // FALLBACK DDS: Registrazione pigra basata unicamente sul nome OS (utile
       // se mancano i marker)
@@ -175,20 +170,43 @@ int main(int argc, char *argv[]) {
           }
         }
       }
+
+      // I thread interni FastDDS (dds.ev, dds.shm, dds.udp, ...) vengono
+      // ignorati. Solo il nostro thread "DDS_Comm" viene tracciato,
+      // perche' scrive marker e quindi viene scoperto automaticamente
+      // al PASSO 2 tramite marker_pids.
     }
   }
 
   // --- PASSO 2: registriamo i thread scoperti via marker ---
+  // Accettiamo solo thread il cui nome OS corrisponde a un task atteso
+  // (estratto dal sorgente) oppure che scrivono marker applicativi
+  // riconosciuti (PERIOD_START, DDS_MSG_START, ...).
+  // I thread interni FastDDS (dds.*, tpool, ...) vengono scartati.
   for (const auto &[pid, comm] : marker_pids) {
     if (tasks.count(pid))
       continue;
 
-    std::string full_name = comm;
+    // Controlla se il nome OS matcha un task atteso dal sorgente
+    std::string full_name = "";
     for (const auto &kv : expected_periods) {
       if (kv.first.find(comm) == 0) {
         full_name = kv.first;
         break;
       }
+    }
+
+    // Se non matcha nessun task atteso, controlla se scrive marker
+    // applicativi nostri (PERIOD_START, FUNCTION_START, DDS_MSG_START)
+    if (full_name.empty()) {
+      if (comm.find("dds.") == 0 || comm.find("tpool") == 0 ||
+          comm.find("fastrtps") == 0 || comm.find("fastdds") == 0 ||
+          comm.find("reception") == 0 || comm.find("non_blocking") == 0) {
+        // Thread interno FastDDS: ignora
+        continue;
+      }
+      // Thread sconosciuto ma scrive marker: accettalo col nome OS
+      full_name = comm;
     }
 
     tasks[pid].name = full_name;
@@ -339,6 +357,50 @@ int main(int argc, char *argv[]) {
     for (const auto &m : tdata.markers) {
       csv << tdata.name << ",MARKER_" << m.second << "," << std::fixed
           << std::setprecision(6) << m.first << "," << m.first << ",0.0\n";
+    }
+
+    // --- Costruzione intervalli DDS_MSG da coppie DDS_MSG_START/END ---
+    // Supporta sia i nuovi marker (DDS_MSG_START_*) che i vecchi (DDS_WRITE_START)
+    // per backward-compatibility con trace esistenti.
+    std::vector<double> dds_starts, dds_ends;
+    for (const auto &m : tdata.markers) {
+      if (m.second.find("DDS_MSG_START") != std::string::npos ||
+          m.second.find("DDS_WRITE_START") != std::string::npos)
+        dds_starts.push_back(m.first);
+      else if (m.second.find("DDS_MSG_END") != std::string::npos ||
+               m.second.find("DDS_WRITE_END") != std::string::npos)
+        dds_ends.push_back(m.first);
+    }
+    std::sort(dds_starts.begin(), dds_starts.end());
+    std::sort(dds_ends.begin(), dds_ends.end());
+
+    // Accoppiamento: ogni START si accoppia con il primo END successivo
+    size_t di = 0, dj = 0;
+    double dds_wcet_ms = 0, dds_sum_ms = 0;
+    int dds_count = 0;
+    while (di < dds_starts.size() && dj < dds_ends.size()) {
+      if (dds_ends[dj] > dds_starts[di]) {
+        double ds = dds_starts[di];
+        double de = dds_ends[dj];
+        double dur_ms = (de - ds) * 1000.0;
+        csv << tdata.name << ",DDS_MSG," << std::fixed << std::setprecision(6)
+            << ds << "," << de << "," << dur_ms << "\n";
+        dds_wcet_ms = std::max(dds_wcet_ms, dur_ms);
+        dds_sum_ms += dur_ms;
+        dds_count++;
+        di++;
+        dj++;
+      } else {
+        dj++;
+      }
+    }
+    double dds_acet_ms = dds_count > 0 ? (dds_sum_ms / dds_count) : 0;
+
+    // Emetti statistiche DDS_MSG nel CSV
+    if (dds_count > 0) {
+      csv << tdata.name << ",STAT_DDS_COUNT,0,0," << dds_count << "\n";
+      csv << tdata.name << ",STAT_DDS_WCET,0,0," << dds_wcet_ms << "\n";
+      csv << tdata.name << ",STAT_DDS_ACET,0,0," << dds_acet_ms << "\n";
     }
 
     // =================================================================

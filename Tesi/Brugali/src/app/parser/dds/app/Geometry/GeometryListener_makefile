@@ -30,7 +30,7 @@ DDS_LIBS =  -lfastcdr -L/home/leonardo/Fast-DDS-3.2.2/build/src/cpp -L/home/leon
 
 DIRECTORIES= output.dir 
 
-all: $(DIRECTORIES) $(APP_TARGET) clean
+all: $(DIRECTORIES) $(APP_TARGET)
 
 
 APP_OBJS    = $(LIB_SRC:%.cpp=output/%.o)

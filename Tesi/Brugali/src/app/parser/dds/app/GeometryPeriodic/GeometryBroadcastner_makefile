@@ -11,7 +11,7 @@ IDL_INCLUDE_DIR     = ../../msg/include
 IDL_LIB_DIR         = ../../msg/lib
 IDL_LIBs        	= -lgeometry_msgs
 
-CPPFLAGS = -c -Wall -fpic -m64 -O2 -std=c++0x
+CPPFLAGS = -c -Wall -fpic -m64 -O2 -std=c++17
 LDFLAGS= -m64
 
 CPP= g++
@@ -30,7 +30,7 @@ DDS_LIBS =  -lfastcdr -lfastrtps -Wl,-rpath=/usr/local/lib
 
 DIRECTORIES= output.dir 
 
-all: $(DIRECTORIES) $(APP_TARGET) clean
+all: $(DIRECTORIES) $(APP_TARGET)
 
 
 APP_OBJS    = $(LIB_SRC:%.cpp=output/%.o)

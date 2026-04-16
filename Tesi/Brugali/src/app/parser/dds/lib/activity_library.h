@@ -21,11 +21,13 @@
 
 /*
  * data structure for activity parameters
+ * (struttura identica al pattern di app10h: nome, funzione, periodo, deadline)
  */
 typedef struct activity_parameters {
 	char name[50];
 	void (*function)(void* instance);
 	int period;
+	long int deadline;
 	void* instance;
 	bool print;
 } t_activity_par;
