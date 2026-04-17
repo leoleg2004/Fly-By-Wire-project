@@ -55,9 +55,9 @@ void GeometryListener::on_data_available(DataReader *reader) {
 
 int main(int argc, char **argv) {
   eprosima::fastdds::dds::TypeSupport msg_type(new PointPubSubType());
-
+init_tracing();
   Listener listener(new GeometryListener(), &msg_type, "Point");
   listener.start("PointTopic", 1);
-
+close_tracing();
   return 0;
 }

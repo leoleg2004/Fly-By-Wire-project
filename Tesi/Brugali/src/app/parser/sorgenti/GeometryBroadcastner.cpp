@@ -1,17 +1,17 @@
 /*
  * GeometryBroadcastner.cpp
  *
- * Architettura a 3 thread:
+ * Architettura a 2 thread:
  *
- *   Thread 1 "DDS_Publish"  (periodico)
- *       - Calcola il carico + prepara il messaggio Point
- *       - Passa il messaggio al thread di comunicazione e torna a dormire
+ *   Thread 1 "DDS_Publish"  (periodico, SCHED_FIFO)
+ *       - Calcola il carico matematico
+ *       - Prepara il messaggio Point
+ *       - Chiama direttamente broadcastner.publish() con i marker DDS_MSG
+ *       - Tiene TUTTI i marker: PERIOD_START, FUNCTION_START,
+ *         DDS_MSG_START, DDS_MSG_END, FUNCTION_END, SLEEP_START, PERIOD_END
  *
- *   Thread 2 "Activity_1"  (periodico)
- *       - Carico computazionale puro (come Activity_2 di app10h)
- *
- *
- *
+ *   Thread 2 "Activity_1"  (periodico, SCHED_FIFO)
+ *       - Carico computazionale puro separato
  */
 
 #include "GeometryBroadcastner.hpp"
@@ -24,80 +24,48 @@
 #include <pthread.h>
 #include <sched.h>
 
-
+/* ========================================================================
+ * Stato globale condiviso tra main e le funzioni dei thread
+ * ======================================================================== */
 static Broadcastner g_broadcastner;
 static double g_counter = 0.0;
 
 /* ========================================================================
- * Comunicazione tra DDS_Publish e DDS_Comm 
- * ======================================================================== */
-static pthread_mutex_t dds_comm_mutex = PTHREAD_MUTEX_INITIALIZER;
-static pthread_cond_t dds_comm_cond = PTHREAD_COND_INITIALIZER;
-static bool dds_comm_pending = false;
-static Point dds_comm_msg;
-
-/* ========================================================================
- * Thread 3: DDS_Comm — thread dedicato alla comunicazione DDS
+ * Funzione del Thread 1: DDS_Publish
  *
- * Questo thread scrive i marker DDS_MSG_START / DDS_MSG_END.
- * Poiche' li scrive LUI, ftrace li associa al TID di DDS_Comm.
- * thread_analysis li legge e genera gli intervalli DDS_MSG sulla
- * corsia "DDS_Comm" nel CSV e nel grafico.
+ * Viene chiamata da PeriodicTask() ogni periodo.
+ * Scrive TUTTI i marker in sequenza — inclusi DDS_MSG_START/END —
+ * cosi' ftrace li associa al TID di DDS_Publish.
  * ======================================================================== */
-void *DDS_CommThread(void *arg) {
-  (void)arg;
-  pthread_setname_np(pthread_self(), "DDS_Comm");
-
-  while (1) {
-    
-    pthread_mutex_lock(&dds_comm_mutex);
-    while (!dds_comm_pending) {
-      pthread_cond_wait(&dds_comm_cond, &dds_comm_mutex);
-    }
-
-    
-    Point msg = dds_comm_msg;
-    dds_comm_pending = false;
-    pthread_mutex_unlock(&dds_comm_mutex);
-
-   
-    write_trace_marker("DDS_MSG_START_DDS_Comm");
-
-    g_broadcastner.publish(&msg);
-
-    write_trace_marker("DDS_MSG_END_DDS_Comm");
-
-    printf("DDS_Comm:    sent Point(%.1f, %.1f, %.1f)\n",
-           msg.x(), msg.y(), msg.z());
-  }
-
-  return NULL;
-}
-
-
 void dds_publish_function(void *instance, int parameter) {
   (void)instance;
 
-  /* carico computazionale (questa parte resta su DDS_Publish) */
+  /* 1. Carico computazionale */
   activity_load(parameter);
 
-  /* prepara il messaggio */
+  /* 2. Prepara il messaggio */
   g_counter += 0.1;
   Point point_msg;
   point_msg.x(1.0 * g_counter);
   point_msg.y(2.0 * g_counter);
   point_msg.z(3.0 * g_counter);
 
-  /* passa il messaggio al thread DDS_Comm */
-  pthread_mutex_lock(&dds_comm_mutex);
-  dds_comm_msg = point_msg;
-  dds_comm_pending = true;
-  pthread_cond_signal(&dds_comm_cond);
-  pthread_mutex_unlock(&dds_comm_mutex);
+  /* 3. Marker inizio comunicazione DDS (scritto da DDS_Publish) */
+  write_trace_marker("DDS_MSG_START_DDS_Publish");
+
+  /* 4. Invio reale tramite Fast-DDS */
+  g_broadcastner.publish(&point_msg);
+
+  /* 5. Marker fine comunicazione DDS */
+  write_trace_marker("DDS_MSG_END_DDS_Publish");
+
+  printf("DDS_Publish: sent Point(%.1f, %.1f, %.1f)\n", point_msg.x(),
+         point_msg.y(), point_msg.z());
 }
 
 /* ========================================================================
- * Thread 2: Computation — task periodico
+ * Funzione del Thread 2: Activity_1
+ * Carico puro, nessuna comunicazione DDS
  * ======================================================================== */
 void computation_function(void *instance, int parameter) {
   (void)instance;
@@ -115,31 +83,11 @@ int main(int argc, char **argv) {
   g_broadcastner.start(&msg_type, "Point", "PointTopic", 1);
   printf("\nDDS inizializzato. Press Ctrl-C to stop.\n\n");
 
-  /* ── Thread 3: DDS_Comm (event-driven, SCHED_FIFO) ────────────── */
-  pthread_t thread_comm;
-  pthread_attr_t attr_comm;
-  struct sched_param param_comm;
   cpu_set_t cpuset;
-
-  pthread_attr_init(&attr_comm);
-  pthread_attr_setinheritsched(&attr_comm, PTHREAD_EXPLICIT_SCHED);
-  pthread_attr_setschedpolicy(&attr_comm, SCHED_FIFO);
-
   CPU_ZERO(&cpuset);
   CPU_SET(0, &cpuset);
-  pthread_attr_setaffinity_np(&attr_comm, sizeof(cpu_set_t), &cpuset);
 
-  /* Priorita' alta: deve reagire subito quando il task periodico segnala */
-  param_comm.sched_priority = 90;
-  pthread_attr_setschedparam(&attr_comm, &param_comm);
-
-  int ret_err =
-      pthread_create(&thread_comm, &attr_comm, DDS_CommThread, NULL);
-  handle_error(ret_err, "Error in creating DDS_Comm thread");
-  pthread_setname_np(thread_comm, "DDS_Comm");
-  pthread_attr_destroy(&attr_comm);
-
-  /* ── Thread 1: DDS_Publish (periodico ) ─────────────────── */
+  /* ── Thread 1: DDS_Publish (periodico, SCHED_FIFO) ────────────── */
   pthread_t thread1;
   pthread_attr_t attr1;
   struct sched_param param1;
@@ -152,9 +100,9 @@ int main(int argc, char **argv) {
   t_activity_par activity_1;
   sprintf(activity_1.name, "DDS_Publish");
   activity_1.function = dds_publish_function;
-  activity_1.period = 600;
+  activity_1.period = 500;
   activity_1.parameter = 2;
-  activity_1.deadline = 600;
+  activity_1.deadline = 500;
   activity_1.instance = NULL;
   activity_1.print = true;
 
@@ -163,13 +111,13 @@ int main(int argc, char **argv) {
     param1.sched_priority = 1;
   pthread_attr_setschedparam(&attr1, &param1);
 
-  ret_err =
+  int ret_err =
       pthread_create(&thread1, &attr1, PeriodicTask, (void *)&activity_1);
   handle_error(ret_err, "Error in creating PeriodicTask DDS_Publish");
   pthread_setname_np(thread1, "DDS_Publish");
   pthread_attr_destroy(&attr1);
 
-  /* ── Thread 2: Computation (periodico) ─────────────────── */
+  /* ── Thread 2: Activity_1 (periodico, SCHED_FIFO) ─────────────── */
   pthread_t thread2;
   pthread_attr_t attr2;
   struct sched_param param2;
@@ -193,8 +141,7 @@ int main(int argc, char **argv) {
     param2.sched_priority = 1;
   pthread_attr_setschedparam(&attr2, &param2);
 
-  ret_err =
-      pthread_create(&thread2, &attr2, PeriodicTask, (void *)&activity_2);
+  ret_err = pthread_create(&thread2, &attr2, PeriodicTask, (void *)&activity_2);
   handle_error(ret_err, "Error in creating PeriodicTask Activity_1");
   pthread_setname_np(thread2, "Activity_1");
   pthread_attr_destroy(&attr2);
@@ -202,7 +149,6 @@ int main(int argc, char **argv) {
   /* ── Attesa completamento ──────────────────────────────────────── */
   pthread_join(thread1, NULL);
   pthread_join(thread2, NULL);
-  /* DDS_Comm gira per sempre, terminato da Ctrl-C assieme ai periodici */
 
   close_tracing();
   return 0;
