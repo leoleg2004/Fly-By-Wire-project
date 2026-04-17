@@ -74,10 +74,7 @@ void *DDS_CommThread(void *arg) {
   return NULL;
 }
 
-/* ========================================================================
- * Thread 1: DDS_Publish — task periodico
- * Prepara il messaggio e lo passa a DDS_Comm
- * ======================================================================== */
+
 void dds_publish_function(void *instance, int parameter) {
   (void)instance;
 
@@ -155,9 +152,9 @@ int main(int argc, char **argv) {
   t_activity_par activity_1;
   sprintf(activity_1.name, "DDS_Publish");
   activity_1.function = dds_publish_function;
-  activity_1.period = 500;
+  activity_1.period = 600;
   activity_1.parameter = 2;
-  activity_1.deadline = 500;
+  activity_1.deadline = 600;
   activity_1.instance = NULL;
   activity_1.print = true;
 
