@@ -1,0 +1,766 @@
+cpus=8
+      Activity_1-30971 [000] 10081.141289: sched_wakeup:         DDS_Publish:30970 [50] CPU:000
+      Activity_1-30971 [000] 10081.141291: sched_switch:         Activity_1:30971 [98] R ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.141295: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-30970 [000] 10081.141295: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-30970 [000] 10081.141296: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+          <idle>-0     [006] 10081.142910: sched_wakeup:         dds.shm.wdog:30962 [120] CPU:006
+          <idle>-0     [006] 10081.142915: sched_switch:         swapper/6:0 [120] R ==> dds.shm.wdog:30962 [120]
+    dds.shm.wdog-30962 [006] 10081.142936: sched_switch:         dds.shm.wdog:30962 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10081.153259: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.153261: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.153276: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.165260: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.165261: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     ksoftirqd/0-14    [000] 10081.165270: sched_switch:         ksoftirqd/0:14 [120] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.207493: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.207494: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.207737: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.217260: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.217261: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.217265: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.281261: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.281262: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.281265: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+          <idle>-0     [006] 10081.302631: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10081.302634: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10081.302653: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10081.309755: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.309755: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.310034: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.409266: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.409269: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.409276: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.412166: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.412166: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.412393: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [002] 10081.435240: sched_wakeup:         dds.shm.7663:30966 [120] CPU:002
+          <idle>-0     [002] 10081.435245: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [002] 10081.435261: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [007] 10081.452120: sched_wakeup:         dds.shm.wdog:26641 [120] CPU:007
+          <idle>-0     [007] 10081.452129: sched_switch:         swapper/7:0 [120] R ==> dds.shm.wdog:26641 [120]
+    dds.shm.wdog-26641 [007] 10081.452147: sched_switch:         dds.shm.wdog:26641 [120] S ==> swapper/7:0 [120]
+     DDS_Publish-30970 [000] 10081.473268: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.473268: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.473272: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.514562: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.514562: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.514795: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.537269: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.537270: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.537273: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.599578: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-30970 [000] 10081.599579: print:                tracing_mark_write: DDS_WRITE_START
+     DDS_Publish-30970 [000] 10081.599647: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-30970 [000] 10081.599647: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-30970 [000] 10081.599659: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-30970 [000] 10081.599664: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-30970 [000] 10081.599667: sched_switch:         DDS_Publish:30970 [50] S ==> Activity_1:30971 [98]
+          <idle>-0     [007] 10081.599710: sched_wakeup:         dds.dsha.260:26649 [120] CPU:007
+          <idle>-0     [007] 10081.599716: sched_switch:         swapper/7:0 [120] R ==> dds.dsha.260:26649 [120]
+    dds.dsha.260-26649 [007] 10081.599774: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [002] 10081.599802: sched_wakeup:         dds.shm.7663:30966 [120] CPU:002
+          <idle>-0     [002] 10081.599803: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [002] 10081.599829: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/2:0 [120]
+    dds.dsha.260-26649 [007] 10081.599840: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-26649 [007] 10081.599852: sched_switch:         dds.dsha.260:26649 [120] S ==> swapper/7:0 [120]
+      Activity_1-30971 [000] 10081.601273: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+      Activity_1-30971 [000] 10081.601274: sched_switch:         Activity_1:30971 [98] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.601278: sched_switch:         kworker/0:0:22337 [120] I ==> Activity_1:30971 [98]
+      Activity_1-30971 [000] 10081.610274: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+      Activity_1-30971 [000] 10081.610276: sched_switch:         Activity_1:30971 [98] R ==> kworker/0:0:22337 [120]
+     ksoftirqd/0-14    [000] 10081.610286: sched_switch:         ksoftirqd/0:14 [120] S ==> Activity_1:30971 [98]
+      Activity_1-30971 [000] 10081.616324: print:                tracing_mark_write: FUNCTION_END_Activity_1
+      Activity_1-30971 [000] 10081.616335: print:                tracing_mark_write: SLEEP_START_Activity_1
+      Activity_1-30971 [000] 10081.616337: sched_switch:         Activity_1:30971 [98] S ==> swapper/0:0 [120]
+          <idle>-0     [000] 10081.616339: sched_wakeup:         Activity_1:30971 [98] CPU:000
+          <idle>-0     [000] 10081.616340: sched_switch:         swapper/0:0 [120] R ==> Activity_1:30971 [98]
+      Activity_1-30971 [000] 10081.616341: print:                tracing_mark_write: PERIOD_END_Activity_1
+      Activity_1-30971 [000] 10081.616342: print:                tracing_mark_write: PERIOD_START_Activity_1
+      Activity_1-30971 [000] 10081.616345: sched_switch:         Activity_1:30971 [98] S ==> swapper/0:0 [120]
+          <idle>-0     [006] 10081.635818: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10081.635826: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10081.635849: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [000] 10081.641439: sched_wakeup:         DDS_Publish:30970 [50] CPU:000
+          <idle>-0     [000] 10081.641450: sched_switch:         swapper/0:0 [120] R ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.641470: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-30970 [000] 10081.641471: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-30970 [000] 10081.641472: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+          <idle>-0     [003] 10081.645978: sched_wakeup:         dds.ev.0:30963 [120] CPU:003
+          <idle>-0     [003] 10081.645981: sched_switch:         swapper/3:0 [120] R ==> dds.ev.0:30963 [120]
+          <idle>-0     [004] 10081.646063: sched_wakeup:         dds.udp.7660:26643 [120] CPU:004
+          <idle>-0     [004] 10081.646065: sched_switch:         swapper/4:0 [120] R ==> dds.udp.7660:26643 [120]
+        dds.ev.0-30963 [003] 10081.646067: sched_switch:         dds.ev.0:30963 [120] R ==> migration/3:35 [0]
+          <idle>-0     [002] 10081.646081: sched_switch:         swapper/2:0 [120] R ==> dds.ev.0:30963 [120]
+    dds.udp.7660-26643 [004] 10081.646107: sched_switch:         dds.udp.7660:26643 [120] R ==> migration/4:41 [0]
+          <idle>-0     [007] 10081.646129: sched_switch:         swapper/7:0 [120] R ==> dds.udp.7660:26643 [120]
+          <idle>-0     [003] 10081.646165: sched_wakeup:         dds.udp.7650:26644 [120] CPU:003
+          <idle>-0     [004] 10081.646167: sched_wakeup:         dds.udp.7650:30965 [120] CPU:004
+          <idle>-0     [003] 10081.646167: sched_switch:         swapper/3:0 [120] R ==> dds.udp.7650:26644 [120]
+          <idle>-0     [004] 10081.646168: sched_switch:         swapper/4:0 [120] R ==> dds.udp.7650:30965 [120]
+    dds.udp.7660-26643 [007] 10081.646170: sched_switch:         dds.udp.7660:26643 [120] S ==> swapper/7:0 [120]
+    dds.udp.7650-26644 [003] 10081.646202: sched_switch:         dds.udp.7650:26644 [120] S ==> swapper/3:0 [120]
+        dds.ev.0-30963 [002] 10081.646224: sched_switch:         dds.ev.0:30963 [120] S ==> swapper/2:0 [120]
+    dds.udp.7650-30965 [004] 10081.646234: sched_switch:         dds.udp.7650:30965 [120] S ==> swapper/4:0 [120]
+     DDS_Publish-30970 [000] 10081.649507: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.649508: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.649583: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.651613: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.651614: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.651846: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [001] 10081.659714: sched_wakeup:         dds.ev.0:26642 [120] CPU:001
+          <idle>-0     [001] 10081.659724: sched_switch:         swapper/1:0 [120] R ==> dds.ev.0:26642 [120]
+          <idle>-0     [004] 10081.659793: sched_wakeup:         dds.udp.7650:30965 [120] CPU:004
+          <idle>-0     [004] 10081.659794: sched_switch:         swapper/4:0 [120] R ==> dds.udp.7650:30965 [120]
+    dds.udp.7650-30965 [004] 10081.659835: sched_switch:         dds.udp.7650:30965 [120] S ==> swapper/4:0 [120]
+        dds.ev.0-26642 [001] 10081.659836: sched_switch:         dds.ev.0:26642 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [006] 10081.659853: sched_wakeup:         dds.udp.7662:30964 [120] CPU:006
+          <idle>-0     [006] 10081.659855: sched_switch:         swapper/6:0 [120] R ==> dds.udp.7662:30964 [120]
+    dds.udp.7662-30964 [006] 10081.659880: sched_switch:         dds.udp.7662:30964 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003] 10081.659886: sched_wakeup:         dds.udp.7650:26644 [120] CPU:003
+          <idle>-0     [003] 10081.659889: sched_switch:         swapper/3:0 [120] R ==> dds.udp.7650:26644 [120]
+    dds.udp.7650-26644 [003] 10081.659925: sched_switch:         dds.udp.7650:26644 [120] S ==> swapper/3:0 [120]
+     DDS_Publish-30970 [000] 10081.659939: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.659939: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.660002: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.669499: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.669503: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.669770: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.670379: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.670379: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.670599: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.719351: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.719352: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.719590: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.793280: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.793282: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.793289: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.821870: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.821872: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.822106: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.822683: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.822683: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.822912: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.823365: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.823365: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.823596: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.825966: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.825968: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.826461: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.862074: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.862077: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.862313: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.921284: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.921288: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.921333: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10081.924169: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10081.924170: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10081.924422: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [002] 10081.932891: sched_wakeup:         dds.shm.7663:30966 [120] CPU:002
+          <idle>-0     [002] 10081.932893: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [002] 10081.932908: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [006] 10081.968989: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10081.968993: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10081.969011: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10081.985286: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10081.985288: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10081.985296: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.015085: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.015087: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.015157: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.015472: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.015472: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.015702: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.022004: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.022005: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.022236: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.026551: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.026552: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.026794: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.031291: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10082.031292: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10082.031297: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.035895: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.035896: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.036125: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.049287: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10082.049288: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10082.049293: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.106229: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-30970 [000] 10082.106230: print:                tracing_mark_write: DDS_WRITE_START
+     DDS_Publish-30970 [000] 10082.106318: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-30970 [000] 10082.106319: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-30970 [000] 10082.106331: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-30970 [000] 10082.106336: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-30970 [000] 10082.106340: sched_switch:         DDS_Publish:30970 [50] S ==> swapper/0:0 [120]
+          <idle>-0     [007] 10082.106365: sched_wakeup:         dds.dsha.260:26649 [120] CPU:007
+          <idle>-0     [007] 10082.106367: sched_switch:         swapper/7:0 [120] R ==> dds.dsha.260:26649 [120]
+    dds.dsha.260-26649 [007] 10082.106437: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [002] 10082.106467: sched_wakeup:         dds.shm.7663:30966 [120] CPU:002
+          <idle>-0     [002] 10082.106469: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [002] 10082.106507: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/2:0 [120]
+    dds.dsha.260-26649 [007] 10082.106512: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-26649 [007] 10082.106525: sched_switch:         dds.dsha.260:26649 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [000] 10082.141326: sched_wakeup:         DDS_Publish:30970 [50] CPU:000
+          <idle>-0     [000] 10082.141328: sched_switch:         swapper/0:0 [120] R ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.141338: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-30970 [000] 10082.141339: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-30970 [000] 10082.141339: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+          <idle>-0     [006] 10082.143010: sched_wakeup:         dds.shm.wdog:30962 [120] CPU:006
+          <idle>-0     [006] 10082.143012: sched_switch:         swapper/6:0 [120] R ==> dds.shm.wdog:30962 [120]
+    dds.shm.wdog-30962 [006] 10082.143043: sched_switch:         dds.shm.wdog:30962 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10082.161294: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10082.169768: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.169770: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.170046: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.178412: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.178414: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.178500: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.178575: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.178575: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.178627: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.178630: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.178631: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.178664: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.179747: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.179748: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.179977: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.231351: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.231355: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.231666: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [006] 10082.302159: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10082.302163: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10082.302182: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10082.333766: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.333768: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.334058: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.334738: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.334739: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.334965: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.335243: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.335244: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.335474: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.338988: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.338988: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.339245: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.339729: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.339730: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.339802: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.340121: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.340121: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.340350: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.360295: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.360296: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.360525: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.422174: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.422176: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.422242: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.422577: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.422578: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.422807: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.436159: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.436160: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.436414: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [002] 10082.439565: sched_wakeup:         dds.shm.7663:30966 [120] CPU:002
+          <idle>-0     [002] 10082.439567: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [002] 10082.439581: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/2:0 [120]
+     DDS_Publish-30970 [000] 10082.442868: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.442869: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.443097: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [007] 10082.452308: sched_wakeup:         dds.shm.wdog:26641 [120] CPU:007
+          <idle>-0     [007] 10082.452312: sched_switch:         swapper/7:0 [120] R ==> dds.shm.wdog:26641 [120]
+    dds.shm.wdog-26641 [007] 10082.452331: sched_switch:         dds.shm.wdog:26641 [120] S ==> swapper/7:0 [120]
+     DDS_Publish-30970 [000] 10082.538556: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.538557: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.538785: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.539361: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.539361: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.539591: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.539948: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.539949: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.540178: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.542628: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.542629: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.543173: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.543188: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.543189: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.543216: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.543592: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.543592: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.543861: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.544003: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.544004: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.544074: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.544245: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.544246: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.544483: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.544656: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.544656: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.544922: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.563779: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.563780: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.564008: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.587219: sched_wakeup:         Activity_1:30971 [98] CPU:000
+     DDS_Publish-30970 [000] 10082.609641: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-30970 [000] 10082.609642: print:                tracing_mark_write: DDS_WRITE_START
+     DDS_Publish-30970 [000] 10082.609707: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-30970 [000] 10082.609707: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-30970 [000] 10082.609721: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-30970 [000] 10082.609726: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-30970 [000] 10082.609729: sched_switch:         DDS_Publish:30970 [50] S ==> Activity_1:30971 [98]
+      Activity_1-30971 [000] 10082.609731: print:                tracing_mark_write: PERIOD_END_Activity_1
+      Activity_1-30971 [000] 10082.609731: print:                tracing_mark_write: PERIOD_START_Activity_1
+      Activity_1-30971 [000] 10082.609732: print:                tracing_mark_write: FUNCTION_START_Activity_1
+          <idle>-0     [007] 10082.609762: sched_wakeup:         dds.dsha.260:26649 [120] CPU:007
+          <idle>-0     [007] 10082.609763: sched_switch:         swapper/7:0 [120] R ==> dds.dsha.260:26649 [120]
+    dds.dsha.260-26649 [007] 10082.609815: sched_switch:         dds.dsha.260:26649 [120] R ==> migration/7:59 [0]
+          <idle>-0     [005] 10082.609895: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:26649 [120]
+    dds.dsha.260-26649 [005] 10082.609913: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [002] 10082.609949: sched_wakeup:         dds.shm.7663:30966 [120] CPU:002
+          <idle>-0     [002] 10082.609951: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [002] 10082.609978: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/2:0 [120]
+    dds.dsha.260-26649 [005] 10082.609992: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-26649 [005] 10082.610005: sched_switch:         dds.dsha.260:26649 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [006] 10082.635258: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10082.635263: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10082.635280: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+      Activity_1-30971 [000] 10082.640971: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+      Activity_1-30971 [000] 10082.640974: sched_switch:         Activity_1:30971 [98] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.641264: sched_switch:         irq/171-rtw88_p:607 [49] S ==> Activity_1:30971 [98]
+      Activity_1-30971 [000] 10082.641334: sched_wakeup:         DDS_Publish:30970 [50] CPU:000
+      Activity_1-30971 [000] 10082.641335: sched_switch:         Activity_1:30971 [98] R ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.641342: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-30970 [000] 10082.641344: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-30970 [000] 10082.641344: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+     DDS_Publish-30970 [000] 10082.641869: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.641870: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.642103: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.661458: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.661459: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.661688: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.743374: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.743375: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.743608: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.744214: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.744214: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.744458: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.745099: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.745099: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.745331: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.747729: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.747729: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.748260: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.748333: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.748333: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.748405: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.749332: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.749333: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.749566: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.763874: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.763876: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.764104: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.845770: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.845771: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.846003: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.846593: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.846594: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.846824: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.847660: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.847660: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.847885: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.848189: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.848190: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.848442: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10082.888543: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.888545: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.888773: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [002] 10082.943039: sched_wakeup:         dds.shm.7663:30966 [120] CPU:002
+          <idle>-0     [002] 10082.943042: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [002] 10082.943058: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/2:0 [120]
+     DDS_Publish-30970 [000] 10082.948184: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10082.948185: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10082.948418: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [006] 10082.968335: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10082.968340: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10082.968351: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10083.050563: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.050566: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.050856: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.090478: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     ksoftirqd/0-14    [000] 10083.090594: sched_switch:         ksoftirqd/0:14 [120] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.103699: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-30970 [000] 10083.103700: print:                tracing_mark_write: DDS_WRITE_START
+          <idle>-0     [005] 10083.103773: sched_wakeup:         dds.dsha.260:26649 [120] CPU:005
+     DDS_Publish-30970 [000] 10083.103773: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-30970 [000] 10083.103773: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+          <idle>-0     [005] 10083.103778: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:26649 [120]
+     DDS_Publish-30970 [000] 10083.103803: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-30970 [000] 10083.103808: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-30970 [000] 10083.103810: sched_switch:         DDS_Publish:30970 [50] S ==> Activity_1:30971 [98]
+    dds.dsha.260-26649 [005] 10083.103854: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [002] 10083.103887: sched_wakeup:         dds.shm.7663:30966 [120] CPU:002
+          <idle>-0     [002] 10083.103891: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [002] 10083.103897: sched_switch:         dds.shm.7663:30966 [120] R ==> migration/2:29 [0]
+          <idle>-0     [007] 10083.103903: sched_switch:         swapper/7:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.dsha.260-26649 [005] 10083.103919: print:                tracing_mark_write: DDS_READ_END
+    dds.shm.7663-30966 [007] 10083.103932: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/7:0 [120]
+    dds.dsha.260-26649 [005] 10083.103933: sched_switch:         dds.dsha.260:26649 [120] S ==> swapper/5:0 [120]
+      Activity_1-30971 [000] 10083.137322: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+      Activity_1-30971 [000] 10083.137326: sched_switch:         Activity_1:30971 [98] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10083.137332: sched_switch:         kworker/0:0:22337 [120] I ==> Activity_1:30971 [98]
+      Activity_1-30971 [000] 10083.141350: sched_wakeup:         DDS_Publish:30970 [50] CPU:000
+      Activity_1-30971 [000] 10083.141350: sched_switch:         Activity_1:30971 [98] R ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.141354: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-30970 [000] 10083.141355: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-30970 [000] 10083.141356: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+          <idle>-0     [006] 10083.143212: sched_wakeup:         dds.shm.wdog:30962 [120] CPU:006
+          <idle>-0     [006] 10083.143222: sched_switch:         swapper/6:0 [120] R ==> dds.shm.wdog:30962 [120]
+    dds.shm.wdog-30962 [006] 10083.143242: sched_switch:         dds.shm.wdog:30962 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10083.152977: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.152978: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.153220: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.201321: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10083.201324: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10083.201328: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.222325: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10083.222327: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10083.222339: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.255644: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.255646: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.255879: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.265323: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10083.265324: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10083.265328: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+          <idle>-0     [006] 10083.301502: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10083.301505: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10083.301523: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10083.357784: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.357786: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.358019: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.393327: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10083.393328: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10083.393331: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+          <idle>-0     [007] 10083.437008: sched_wakeup:         dds.shm.7663:30966 [120] CPU:007
+          <idle>-0     [007] 10083.437012: sched_switch:         swapper/7:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [007] 10083.437025: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [007] 10083.452502: sched_wakeup:         dds.shm.wdog:26641 [120] CPU:007
+          <idle>-0     [007] 10083.452505: sched_switch:         swapper/7:0 [120] R ==> dds.shm.wdog:26641 [120]
+    dds.shm.wdog-26641 [007] 10083.452524: sched_switch:         dds.shm.wdog:26641 [120] S ==> swapper/7:0 [120]
+     DDS_Publish-30970 [000] 10083.461577: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.461578: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.461820: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.562602: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.562603: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.562832: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.585332: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10083.585333: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10083.585337: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.598720: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-30970 [000] 10083.598721: print:                tracing_mark_write: DDS_WRITE_START
+     DDS_Publish-30970 [000] 10083.598778: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-30970 [000] 10083.598779: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-30970 [000] 10083.598791: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-30970 [000] 10083.598796: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-30970 [000] 10083.598799: sched_switch:         DDS_Publish:30970 [50] S ==> Activity_1:30971 [98]
+          <idle>-0     [005] 10083.598836: sched_wakeup:         dds.dsha.260:26649 [120] CPU:005
+          <idle>-0     [005] 10083.598837: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:26649 [120]
+    dds.dsha.260-26649 [005] 10083.598901: print:                tracing_mark_write: DDS_READ_START
+    dds.dsha.260-26649 [005] 10083.598990: print:                tracing_mark_write: DDS_READ_END
+          <idle>-0     [007] 10083.599005: sched_wakeup:         dds.shm.7663:30966 [120] CPU:007
+    dds.dsha.260-26649 [005] 10083.599005: sched_switch:         dds.dsha.260:26649 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [007] 10083.599007: sched_switch:         swapper/7:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [007] 10083.599040: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/7:0 [120]
+      Activity_1-30971 [000] 10083.625136: print:                tracing_mark_write: FUNCTION_END_Activity_1
+      Activity_1-30971 [000] 10083.625145: print:                tracing_mark_write: SLEEP_START_Activity_1
+      Activity_1-30971 [000] 10083.625148: sched_switch:         Activity_1:30971 [98] S ==> swapper/0:0 [120]
+          <idle>-0     [000] 10083.625150: sched_wakeup:         Activity_1:30971 [98] CPU:000
+          <idle>-0     [000] 10083.625151: sched_switch:         swapper/0:0 [120] R ==> Activity_1:30971 [98]
+      Activity_1-30971 [000] 10083.625152: print:                tracing_mark_write: PERIOD_END_Activity_1
+      Activity_1-30971 [000] 10083.625153: print:                tracing_mark_write: PERIOD_START_Activity_1
+      Activity_1-30971 [000] 10083.625154: sched_switch:         Activity_1:30971 [98] S ==> swapper/0:0 [120]
+          <idle>-0     [006] 10083.634585: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10083.634589: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10083.634611: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [000] 10083.641456: sched_wakeup:         DDS_Publish:30970 [50] CPU:000
+          <idle>-0     [000] 10083.641483: sched_switch:         swapper/0:0 [120] R ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.641495: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-30970 [000] 10083.641496: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-30970 [000] 10083.641497: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+     DDS_Publish-30970 [000] 10083.645338: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10083.645340: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10083.645353: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.664989: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.664990: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.665281: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.760679: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.760681: sched_switch:         DDS_Publish:30970 [50] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000] 10083.760827: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.760871: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.760872: sched_switch:         DDS_Publish:30970 [50] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000] 10083.760996: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.761314: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.761315: sched_switch:         DDS_Publish:30970 [50] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000] 10083.761459: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.761504: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.761505: sched_switch:         DDS_Publish:30970 [50] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000] 10083.761628: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.761859: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.761860: sched_switch:         DDS_Publish:30970 [50] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000] 10083.761983: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.762029: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.762029: sched_switch:         DDS_Publish:30970 [50] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000] 10083.762154: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.762638: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.762639: sched_switch:         DDS_Publish:30970 [50] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000] 10083.762738: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.767494: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.767495: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.767730: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.841342: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10083.841343: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10083.841348: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.869778: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.869780: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.870020: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.878508: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.878510: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.878585: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.878896: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.878897: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.879125: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.879291: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.879291: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.879556: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.904851: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.904854: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.905133: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.918854: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.918856: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.918926: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.926771: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.926772: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.926999: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [007] 10083.932118: sched_wakeup:         dds.shm.7663:30966 [120] CPU:007
+          <idle>-0     [007] 10083.932124: sched_switch:         swapper/7:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [007] 10083.932135: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/7:0 [120]
+     DDS_Publish-30970 [000] 10083.945556: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.945557: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.945803: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.946178: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.946179: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.946249: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.946607: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.946608: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.946833: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.962165: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.962166: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.962401: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.962597: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.962598: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.962668: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.962689: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.962690: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.962758: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.963099: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.963099: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.963327: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10083.966860: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.966861: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.967090: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [006] 10083.967682: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10083.967691: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10083.967703: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10083.972201: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10083.972201: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10083.972455: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.033351: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.033355: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.033367: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.047352: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.047355: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.047366: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.074597: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.074598: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.074838: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.075426: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.075426: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.075656: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.076033: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.076033: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.076264: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.076566: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.076567: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.076897: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.077162: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.077163: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.077233: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.078126: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.078127: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.078145: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.079011: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.079011: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.079236: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.097354: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.097362: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.097402: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+          <idle>-0     [002] 10084.102324: sched_wakeup:         dds.ev.0:30963 [120] CPU:002
+          <idle>-0     [002] 10084.102333: sched_switch:         swapper/2:0 [120] R ==> dds.ev.0:30963 [120]
+        dds.ev.0-30963 [002] 10084.102359: sched_switch:         dds.ev.0:30963 [120] S ==> swapper/2:0 [120]
+     DDS_Publish-30970 [000] 10084.110534: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-30970 [000] 10084.110536: print:                tracing_mark_write: DDS_WRITE_START
+          <idle>-0     [005] 10084.110579: sched_wakeup:         dds.dsha.260:26649 [120] CPU:005
+          <idle>-0     [005] 10084.110581: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:26649 [120]
+     DDS_Publish-30970 [000] 10084.110601: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-30970 [000] 10084.110602: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-30970 [000] 10084.110617: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-30970 [000] 10084.110625: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-30970 [000] 10084.110629: sched_switch:         DDS_Publish:30970 [50] S ==> swapper/0:0 [120]
+    dds.dsha.260-26649 [005] 10084.110668: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [007] 10084.110714: sched_wakeup:         dds.shm.7663:30966 [120] CPU:007
+          <idle>-0     [007] 10084.110716: sched_switch:         swapper/7:0 [120] R ==> dds.shm.7663:30966 [120]
+          <idle>-0     [002] 10084.110740: sched_wakeup:         dds.ev.0:30963 [120] CPU:002
+          <idle>-0     [002] 10084.110741: sched_switch:         swapper/2:0 [120] R ==> dds.ev.0:30963 [120]
+    dds.shm.7663-30966 [007] 10084.110749: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/7:0 [120]
+        dds.ev.0-30963 [002] 10084.110752: sched_switch:         dds.ev.0:30963 [120] S ==> swapper/2:0 [120]
+    dds.dsha.260-26649 [005] 10084.110753: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-26649 [005] 10084.110783: sched_switch:         dds.dsha.260:26649 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [000] 10084.141382: sched_wakeup:         DDS_Publish:30970 [50] CPU:000
+          <idle>-0     [000] 10084.141385: sched_switch:         swapper/0:0 [120] R ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.141392: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-30970 [000] 10084.141393: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-30970 [000] 10084.141394: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+     DDS_Publish-30970 [000] 10084.142354: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.142356: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.142360: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+          <idle>-0     [006] 10084.143321: sched_wakeup:         dds.shm.wdog:30962 [120] CPU:006
+          <idle>-0     [006] 10084.143323: sched_switch:         swapper/6:0 [120] R ==> dds.shm.wdog:30962 [120]
+    dds.shm.wdog-30962 [006] 10084.143339: sched_switch:         dds.shm.wdog:30962 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10084.144352: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.144354: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.144356: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.146352: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.146354: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.146357: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.149675: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.149679: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.149955: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.161354: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.161362: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.161373: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.162469: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.162472: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.162576: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.162661: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.162662: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.162703: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.162820: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.162821: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.163002: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.164004: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.164004: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.164234: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.176982: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.176985: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.177275: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.177894: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.177895: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.178120: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.197485: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.197486: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.197713: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.225357: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.225359: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.225369: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.231614: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.231617: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.231693: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.234189: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.234191: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.234427: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.252150: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.252152: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.252426: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.279404: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.279406: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.279645: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.280288: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.280289: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.280514: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.289358: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.289359: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.289366: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.299905: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.299905: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.300134: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [006] 10084.300854: sched_wakeup:         dds.shm.7661:26645 [120] CPU:006
+          <idle>-0     [006] 10084.300857: sched_switch:         swapper/6:0 [120] R ==> dds.shm.7661:26645 [120]
+    dds.shm.7661-26645 [006] 10084.300876: sched_switch:         dds.shm.7661:26645 [120] S ==> swapper/6:0 [120]
+     DDS_Publish-30970 [000] 10084.337534: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.337535: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.337599: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.337950: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.337950: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.338175: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.345535: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.345536: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.345603: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.345951: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.345951: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.346180: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.358087: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.358088: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.358317: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.377472: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.377475: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.377545: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.382619: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.382620: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.382907: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.383367: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.383368: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.383596: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.398111: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.398112: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.398341: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.417360: sched_wakeup:         kworker/0:0:22337 [120] CPU:000
+     DDS_Publish-30970 [000] 10084.417361: sched_switch:         DDS_Publish:30970 [50] R ==> kworker/0:0:22337 [120]
+     kworker/0:0-22337 [000] 10084.417366: sched_switch:         kworker/0:0:22337 [120] I ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.421011: sched_wakeup:         migration/0:18 [0] CPU:000
+     DDS_Publish-30970 [000] 10084.421012: sched_switch:         DDS_Publish:30970 [50] R ==> migration/0:18 [0]
+     migration/0-18    [000] 10084.421014: sched_switch:         migration/0:18 [0] S ==> DDS_Publish:30970 [50]
+          <idle>-0     [007] 10084.443832: sched_wakeup:         dds.shm.7663:30966 [120] CPU:007
+          <idle>-0     [007] 10084.443838: sched_switch:         swapper/7:0 [120] R ==> dds.shm.7663:30966 [120]
+    dds.shm.7663-30966 [007] 10084.443851: sched_switch:         dds.shm.7663:30966 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [007] 10084.452699: sched_wakeup:         dds.shm.wdog:26641 [120] CPU:007
+          <idle>-0     [007] 10084.452708: sched_switch:         swapper/7:0 [120] R ==> dds.shm.wdog:26641 [120]
+    dds.shm.wdog-26641 [007] 10084.452724: sched_switch:         dds.shm.wdog:26641 [120] S ==> swapper/7:0 [120]
+     DDS_Publish-30970 [000] 10084.484361: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.484362: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.484591: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.485448: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.485448: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.485678: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.485822: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.485822: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.486087: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.486412: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.486413: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.487341: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.489785: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.489789: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.490064: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.490085: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.490086: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.490314: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.490889: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.490890: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.490956: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.491317: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.491317: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.491541: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.504873: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.504874: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.505102: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]
+     DDS_Publish-30970 [000] 10084.506324: sched_wakeup:         irq/171-rtw88_p:607 [49] CPU:000
+     DDS_Publish-30970 [000] 10084.506325: sched_switch:         DDS_Publish:30970 [50] R ==> irq/171-rtw88_p:607 [49]
+ irq/171-rtw88_p-607   [000] 10084.506553: sched_switch:         irq/171-rtw88_p:607 [49] S ==> DDS_Publish:30970 [50]

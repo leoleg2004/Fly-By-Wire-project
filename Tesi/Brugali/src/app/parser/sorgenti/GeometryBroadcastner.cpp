@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
   sprintf(activity_1.name, "DDS_Publish");
   activity_1.function = dds_publish_function;
   activity_1.period = 500;
-  activity_1.parameter = 2;
+  activity_1.parameter = 6;
   activity_1.deadline = 500;
   activity_1.instance = NULL;
   activity_1.print = true;

@@ -178,24 +178,13 @@ int main(int argc, char *argv[]) {
    pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t), &cpuset1);
    pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t), &cpuset1);
 
-
-
-
-
-
   t_activity_par activity_2;
   sprintf(activity_2.name, "Activity_2");
   activity_2.function = ActivityIncrement;
-  activity_2.period = 250;
+  activity_2.period = 300;
   activity_2.parameter = 2;
-  activity_2.deadline = 250;
+  activity_2.deadline = 300;
 
-
-
-
-
-
-  // Calcolo priorità RM (Periodo 800)
   param2.sched_priority = 99 - (activity_2.period / 10);
   if (param2.sched_priority < 1)
     param2.sched_priority = 1;
