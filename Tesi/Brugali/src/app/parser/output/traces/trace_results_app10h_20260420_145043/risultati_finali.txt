@@ -1,0 +1,24 @@
+
+----------------------------------------------------------
+ TASK: app10h (PID: 21031)
+----------------------------------------------------------
+ [Esecuzione] WCET :    448.554 ms  |  ACET:    441.726 ms
+ [T.Risposta] WCRT :    870.584 ms
+ [Periodo]    Mis. :    870.589 ms  |  Jitter:   43.889 ms
+ [Parametri]  Periodo:  870.589 ms  |  Deadline:  870.589 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:    0.005 ms
+ [Stati]      Sleep  :        2      |  Preempt:       60     |  Run n.: 63
+ [Globale]    Util%  :   67.685 %    |  Gaps   :       61 (111.758 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 21032)
+----------------------------------------------------------
+ [Esecuzione] WCET :    111.647 ms  |  ACET:    109.863 ms
+ [T.Risposta] WCRT :    111.641 ms
+ [Periodo]    Mis. :    250.007 ms  |  Jitter:    0.005 ms
+ [Parametri]  Periodo:  250.000 ms  |  Deadline:  250.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  138.359 ms
+ [Stati]      Sleep  :        9      |  Preempt:        0     |  Run n.: 10
+ [Globale]    Util%  :   49.481 %    |  Gaps   :        9 (143.282 ms max)
+
+[+] Dati esportati su timeline.csv
