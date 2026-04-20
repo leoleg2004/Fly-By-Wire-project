@@ -1,0 +1,54 @@
+
+[DEBUG] Ho intercettato il marker! Stringa grezza: 'INVERSION_DONE_Activity_2_PRIO_19_PER_800_DEAD_800'
+[***]  Creazione nuovo VPID per Activity_2 (Nuovo Periodo: 800 ms) al tempo 10017.7
+
+
+[DEBUG] Ho intercettato il marker! Stringa grezza: 'INVERSION_DONE_Activity_1_PRIO_69_PER_300_DEAD_300'
+[***]  Creazione nuovo VPID per Activity_1 (Nuovo Periodo: 300 ms) al tempo 10018.2
+
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 17276)
+----------------------------------------------------------
+ [Esecuzione] WCET :    141.072 ms  |  ACET:    117.672 ms
+ [T.Risposta] WCRT :    141.652 ms
+ [Periodo]    Mis. :    600.014 ms  |  Jitter:    0.009 ms
+ [Parametri]  Periodo:  600.000 ms  |  Deadline:  600.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  458.348 ms
+ [Stati]      Sleep  :        5      |  Preempt:        8     |  Run n.: 14
+ [Globale]    Util%  :   24.524 %    |  Gaps   :       13 (494.160 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 17277)
+----------------------------------------------------------
+ [Esecuzione] WCET :    335.767 ms  |  ACET:    231.828 ms
+ [T.Risposta] WCRT :    335.737 ms
+ [Periodo]    Mis. :    300.022 ms  |  Jitter:   20.639 ms
+ [Parametri]  Periodo:  300.000 ms  |  Deadline:  300.000 ms
+ [Scadenze]   Miss   :        1      |  Slack Peggiore:  -35.737 ms
+ [Stati]      Sleep  :        7      |  Preempt:        0     |  Run n.: 8
+ [Globale]    Util%  :   92.329 %    |  Gaps   :        7 (264.253 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_1_P2 (PID: 1017276)
+----------------------------------------------------------
+ [Esecuzione] WCET :     84.748 ms  |  ACET:     28.278 ms
+ [T.Risposta] WCRT :     84.710 ms
+ [Periodo]    Mis. :      0.000 ms  |  Jitter:    0.000 ms
+ [Parametri]  Periodo:  300.000 ms  |  Deadline:  300.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  215.290 ms
+ [Stati]      Sleep  :        2      |  Preempt:        0     |  Run n.: 3
+ [Globale]    Util%  :    2.591 %    |  Gaps   :        2 (481.905 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_2_P2 (PID: 1017277)
+----------------------------------------------------------
+ [Esecuzione] WCET :    259.594 ms  |  ACET:    259.594 ms
+ [T.Risposta] WCRT :    284.480 ms
+ [Periodo]    Mis. :    800.124 ms  |  Jitter:    0.000 ms
+ [Parametri]  Periodo:  800.000 ms  |  Deadline:  800.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  515.520 ms
+ [Stati]      Sleep  :        3      |  Preempt:        0     |  Run n.: 4
+ [Globale]    Util%  :   68.054 %    |  Gaps   :        3 (540.528 ms max)
+
+[+] Dati esportati su timeline.csv

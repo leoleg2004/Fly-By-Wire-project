@@ -21,14 +21,15 @@
 
 /*
  * Data structure for activity parameters
- * MODIFICA: Aggiunto "alternate_period" per sapere quale periodo assumere dopo 5 esecuzioni
+ * MODIFICA: Aggiunto "alternate_period" e "alternate_deadline"
  */
 typedef struct activity_parameters {
   char name[15];
   int period;
-  int alternate_period;//variabile per il cambio di prioirità 
+  int alternate_period;  //cambio di priorità
   int parameter;
   long int deadline;
+  long int alternate_deadline; //cambio deadline per la priorità
   void (*function)(int); 
 } t_activity_par;
 
@@ -56,7 +57,7 @@ void *PeriodicTask(void *ptr) {
   uint64_t computational_cost;
 
   bool skip = false;
-  int execution_count = 0; // conto quante volte viene contto la periodi task
+  int execution_count = 0; // conto quante volte viene eseguita la periodic task
 
   // Obtain the current time: this is the beginning of the first period
   clock_gettime(CLOCK_MONOTONIC, &exec_release_time);
@@ -104,7 +105,6 @@ void *PeriodicTask(void *ptr) {
         printf("%s:   DO JOB   cost                    = %ld millisecs\n",
                activity.name, computational_cost);
         
-       
         execution_count++;
       }
       
@@ -113,16 +113,18 @@ void *PeriodicTask(void *ptr) {
       printf("%s:            exec_next_release_time  = %ld millisecs\n\n",
              activity.name, exec_next_release_time);
 
-     if (execution_count == 5) {
+      if (execution_count == 5) {
           printf("\n==========================================================\n");
           printf(">> [%s] 5 ESECUZIONI RAGGIUNTE INVERSIONE IN CORSO...\n", activity.name);
           
-         
           snprintf(marker, sizeof(marker), "INVERSION_START_%s", activity.name);
           write_trace_marker(marker);
           
-         
+          // ========================================================
+          // SCAMBIO PERIODO E DEADLINE
+          // ========================================================
           activity.period = activity.alternate_period;
+          activity.deadline = activity.alternate_deadline; 
           
           // Ricalcola la priorità Rate Monotonic per il nuovo periodo
           struct sched_param sp;
@@ -134,14 +136,13 @@ void *PeriodicTask(void *ptr) {
           if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0) {
               perror("Errore nell'aggiornamento della priorita");
           } else {
-              printf(">> [%s] Nuovo Periodo: %d ms | Nuova Priorita: %d\n", 
-                     activity.name, activity.period, sp.sched_priority);
+              printf(">> [%s] Nuovo Periodo: %d ms | Nuova Deadline: %ld ms | Nuova Priorita: %d\n", 
+                     activity.name, activity.period, activity.deadline, sp.sched_priority);
               
-             
-              snprintf(marker, sizeof(marker), "INVERSION_DONE_%s_PRIO_%d_PER_%d", 
-                       activity.name, sp.sched_priority, activity.period);
+              // Modificato il marker per includere anche la deadline nel file di trace
+              snprintf(marker, sizeof(marker), "INVERSION_DONE_%s_PRIO_%d_PER_%d_DEAD_%ld", 
+                       activity.name, sp.sched_priority, activity.period, activity.deadline);
               write_trace_marker(marker);
-             
           }
           printf("==========================================================\n\n");
           
@@ -181,19 +182,20 @@ int main(int argc, char *argv[]) {
   pthread_attr_setschedpolicy(&attr2, SCHED_FIFO);
 
   // ==========================================
-  //THREAD 1 
+  // THREAD 1 
   // ==========================================
   CPU_ZERO(&cpuset1);
-  CPU_SET(0, &cpuset1); 
+  CPU_SET(1, &cpuset1); 
   pthread_attr_setaffinity_np(&attr1, sizeof(cpu_set_t), &cpuset1);
   
   t_activity_par activity_1;
   sprintf(activity_1.name, "Activity_1");
   activity_1.function = ActivityIncrement;
-  activity_1.period = 2000;
-  activity_1.alternate_period = 300; // MODIFICA: Periodo da scambiare
-  activity_1.parameter = 5;
-  activity_1.deadline = 2000;
+  activity_1.period = 1000;
+  activity_1.alternate_period = 1300; 
+  activity_1.parameter = 4;
+  activity_1.deadline = 1000;
+  activity_1.alternate_deadline = 1300; 
 
   param1.sched_priority = 99 - (activity_1.period / 10);
   if (param1.sched_priority < 1) param1.sched_priority = 1;
@@ -216,9 +218,10 @@ int main(int argc, char *argv[]) {
   sprintf(activity_2.name, "Activity_2");
   activity_2.function = ActivityIncrement;
   activity_2.period = 300;
-  activity_2.alternate_period = 2000; 
+  activity_2.alternate_period = 800; 
   activity_2.parameter = 2;
   activity_2.deadline = 300;
+  activity_2.alternate_deadline = 800; 
 
   param2.sched_priority = 99 - (activity_2.period / 10);
   if (param2.sched_priority < 1) param2.sched_priority = 1;
