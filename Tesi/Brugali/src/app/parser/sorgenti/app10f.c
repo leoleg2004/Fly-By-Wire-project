@@ -66,11 +66,11 @@ int main(int argc, char *argv[]) {
   t_activity_par activity_1;
   memset(&activity_1, 0, sizeof(t_activity_par)); // Clean initialization
   sprintf(activity_1.name, "Activity_1");
-  activity_1.function = (void (*)(void*, int))ActivityIncrement;
+  activity_1.function = ActivityIncrement;
   activity_1.period = 2000;
   activity_1.parameter = 5;
   activity_1.deadline = 2000;
-  activity_1.instance = NULL;
+ 
 
   // Calcolo priorità RM (Periodo 2000)
   param1.sched_priority = 99 - (activity_1.period / 10);
@@ -92,11 +92,11 @@ int main(int argc, char *argv[]) {
   t_activity_par activity_2;
   memset(&activity_2, 0, sizeof(t_activity_par));
   sprintf(activity_2.name, "Activity_2");
-  activity_2.function = (void (*)(void*, int))ActivityIncrement;
+  activity_2.function = ActivityIncrement;
   activity_2.period = 300;
   activity_2.parameter = 2;
   activity_2.deadline = 300;
-  activity_2.instance = NULL;
+
 
   // Calcolo priorità RM (Periodo 300)
   param2.sched_priority = 99 - (activity_2.period / 10);
