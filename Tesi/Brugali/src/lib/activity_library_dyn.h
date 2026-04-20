@@ -17,7 +17,7 @@ typedef struct activity_parameters {
 } t_activity_par;
 
 // Firme delle funzioni
-void *PeriodicTask(void *ptr);
-void ActivityIncrement(int parameter);
+void *PeriodicTaskDyn(void *ptr);
+void ActivityIncrementDyn(int parameter);
 
 #endif

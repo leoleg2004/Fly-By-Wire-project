@@ -12,8 +12,8 @@
 /*
  * Function that implements the activity
  */
-void ActivityIncrement(int parameter) {
-  double result = 0;
+void ActivityIncrementDyn(int parameter) {
+  volatile double result = 0;
   for (long i = 0; i < parameter * 1000 * 1000; i++) {
     result = result + sin(i) + cos(i) + i * tan(i);
   }
@@ -22,7 +22,7 @@ void ActivityIncrement(int parameter) {
 /*
  * Periodic task that executes an activity with dynamic inversion
  */
-void *PeriodicTask(void *ptr) {
+void *PeriodicTaskDyn(void *ptr) {
   t_activity_par activity;
   activity = *((t_activity_par *)ptr); // [ms]
 
@@ -46,7 +46,7 @@ void *PeriodicTask(void *ptr) {
     exec_next_release_time = time_to_millisecs(&exec_release_time);
 
     if (skip) {
-      printf("\n%s:   *SKIP* \n\n\n", activity.name);
+      printf("\n%s:    *SKIP* \n\n\n", activity.name);
       skip = false;
     } else {
       snprintf(marker, sizeof(marker), "FUNCTION_START_%s", activity.name);
@@ -58,7 +58,7 @@ void *PeriodicTask(void *ptr) {
       if (activity.function != NULL) {
         activity.function(activity.parameter);
       } else {
-        ActivityIncrement(activity.parameter);
+        ActivityIncrementDyn(activity.parameter); // <--- Chiamata con Dyn
       }
       
       exec_end_time = time_current_millisecs();
@@ -68,8 +68,8 @@ void *PeriodicTask(void *ptr) {
 
       computational_cost = exec_end_time - exec_start_time;
 
-      printf("%s:            exec_start_time         = %ld millisecs\n", activity.name, exec_start_time);
-      printf("%s:            exec_end_time           = %ld millisecs\n", activity.name, exec_end_time);
+      printf("%s:             exec_start_time         = %ld millisecs\n", activity.name, exec_start_time);
+      printf("%s:             exec_end_time           = %ld millisecs\n", activity.name, exec_end_time);
              
       if (exec_end_time > exec_next_release_time) {
         printf("%s:   -MISS-   cost                    = %ld millisecs\n", activity.name, computational_cost);
@@ -79,8 +79,8 @@ void *PeriodicTask(void *ptr) {
         execution_count++;
       }
       
-      printf("%s:            period                  = %d millisecs\n", activity.name, activity.period);
-      printf("%s:            exec_next_release_time  = %ld millisecs\n\n", activity.name, exec_next_release_time);
+      printf("%s:             period                  = %d millisecs\n", activity.name, activity.period);
+      printf("%s:             exec_next_release_time  = %ld millisecs\n\n", activity.name, exec_next_release_time);
 
       // ========================================================
       // LOGICA DI INVERSIONE A 5 ESECUZIONI

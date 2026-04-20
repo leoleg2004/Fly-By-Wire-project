@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
   t_activity_par activity_1;
   memset(&activity_1, 0, sizeof(t_activity_par));
   sprintf(activity_1.name, "Activity_1");
-  activity_1.function = ActivityIncrement; // Presa dalla nuova libreria
+  activity_1.function = ActivityIncrementDyn; // Presa dalla nuova libreria
   activity_1.period = 1000;
   activity_1.alternate_period = 1300; 
   activity_1.parameter = 4;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
   if (param1.sched_priority < 1) param1.sched_priority = 1;
   pthread_attr_setschedparam(&attr1, &param1);
 
-  ret_err = pthread_create(&thread1, &attr1, PeriodicTask, (void *)&activity_1);
+  ret_err = pthread_create(&thread1, &attr1, PeriodicTaskDyn, (void *)&activity_1);
   handle_error(ret_err, "Error in creating PeriodicTask 1");
   pthread_setname_np(thread1, "Activity_1");
 
@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
   t_activity_par activity_2;
   memset(&activity_2, 0, sizeof(t_activity_par));
   sprintf(activity_2.name, "Activity_2");
-  activity_2.function = ActivityIncrement;
+  activity_2.function = ActivityIncrementDyn;
   activity_2.period = 300;
   activity_2.alternate_period = 800; 
   activity_2.parameter = 2;
@@ -84,7 +84,7 @@ int main(int argc, char *argv[]) {
   if (param2.sched_priority < 1) param2.sched_priority = 1;
   pthread_attr_setschedparam(&attr2, &param2);
 
-  ret_err = pthread_create(&thread2, &attr2, PeriodicTask, (void *)&activity_2);
+  ret_err = pthread_create(&thread2, &attr2, PeriodicTaskDyn, (void *)&activity_2);
   handle_error(ret_err, "Error in creating PeriodicTask 2");
   pthread_setname_np(thread2, "Activity_2");
 
