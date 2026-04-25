@@ -75,11 +75,11 @@ int main(int argc, char *argv[]) {
   memset(&activity_2, 0, sizeof(t_activity_par));
   sprintf(activity_2.name, "Activity_2");
   activity_2.function = ActivityIncrementDyn;
-  activity_2.period = 600;
+  activity_2.period = 1200;
   activity_2.alternate_period = 800;
   activity_2.alternate_core = 7;
   activity_2.parameter = 2;
-  activity_2.deadline = 600;
+  activity_2.deadline = 1200;
   activity_2.alternate_deadline = 800; 
 
   param2.sched_priority = 99 - (activity_2.period / 10);
