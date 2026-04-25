@@ -1,0 +1,45 @@
+#ifndef __nav_msgs__msg__idl 
+#define __nav_msgs__msg__idl 
+
+#include "std_msgs.idl"
+#include "geometry_msgs.idl"
+
+module nav_msgs{
+module msg{
+module dds_{
+
+	struct Odometry_{
+		std_msgs::msg::HeaderStandard header;
+		string child_frame_id;
+		geometry_msgs::msg::dds_::PoseWithCovariance_ pose;
+		geometry_msgs::msg::dds_::TwistWithCovariance_ twist;
+	};
+
+	struct MapMetaData_{
+		std_msgs::msg::TimeStandard map_load_time;
+		float resolution;
+		unsigned long width;
+		unsigned long height;
+		geometry_msgs::msg::dds_::Pose_ origin;
+	};
+
+	struct OccupancyGrid_{
+		std_msgs::msg::HeaderStandard header;
+		nav_msgs::msg::dds_::MapMetaData_ info;
+		sequence<octet> data;
+	};
+
+	struct Path_{
+		std_msgs::msg::HeaderStandard header;
+		sequence<geometry_msgs::msg::dds_::PoseStamped_> poses;
+	};
+
+	struct PathEvent_ {
+        	std_msgs::msg::HeaderStandard header;
+	    	string data;
+	};
+
+};
+};
+}; 
+#endif //__nav_msgs__msg__idl  

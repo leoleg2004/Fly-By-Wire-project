@@ -1,0 +1,30 @@
+module rover_msgs{
+module msg{
+module dds_{
+
+	struct RoverInfo_
+	{
+		double footprint[6];	// min_x, max_x, min_y, max_y, min_z, max_z 	[m]
+		//sequence<double> footprint;	// min_x, max_x, min_y, max_y, min_z, max_z 	[m]
+		double safety_margin;      	// extend the circular footprint       		[m]
+		double min_lin_vel;        	// minimum linear velocity       		[m/s]
+		double max_lin_vel;        	// maximum linear velocity       		[m/s]
+		double min_ang_vel;        	// minimum angular velocity      		[rad/s]
+		double max_ang_vel;        	// maximum angular velocity      		[rad/s]
+		double max_lin_acc;		// maximum linear acceleration   		[m/s2]
+		double max_ang_acc;		// maximum angular acceleration  		[rad/s2]
+		double max_cen_acc;		// maximum centrifugal acceleration  		[m/s2]
+		double lin_resolution;	// minimum measurable linear distance 		[m]
+		double ang_resolution;	// minimum measurable angular distance 		[rad]
+
+		//boolean emergency_stop;		// true when the emergency stop is active
+	};
+
+//	struct EmergencyStop_
+//	{
+//		boolean stop;		// true when the emergency stop is active
+//	};
+};
+};
+};
+
