@@ -3,20 +3,18 @@
 
 #include <stdbool.h>
 
-/*
- * Data structure for dynamic activity parameters
- */
+/* Struttura dati per parametri attività dinamici */
 typedef struct activity_parameters {
-  char name[15];
-  int period;
-  int alternate_period;  
-  int parameter;
-  long int deadline;
-  long int alternate_deadline; 
-  void (*function)(int); 
+    char name[15];
+    int period;
+    int alternate_period;  
+    int parameter;
+    long int deadline;
+    long int alternate_deadline; 
+    int alternate_core;    // <--- AGGIUNTO: Il core su cui saltare
+    void (*function)(int); 
 } t_activity_par;
 
-// Firme delle funzioni
 void *PeriodicTaskDyn(void *ptr);
 void ActivityIncrementDyn(int parameter);
 

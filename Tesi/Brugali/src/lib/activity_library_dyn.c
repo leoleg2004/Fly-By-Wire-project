@@ -83,7 +83,7 @@ void *PeriodicTaskDyn(void *ptr) {
       printf("%s:             exec_next_release_time  = %ld millisecs\n\n", activity.name, exec_next_release_time);
 
       // ========================================================
-      // LOGICA DI INVERSIONE A 5 ESECUZIONI
+      // LOGICA DI INVERSIONE A 5 ESECUZIONI E CAMBIO CORE
       // ========================================================
       if (execution_count == 5) {
           printf("\n==========================================================\n");
@@ -92,9 +92,11 @@ void *PeriodicTaskDyn(void *ptr) {
           snprintf(marker, sizeof(marker), "INVERSION_START_%s", activity.name);
           write_trace_marker(marker);
           
+          // 1. Cambio Periodo e Deadline
           activity.period = activity.alternate_period;
           activity.deadline = activity.alternate_deadline; 
           
+          // 2. Cambio Priorità
           struct sched_param sp;
           sp.sched_priority = 99 - (activity.period / 10);
           if (sp.sched_priority < 1) sp.sched_priority = 1;
@@ -102,14 +104,33 @@ void *PeriodicTaskDyn(void *ptr) {
 
           if (pthread_setschedparam(pthread_self(), SCHED_FIFO, &sp) != 0) {
               perror("Errore nell'aggiornamento della priorita");
-          } else {
-              printf(">> [%s] Nuovo Periodo: %d ms | Nuova Deadline: %ld ms | Nuova Priorita: %d\n", 
-                     activity.name, activity.period, activity.deadline, sp.sched_priority);
-              
-              snprintf(marker, sizeof(marker), "INVERSION_DONE_%s_PRIO_%d_PER_%d_DEAD_%ld", 
-                       activity.name, sp.sched_priority, activity.period, activity.deadline);
-              write_trace_marker(marker);
           }
+          
+          // 3. CAMBIO CORE (MIGRAZIONE)
+          cpu_set_t cpuset;
+          CPU_ZERO(&cpuset);
+          CPU_SET(activity.alternate_core, &cpuset); // Imposta il nuovo core
+          
+          // --- MARKER INIZIO MIGRAZIONE CORE ---
+          snprintf(marker, sizeof(marker), "CORE_MIGRATION_START_%s_TO_%d", activity.name, activity.alternate_core);
+          write_trace_marker(marker);
+
+          if (pthread_setaffinity_np(pthread_self(), sizeof(cpu_set_t), &cpuset) != 0) {
+              perror("Errore nell'aggiornamento del core (Affinity)");
+          }
+
+          // --- MARKER FINE MIGRAZIONE CORE ---
+          snprintf(marker, sizeof(marker), "CORE_MIGRATION_END_%s_TO_%d", activity.name, activity.alternate_core);
+          write_trace_marker(marker);
+
+          // Log dei risultati
+          printf(">> [%s] Nuovo Periodo: %d ms | Nuova Priorita: %d | Migrato su Core: %d\n", 
+                 activity.name, activity.period, sp.sched_priority, activity.alternate_core);
+          
+          snprintf(marker, sizeof(marker), "INVERSION_DONE_%s_PRIO_%d_PER_%d_CORE_%d", 
+                   activity.name, sp.sched_priority, activity.period, activity.alternate_core);
+          write_trace_marker(marker);
+          
           printf("==========================================================\n\n");
           
           execution_count++; // Incrementiamo per non ripetere l'inversione

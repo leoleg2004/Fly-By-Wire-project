@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
   activity_1.function = ActivityIncrementDyn; // Presa dalla nuova libreria
   activity_1.period = 1000;
   activity_1.alternate_period = 1300; 
+  activity_1.alternate_core = 1;
   activity_1.parameter = 4;
   activity_1.deadline = 1000;
   activity_1.alternate_deadline = 1300; 
@@ -75,7 +76,8 @@ int main(int argc, char *argv[]) {
   sprintf(activity_2.name, "Activity_2");
   activity_2.function = ActivityIncrementDyn;
   activity_2.period = 300;
-  activity_2.alternate_period = 800; 
+  activity_2.alternate_period = 800;
+  activity_2.alternate_core = 7;
   activity_2.parameter = 2;
   activity_2.deadline = 300;
   activity_2.alternate_deadline = 800; 
