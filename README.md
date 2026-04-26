@@ -1,82 +1,68 @@
-✈️ Real-Time Flight Telemetry System: RM & EDF Scheduling with Fast DDS
-Questo progetto analizza i paradigmi di computazione Hard Real-Time in ambiente Linux (ottimizzato con patch PREEMPT_RT), mettendo a confronto le prestazioni delle politiche di scheduling Rate Monotonic (RM) ed Earliest Deadline First (EDF).
+✈️ Real-Time Flight Telemetry System: RM Scheduling con Fast DDS
 
-L'architettura modella un ecosistema avionico distribuito dove il determinismo temporale e l'affidabilità della comunicazione IPC (Inter-Process Communication) sono requisiti critici. Il sistema è orchestrato tramite il middleware eProsima Fast DDS, che garantisce lo scambio di dati telemetrici ad alte prestazioni tra nodi computazionali isolati.
+Questo progetto analizza i paradigmi di computazione Hard Real-Time in ambiente Linux (ottimizzato con patch PREEMPT_RT), focalizzandosi sulla politica di scheduling Rate Monotonic (RM). Il sistema simula un ecosistema avionico distribuito che utilizza il middleware eProsima Fast DDS per lo scambio di telemetria complessa (dati testuali e immagini) in configurazioni single-core e multi-core.
 
-⚙️ Fondamenti di Schedulazione e Protocolli POSIX
-Per garantire la prevedibilità del sistema (determinismo), il software interagisce con le interfacce a basso livello del kernel Linux e lo standard POSIX.1b.
+L'intero progetto è strutturato per garantire l'automazione completa, dalla compilazione all'analisi dei tracciamenti del kernel, attraverso strumenti contenuti nelle cartelle Tesi e dds.
+📡 Comunicazione DDS: Telemetria e Imaging
 
-1. Isolamento Computazionale (CPU Affinity)
+Il sistema supporta due tipologie principali di scambio dati, situate all'interno della directory dds/, con script dedicati per ogni scenario:
 
-Per minimizzare l'interferenza causata dallo scheduler generico (OS Noise) e massimizzare l'efficienza delle cache, il sistema implementa il partizionamento dei core. Utilizzando le macro CPU_SET e la funzione pthread_attr_setaffinity_np(), ogni thread critico viene vincolato a una CPU fisica specifica, riducendo drasticamente i cache miss e i context switch involontari.
+    Standard Message Telemetry: Scambio di pacchetti dati leggeri (altitudine, assetto, coordinate) per il controllo di volo in tempo reale.
 
-2. Rate Monotonic Scheduling (RM)
+    Photo/Image Transmission: Gestione di payload pesanti (immagini dai sensori ottici). Questa modalità testa la capacità dello scheduler RM di gestire task con tempi di esecuzione più lunghi (CPU burning elevato) e latenze di serializzazione DDS senza violare le scadenze critiche.
 
-La politica RM è implementata come schema a priorità fissa preventiva (fixed-priority preemptive).
+Entrambe le modalità sono testabili sia su singolo core (massima contesa) che su multi-core (isolamento tramite CPU affinity).
+🛠️ Automazione e Build System
 
-Meccanismo: Viene utilizzata la classe di scheduling SCHED_FIFO tramite la struttura sched_param.
+Il progetto implementa un sistema di gestione del codice avanzato per facilitare lo sviluppo e il testing:
 
-Assegnazione: Le priorità vengono calcolate secondo il teorema di Liu e Layland, assegnando priorità superiori ai task con periodi più brevi.
+    Makefile Intelligenti: Ogni modulo dispone di un Makefile configurato per gestire automaticamente le dipendenze, i file sorgente e la ricompilazione delle librerie collegate.
 
-API: pthread_attr_setschedparam() e pthread_attr_setschedpolicy().
+    Compilazione Parallela: Supporto nativo per la compilazione accelerata tramite il comando make -j4, ottimizzando i tempi di build sui sistemi multi-processor.
 
-3. Earliest Deadline First (EDF)
+    Gestione Eseguibili: Il sistema pulisce e rigenera automaticamente i binari garantendo che ogni simulazione utilizzi sempre l'ultima versione del codice e delle configurazioni delle librerie.
 
-Per scenari a priorità dinamica, il sistema sfrutta SCHED_DEADLINE, una politica basata sull'algoritmo Constant Bandwidth Server (CBS).
+⚙️ Caratteristiche Tecniche e Requisiti
+Gestione Thread e Scheduling
 
-Meccanismo: Poiché non è esposto direttamente da pthread, si interagisce con il kernel tramite la syscall __NR_sched_setattr.
+    Libreria POSIX: Creazione e gestione nativa dei thread tramite pthread_create.
 
-Parametri: Il task viene definito dalla terna (Runtime,Deadline,Period), permettendo al kernel di garantire una frazione di CPU dedicata ed eseguire sempre il task con la scadenza più prossima.
+    Politica RM: Implementazione con SCHED_FIFO e priorità statiche calcolate su base periodica.
 
-4. Gestione Temporale e Memory Locking
+    Memory Locking: Uso di mlockall per prevenire il paging virtuale e garantire il determinismo.
 
-Precisione al Nanosecondo: Per evitare la deriva temporale (drifting), la periodicità è garantita da clock_nanosleep() con il clock CLOCK_MONOTONIC e flag TIMER_ABSTIME. Ciò assicura che il risveglio avvenga su un istante assoluto rispetto all'epoca di avvio.
+Requisiti di Sistema
 
-Resilienza della Memoria: Il comando mlockall(MCL_CURRENT | MCL_FUTURE) disabilita il paging della memoria virtuale su disco (swapping). Questo previene latenze non deterministiche causate da page faults durante l'accesso a variabili critiche.
+    Kernel: Linux con patch PREEMPT_RT.
 
-🏗️ Architettura del Sistema Distribuiti (DDS)
-Il sistema è suddiviso in moduli funzionali che comunicano attraverso il protocollo Data Distribution Service (DDS), seguendo lo standard DCPS (Data Centric Publish-Subscribe).
+    Middleware: eProsima Fast DDS.
 
-1. Telemetry Provider (Publisher - Task Periodico)
+    Analisi: trace-cmd e kernelshark.
 
-Criticità: Hard Real-Time.
+    Linguaggio: C++17.
 
-Funzione: Modella l'acquisizione dati dai sensori di bordo. Genera campioni telemetrici (altitudine, assetto) e li pubblica sul TelemetryTopic.
+🚀 Workflow di Analisi e Simulazione (run_trace.sh)
 
-Simulazione Carico: Include una funzione di CPU burning deterministica per simulare il tempo di computazione necessario alla lettura fisica dei sensori.
+Per automatizzare il processo di valutazione base, è stato implementato lo script bash run_trace.sh. Questo strumento coordina la pipeline di lavoro:
 
-2. Control & Analysis Node (Subscriber - Task Critico)
+    Inizializzazione: Setup dell'ambiente e isolamento dei core.
 
-Criticità: Hard Real-Time.
+    Esecuzione Simulazione: Avvio dei nodi Publisher e Subscriber DDS.
 
-Funzione: Riceve i dati in tempo reale e analizza la serie temporale. Monitora le soglie di sicurezza avionica e logga lo stato del sistema.
+    Trace Capture: Avvio automatico di trace-cmd per registrare gli eventi del kernel (context switch, preemption).
 
-Determinismo IPC: L'overhead introdotto dalla serializzazione dei dati (Fast CDR) e dal trasporto DDS viene misurato per valutare l'impatto sulla latenza end-to-end del loop di controllo.
+    Analisi e Visualizzazione: Interfacciamento con il Monitor Real-Time per mostrare i grafici di esecuzione e generare i report.
 
-3. Flight Visualizer (DDS Listener - Soft Real-Time)
+📂 Strumenti Avanzati di Tracciamento e Marker (dds/DDS/)
 
-Criticità: Soft Real-Time / Best-Effort.
+All'interno della directory dds/, è presente una specifica sottocartella DDS che contiene script avanzati per l'analisi concorrente e l'ispezione profonda dei thread:
 
-Tecnologia: Sviluppato con Raylib.
+    run_trace_dds.sh: Script dedicato all'avvio e al tracciamento specifico degli scenari di comunicazione DDS avanzati.
 
-Isolamento: Questo modulo opera come un osservatore passivo. Grazie alle proprietà di QoS (Quality of Service) di DDS, il visualizzatore grafico non può rallentare o bloccare i nodi Hard Real-Time, garantendo l'integrità dei task di controllo anche in caso di sovraccarico della GPU.
+    marker_dds.sh: Questo script è fondamentale quando due processi (es. Publisher e Subscriber) vengono eseguiti in contemporanea per la comunicazione DDS complessa (come lo scambio di foto).
 
-📊 Analisi delle Prestazioni e Metriche RT
-L'efficacia del sistema viene validata attraverso la raccolta di metriche ingegneristiche ad ogni ciclo di esecuzione:
+        Funzionamento: Utilizza il comando pidof per intercettare e "agganciare" in tempo reale i thread specifici che gestiscono la comunicazione DDS per ogni processo.
 
-Response Time (Tempo di Risposta): Misura l'intervallo tra l'istante di rilascio del task e il suo completamento. Fornisce indicazioni sulla capacità del sistema di soddisfare il carico computazionale.
+        Visualizzazione: Dopo aver tracciato l'esecuzione, lo script apre automaticamente il Monitor Real-Time affiancato a KernelShark. Questo permette di visualizzare visivamente i marker della simulazione direttamente sulla timeline del kernel, facilitando l'analisi delle latenze di rete e di IPC.
 
-Release Jitter (Variazione di Rilascio): Analizza la stabilità temporale del risveglio del thread. Un jitter elevato indica interferenze da parte degli interrupt di sistema o configurazioni errate della patch PREEMPT_RT.
-
-Deadline Miss Rate: Monitora la frequenza con cui i task superano la propria scadenza temporale. In configurazione Hard Real-Time, questa metrica deve tendere a zero.
-
-🛠️ Toolchain e Requisiti Tecnici
-Requisiti
-
-Kernel: Linux con patch RT-Preempt.
-
-Middleware: eProsima Fast DDS (v2.x o superiore).
-
-Grafica: Raylib (per il modulo di monitoraggio).
-
-Linguaggio: C++17.
+Nota sulle varianti di tracciamento: Lo stesso principio di tracciamento mirato è implementato anche tramite lo script marker.sh. Quest'ultimo viene utilizzato per profilare la comunicazione DDS con messaggi semplici e per valutare le esecuzioni Rate Monotonic (RM) standard, coprendo in modo esaustivo sia gli scenari single-core che multi-core.
