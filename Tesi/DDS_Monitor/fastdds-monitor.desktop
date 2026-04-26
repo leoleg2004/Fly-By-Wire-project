@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Fast DDS Monitor
+Comment=eProsima Fast DDS Monitor
+Exec=env LD_LIBRARY_PATH=/home/leonardo/DDS_Monitor/lib /home/leonardo/DDS_Monitor/fastdds_monitor
+Icon=/home/leonardo/DDS_Monitor/eprosima-logo.png
+Categories=Utility;
+X-AppImage-Version=0.1.0
