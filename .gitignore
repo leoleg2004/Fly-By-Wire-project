@@ -10,6 +10,62 @@ compile_commands.json
 CMakeScripts/
 
 # ==========================================
+# 2. FILE OGGETTO E LIBRERIE
+# ==========================================
+# NOTA: Le librerie (*.a, *.so, *.dylib) ora VENGONO TRACCIATE ovunque.
+# Ignoriamo solo i file oggetto intermedi per non intasare GitKraken a ogni salvataggio.
+*.o
+*.out
+.raylib/
+_deps/
+
+# ==========================================
+# 3. GESTIONE SPECIFICA DELLA CARTELLA BUILD
+# ==========================================
+# Ignora TUTTO quello che c'è dentro la cartella build/ di default
+build/*
+
+# TRANNE (!) i seguenti file che vogliamo assolutamente su GitHub:
+!build/FlightSim
+!build/MonitorApp
+!build/*.glb
+!build/*.wav
+
+# ==========================================
+# 4. PYTHON E AMBIENTI VIRTUALI (NUOVO)
+# ==========================================
+# Ignora i file compilati di Python (la cache che rende l'avvio più veloce)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignora le cartelle degli ambienti virtuali (importantissimo per non caricare MB di librerie!)
+venv/
+.venv/
+env/
+ambiente_isolato/
+
+# ==========================================
+# 5. ECLIPSE E PYDEV (NUOVO)
+# ==========================================
+# Ignora i file di configurazione dell'IDE Eclipse che sono specifici per il tuo computer
+.project
+.cproject
+.pydevproject
+.settings/
+.metadata/# ==========================================
+# 1. SPAZZATURA DI CMAKE E COMPILATORI
+# ==========================================
+# Ignora le cartelle CMakeFiles ovunque si trovino (risolve il problema in src/ e build/)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CMakeScripts/
+
+# ==========================================
 # 2. FILE OGGETTO E LIBRERIE (Incluso Raylib)
 # ==========================================
 *.o
