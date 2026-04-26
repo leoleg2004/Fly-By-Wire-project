@@ -1,0 +1,9 @@
+//comando per posto isolato per usare vphyton
+
+source ambiente_isolato/bin/activate
+
+
+//comando per creare localhost per la lettura insight
+ cd /tmp && python3 -m http.server 8000  
+
+

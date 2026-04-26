@@ -1,0 +1,22 @@
+//appunti per spiegazione di tensori matrici push forward e back forward in spazio vettoriale e dei covettori
+//cambio di base da una nuova a una vecchia e calcolo delle compentni di nuovi vettori in nuove basi attraveros le due matrici pushforward e backforward
+
+https://www.giuseppesottile.it/tensor/TENSOR.pdf
+
+
+//appunti per spiegazione di quaternioni
+
+https://www.3dgep.com/understanding-quaternions/
+
+
+//spiegazione metodi di risoluzione di equazioni differenziali attraverso metodi numerici di eulero esplicito e implicito e runge kutta del secondo e quarto ordine 
+
+https://www.youtube.com/watch?v=dShtlMl69kY
+
+//preso dal MIT
+https://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node5.html
+
+
+//preso codice python per runge kutta e eulero
+https://trinket.io/glowscript/1fe7d9cdd6
+
