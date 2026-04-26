@@ -4,7 +4,6 @@
 # Ignora le cartelle CMakeFiles ovunque si trovino (risolve il problema in src/ e build/)
 CMakeFiles/
 CMakeCache.txt
-Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
@@ -53,6 +52,7 @@ ambiente_isolato/
 # ==========================================
 # Ignora i file di configurazione dell'IDE Eclipse che sono specifici per il tuo computer
 .project
+.cproject
 .pydevproject
 .settings/
 .metadata/
