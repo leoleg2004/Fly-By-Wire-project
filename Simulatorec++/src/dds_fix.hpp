@@ -1,0 +1,9 @@
+#ifndef DDS_FIX_HPP
+#define DDS_FIX_HPP
+#define FASTDDS_SER_METHOD_DEPRECATED(major, msg, msg2)
+#define FASTDDS_DEPRECATED_UNTIL(major, msg, msg2)
+#define RTPS_DllAPI
+#define FASTRTPS_VERSION_MAJOR 2
+#define FASTRTPS_VERSION_MINOR 10
+#define FASTRTPS_VERSION_MICRO 0
+#endif

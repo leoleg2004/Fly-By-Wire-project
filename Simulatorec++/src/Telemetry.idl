@@ -1,0 +1,13 @@
+struct SystemStats {
+    unsigned long packet_id;
+    float roll;
+    float pitch;
+    float yaw;
+    float altitude;
+    float speed;
+    float x;
+    float z;
+    boolean landing_mode;
+    boolean system_active;
+    string status_msg;
+};

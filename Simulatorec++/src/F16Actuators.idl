@@ -1,0 +1,12 @@
+// F16Actuators.idl
+// Deflessioni attuatori F-16: output post-attuatore dal FCC (rate-limited, first-order)
+// Riferimento: trim_and_linearize.m — rate limits: ele 60°/s, ail 80°/s, rud 120°/s, lef 25°/s
+// Pubblicato a 20 Hz su topic "F16ActuatorsTopic"
+struct F16Actuators {
+    unsigned long packet_id;   // contatore progressivo pacchetti
+    float ele;                 // [deg] δh — stabilatore (±25°)
+    float ail;                 // [deg] δa — flaperon (±21.5°)
+    float rud;                 // [deg] δr — timone verticale (±30°)
+    float lef;                 // [deg] δlef — flap bordo d'attacco (0..25°)
+    float thr;                 // [0,1] manetta normalizzata → spinta turbina
+};
