@@ -20,6 +20,10 @@ CMakeScripts/
 .raylib/
 _deps/
 
+# TRANNE le librerie dei messaggi che vogliamo su GitHub:
+!msg/lib/*.a
+!msg/lib/*.so
+
 # ==========================================
 # 3. GESTIONE SPECIFICA DELLA CARTELLA BUILD
 # ==========================================
