@@ -3,66 +3,61 @@
 Questo progetto analizza i paradigmi di computazione Hard Real-Time in ambiente Linux (ottimizzato con patch PREEMPT_RT), focalizzandosi sulla politica di scheduling Rate Monotonic (RM). Il sistema simula un ecosistema avionico distribuito che utilizza il middleware eProsima Fast DDS per lo scambio di telemetria complessa (dati testuali e immagini) in configurazioni single-core e multi-core.
 
 L'intero progetto è strutturato per garantire l'automazione completa, dalla compilazione all'analisi dei tracciamenti del kernel, attraverso strumenti contenuti nelle cartelle Tesi e dds.
-📡 Comunicazione DDS: Telemetria e Imaging
+🛠️ Sistema di Build e Makefile
 
-Il sistema supporta due tipologie principali di scambio dati, situate all'interno della directory dds/, con script dedicati per ogni scenario:
+Il progetto implementa un sistema di compilazione altamente automatizzato basato su Makefile intelligenti, strutturati per gestire in modo trasparente la complessità delle librerie POSIX e Fast DDS:
 
-    Standard Message Telemetry: Scambio di pacchetti dati leggeri (altitudine, assetto, coordinate) per il controllo di volo in tempo reale.
+    Gestione Automatica dei Target: I Makefile sono configurati per individuare automaticamente i file sorgente (.c, .cpp) e collegare le corrette librerie (-lpthread, eProsima Fast DDS, Raylib).
 
-    Photo/Image Transmission: Gestione di payload pesanti (immagini dai sensori ottici). Questa modalità testa la capacità dello scheduler RM di gestire task con tempi di esecuzione più lunghi (CPU burning elevato) e latenze di serializzazione DDS senza violare le scadenze critiche.
+    Posizionamento Dinamico: Una volta compilati, gli eseguibili vengono automaticamente spostati nelle corrette directory di destinazione (es. cartella eseguibili/ o dds/app/), separando nettamente i binari dai file sorgente.
 
-Entrambe le modalità sono testabili sia su singolo core (massima contesa) che su multi-core (isolamento tramite CPU affinity).
-🛠️ Automazione e Build System
+    Compilazione Parallela: Supportano nativamente il multithreading per la fase di build. Eseguendo il comando make -j4, il sistema sfrutta più core per compilare moduli complessi (specialmente per DDS) in una frazione del tempo.
 
-Il progetto implementa un sistema di gestione del codice avanzato per facilitare lo sviluppo e il testing:
+    Clean & Rebuild: Regole dedicate (make clean) assicurano la rimozione di file oggetto e binari obsoleti, garantendo che le nuove simulazioni girino sempre sull'ultima versione del codice.
 
-    Makefile Intelligenti: Ogni modulo dispone di un Makefile configurato per gestire automaticamente le dipendenze, i file sorgente e la ricompilazione delle librerie collegate.
+🚀 Workflow di Analisi e Simulazione Base (run_trace.sh e marker.sh)
 
-    Compilazione Parallela: Supporto nativo per la compilazione accelerata tramite il comando make -j4, ottimizzando i tempi di build sui sistemi multi-processor.
+Per automatizzare la valutazione degli algoritmi RM standard (singolo o multi-core) e la comunicazione DDS base (senza immagini), il sistema utilizza lo script principale run_trace.sh.
 
-    Gestione Eseguibili: Il sistema pulisce e rigenera automaticamente i binari garantendo che ogni simulazione utilizzi sempre l'ultima versione del codice e delle configurazioni delle librerie.
+Lo script esegue una pipeline di analisi in 5 step sequenziali totalmente automatizzati:
 
-⚙️ Caratteristiche Tecniche e Requisiti
-Gestione Thread e Scheduling
+    Rilevamento Dinamico: Lo script cerca automaticamente l'eseguibile e il relativo file sorgente (nelle cartelle eseguibili/, sorgenti/ o dds/app/). Il sorgente è fondamentale perché l'analizzatore andrà a estrarne i parametri temporali (i periodi dei task) necessari per la valutazione.
 
-    Libreria POSIX: Creazione e gestione nativa dei thread tramite pthread_create.
+    Tracciamento Kernel (trace-cmd): L'eseguibile viene avviato sotto la supervisione di trace-cmd, che registra in tempo reale eventi critici come sched_switch e sched_wakeup, generando il file binario trace.dat.
 
-    Politica RM: Implementazione con SCHED_FIFO e priorità statiche calcolate su base periodica.
+    Estrazione Report: Il file binario viene convertito in un report testuale (trace_output.txt) leggibile dai successivi tool di analisi.
 
-    Memory Locking: Uso di mlockall per prevenire il paging virtuale e garantire il determinismo.
+    Analisi C++ (thread_analysis): Viene compilato ed eseguito al volo lo strumento custom thread_analysis.cpp. Questo tool incrocia il log del kernel con i periodi letti dal file sorgente originale, calcolando latenze, Response Time, e Deadline Miss, salvando il tutto in risultati_finali.txt.
 
-Requisiti di Sistema
+    Visualizzazione Python: Infine, lo script avvia monitorRealTime.py, un monitor visivo che legge i file CSV appena generati per produrre grafici sull'andamento dei thread analizzati.
 
-    Kernel: Linux con patch PREEMPT_RT.
+L'uso di marker.sh
 
-    Middleware: eProsima Fast DDS.
+Al pari della sua controparte per configurazioni DDS più complesse, marker.sh viene impiegato per profilare in tempo reale i task e agevolare la visualizzazione su KernelShark, intercettando i PID esatti e inserendo dei marker sulla timeline del kernel per evidenziare eventi specifici durante l'esecuzione del codice RM.
+📸 Esecuzione Avanzata: DDS con Immagini e Concorrenza (dds/DDS/)
 
-    Analisi: trace-cmd e kernelshark.
+All'interno della sottocartella dds/DDS/, troviamo la controparte avanzata degli script precedenti, progettata appositamente per le comunicazioni DDS con payload pesanti, come la trasmissione di immagini dai sensori.
 
-    Linguaggio: C++17.
+    Stessa Pipeline, Carico Maggiore: Gli eseguibili per la trasmissione immagini funzionano seguendo gli stessi identici concetti di tracciamento di run_trace.sh, ma sono ingegnerizzati per simulare colli di bottiglia causati dalla serializzazione DDS e da alti livelli di CPU burning.
 
-🚀 Workflow di Analisi e Simulazione (run_trace.sh)
+    run_trace_dds.sh & marker_dds.sh: Quando Publisher (es. fotocamera) e Subscriber (es. display) vengono eseguiti in contemporanea, marker_dds.sh utilizza il comando pidof per intercettare e "agganciare" al volo i PID di entrambi i processi. Questo permette di tracciare le latenze di comunicazione inter-processo e i conflitti di scheduling direttamente nel visualizzatore KernelShark, unendo i tracciati in un unico contesto visivo.
 
-Per automatizzare il processo di valutazione base, è stato implementato lo script bash run_trace.sh. Questo strumento coordina la pipeline di lavoro:
+📂 Archiviazione Automatica degli Output (output/traces/)
 
-    Inizializzazione: Setup dell'ambiente e isolamento dei core.
+Una delle caratteristiche chiave del framework di simulazione è la tracciabilità e riproducibilità dei test.
 
-    Esecuzione Simulazione: Avvio dei nodi Publisher e Subscriber DDS.
+Al termine di ogni singola simulazione (che sia RM standard, DDS testuale o DDS con immagini), gli script creano automaticamente una cartella dedicata all'interno di output/traces/.
 
-    Trace Capture: Avvio automatico di trace-cmd per registrare gli eventi del kernel (context switch, preemption).
+    Nomenclatura Timestamp: La cartella viene nominata dinamicamente unendo il nome dell'applicativo a un timestamp esatto (es. trace_results_app10c_20260426_190000).
 
-    Analisi e Visualizzazione: Interfacciamento con il Monitor Real-Time per mostrare i grafici di esecuzione e generare i report.
+    Contenuto: Tutti i file generati durante la run vengono isolati in questa directory, tra cui:
 
-📂 Strumenti Avanzati di Tracciamento e Marker (dds/DDS/)
+        trace.dat (Il dump grezzo del kernel)
 
-All'interno della directory dds/, è presente una specifica sottocartella DDS che contiene script avanzati per l'analisi concorrente e l'ispezione profonda dei thread:
+        trace_output.txt (Il dump testuale decodificato)
 
-    run_trace_dds.sh: Script dedicato all'avvio e al tracciamento specifico degli scenari di comunicazione DDS avanzati.
+        risultati_finali.txt (Le metriche calcolate dall'analizzatore C++)
 
-    marker_dds.sh: Questo script è fondamentale quando due processi (es. Publisher e Subscriber) vengono eseguiti in contemporanea per la comunicazione DDS complessa (come lo scambio di foto).
+        File .csv (Generati per alimentare il monitor grafico Python)
 
-        Funzionamento: Utilizza il comando pidof per intercettare e "agganciare" in tempo reale i thread specifici che gestiscono la comunicazione DDS per ogni processo.
-
-        Visualizzazione: Dopo aver tracciato l'esecuzione, lo script apre automaticamente il Monitor Real-Time affiancato a KernelShark. Questo permette di visualizzare visivamente i marker della simulazione direttamente sulla timeline del kernel, facilitando l'analisi delle latenze di rete e di IPC.
-
-Nota sulle varianti di tracciamento: Lo stesso principio di tracciamento mirato è implementato anche tramite lo script marker.sh. Quest'ultimo viene utilizzato per profilare la comunicazione DDS con messaggi semplici e per valutare le esecuzioni Rate Monotonic (RM) standard, coprendo in modo esaustivo sia gli scenari single-core che multi-core.
+Questo approccio garantisce che ogni test sia perfettamente documentato, confrontabile e pronto per essere inserito nella valutazione prestazionale finale.
