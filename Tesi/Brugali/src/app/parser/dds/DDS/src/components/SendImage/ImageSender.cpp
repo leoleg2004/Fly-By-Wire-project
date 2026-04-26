@@ -55,7 +55,9 @@
 #include <sys/ioctl.h>
 #include <sys/select.h>
 #include <termios.h>
-
+//librerie per gestire in modo autonomo la posizione delle foto
+#include <unistd.h>
+#include <limits.h>
 void ImageSender::start() {
   std::cout << "ImageSender::start()" << std::endl;
 
@@ -86,48 +88,58 @@ void ImageSender::start() {
 void ImageSender::shutdown() {}
 
 void ImageSender::send_image() {
-  counter++;
-  if (counter == 4)
-    counter = 1;
-  std::cout << "\n\n*** send_image " << counter << " ***" << std::endl;
+    counter++;
+    if (counter == 4)
+        counter = 1;
+    std::cout << "\n\n*** send_image " << counter << " ***" << std::endl;
 
-  std::string file_name = "moon_";
-  file_name.append(std::to_string(counter));
-  file_name.append(".png");
-  cv::Mat image = cv::imread(file_name, cv::IMREAD_COLOR);
+    char result[PATH_MAX];
+    ssize_t count = readlink("/proc/self/exe", result, PATH_MAX);
+    std::string exe_path = "";
+    if (count != -1) {
+        exe_path = std::string(result, count); //percorso esatto delle foto
+    // Taglia il nome dell'eseguibile per tenere solo la cartella
+    std::string exe_dir = exe_path.substr(0, exe_path.find_last_of("\\/"));
 
-  if (!image.data) {
-    std::cout << "Unable to open file: " << file_name << std::endl;
-    return;
-  }
+    // Crea il nome finale del file
+    std::string file_name = exe_dir + "/moon_" + std::to_string(counter) + ".png";
 
-  sensor_msgs::msg::dds_::Image_ msg;
+    std::cout << "Cerco la foto in: " << file_name << std::endl;
+    // ------------------------------------------------
 
-  msg.height(image.rows);
-  msg.width(image.cols);
-  msg.encoding(cvTypeToEncoding(image.type()));
+    cv::Mat image = cv::imread(file_name, cv::IMREAD_COLOR);
 
-  std::cout << "Image encoding : " << msg.encoding() << std::endl;
-  msg.is_bigendian(false); // most systems are little-endian
-  msg.step(image.step);
-
-  size_t size = image.step * image.rows;
-  msg.data().resize(size);
-
-  if (image.isContinuous()) {
-    memcpy(msg.data().data(), image.data, size);
-  } else {
-    // Handle non-contiguous matrices safely
-    for (int y = 0; y < image.rows; ++y) {
-      memcpy(&msg.data()[y * msg.step()], image.ptr(y), image.step);
+    if (!image.data) {
+        std::cout << "Unable to open file: " << file_name << std::endl;
+        return;
     }
-  }
 
-  std::cout << "Image w: " << image.cols << "  h: " << image.rows << std::endl;
+    sensor_msgs::msg::dds_::Image_ msg;
 
-  image_broadcastner.publish(&msg);
+    msg.height(image.rows);
+    msg.width(image.cols);
+    msg.encoding(cvTypeToEncoding(image.type()));
+
+    std::cout << "Image encoding : " << msg.encoding() << std::endl;
+    msg.is_bigendian(false); // most systems are little-endian
+    msg.step(image.step);
+
+    size_t size = image.step * image.rows;
+    msg.data().resize(size);
+
+    if (image.isContinuous()) {
+        memcpy(msg.data().data(), image.data, size);
+    } else {
+        // Handle non-contiguous matrices safely
+        for (int y = 0; y < image.rows; ++y) {
+            memcpy(&msg.data()[y * msg.step()], image.ptr(y), image.step);
+        }
+    }
+
+    std::cout << "Image w: " << image.cols << "  h: " << image.rows << std::endl;
+
+    image_broadcastner.publish(&msg);
 }
-
 int main(int argc, char *argv[]) {
   init_tracing();
 
