@@ -18,8 +18,10 @@ Il progetto include una cartella indipendente denominata SimulatoreC++, che cont
 
     Build System Dedicato: La cartella è provvista di un proprio Makefile e di un file CMakeLists.txt. Questo garantisce una ricompilazione rapida e isolata per qualsiasi tipo di modifica apportata al motore fisico o grafico.
 
-    Scopo e Limitazioni: A differenza degli altri moduli del progetto, questo simulatore non utilizza gli script di tracciamento automatizzato illustrati di seguito. Il lavoro di automazione avanzata su questo specifico modello risiede in una repository Git separata. In questo contesto, la cartella funge puramente da ambiente di implementazione e testing locale.
+    Origine MATLAB e Automazione: Questo codice in C++ è una derivazione diretta di un modello originariamente sviluppato in MATLAB. Tutto il lavoro di analisi, progettazione della teoria del controllo e automazione su questo specifico modello F-16 risiede in una repository Git separata. Puoi consultare il progetto originario qui:
+    👉 [Repository MATLAB - Simulatore e Automazione F-16]([https://github.com/leoleg2004/AutomationF16])
 
+    Scopo in questo Progetto: A differenza degli altri moduli, questo simulatore in C++ non utilizza gli script di tracciamento automatizzato illustrati di seguito, ma funge puramente da ambiente di implementazione e testing locale per la dinamica di volo.
 🛠️ Automazione e Build System
 
 Il progetto implementa un sistema di gestione del codice avanzato per facilitare lo sviluppo e il testing:
@@ -80,12 +82,19 @@ All'interno della sottocartella dds/DDS/, troviamo la controparte avanzata degli
 
 📊 Strumenti di Monitoraggio Avanzati (Cartella Tesi)
 
-Il nucleo analitico del progetto è contenuto all'interno della cartella Tesi. Oltre agli script per la generazione dei report trace-cmd illustrati in precedenza, questa cartella ospita tool diagnostici specifici per il middleware:
+Il nucleo analitico del progetto è contenuto all'interno della cartella Tesi. Oltre agli script per la generazione dei report, questa cartella ospita tool diagnostici specifici per il middleware, fondamentali per analizzare a fondo la rete:
 
-    eProsima Fast DDS Monitor: All'interno della cartella Tesi è integrato l'utilizzo del DDS Monitor. Questo strumento ufficiale di eProsima viene impiegato durante le esecuzioni DDS per tenere traccia in tempo reale dello stato della rete, del throughput e delle latenze di comunicazione.
+    eProsima Fast DDS Monitor: All'interno della cartella Tesi è presente la sottocartella DDS_MONITOR, che contiene lo strumento ufficiale di eProsima per tenere traccia in tempo reale dello stato della rete, del throughput e delle latenze di comunicazione.
 
-    Attivazione via Codice: I parametri profilati dal DDS Monitor non vengono tracciati di default, ma vengono esplicitamente attivati via codice nel sorgente dei Publisher/Subscriber, modificando opportunamente le policy di QoS (Quality of Service) per consentire un'analisi profonda senza sovraccaricare inutilmente l'IPC di base.
+    Procedura di Utilizzo del Monitor: Per avviare correttamente la tracciatura delle statistiche, seguire questi step:
 
+        Avviare la Comunicazione: Eseguire in due terminali separati gli script del Publisher e del Subscriber DDS per instaurare e mantenere attiva la comunicazione.
+
+        Avviare il Monitor: Entrare nella cartella Tesi/DDS_MONITOR e lanciare lo script del Fast DDS Monitor. Attenzione: Assicurarsi che lo script abbia i corretti privilegi di esecuzione (es. usando sudo o impostando preventivamente chmod +x sullo script) per evitare che il programma fallisca a causa di permessi negati nell'accesso ai socket di rete.
+
+        Sintonizzazione del Dominio: Una volta aperta l'interfaccia grafica del monitor, è necessario sintonizzarlo sullo stesso Domain ID scelto e configurato all'interno del codice sorgente C++ dei nodi DDS. Fatto ciò, il monitor rileverà automaticamente i nodi e inizierà a tracciarne le statistiche.
+
+    Attivazione via Codice: Si noti che i parametri profilati dal DDS Monitor non vengono esposti di default dai nodi. Vengono esplicitamente attivati via codice nel sorgente dei Publisher/Subscriber, modificando opportunamente le policy di QoS (Quality of Service) per consentire l'esportazione delle metriche senza sovraccaricare inutilmente l'IPC di base.
 📂 Archiviazione Automatica degli Output (output/traces/)
 
 Al termine di ogni singola simulazione, gli script creano automaticamente una cartella dedicata all'interno di output/traces/.
