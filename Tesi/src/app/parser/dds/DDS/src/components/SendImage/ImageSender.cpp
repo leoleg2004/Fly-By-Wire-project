@@ -140,6 +140,7 @@ void ImageSender::send_image() {
 
     image_broadcastner.publish(&msg);
 }
+}
 int main(int argc, char *argv[]) {
   init_tracing();
 
