@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O2 -I../../../src/lib -I../../../src/msg
+CFLAGS = -Wall -O2 -I../../../src/lib -I../../../src/msg/generated
 LDFLAGS = -L../../../bin/lib -lActivity_library -lpthread -lm -lrt
 TARGET = ../../../bin/app/app10d
 

@@ -1,31 +1,48 @@
-# Makefile Principale del Progetto Project_Kernel_Trace
+# Project_Kernel_Trace - Unified Build System
 
-# Directory principali
-SRC_DIR = src
-BIN_DIR = bin
-# La cartella Test deve finire dentro bin
-TEST_DIR = $(BIN_DIR)/Test
+# Default core count for parallel build if not specified
+JOBS ?= 4
 
-# Target di default
-all: build_all
+.PHONY: all libs apps clean rebuild help
 
-build_all:
-	@mkdir -p $(BIN_DIR)/app $(BIN_DIR)/lib $(BIN_DIR)/msg $(BIN_DIR)/tools
-	@mkdir -p $(TEST_DIR)
-	-$(MAKE) -C $(SRC_DIR)/lib
-	-$(MAKE) -C $(SRC_DIR)/msg
-	-$(MAKE) -C $(SRC_DIR)/app
+# Build everything
+all: libs apps
+	@echo "========================================================="
+	@echo " Build complete! Binaries are in bin/app/"
+	@echo "========================================================="
 
-# Pulizia
+# Reconstruct libmsg.a from DDS components
+libmsg:
+	@mkdir -p bin/lib/tmp_ext
+	@echo ">>> Reconstructing libmsg.a from DDS objects..."
+	@cd bin/lib/tmp_ext && for f in ../../../src/msg/DDS/bin/messages/lib/*.a; do ar x $$f; done && ar rcs ../libmsg.a *.o
+	@rm -rf bin/lib/tmp_ext
+
+# Build libraries first (mandatory dependency for apps)
+libs: libmsg
+	@echo ">>> Building Core Libraries..."
+	$(MAKE) -C src/lib
+
+# Build applications (depends on libs)
+apps: libs
+	@echo ">>> Building Applications..."
+	$(MAKE) -C src/app
+
+# Clean all build artifacts
 clean:
-	-$(MAKE) -C $(SRC_DIR)/lib clean
-	-$(MAKE) -C $(SRC_DIR)/msg clean
-	-$(MAKE) -C $(SRC_DIR)/app clean
-	# Manteniamo (BIN_DIR)/tools/ perché contiene gli script "sorgenti" e thread_analysis.cpp
-	-rm -rf $(BIN_DIR)/app $(BIN_DIR)/lib $(BIN_DIR)/msg
-	-rm -rf $(BIN_DIR)/Test/* $(BIN_DIR)/test/* 2>/dev/null
+	@echo ">>> Cleaning everything..."
+	$(MAKE) -C src/lib clean
+	$(MAKE) -C src/app clean
+	rm -f bin/lib/libmsg.a
+	@echo "Done."
 
-# Re-compilazione completa
+# Full rebuild
 rebuild: clean all
 
-.PHONY: all clean rebuild build_all
+# Help message
+help:
+	@echo "Usage:"
+	@echo "  make          - Build everything (sequential libraries, then apps)"
+	@echo "  make -j4      - Build everything in parallel where possible"
+	@echo "  make clean    - Remove all binaries and object files"
+	@echo "  make rebuild  - Clean and then build everything"

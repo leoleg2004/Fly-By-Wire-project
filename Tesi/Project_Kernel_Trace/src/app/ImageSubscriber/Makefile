@@ -7,7 +7,7 @@ CXXFLAGS = -Wall -O2 -std=c++11 \
            -I. \
            -I$(PROJECT_ROOT)/src/lib \
            -I$(PROJECT_ROOT)/src/lib/communication_library \
-           -I$(PROJECT_ROOT)/src/msg \
+           -I$(PROJECT_ROOT)/src/msg/generated \
            -I$(PROJECT_ROOT)/src/msg/generated \
            -I/usr/local/include \
            $(shell pkg-config --cflags opencv4)

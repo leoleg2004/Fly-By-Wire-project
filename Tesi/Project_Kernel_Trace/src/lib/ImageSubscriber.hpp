@@ -1,6 +1,6 @@
 /********************************************************************************
  *
- * ImageSender
+ * ImageSubscriber
  *
  * Copyright (c) 2019
  * All rights reserved.
@@ -8,7 +8,7 @@
  * Davide Brugali, Università degli Studi di Bergamo
  *
  * -------------------------------------------------------------------------------
- * File: ImageSender.hpp
+ * File: ImageSubscriber.hpp
  * Created: May 5, 2019
  * Author: <A HREF="mailto:brugali@unibg.it">Davide Brugali</A>
  * -------------------------------------------------------------------------------
@@ -46,12 +46,13 @@
  *
  ******************************************************************************
  */
-#ifndef IMAGE_SENDER_H
-#define IMAGE_SENDER_H
+#ifndef IMAGE_SUBSCRIBER_H
+#define IMAGE_SUBSCRIBER_H
 
-#include "../..//lib/trace_marker.h"
-#include "../../lib/communication_library/Broadcastner.hpp"
+#include "ImageListener.hpp"
 #include "activity_library.h"
+#include "communication_library/Broadcastner.hpp"
+#include "trace_marker.h"
 
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
@@ -66,73 +67,37 @@
 
 #include "geometry_msgsPubSubTypes.h"
 #include "nav_msgsPubSubTypes.h"
-#include "sensor_msgsPubSubTypes.h"
 
-#include <opencv2/opencv.hpp>
-
-class ImageSender {
+class ImageSubscriber {
 public:
-  ImageSender() {}
-  ~ImageSender() {}
+  ImageSubscriber() {}
+  ~ImageSubscriber() {}
 
   void start();
   void shutdown();
 
-  void send_image();
-
 private:
-  Broadcastner image_broadcastner;
+  ImageListener image_listener;
 
   pthread_t periodic_thread;
   t_activity_par activity_parameters;
-
-  int counter = 0;
-
-  std::string cvTypeToEncoding(int type) {
-    switch (type) {
-    case CV_8UC1:
-      return "mono8";
-    case CV_8UC2:
-      return "8UC2";
-    case CV_8UC3:
-      return "bgr8";
-    case CV_8UC4:
-      return "bgra8";
-
-    case CV_16UC1:
-      return "mono16";
-    case CV_16UC2:
-      return "16UC2";
-    case CV_16UC3:
-      return "16UC3";
-    case CV_16UC4:
-      return "16UC4";
-
-    case CV_32FC1:
-      return "32FC1";
-    case CV_32FC2:
-      return "32FC2";
-    case CV_32FC3:
-      return "32FC3";
-    case CV_32FC4:
-      return "32FC4";
-
-    default:
-      throw std::runtime_error("Unsupported cv::Mat type");
-    }
-  }
 };
 
+int counter = 0;
 void control_function(void *instance, int parameter) {
-  ImageSender *class_instance = (ImageSender *)instance;
   char marker[64];
 
-  snprintf(marker, sizeof(marker), "FUNCTION_START_send_image");
+  snprintf(marker, sizeof(marker), "FUNCTION_START_receive_image");
   write_trace_marker(marker);
 
-  class_instance->send_image();
+  std::cout << "---START_COMPUTATION" << std::endl;
+  double result;
+  for (int i = 1; i < 3 * 10000000; i++)
+    result = atan2(sin(M_PI / 1000 * i), cos(M_PI / 100 * i));
 
-  snprintf(marker, sizeof(marker), "FUNCTION_END_send_image");
+  std::cout << "---END_COMPUTATION" << std::endl;
+
+  snprintf(marker, sizeof(marker), "FUNCTION_END_receive_image");
   write_trace_marker(marker);
 }
 

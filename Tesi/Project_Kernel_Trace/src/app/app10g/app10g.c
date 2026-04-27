@@ -156,9 +156,9 @@ int main(int argc, char *argv[]) {
   t_activity_par activity_3;
   sprintf(activity_3.name, "Activity_3");
   activity_3.function = ActivityIncrement;
-  activity_3.period = 1800;
-  activity_3.parameter = 20;
-  activity_3.deadline = 1800;
+  activity_3.period = 1000;
+  activity_3.parameter = 10;
+  activity_3.deadline = 1000;
 
   // Calcolo priorità RM (Periodo 1800)
   param3.sched_priority = 99 - (activity_3.period / 10);
@@ -177,7 +177,7 @@ int main(int argc, char *argv[]) {
   sprintf(activity_4.name, "Activity_4");
   activity_4.function = ActivityIncrement;
   activity_4.period = 800;
-  activity_4.parameter = 10;
+  activity_4.parameter = 2;
   activity_4.deadline = 800;
 
   // Calcolo priorità RM (Periodo 800)
