@@ -1,7 +1,7 @@
 # ==========================================
 # 1. SPAZZATURA DI CMAKE E COMPILATORI
 # ==========================================
-# Ignora le cartelle CMakeFiles ovunque si trovino (risolve il problema in src/ e build/)
+# Ignora le cartelle CMakeFiles ovunque si trovino
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
@@ -10,107 +10,51 @@ compile_commands.json
 CMakeScripts/
 
 # ==========================================
-# 2. FILE OGGETTO E LIBRERIE
+# 2. OUTPUT DI COMPILAZIONE (BIN & LIB)
 # ==========================================
-# NOTA: Le librerie (*.a, *.so, *.dylib) ora VENGONO TRACCIATE ovunque.
-# Ignoriamo solo i file oggetto intermedi per non intasare GitKraken a ogni salvataggio.
-*.o
-*.out
-.raylib/
-_deps/
-
-# ==========================================
-# 3. GESTIONE SPECIFICA DELLA CARTELLA BUILD
-# ==========================================
-# Ignora TUTTO quello che c'è dentro la cartella build/ di default
-build/*
-
-# TRANNE (!) i seguenti file che vogliamo assolutamente su GitHub:
-!build/FlightSim
-!build/MonitorApp
-!build/*.glb
-!build/*.wav
-
-# ==========================================
-# 4. PYTHON E AMBIENTI VIRTUALI (NUOVO)
-# ==========================================
-# Ignora i file compilati di Python (la cache che rende l'avvio più veloce)
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-
-# Ignora le cartelle degli ambienti virtuali (importantissimo per non caricare MB di librerie!)
-venv/
-.venv/
-env/
-ambiente_isolato/
-
-# ==========================================
-# 5. ECLIPSE E PYDEV (NUOVO)
-# ==========================================
-# Ignora i file di configurazione dell'IDE Eclipse che sono specifici per il tuo computer
-.project
-.cproject
-.pydevproject
-.settings/
-.metadata/# ==========================================
-# 1. SPAZZATURA DI CMAKE E COMPILATORI
-# ==========================================
-# Ignora le cartelle CMakeFiles ovunque si trovino (risolve il problema in src/ e build/)
-CMakeFiles/
-CMakeCache.txt
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-CMakeScripts/
-
-# ==========================================
-# 2. FILE OGGETTO E LIBRERIE (Incluso Raylib)
-# ==========================================
+# Ignora i file oggetto e le librerie in generale
 *.o
 *.a
 *.so
 *.dylib
 *.out
-.raylib/
-_deps/
 
-# TRANNE le librerie dei messaggi che vogliamo su GitHub:
-!msg/lib/*.a
-!msg/lib/*.so
-
-# ==========================================
-# 3. GESTIONE SPECIFICA DELLA CARTELLA BUILD
-# ==========================================
-# Ignora TUTTO quello che c'è dentro la cartella build/ di default
+# Gestione delle cartelle bin/ e lib/
+# Per permettere eccezioni (es. libmsg.a), non dobbiamo ignorare la cartella stessa
+# ma il suo contenuto.
+**/bin/*
+**/lib/*
 build/*
+_deps/
+.raylib/
 
-# TRANNE (!) i seguenti file che vogliamo assolutamente su GitHub:
+# ECCEZIONI: File che vogliamo assolutamente su GitHub
+!**/bin/lib/
+!**/bin/lib/libmsg.a
+!**/bin/lib/libcommunication_library.a
+!**/bin/lib/libActivity_library.a
+
+# Altre eccezioni per la cartella build/
 !build/FlightSim
 !build/MonitorApp
 !build/*.glb
 !build/*.wav
 
 # ==========================================
-# 4. PYTHON E AMBIENTI VIRTUALI (NUOVO)
+# 3. PYTHON E AMBIENTI VIRTUALI
 # ==========================================
-# Ignora i file compilati di Python (la cache che rende l'avvio più veloce)
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-# Ignora le cartelle degli ambienti virtuali (importantissimo per non caricare MB di librerie!)
 venv/
 .venv/
 env/
 ambiente_isolato/
 
 # ==========================================
-# 5. ECLIPSE E PYDEV (NUOVO)
+# 4. IDE E CONFIGURAZIONI (Eclipse, PyDev, etc)
 # ==========================================
-# Ignora i file di configurazione dell'IDE Eclipse che sono specifici per il tuo computer
 .project
 .cproject
 .pydevproject
