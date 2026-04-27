@@ -8,7 +8,7 @@
 #    sudo bash marker_dds.sh ImageSender ImageSubscriber  # entrambi i processi
 #    sudo bash marker_dds.sh ImageSubscriber              # solo uno
 #
-#  Metodo del Prof: avvia prima i processi nei loro terminali, poi lancia questo.
+#  avvia prima i processi nei loro terminali, poi lancia questo.
 #  Premi Ctrl+C per fermare la registrazione quando hai finito.
 # =============================================================================
 
@@ -20,7 +20,7 @@ BASE_DIR="$PWD"
 # Carica SERL_HOME + LD_LIBRARY_PATH
 source "$DDS_ROOT/environment.sh"
 
-# --- 1. Scegli i processi da tracciare ---------------------------------------
+# 1. Scegli i processi da tracciare
 if [ "$#" -eq 0 ]; then
     echo "Processi DDS disponibili in bin/components/:"
     ls "$DDS_ROOT/bin/components/" 2>/dev/null | grep -v '\.sh' || echo "  (nessuno)"
@@ -34,7 +34,7 @@ fi
 
 APP_NAME=$(basename "$EXECUTABLE")
 
-# --- 2. Funzione: aggiungi PID + tutti i suoi thread -------------------------
+#  2. Funzione: aggiungi PID + tutti i suoi thread -
 PIDS_CMD=""
 
 aggiungi_pid_e_thread() {
@@ -73,7 +73,7 @@ aggiungi_pid_e_thread() {
     return 0
 }
 
-# Primo processo (obbligatorio)
+# Primo processo 
 aggiungi_pid_e_thread "$APP_NAME" || exit 1
 
 # Secondo processo (opzionale)
