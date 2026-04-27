@@ -1,0 +1,453 @@
+cpus=8
+          <idle>-0     [003]  6628.171739: sched_wakeup:         dds.shm.wdog:35762 [120] CPU:003
+          <idle>-0     [003]  6628.171742: sched_switch:         swapper/3:0 [120] R ==> dds.shm.wdog:35762 [120]
+    dds.shm.wdog-35762 [003]  6628.171776: sched_switch:         dds.shm.wdog:35762 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6628.174895: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6628.174900: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6628.174915: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [001]  6628.231878: sched_wakeup:         dds.shm.7661:35766 [120] CPU:001
+          <idle>-0     [001]  6628.231881: sched_switch:         swapper/1:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [001]  6628.231899: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [000]  6628.297212: sched_wakeup:         Activity_1:35771 [98] CPU:000
+          <idle>-0     [000]  6628.297223: sched_switch:         swapper/0:0 [120] R ==> Activity_1:35771 [98]
+      Activity_1-35771 [000]  6628.297252: print:                tracing_mark_write: PERIOD_END_Activity_1
+      Activity_1-35771 [000]  6628.297255: print:                tracing_mark_write: PERIOD_START_Activity_1
+      Activity_1-35771 [000]  6628.297256: print:                tracing_mark_write: FUNCTION_START_Activity_1
+      Activity_1-35771 [000]  6628.373013: sched_wakeup:         DDS_Publish:35770 [60] CPU:000
+      Activity_1-35771 [000]  6628.373015: sched_switch:         Activity_1:35771 [98] R ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6628.373020: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-35770 [000]  6628.373021: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-35770 [000]  6628.373021: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+     DDS_Publish-35770 [000]  6628.400364: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+     DDS_Publish-35770 [000]  6628.497352: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-35770 [000]  6628.497354: print:                tracing_mark_write: DDS_WRITE_START
+          <idle>-0     [005]  6628.497400: sched_wakeup:         dds.dsha.260:35829 [120] CPU:005
+          <idle>-0     [005]  6628.497403: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:35829 [120]
+     DDS_Publish-35770 [000]  6628.497427: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-35770 [000]  6628.497428: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-35770 [000]  6628.497441: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-35770 [000]  6628.497441: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-35770 [000]  6628.497447: sched_switch:         DDS_Publish:35770 [60] S ==> Activity_1:35771 [98]
+    dds.dsha.260-35829 [005]  6628.497470: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [001]  6628.497501: sched_wakeup:         dds.shm.7661:35766 [120] CPU:001
+          <idle>-0     [001]  6628.497502: sched_switch:         swapper/1:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [001]  6628.497530: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/1:0 [120]
+    dds.dsha.260-35829 [005]  6628.497542: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-35829 [005]  6628.497554: sched_switch:         dds.dsha.260:35829 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [002]  6628.507979: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6628.507986: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6628.508000: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+      Activity_1-35771 [000]  6628.509798: print:                tracing_mark_write: FUNCTION_END_Activity_1
+      Activity_1-35771 [000]  6628.509800: print:                tracing_mark_write: SLEEP_START_Activity_1
+      Activity_1-35771 [000]  6628.509803: sched_switch:         Activity_1:35771 [98] S ==> kworker/0:0:33286 [120]
+          <idle>-0     [004]  6628.516541: sched_wakeup:         dds.shm.wdog:35821 [120] CPU:004
+          <idle>-0     [004]  6628.516543: sched_switch:         swapper/4:0 [120] R ==> dds.shm.wdog:35821 [120]
+    dds.shm.wdog-35821 [004]  6628.516556: sched_switch:         dds.shm.wdog:35821 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6628.830582: sched_wakeup:         dds.shm.7661:35766 [120] CPU:001
+          <idle>-0     [001]  6628.830585: sched_switch:         swapper/1:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [001]  6628.830597: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [002]  6628.841080: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6628.841102: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6628.841138: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [000]  6628.973049: sched_wakeup:         DDS_Publish:35770 [60] CPU:000
+          <idle>-0     [000]  6628.973060: sched_switch:         swapper/0:0 [120] R ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6628.973089: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-35770 [000]  6628.973091: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-35770 [000]  6628.973093: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+     DDS_Publish-35770 [000]  6628.976377: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+     DDS_Publish-35770 [000]  6629.102957: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-35770 [000]  6629.102959: print:                tracing_mark_write: DDS_WRITE_START
+     DDS_Publish-35770 [000]  6629.103044: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-35770 [000]  6629.103045: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-35770 [000]  6629.103055: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-35770 [000]  6629.103056: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-35770 [000]  6629.103062: sched_switch:         DDS_Publish:35770 [60] S ==> kworker/0:0:33286 [120]
+          <idle>-0     [005]  6629.103092: sched_wakeup:         dds.dsha.260:35829 [120] CPU:005
+          <idle>-0     [005]  6629.103094: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:35829 [120]
+    dds.dsha.260-35829 [005]  6629.103163: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [001]  6629.103196: sched_wakeup:         dds.shm.7661:35766 [120] CPU:001
+          <idle>-0     [001]  6629.103197: sched_switch:         swapper/1:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [001]  6629.103235: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/1:0 [120]
+    dds.dsha.260-35829 [005]  6629.103245: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-35829 [005]  6629.103260: sched_switch:         dds.dsha.260:35829 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [003]  6629.171868: sched_wakeup:         dds.shm.wdog:35762 [120] CPU:003
+          <idle>-0     [003]  6629.171888: sched_switch:         swapper/3:0 [120] R ==> dds.shm.wdog:35762 [120]
+    dds.shm.wdog-35762 [003]  6629.171907: sched_switch:         dds.shm.wdog:35762 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6629.174205: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6629.174229: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6629.174242: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [000]  6629.297215: sched_wakeup:         Activity_1:35771 [98] CPU:000
+          <idle>-0     [000]  6629.297234: sched_switch:         swapper/0:0 [120] R ==> Activity_1:35771 [98]
+      Activity_1-35771 [000]  6629.297246: print:                tracing_mark_write: PERIOD_END_Activity_1
+      Activity_1-35771 [000]  6629.297248: print:                tracing_mark_write: PERIOD_START_Activity_1
+      Activity_1-35771 [000]  6629.297248: print:                tracing_mark_write: FUNCTION_START_Activity_1
+      Activity_1-35771 [000]  6629.360372: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+      Activity_1-35771 [000]  6629.386906: print:                tracing_mark_write: FUNCTION_END_Activity_1
+      Activity_1-35771 [000]  6629.386907: print:                tracing_mark_write: SLEEP_START_Activity_1
+      Activity_1-35771 [000]  6629.386910: sched_switch:         Activity_1:35771 [98] S ==> kworker/0:0:33286 [120]
+          <idle>-0     [001]  6629.436302: sched_wakeup:         dds.shm.7661:35766 [120] CPU:001
+          <idle>-0     [001]  6629.436321: sched_switch:         swapper/1:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [001]  6629.436334: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [002]  6629.507310: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6629.507322: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6629.507336: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6629.516613: sched_wakeup:         dds.shm.wdog:35821 [120] CPU:004
+          <idle>-0     [004]  6629.516616: sched_switch:         swapper/4:0 [120] R ==> dds.shm.wdog:35821 [120]
+    dds.shm.wdog-35821 [004]  6629.516631: sched_switch:         dds.shm.wdog:35821 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [000]  6629.573032: sched_wakeup:         DDS_Publish:35770 [60] CPU:000
+          <idle>-0     [000]  6629.573050: sched_switch:         swapper/0:0 [120] R ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.573062: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-35770 [000]  6629.573063: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-35770 [000]  6629.573064: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+     DDS_Publish-35770 [000]  6629.613520: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.613523: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.613619: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.615439: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.615439: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.615528: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.615661: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.615662: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.615750: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.615789: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.615790: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.615885: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.615927: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.615928: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.616024: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.616063: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.616063: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.616152: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.616176: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.616177: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.616267: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.616315: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.616315: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.616409: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.616427: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.616428: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.616524: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.616563: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.616564: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.616653: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.616956: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.616957: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.617060: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.617095: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.617095: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.617186: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.617248: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.617249: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.617336: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.617355: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.617355: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.617449: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.617490: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.617491: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.617583: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.617601: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.617602: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.617691: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.617754: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.617754: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.617843: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.617861: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.617862: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.617957: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.617995: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.617995: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.618083: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.618101: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.618102: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.618195: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.618235: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.618236: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.618323: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.618341: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.618342: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.618440: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.618500: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.618500: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.618588: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.618606: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.618606: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.618700: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.618740: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.618740: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.618833: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.618850: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.618851: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.618951: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.618962: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.618962: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.619042: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.619419: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.619419: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.619507: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.619546: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.619547: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.619642: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.619680: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.619681: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.619773: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.619798: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.619798: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.619891: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.619938: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.619938: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.620026: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.620044: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.620044: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.620139: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.620197: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.620198: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.620287: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.620326: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.620327: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.620420: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.620439: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.620439: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.620535: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.620575: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.620575: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.620667: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.620685: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.620685: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.620774: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.620814: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.620814: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.620896: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.621648: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.621649: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.621741: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.621781: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.621781: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.621872: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.621978: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.621978: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.622066: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.622084: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.622085: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.622178: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.622231: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.622232: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.622325: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.622343: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.622343: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.622434: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.622497: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.622498: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.622594: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.622640: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.622641: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.622728: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.622746: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.622747: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.622836: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.622875: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.622876: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.622963: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.622981: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.622981: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.623078: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.623116: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.623117: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.623205: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.623532: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.623533: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.623625: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.623668: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.623668: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.623759: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.623822: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.623823: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.623911: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.623936: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.623936: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.624031: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.624069: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.624070: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.624163: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.624180: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.624180: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.624276: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.624331: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.624332: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.624422: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.624447: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.624448: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.624541: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.624588: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.624589: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.624676: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.624694: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.624694: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.624788: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.624828: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.624829: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.624926: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.624964: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.624964: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.625052: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.625070: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.625070: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.625159: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.625198: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.625198: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.625291: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.625309: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.625309: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.625406: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.625445: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.625445: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.625532: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.625836: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.625836: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.625929: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.625964: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.625965: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.626055: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.627831: sched_wakeup:         irq/9-acpi:80 [49] CPU:000
+     DDS_Publish-35770 [000]  6629.627833: sched_switch:         DDS_Publish:35770 [60] R ==> irq/9-acpi:80 [49]
+      irq/9-acpi-80    [000]  6629.627926: sched_switch:         irq/9-acpi:80 [49] S ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6629.703965: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-35770 [000]  6629.703966: print:                tracing_mark_write: DDS_WRITE_START
+     DDS_Publish-35770 [000]  6629.704049: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-35770 [000]  6629.704050: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-35770 [000]  6629.704061: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-35770 [000]  6629.704062: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-35770 [000]  6629.704065: sched_switch:         DDS_Publish:35770 [60] S ==> kworker/0:0:33286 [120]
+          <idle>-0     [005]  6629.704093: sched_wakeup:         dds.dsha.260:35829 [120] CPU:005
+          <idle>-0     [005]  6629.704106: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:35829 [120]
+    dds.dsha.260-35829 [005]  6629.704181: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [001]  6629.704210: sched_wakeup:         dds.shm.7661:35766 [120] CPU:001
+          <idle>-0     [001]  6629.704212: sched_switch:         swapper/1:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [001]  6629.704240: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/1:0 [120]
+    dds.dsha.260-35829 [005]  6629.704265: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-35829 [005]  6629.704276: sched_switch:         dds.dsha.260:35829 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [002]  6629.840402: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6629.840407: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6629.840432: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [006]  6630.017747: sched_wakeup:         dds.ev.0:35822 [120] CPU:006
+          <idle>-0     [006]  6630.017772: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:35822 [120]
+          <idle>-0     [002]  6630.017912: sched_wakeup:         dds.udp.7650:35765 [120] CPU:002
+          <idle>-0     [002]  6630.017914: sched_switch:         swapper/2:0 [120] R ==> dds.udp.7650:35765 [120]
+          <idle>-0     [003]  6630.017926: sched_wakeup:         dds.udp.7660:35764 [120] CPU:003
+          <idle>-0     [003]  6630.017928: sched_switch:         swapper/3:0 [120] R ==> dds.udp.7660:35764 [120]
+          <idle>-0     [005]  6630.017930: sched_wakeup:         dds.udp.7650:35824 [120] CPU:005
+          <idle>-0     [005]  6630.017941: sched_switch:         swapper/5:0 [120] R ==> dds.udp.7650:35824 [120]
+    dds.udp.7660-35764 [003]  6630.017954: sched_switch:         dds.udp.7660:35764 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6630.017968: sched_wakeup:         dds.udp.7660:35764 [120] CPU:003
+          <idle>-0     [003]  6630.017969: sched_switch:         swapper/3:0 [120] R ==> dds.udp.7660:35764 [120]
+        dds.ev.0-35822 [006]  6630.017975: sched_switch:         dds.ev.0:35822 [120] S ==> swapper/6:0 [120]
+    dds.udp.7650-35765 [002]  6630.017991: sched_switch:         dds.udp.7650:35765 [120] S ==> swapper/2:0 [120]
+    dds.udp.7650-35824 [005]  6630.017995: sched_switch:         dds.udp.7650:35824 [120] S ==> swapper/5:0 [120]
+    dds.udp.7660-35764 [003]  6630.018003: sched_switch:         dds.udp.7660:35764 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6630.037289: sched_wakeup:         dds.shm.7661:35766 [120] CPU:001
+          <idle>-0     [001]  6630.037292: sched_switch:         swapper/1:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [001]  6630.037305: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [003]  6630.171987: sched_wakeup:         dds.shm.wdog:35762 [120] CPU:003
+          <idle>-0     [003]  6630.171996: sched_switch:         swapper/3:0 [120] R ==> dds.shm.wdog:35762 [120]
+    dds.shm.wdog-35762 [003]  6630.172025: sched_switch:         dds.shm.wdog:35762 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6630.173124: sched_wakeup:         DDS_Publish:35770 [60] CPU:000
+          <idle>-0     [000]  6630.173136: sched_switch:         swapper/0:0 [120] R ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6630.173155: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-35770 [000]  6630.173158: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-35770 [000]  6630.173159: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+          <idle>-0     [002]  6630.173481: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6630.173486: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6630.173514: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+     DDS_Publish-35770 [000]  6630.281725: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+     DDS_Publish-35770 [000]  6630.297191: sched_wakeup:         Activity_1:35771 [98] CPU:000
+     DDS_Publish-35770 [000]  6630.306517: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-35770 [000]  6630.306518: print:                tracing_mark_write: DDS_WRITE_START
+     DDS_Publish-35770 [000]  6630.306603: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-35770 [000]  6630.306603: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-35770 [000]  6630.306614: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-35770 [000]  6630.306614: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-35770 [000]  6630.306617: sched_switch:         DDS_Publish:35770 [60] S ==> Activity_1:35771 [98]
+      Activity_1-35771 [000]  6630.306620: print:                tracing_mark_write: PERIOD_END_Activity_1
+      Activity_1-35771 [000]  6630.306620: print:                tracing_mark_write: PERIOD_START_Activity_1
+      Activity_1-35771 [000]  6630.306621: print:                tracing_mark_write: FUNCTION_START_Activity_1
+          <idle>-0     [005]  6630.306657: sched_wakeup:         dds.dsha.260:35829 [120] CPU:005
+          <idle>-0     [005]  6630.306668: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:35829 [120]
+    dds.dsha.260-35829 [005]  6630.306754: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [002]  6630.306790: sched_wakeup:         dds.shm.7661:35766 [120] CPU:002
+          <idle>-0     [002]  6630.306791: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [002]  6630.306818: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/2:0 [120]
+    dds.dsha.260-35829 [005]  6630.306836: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-35829 [005]  6630.306850: sched_switch:         dds.dsha.260:35829 [120] S ==> swapper/5:0 [120]
+      Activity_1-35771 [000]  6630.389296: print:                tracing_mark_write: FUNCTION_END_Activity_1
+      Activity_1-35771 [000]  6630.389297: print:                tracing_mark_write: SLEEP_START_Activity_1
+      Activity_1-35771 [000]  6630.389300: sched_switch:         Activity_1:35771 [98] S ==> kworker/0:0:33286 [120]
+          <idle>-0     [002]  6630.506565: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6630.506573: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6630.506606: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6630.516691: sched_wakeup:         dds.shm.wdog:35821 [120] CPU:004
+          <idle>-0     [004]  6630.516696: sched_switch:         swapper/4:0 [120] R ==> dds.shm.wdog:35821 [120]
+    dds.shm.wdog-35821 [004]  6630.516720: sched_switch:         dds.shm.wdog:35821 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [002]  6630.639884: sched_wakeup:         dds.shm.7661:35766 [120] CPU:002
+          <idle>-0     [002]  6630.639909: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [002]  6630.639920: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6630.672640: sched_wakeup:         dds.ev.0:35763 [120] CPU:003
+          <idle>-0     [003]  6630.672642: sched_switch:         swapper/3:0 [120] R ==> dds.ev.0:35763 [120]
+          <idle>-0     [004]  6630.672750: sched_wakeup:         dds.udp.7662:35823 [120] CPU:004
+          <idle>-0     [004]  6630.672752: sched_switch:         swapper/4:0 [120] R ==> dds.udp.7662:35823 [120]
+          <idle>-0     [002]  6630.672772: sched_wakeup:         dds.udp.7650:35765 [120] CPU:002
+          <idle>-0     [002]  6630.672773: sched_switch:         swapper/2:0 [120] R ==> dds.udp.7650:35765 [120]
+        dds.ev.0-35763 [003]  6630.672834: sched_switch:         dds.ev.0:35763 [120] S ==> swapper/3:0 [120]
+    dds.udp.7662-35823 [004]  6630.672839: sched_switch:         dds.udp.7662:35823 [120] S ==> swapper/4:0 [120]
+    dds.udp.7650-35765 [002]  6630.672843: sched_switch:         dds.udp.7650:35765 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [005]  6630.672873: sched_wakeup:         dds.udp.7650:35824 [120] CPU:005
+          <idle>-0     [005]  6630.672882: sched_switch:         swapper/5:0 [120] R ==> dds.udp.7650:35824 [120]
+    dds.udp.7650-35824 [005]  6630.672920: sched_switch:         dds.udp.7650:35824 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [000]  6630.773028: sched_wakeup:         DDS_Publish:35770 [60] CPU:000
+          <idle>-0     [000]  6630.773032: sched_switch:         swapper/0:0 [120] R ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6630.773044: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-35770 [000]  6630.773045: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-35770 [000]  6630.773046: print:                tracing_mark_write: FUNCTION_START_DDS_Publish
+     DDS_Publish-35770 [000]  6630.773380: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+          <idle>-0     [002]  6630.839702: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6630.839705: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6630.839720: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+     DDS_Publish-35770 [000]  6630.896960: print:                tracing_mark_write: DDS_MSG_START_DDS_Publish
+     DDS_Publish-35770 [000]  6630.896962: print:                tracing_mark_write: DDS_WRITE_START
+          <idle>-0     [005]  6630.897022: sched_wakeup:         dds.dsha.260:35829 [120] CPU:005
+          <idle>-0     [005]  6630.897024: sched_switch:         swapper/5:0 [120] R ==> dds.dsha.260:35829 [120]
+     DDS_Publish-35770 [000]  6630.897026: print:                tracing_mark_write: DDS_WRITE_END
+     DDS_Publish-35770 [000]  6630.897027: print:                tracing_mark_write: DDS_MSG_END_DDS_Publish
+     DDS_Publish-35770 [000]  6630.897037: print:                tracing_mark_write: FUNCTION_END_DDS_Publish
+     DDS_Publish-35770 [000]  6630.897037: print:                tracing_mark_write: SLEEP_START_DDS_Publish
+     DDS_Publish-35770 [000]  6630.897042: sched_switch:         DDS_Publish:35770 [60] S ==> kworker/0:0:33286 [120]
+    dds.dsha.260-35829 [005]  6630.897115: print:                tracing_mark_write: DDS_READ_START
+          <idle>-0     [001]  6630.897145: sched_wakeup:         dds.shm.7661:35766 [120] CPU:001
+          <idle>-0     [001]  6630.897146: sched_switch:         swapper/1:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [001]  6630.897160: sched_switch:         dds.shm.7661:35766 [120] R ==> migration/1:23 [0]
+    dds.dsha.260-35829 [005]  6630.897169: sched_switch:         dds.dsha.260:35829 [120] R ==> migration/5:47 [0]
+     migration/3-35    [003]  6630.897177: sched_switch:         migration/3:35 [0] S ==> dds.shm.7661:35766 [120]
+          <idle>-0     [002]  6630.897178: sched_switch:         swapper/2:0 [120] R ==> dds.dsha.260:35829 [120]
+    dds.shm.7661-35766 [003]  6630.897201: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/3:0 [120]
+    dds.dsha.260-35829 [002]  6630.897211: print:                tracing_mark_write: DDS_READ_END
+    dds.dsha.260-35829 [002]  6630.897232: sched_switch:         dds.dsha.260:35829 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6630.898898: sched_wakeup:         dds.ev.0:35763 [120] CPU:003
+          <idle>-0     [003]  6630.898903: sched_switch:         swapper/3:0 [120] R ==> dds.ev.0:35763 [120]
+        dds.ev.0-35763 [003]  6630.898913: sched_switch:         dds.ev.0:35763 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6631.172091: sched_wakeup:         dds.shm.wdog:35762 [120] CPU:003
+          <idle>-0     [003]  6631.172105: sched_switch:         swapper/3:0 [120] R ==> dds.shm.wdog:35762 [120]
+    dds.shm.wdog-35762 [003]  6631.172137: sched_switch:         dds.shm.wdog:35762 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6631.172770: sched_wakeup:         dds.shm.7663:35825 [120] CPU:002
+          <idle>-0     [002]  6631.172772: sched_switch:         swapper/2:0 [120] R ==> dds.shm.7663:35825 [120]
+    dds.shm.7663-35825 [002]  6631.172785: sched_switch:         dds.shm.7663:35825 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6631.230275: sched_wakeup:         dds.shm.7661:35766 [120] CPU:003
+          <idle>-0     [003]  6631.230278: sched_switch:         swapper/3:0 [120] R ==> dds.shm.7661:35766 [120]
+    dds.shm.7661-35766 [003]  6631.230293: sched_switch:         dds.shm.7661:35766 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6631.297212: sched_wakeup:         Activity_1:35771 [98] CPU:000
+          <idle>-0     [000]  6631.297240: sched_switch:         swapper/0:0 [120] R ==> Activity_1:35771 [98]
+      Activity_1-35771 [000]  6631.297251: print:                tracing_mark_write: PERIOD_END_Activity_1
+      Activity_1-35771 [000]  6631.297252: print:                tracing_mark_write: PERIOD_START_Activity_1
+      Activity_1-35771 [000]  6631.297253: print:                tracing_mark_write: FUNCTION_START_Activity_1
+      Activity_1-35771 [000]  6631.344381: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+      Activity_1-35771 [000]  6631.373028: sched_wakeup:         DDS_Publish:35770 [60] CPU:000
+      Activity_1-35771 [000]  6631.373029: sched_switch:         Activity_1:35771 [98] R ==> DDS_Publish:35770 [60]
+     DDS_Publish-35770 [000]  6631.373033: print:                tracing_mark_write: PERIOD_END_DDS_Publish
+     DDS_Publish-35770 [000]  6631.373033: print:                tracing_mark_write: PERIOD_START_DDS_Publish
+     DDS_Publish-35770 [000]  6631.373034: print:                tracing_mark_write: FUNCTION_START_DDS_Publish

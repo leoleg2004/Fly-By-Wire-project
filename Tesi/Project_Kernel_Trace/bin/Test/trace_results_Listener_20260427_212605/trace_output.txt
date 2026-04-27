@@ -1,0 +1,1473 @@
+cpus=8
+          <idle>-0     [001]  6293.826258: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.826260: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.826264: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [000]  6293.826270: sched_wakeup:         antigravity:4544 [120] CPU:000
+     antigravity-4545  [005]  6293.826271: sched_switch:         antigravity:4545 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [000]  6293.826271: sched_switch:         swapper/0:0 [120] R ==> antigravity:4544 [120]
+     antigravity-4544  [000]  6293.826294: sched_switch:         antigravity:4544 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [006]  6293.826294: sched_wakeup:         antigravity:4543 [120] CPU:006
+          <idle>-0     [006]  6293.826296: sched_switch:         swapper/6:0 [120] R ==> antigravity:4543 [120]
+          <idle>-0     [001]  6293.826310: sched_wakeup:         antigravity:4497 [120] CPU:001
+          <idle>-0     [001]  6293.826310: sched_switch:         swapper/1:0 [120] R ==> antigravity:4497 [120]
+     antigravity-4543  [006]  6293.826311: sched_switch:         antigravity:4543 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.826319: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.826320: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [007]  6293.826329: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.826330: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [006]  6293.826333: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.826335: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.826337: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+          <idle>-0     [006]  6293.826337: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.826338: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5505  [007]  6293.826338: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+ language_server-5503  [003]  6293.826341: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+ language_server-5524  [006]  6293.826342: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.826408: sched_wakeup:         antigravity:4543 [120] CPU:006
+          <idle>-0     [006]  6293.826409: sched_switch:         swapper/6:0 [120] R ==> antigravity:4543 [120]
+     antigravity-4497  [001]  6293.826412: sched_switch:         antigravity:4497 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.826414: sched_wakeup:         antigravity:4497 [120] CPU:001
+          <idle>-0     [001]  6293.826415: sched_switch:         swapper/1:0 [120] R ==> antigravity:4497 [120]
+     antigravity-4543  [006]  6293.826415: sched_switch:         antigravity:4543 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.826421: sched_wakeup:         antigravity:4543 [120] CPU:006
+          <idle>-0     [006]  6293.826421: sched_switch:         swapper/6:0 [120] R ==> antigravity:4543 [120]
+     antigravity-4497  [001]  6293.826421: sched_switch:         antigravity:4497 [120] S ==> swapper/1:0 [120]
+     antigravity-4543  [006]  6293.826424: sched_switch:         antigravity:4543 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.826484: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.826485: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.826488: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.826627: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.826628: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.826630: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [000]  6293.827474: sched_wakeup:         TCPServ~1:33209:3943 [120] CPU:000
+          <idle>-0     [000]  6293.827482: sched_switch:         swapper/0:0 [120] R ==> TCPServ~1:33209:3943 [120]
+ TCPServ~1:33209-3943  [000]  6293.827504: sched_switch:         TCPServ~1:33209:3943 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.827550: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.827558: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [000]  6293.827564: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.827564: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+ language_server-4808  [003]  6293.827567: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.827568: sched_wakeup:         language_server:4808 [120] CPU:003
+ language_server-4958  [000]  6293.827568: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.827569: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.827572: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [004]  6293.828459: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.828471: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.828477: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [000]  6293.829177: sched_wakeup:         migration/2:29 [0] CPU:002
+        Listener-34138 [002]  6293.829179: sched_switch:         Listener:34138 [120] R ==> migration/2:29 [0]
+          <idle>-0     [001]  6293.829186: sched_switch:         swapper/1:0 [120] R ==> Listener:34138 [120]
+     migration/2-29    [002]  6293.829188: sched_switch:         migration/2:29 [0] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.829540: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.829546: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.829555: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.829573: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.829574: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+          <idle>-0     [004]  6293.829580: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.829580: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5454  [006]  6293.829581: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+ language_server-5458  [004]  6293.829584: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [003]  6293.829633: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.829641: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.829646: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.829987: sched_switch:         swapper/3:0 [120] R ==> Listener:34139 [120]
+    dds.shm.wdog-34139 [003]  6293.830030: sched_switch:         dds.shm.wdog:34139 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.830143: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [003]  6293.830145: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [003]  6293.830147: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.830167: sched_wakeup:         rcu_tasks_trace:67 [120] CPU:006
+          <idle>-0     [003]  6293.830173: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [006]  6293.830174: sched_switch:         swapper/6:0 [120] R ==> rcu_tasks_trace:67 [120]
+          <idle>-0     [003]  6293.830174: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [003]  6293.830175: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+ rcu_tasks_trace-67    [006]  6293.830179: sched_switch:         rcu_tasks_trace:67 [120] I ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.830261: sched_switch:         swapper/6:0 [120] R ==> Listener:34140 [120]
+        dds.ev.0-34140 [006]  6293.830288: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.830339: sched_switch:         swapper/3:0 [120] R ==> Listener:34141 [120]
+    dds.udp.7660-34141 [003]  6293.830354: sched_switch:         dds.udp.7660:34141 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [004]  6293.830375: sched_switch:         swapper/4:0 [120] R ==> Listener:34142 [120]
+    dds.udp.7650-34142 [004]  6293.830394: sched_switch:         dds.udp.7650:34142 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [005]  6293.830397: sched_wakeup:         kworker/u32:2:20347 [120] CPU:005
+          <idle>-0     [005]  6293.830398: sched_switch:         swapper/5:0 [120] R ==> kworker/u32:2:20347 [120]
+          <idle>-0     [003]  6293.830709: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.830717: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.830731: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.830743: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.830748: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [007]  6293.830748: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.830749: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-4958  [000]  6293.830752: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.830752: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.830752: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-5448  [007]  6293.830754: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+ language_server-4808  [003]  6293.830756: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [004]  6293.830766: sched_switch:         swapper/4:0 [120] R ==> Listener:34143 [120]
+    dds.shm.7661-34143 [004]  6293.830783: sched_switch:         dds.shm.7661:34143 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [003]  6293.830809: sched_switch:         swapper/3:0 [120] R ==> Listener:34144 [120]
+    dds.udp.7661-34144 [003]  6293.830818: sched_switch:         dds.udp.7661:34144 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.831392: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.831393: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.831399: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.831429: sched_switch:         swapper/6:0 [120] R ==> Listener:34145 [120]
+    dds.asyn.0.0-34145 [006]  6293.831443: sched_switch:         dds.asyn.0.0:34145 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.831445: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.831445: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.831463: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.831483: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.831483: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.831486: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.831495: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.831495: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.831497: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.831501: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.831501: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.831503: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.831516: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.831517: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.831518: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.831661: sched_wakeup:         dds.udp.7650:34142 [120] CPU:004
+          <idle>-0     [004]  6293.831666: sched_switch:         swapper/4:0 [120] R ==> dds.udp.7650:34142 [120]
+          <idle>-0     [000]  6293.831672: sched_wakeup:         kworker/u33:3:30158 [100] CPU:000
+          <idle>-0     [000]  6293.831672: sched_switch:         swapper/0:0 [120] R ==> kworker/u33:3:30158 [100]
+    dds.udp.7650-34142 [004]  6293.831678: sched_switch:         dds.udp.7650:34142 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.831692: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.831692: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.831695: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.831819: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.831827: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [002]  6293.831840: sched_wakeup:         language_server:4958 [120] CPU:002
+ language_server-4808  [003]  6293.831841: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6293.831841: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.831847: sched_wakeup:         language_server:4808 [120] CPU:003
+ language_server-4958  [002]  6293.831847: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.831847: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.831850: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.831899: sched_switch:         swapper/3:0 [120] R ==> Listener:34146 [120]
+          <idle>-0     [006]  6293.831905: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.831905: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.831907: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+    dds.asyn.0.2-34146 [003]  6293.831911: sched_switch:         dds.asyn.0.2:34146 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.831918: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.831919: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.831920: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.832144: sched_wakeup:         migration/1:23 [0] CPU:001
+        Listener-34138 [001]  6293.832158: sched_switch:         Listener:34138 [120] R ==> migration/1:23 [0]
+          <idle>-0     [003]  6293.832164: sched_switch:         swapper/3:0 [120] R ==> Listener:34138 [120]
+     migration/1-23    [001]  6293.832167: sched_switch:         migration/1:23 [0] S ==> swapper/1:0 [120]
+          <idle>-0     [006]  6293.832461: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.832470: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [007]  6293.832490: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.832491: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [006]  6293.832492: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+ language_server-5505  [007]  6293.832496: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.832600: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832600: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832604: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832647: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832647: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832649: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832658: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832659: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832660: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832703: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832703: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832705: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832708: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832708: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832710: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [001]  6293.832717: sched_wakeup:         trace-cmd:34136 [120] CPU:001
+          <idle>-0     [001]  6293.832718: sched_switch:         swapper/1:0 [120] R ==> trace-cmd:34136 [120]
+       trace-cmd-34136 [001]  6293.832721: sched_switch:         trace-cmd:34136 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [006]  6293.832746: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832747: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832748: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832751: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832752: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832754: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832792: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832792: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832794: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832796: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832796: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832798: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832836: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832837: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832838: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832842: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832842: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832845: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832879: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832880: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832881: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832883: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832884: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832885: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [001]  6293.832902: sched_wakeup:         language_server:4808 [120] CPU:001
+          <idle>-0     [001]  6293.832902: sched_switch:         swapper/1:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [002]  6293.832911: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.832911: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.832914: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+ language_server-4808  [001]  6293.832916: sched_switch:         language_server:4808 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [006]  6293.832942: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832943: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832944: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.832947: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.832947: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.832949: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.833001: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.833002: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.833003: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.833006: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.833007: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.833010: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.833133: sched_switch:         swapper/6:0 [120] R ==> Listener:34147 [120]
+        Listener-34138 [003]  6293.833146: sched_switch:         Listener:34138 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.833169: sched_wakeup:         kworker/u32:1:12810 [120] CPU:003
+          <idle>-0     [003]  6293.833169: sched_switch:         swapper/3:0 [120] R ==> kworker/u32:1:12810 [120]
+         dds.log-34147 [006]  6293.833173: sched_switch:         dds.log:34147 [120] S ==> swapper/6:0 [120]
+   kworker/u32:1-12810 [003]  6293.833174: sched_switch:         kworker/u32:1:12810 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [007]  6293.833175: sched_wakeup:         Listener:34138 [120] CPU:007
+          <idle>-0     [007]  6293.833176: sched_switch:         swapper/7:0 [120] R ==> Listener:34138 [120]
+          <idle>-0     [004]  6293.833176: sched_wakeup:         sudo:34107 [120] CPU:004
+          <idle>-0     [004]  6293.833178: sched_switch:         swapper/4:0 [120] R ==> sudo:34107 [120]
+          <idle>-0     [003]  6293.833211: sched_wakeup:         kworker/u32:1:12810 [120] CPU:003
+          <idle>-0     [003]  6293.833212: sched_switch:         swapper/3:0 [120] R ==> kworker/u32:1:12810 [120]
+   kworker/u32:1-12810 [003]  6293.833215: sched_switch:         kworker/u32:1:12810 [120] I ==> swapper/3:0 [120]
+            sudo-34107 [004]  6293.833216: sched_switch:         sudo:34107 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.833217: sched_wakeup:         gnome-terminal-:18856 [120] CPU:006
+          <idle>-0     [006]  6293.833217: sched_switch:         swapper/6:0 [120] R ==> gnome-terminal-:18856 [120]
+ gnome-terminal--18856 [006]  6293.833260: sched_switch:         gnome-terminal-:18856 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.833340: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.833341: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        dds.ev.0-34140 [006]  6293.833343: sched_switch:         dds.ev.0:34140 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.833363: sched_wakeup:         dds.ev.0:34140 [120] CPU:006
+          <idle>-0     [006]  6293.833363: sched_switch:         swapper/6:0 [120] R ==> dds.ev.0:34140 [120]
+        Listener-34138 [007]  6293.833365: sched_switch:         Listener:34138 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [007]  6293.833374: sched_wakeup:         Listener:34138 [120] CPU:007
+          <idle>-0     [007]  6293.833374: sched_switch:         swapper/7:0 [120] R ==> Listener:34138 [120]
+        dds.ev.0-34140 [006]  6293.833380: sched_switch:         dds.ev.0:34140 [120] X ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.833382: sched_wakeup:         dds.udp.7660:34141 [120] CPU:003
+        Listener-34138 [007]  6293.833382: sched_switch:         Listener:34138 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [003]  6293.833383: sched_switch:         swapper/3:0 [120] R ==> dds.udp.7660:34141 [120]
+          <idle>-0     [007]  6293.833392: sched_wakeup:         Listener:34138 [120] CPU:007
+          <idle>-0     [007]  6293.833392: sched_switch:         swapper/7:0 [120] R ==> Listener:34138 [120]
+    dds.udp.7660-34141 [003]  6293.833399: sched_switch:         dds.udp.7660:34141 [120] X ==> swapper/3:0 [120]
+        Listener-34138 [007]  6293.833404: sched_switch:         Listener:34138 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [004]  6293.833405: sched_wakeup:         dds.udp.7650:34142 [120] CPU:004
+          <idle>-0     [004]  6293.833406: sched_switch:         swapper/4:0 [120] R ==> dds.udp.7650:34142 [120]
+          <idle>-0     [007]  6293.833419: sched_wakeup:         Listener:34138 [120] CPU:007
+          <idle>-0     [007]  6293.833419: sched_switch:         swapper/7:0 [120] R ==> Listener:34138 [120]
+          <idle>-0     [003]  6293.833425: sched_wakeup:         kworker/u32:1:12810 [120] CPU:003
+          <idle>-0     [003]  6293.833425: sched_switch:         swapper/3:0 [120] R ==> kworker/u32:1:12810 [120]
+   kworker/u32:1-12810 [003]  6293.833427: sched_switch:         kworker/u32:1:12810 [120] I ==> swapper/3:0 [120]
+    dds.udp.7650-34142 [004]  6293.833430: sched_switch:         dds.udp.7650:34142 [120] X ==> swapper/4:0 [120]
+        Listener-34138 [007]  6293.833436: sched_switch:         Listener:34138 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [004]  6293.833438: sched_wakeup:         dds.shm.7661:34143 [120] CPU:004
+          <idle>-0     [004]  6293.833439: sched_switch:         swapper/4:0 [120] R ==> dds.shm.7661:34143 [120]
+          <idle>-0     [007]  6293.833447: sched_wakeup:         Listener:34138 [120] CPU:007
+          <idle>-0     [007]  6293.833448: sched_switch:         swapper/7:0 [120] R ==> Listener:34138 [120]
+    dds.shm.7661-34143 [004]  6293.833454: sched_switch:         dds.shm.7661:34143 [120] X ==> swapper/4:0 [120]
+          <idle>-0     [003]  6293.833505: sched_wakeup:         dds.udp.7661:34144 [120] CPU:003
+        Listener-34138 [007]  6293.833505: sched_switch:         Listener:34138 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [003]  6293.833506: sched_switch:         swapper/3:0 [120] R ==> dds.udp.7661:34144 [120]
+          <idle>-0     [007]  6293.833514: sched_wakeup:         Listener:34138 [120] CPU:007
+          <idle>-0     [007]  6293.833514: sched_switch:         swapper/7:0 [120] R ==> Listener:34138 [120]
+    dds.udp.7661-34144 [003]  6293.833519: sched_switch:         dds.udp.7661:34144 [120] X ==> swapper/3:0 [120]
+   kworker/u33:3-30158 [000]  6293.833838: sched_switch:         kworker/u33:3:30158 [100] I ==> swapper/0:0 [120]
+   kworker/u32:2-20347 [005]  6293.833841: sched_switch:         kworker/u32:2:20347 [120] I ==> swapper/5:0 [120]
+          <idle>-0     [000]  6293.833847: sched_wakeup:         kworker/u33:3:30158 [100] CPU:000
+          <idle>-0     [000]  6293.833847: sched_switch:         swapper/0:0 [120] R ==> kworker/u33:3:30158 [100]
+   kworker/u33:3-30158 [000]  6293.833851: sched_switch:         kworker/u33:3:30158 [100] I ==> swapper/0:0 [120]
+        Listener-34138 [007]  6293.833903: sched_switch:         Listener:34138 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.833913: sched_wakeup:         dds.asyn.0.0:34145 [120] CPU:006
+          <idle>-0     [007]  6293.833917: sched_wakeup:         irq/170-rtw88_p:602 [49] CPU:007
+          <idle>-0     [006]  6293.833918: sched_switch:         swapper/6:0 [120] R ==> dds.asyn.0.0:34145 [120]
+          <idle>-0     [007]  6293.833918: sched_switch:         swapper/7:0 [120] R ==> irq/170-rtw88_p:602 [49]
+    dds.asyn.0.0-34145 [006]  6293.833930: sched_switch:         dds.asyn.0.0:34145 [120] X ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.833986: sched_wakeup:         Listener:34138 [120] CPU:003
+          <idle>-0     [003]  6293.833987: sched_switch:         swapper/3:0 [120] R ==> Listener:34138 [120]
+ irq/170-rtw88_p-602   [007]  6293.834000: sched_switch:         irq/170-rtw88_p:602 [49] S ==> swapper/7:0 [120]
+          <idle>-0     [001]  6293.834032: sched_wakeup:         dds.asyn.0.2:34146 [120] CPU:001
+        Listener-34138 [003]  6293.834033: sched_switch:         Listener:34138 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.834033: sched_switch:         swapper/1:0 [120] R ==> dds.asyn.0.2:34146 [120]
+          <idle>-0     [003]  6293.834043: sched_wakeup:         Listener:34138 [120] CPU:003
+          <idle>-0     [003]  6293.834043: sched_switch:         swapper/3:0 [120] R ==> Listener:34138 [120]
+    dds.asyn.0.2-34146 [001]  6293.834049: sched_switch:         dds.asyn.0.2:34146 [120] X ==> swapper/1:0 [120]
+          <idle>-0     [004]  6293.834145: sched_wakeup:         rcu_preempt:15 [120] CPU:004
+          <idle>-0     [004]  6293.834145: sched_switch:         swapper/4:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [004]  6293.834148: sched_switch:         rcu_preempt:15 [120] I ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.834167: sched_wakeup:         dds.shm.wdog:34139 [120] CPU:001
+        Listener-34138 [003]  6293.834167: sched_switch:         Listener:34138 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.834168: sched_switch:         swapper/1:0 [120] R ==> dds.shm.wdog:34139 [120]
+          <idle>-0     [003]  6293.834174: sched_wakeup:         Listener:34138 [120] CPU:003
+          <idle>-0     [003]  6293.834175: sched_switch:         swapper/3:0 [120] R ==> Listener:34138 [120]
+    dds.shm.wdog-34139 [001]  6293.834177: sched_switch:         dds.shm.wdog:34139 [120] X ==> swapper/1:0 [120]
+        Listener-34138 [003]  6293.834242: sched_switch:         Listener:34138 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [007]  6293.834308: sched_wakeup:         irq/170-rtw88_p:602 [49] CPU:007
+          <idle>-0     [007]  6293.834309: sched_switch:         swapper/7:0 [120] R ==> irq/170-rtw88_p:602 [49]
+ irq/170-rtw88_p-602   [007]  6293.834768: sched_switch:         irq/170-rtw88_p:602 [49] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.836163: sched_wakeup:         rcu_tasks_trace:67 [120] CPU:006
+          <idle>-0     [006]  6293.836171: sched_switch:         swapper/6:0 [120] R ==> rcu_tasks_trace:67 [120]
+ rcu_tasks_trace-67    [006]  6293.836209: sched_switch:         rcu_tasks_trace:67 [120] D ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.836393: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.836395: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+          <idle>-0     [007]  6293.836396: sched_wakeup:         trace-cmd:34133 [120] CPU:007
+          <idle>-0     [007]  6293.836397: sched_switch:         swapper/7:0 [120] R ==> trace-cmd:34133 [120]
+ language_server-5503  [003]  6293.836400: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+       trace-cmd-34133 [007]  6293.836401: sched_switch:         trace-cmd:34133 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [004]  6293.836648: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.836652: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.836659: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.836699: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.836708: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.836730: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [007]  6293.837077: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.837085: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.837119: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [004]  6293.837721: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.837730: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.837743: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.837748: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.837753: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.837782: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.838308: sched_wakeup:         gnome-terminal-:18856 [120] CPU:006
+          <idle>-0     [006]  6293.838309: sched_switch:         swapper/6:0 [120] R ==> gnome-terminal-:18856 [120]
+          <idle>-0     [004]  6293.838659: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.838667: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+ VizCompositorTh-4375  [004]  6293.838747: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.838751: sched_wakeup:         Compositor:4766 [120] CPU:001
+          <idle>-0     [001]  6293.838755: sched_switch:         swapper/1:0 [120] R ==> Compositor:4766 [120]
+          <idle>-0     [000]  6293.838987: sched_wakeup:         Chrome_ChildIOT:4374 [120] CPU:000
+          <idle>-0     [000]  6293.838988: sched_switch:         swapper/0:0 [120] R ==> Chrome_ChildIOT:4374 [120]
+          <idle>-0     [004]  6293.839006: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.839006: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+ Chrome_ChildIOT-4374  [000]  6293.839010: sched_switch:         Chrome_ChildIOT:4374 [120] S ==> swapper/0:0 [120]
+ VizCompositorTh-4375  [004]  6293.839024: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+      Compositor-4766  [001]  6293.839070: sched_switch:         Compositor:4766 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [004]  6293.839142: sched_wakeup:         rcu_preempt:15 [120] CPU:004
+          <idle>-0     [004]  6293.839143: sched_switch:         swapper/4:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [004]  6293.839146: sched_switch:         rcu_preempt:15 [120] I ==> swapper/4:0 [120]
+          <idle>-0     [000]  6293.839156: sched_wakeup:         migration/6:53 [0] CPU:006
+ gnome-terminal--18856 [006]  6293.839158: sched_switch:         gnome-terminal-:18856 [120] R ==> migration/6:53 [0]
+          <idle>-0     [000]  6293.839165: sched_switch:         swapper/0:0 [120] R ==> gnome-terminal-:18856 [120]
+     migration/6-53    [006]  6293.839167: sched_switch:         migration/6:53 [0] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.839172: sched_wakeup:         gnome-shell:2926 [120] CPU:004
+          <idle>-0     [004]  6293.839173: sched_switch:         swapper/4:0 [120] R ==> gnome-shell:2926 [120]
+ gnome-terminal--18856 [000]  6293.839191: sched_switch:         gnome-terminal-:18856 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [005]  6293.839739: sched_wakeup:         VM Periodic Tas:4917 [120] CPU:005
+          <idle>-0     [005]  6293.839749: sched_switch:         swapper/5:0 [120] R ==> VM Periodic Tas:4917 [120]
+ VM Periodic Tas-4917  [005]  6293.839763: sched_switch:         VM Periodic Tas:4917 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [000]  6293.840224: sched_wakeup:         gnome-terminal-:18856 [120] CPU:000
+          <idle>-0     [000]  6293.840226: sched_switch:         swapper/0:0 [120] R ==> gnome-terminal-:18856 [120]
+ gnome-terminal--18856 [000]  6293.840259: sched_switch:         gnome-terminal-:18856 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [006]  6293.840559: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.840571: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [005]  6293.840576: sched_wakeup:         kworker/u32:2:20347 [120] CPU:005
+          <idle>-0     [005]  6293.840580: sched_switch:         swapper/5:0 [120] R ==> kworker/u32:2:20347 [120]
+ language_server-5524  [006]  6293.840588: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+   kworker/u32:2-20347 [005]  6293.840593: sched_switch:         kworker/u32:2:20347 [120] I ==> swapper/5:0 [120]
+          <idle>-0     [007]  6293.840598: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [003]  6293.840605: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [007]  6293.840606: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+          <idle>-0     [003]  6293.840614: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.840617: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.840620: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.840620: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5505  [007]  6293.840621: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+ language_server-5524  [006]  6293.840624: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [005]  6293.840739: sched_wakeup:         KMS thread:2951 [79] CPU:005
+          <idle>-0     [005]  6293.840740: sched_switch:         swapper/5:0 [120] R ==> KMS thread:2951 [79]
+          <idle>-0     [000]  6293.840774: sched_wakeup:         gnome-terminal-:18856 [120] CPU:000
+          <idle>-0     [000]  6293.840776: sched_switch:         swapper/0:0 [120] R ==> gnome-terminal-:18856 [120]
+     gnome-shell-2926  [004]  6293.840788: sched_switch:         gnome-shell:2926 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [002]  6293.840820: sched_wakeup:         kworker/u33:3:30158 [100] CPU:002
+          <idle>-0     [002]  6293.840821: sched_switch:         swapper/2:0 [120] R ==> kworker/u33:3:30158 [100]
+ gnome-terminal--18856 [000]  6293.840826: sched_switch:         gnome-terminal-:18856 [120] S ==> swapper/0:0 [120]
+   kworker/u33:3-30158 [002]  6293.840826: sched_switch:         kworker/u33:3:30158 [100] D ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.840828: sched_wakeup:         gnome-shell:2926 [120] CPU:004
+          <idle>-0     [004]  6293.840829: sched_switch:         swapper/4:0 [120] R ==> gnome-shell:2926 [120]
+      KMS thread-2951  [005]  6293.840836: sched_switch:         KMS thread:2951 [79] S ==> swapper/5:0 [120]
+          <idle>-0     [005]  6293.840838: sched_wakeup:         KMS thread:2951 [79] CPU:005
+          <idle>-0     [005]  6293.840838: sched_switch:         swapper/5:0 [120] R ==> KMS thread:2951 [79]
+      KMS thread-2951  [005]  6293.840840: sched_switch:         KMS thread:2951 [79] S ==> swapper/5:0 [120]
+     gnome-shell-2926  [004]  6293.840841: sched_switch:         gnome-shell:2926 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [007]  6293.841025: sched_wakeup:         irq/170-rtw88_p:602 [49] CPU:007
+          <idle>-0     [007]  6293.841032: sched_switch:         swapper/7:0 [120] R ==> irq/170-rtw88_p:602 [49]
+          <idle>-0     [002]  6293.841071: sched_wakeup:         kworker/u33:3:30158 [100] CPU:002
+          <idle>-0     [002]  6293.841071: sched_switch:         swapper/2:0 [120] R ==> kworker/u33:3:30158 [100]
+   kworker/u33:3-30158 [002]  6293.841098: sched_switch:         kworker/u33:3:30158 [100] D ==> swapper/2:0 [120]
+          <idle>-0     [000]  6293.841109: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+          <idle>-0     [000]  6293.841110: sched_switch:         swapper/0:0 [120] R ==> kworker/0:0:33286 [120]
+     kworker/0:0-33286 [000]  6293.841114: sched_switch:         kworker/0:0:33286 [120] I ==> swapper/0:0 [120]
+          <idle>-0     [006]  6293.841253: sched_wakeup:         mosquitto:2475 [120] CPU:006
+          <idle>-0     [006]  6293.841254: sched_switch:         swapper/6:0 [120] R ==> mosquitto:2475 [120]
+       mosquitto-2475  [006]  6293.841263: sched_switch:         mosquitto:2475 [120] S ==> swapper/6:0 [120]
+ irq/170-rtw88_p-602   [007]  6293.841315: sched_switch:         irq/170-rtw88_p:602 [49] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.841689: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.841697: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.841721: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.841729: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.841734: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5505  [007]  6293.841749: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [004]  6293.843160: sched_wakeup:         kworker/4:0:43 [120] CPU:004
+          <idle>-0     [004]  6293.843175: sched_switch:         swapper/4:0 [120] R ==> kworker/4:0:43 [120]
+          <idle>-0     [001]  6293.843178: sched_wakeup:         kworker/1:2:29628 [120] CPU:001
+          <idle>-0     [003]  6293.843178: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [003]  6293.843182: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+     kworker/4:0-43    [004]  6293.843187: sched_switch:         kworker/4:0:43 [120] I ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.843193: sched_switch:         swapper/1:0 [120] R ==> kworker/1:2:29628 [120]
+     rcu_preempt-15    [003]  6293.843195: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+     kworker/1:2-29628 [001]  6293.843218: sched_wakeup:         ksoftirqd/1:24 [120] CPU:001
+     kworker/1:2-29628 [001]  6293.843219: sched_switch:         kworker/1:2:29628 [120] R ==> ksoftirqd/1:24 [120]
+     ksoftirqd/1-24    [001]  6293.843224: sched_switch:         ksoftirqd/1:24 [120] S ==> kworker/1:2:29628 [120]
+     kworker/1:2-29628 [001]  6293.843226: sched_switch:         kworker/1:2:29628 [120] I ==> swapper/1:0 [120]
+          <idle>-0     [000]  6293.843347: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+          <idle>-0     [000]  6293.843350: sched_switch:         swapper/0:0 [120] R ==> kworker/0:0:33286 [120]
+     kworker/0:0-33286 [000]  6293.843352: sched_switch:         kworker/0:0:33286 [120] I ==> swapper/0:0 [120]
+          <idle>-0     [000]  6293.843358: sched_wakeup:         kworker/0:0:33286 [120] CPU:000
+          <idle>-0     [000]  6293.843360: sched_switch:         swapper/0:0 [120] R ==> kworker/0:0:33286 [120]
+     kworker/0:0-33286 [000]  6293.843364: sched_switch:         kworker/0:0:33286 [120] I ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.844171: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [003]  6293.844173: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [003]  6293.844201: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.844202: sched_wakeup:         rcu_tasks_trace:67 [120] CPU:006
+          <idle>-0     [006]  6293.844205: sched_switch:         swapper/6:0 [120] R ==> rcu_tasks_trace:67 [120]
+ rcu_tasks_trace-67    [006]  6293.844208: sched_switch:         rcu_tasks_trace:67 [120] I ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.844784: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.844791: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.844814: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.845165: sched_wakeup:         kworker/4:0:43 [120] CPU:004
+          <idle>-0     [004]  6293.845177: sched_switch:         swapper/4:0 [120] R ==> kworker/4:0:43 [120]
+     kworker/4:0-43    [004]  6293.845217: sched_switch:         kworker/4:0:43 [120] I ==> swapper/4:0 [120]
+          <idle>-0     [004]  6293.845807: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.845815: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.845837: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.845871: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.845879: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.845906: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.845914: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.845919: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+          <idle>-0     [006]  6293.845926: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.845926: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5505  [007]  6293.845926: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+ language_server-5524  [006]  6293.845930: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.846143: sched_wakeup:         kworker/6:0:55 [120] CPU:006
+          <idle>-0     [006]  6293.846145: sched_wakeup:         ksoftirqd/6:54 [120] CPU:006
+          <idle>-0     [006]  6293.846146: sched_switch:         swapper/6:0 [120] R ==> ksoftirqd/6:54 [120]
+     ksoftirqd/6-54    [006]  6293.846156: sched_switch:         ksoftirqd/6:54 [120] S ==> kworker/6:0:55 [120]
+     kworker/6:0-55    [006]  6293.846190: sched_switch:         kworker/6:0:55 [120] I ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.846899: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.846906: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.846937: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.846940: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.846945: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+          <idle>-0     [004]  6293.846976: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.846976: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.846982: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+ language_server-5454  [006]  6293.846999: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [002]  6293.846999: sched_wakeup:         language_server:5524 [120] CPU:002
+          <idle>-0     [002]  6293.847000: sched_switch:         swapper/2:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [002]  6293.847005: sched_switch:         language_server:5524 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [007]  6293.847163: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.847180: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.847184: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [002]  6293.848068: sched_wakeup:         language_server:5524 [120] CPU:002
+          <idle>-0     [002]  6293.848077: sched_switch:         swapper/2:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [007]  6293.848112: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.848116: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [002]  6293.848126: sched_switch:         language_server:5524 [120] S ==> swapper/2:0 [120]
+ language_server-5505  [007]  6293.848138: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [003]  6293.849159: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [002]  6293.849163: sched_wakeup:         language_server:5524 [120] CPU:002
+          <idle>-0     [003]  6293.849168: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+          <idle>-0     [002]  6293.849172: sched_switch:         swapper/2:0 [120] R ==> language_server:5524 [120]
+     rcu_preempt-15    [003]  6293.849185: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+ language_server-5524  [002]  6293.849195: sched_switch:         language_server:5524 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.850045: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.850053: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.850073: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.850161: sched_wakeup:         rcu_tasks_trace:67 [120] CPU:006
+          <idle>-0     [006]  6293.850187: sched_switch:         swapper/6:0 [120] R ==> rcu_tasks_trace:67 [120]
+ rcu_tasks_trace-67    [006]  6293.850196: sched_switch:         rcu_tasks_trace:67 [120] I ==> swapper/6:0 [120]
+          <idle>-0     [002]  6293.850238: sched_wakeup:         language_server:5524 [120] CPU:002
+          <idle>-0     [002]  6293.850239: sched_switch:         swapper/2:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [007]  6293.850244: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.850245: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [002]  6293.850247: sched_switch:         language_server:5524 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [002]  6293.850248: sched_wakeup:         language_server:5524 [120] CPU:002
+          <idle>-0     [002]  6293.850249: sched_switch:         swapper/2:0 [120] R ==> language_server:5524 [120]
+ language_server-5505  [007]  6293.850249: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+ language_server-5524  [002]  6293.850252: sched_switch:         language_server:5524 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.850681: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.850689: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.850704: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [007]  6293.850945: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.850946: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.850950: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [004]  6293.851128: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.851136: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.851191: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.851193: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.851193: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+          <idle>-0     [004]  6293.851193: sched_wakeup:         trace-cmd:34134 [120] CPU:004
+          <idle>-0     [004]  6293.851194: sched_switch:         swapper/4:0 [120] R ==> trace-cmd:34134 [120]
+ language_server-5454  [006]  6293.851196: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+       trace-cmd-34134 [004]  6293.851197: sched_switch:         trace-cmd:34134 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [004]  6293.852241: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.852242: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+          <idle>-0     [006]  6293.852248: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.852249: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.852251: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+ language_server-5458  [004]  6293.852252: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [002]  6293.853977: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.853984: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.854018: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.854151: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [003]  6293.854157: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [003]  6293.854165: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.854280: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.854280: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.854287: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [007]  6293.854560: sched_wakeup:         irq/170-rtw88_p:602 [49] CPU:007
+          <idle>-0     [007]  6293.854575: sched_switch:         swapper/7:0 [120] R ==> irq/170-rtw88_p:602 [49]
+ irq/170-rtw88_p-602   [007]  6293.854855: sched_switch:         irq/170-rtw88_p:602 [49] S ==> swapper/7:0 [120]
+          <idle>-0     [002]  6293.855080: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.855087: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.855107: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [001]  6293.855118: sched_wakeup:         language_server:4808 [120] CPU:001
+          <idle>-0     [001]  6293.855127: sched_switch:         swapper/1:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [002]  6293.855139: sched_wakeup:         language_server:4958 [120] CPU:002
+ language_server-4808  [001]  6293.855139: sched_switch:         language_server:4808 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [002]  6293.855139: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.855149: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.855309: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.855309: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+          <idle>-0     [001]  6293.855360: sched_wakeup:         Compositor:4766 [120] CPU:001
+          <idle>-0     [001]  6293.855361: sched_switch:         swapper/1:0 [120] R ==> Compositor:4766 [120]
+ VizCompositorTh-4375  [004]  6293.855364: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [005]  6293.855498: sched_wakeup:         KMS thread:2951 [79] CPU:005
+          <idle>-0     [005]  6293.855499: sched_switch:         swapper/5:0 [120] R ==> KMS thread:2951 [79]
+          <idle>-0     [002]  6293.855500: sched_wakeup:         kworker/u33:3:30158 [100] CPU:002
+          <idle>-0     [002]  6293.855503: sched_switch:         swapper/2:0 [120] R ==> kworker/u33:3:30158 [100]
+          <idle>-0     [004]  6293.855514: sched_wakeup:         gnome-shell:2926 [120] CPU:004
+          <idle>-0     [004]  6293.855514: sched_switch:         swapper/4:0 [120] R ==> gnome-shell:2926 [120]
+      KMS thread-2951  [005]  6293.855522: sched_switch:         KMS thread:2951 [79] S ==> swapper/5:0 [120]
+   kworker/u33:3-30158 [002]  6293.855527: sched_wakeup:         kworker/2:1H:173 [100] CPU:002
+   kworker/u33:3-30158 [002]  6293.855527: sched_switch:         kworker/u33:3:30158 [100] R ==> kworker/2:1H:173 [100]
+          <idle>-0     [005]  6293.855532: sched_wakeup:         kworker/u32:2:20347 [120] CPU:005
+          <idle>-0     [000]  6293.855532: sched_wakeup:         Chrome_ChildIOT:4374 [120] CPU:000
+          <idle>-0     [005]  6293.855532: sched_switch:         swapper/5:0 [120] R ==> kworker/u32:2:20347 [120]
+          <idle>-0     [000]  6293.855533: sched_switch:         swapper/0:0 [120] R ==> Chrome_ChildIOT:4374 [120]
+    kworker/2:1H-173   [002]  6293.855536: sched_switch:         kworker/2:1H:173 [100] I ==> kworker/u33:3:30158 [100]
+   kworker/u33:3-30158 [002]  6293.855541: sched_wakeup:         migration/0:18 [0] CPU:000
+   kworker/u33:3-30158 [002]  6293.855541: sched_switch:         kworker/u33:3:30158 [100] I ==> swapper/2:0 [120]
+ Chrome_ChildIOT-4374  [000]  6293.855546: sched_switch:         Chrome_ChildIOT:4374 [120] R ==> migration/0:18 [0]
+   kworker/u32:2-20347 [005]  6293.855551: sched_switch:         kworker/u32:2:20347 [120] I ==> swapper/5:0 [120]
+     migration/0-18    [000]  6293.855553: sched_switch:         migration/0:18 [0] S ==> swapper/0:0 [120]
+          <idle>-0     [002]  6293.855553: sched_switch:         swapper/2:0 [120] R ==> Chrome_ChildIOT:4374 [120]
+     gnome-shell-2926  [004]  6293.855555: sched_switch:         gnome-shell:2926 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [004]  6293.855568: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.855569: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+ Chrome_ChildIOT-4374  [002]  6293.855574: sched_switch:         Chrome_ChildIOT:4374 [120] S ==> swapper/2:0 [120]
+ VizCompositorTh-4375  [004]  6293.855589: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+      Compositor-4766  [001]  6293.855644: sched_switch:         Compositor:4766 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [006]  6293.855946: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [006]  6293.855956: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+     antigravity-4496  [006]  6293.855990: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [005]  6293.856001: sched_wakeup:         antigravity:4459 [120] CPU:005
+          <idle>-0     [005]  6293.856006: sched_switch:         swapper/5:0 [120] R ==> antigravity:4459 [120]
+          <idle>-0     [006]  6293.856119: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [006]  6293.856119: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+     antigravity-4496  [006]  6293.856122: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.856131: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [006]  6293.856131: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+     antigravity-4496  [006]  6293.856133: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+     antigravity-4459  [005]  6293.856136: sched_switch:         antigravity:4459 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [003]  6293.856159: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [003]  6293.856172: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [003]  6293.856183: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [002]  6293.856199: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.856200: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [001]  6293.856206: sched_wakeup:         language_server:4808 [120] CPU:001
+          <idle>-0     [001]  6293.856207: sched_switch:         swapper/1:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [002]  6293.856207: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [002]  6293.856215: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.856215: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4808  [001]  6293.856217: sched_switch:         language_server:4808 [120] S ==> swapper/1:0 [120]
+ language_server-4958  [002]  6293.856219: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [002]  6293.856302: sched_wakeup:         language_server:5524 [120] CPU:002
+          <idle>-0     [002]  6293.856303: sched_switch:         swapper/2:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [002]  6293.856306: sched_switch:         language_server:5524 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.856886: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.856893: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.856916: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.857302: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.857303: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.857306: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [002]  6293.857357: sched_wakeup:         language_server:5524 [120] CPU:002
+          <idle>-0     [002]  6293.857358: sched_switch:         swapper/2:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [007]  6293.857361: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.857361: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [002]  6293.857363: sched_switch:         language_server:5524 [120] S ==> swapper/2:0 [120]
+ language_server-5505  [007]  6293.857364: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.858166: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [003]  6293.858183: sched_wakeup:         rcu_tasks_trace:67 [120] CPU:003
+          <idle>-0     [003]  6293.858185: sched_switch:         swapper/3:0 [120] R ==> rcu_tasks_trace:67 [120]
+          <idle>-0     [006]  6293.858192: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+          <idle>-0     [005]  6293.858219: sched_wakeup:         antigravity:4459 [120] CPU:005
+     antigravity-4496  [006]  6293.858220: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [005]  6293.858220: sched_switch:         swapper/5:0 [120] R ==> antigravity:4459 [120]
+ rcu_tasks_trace-67    [003]  6293.858226: sched_switch:         rcu_tasks_trace:67 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.858246: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [006]  6293.858247: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+     antigravity-4459  [005]  6293.858248: sched_switch:         antigravity:4459 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [005]  6293.858250: sched_wakeup:         antigravity:4459 [120] CPU:005
+     antigravity-4496  [006]  6293.858250: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [005]  6293.858250: sched_switch:         swapper/5:0 [120] R ==> antigravity:4459 [120]
+          <idle>-0     [006]  6293.858255: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [006]  6293.858256: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+     antigravity-4459  [005]  6293.858256: sched_switch:         antigravity:4459 [120] S ==> swapper/5:0 [120]
+     antigravity-4496  [006]  6293.858257: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [002]  6293.858269: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.858270: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.858272: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [006]  6293.858356: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.858357: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+          <idle>-0     [004]  6293.858362: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.858362: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5454  [006]  6293.858363: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.858367: sched_wakeup:         language_server:5454 [120] CPU:006
+ language_server-5458  [004]  6293.858367: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.858367: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.858370: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.859308: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [006]  6293.859308: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+     antigravity-4496  [006]  6293.859311: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [005]  6293.859311: sched_wakeup:         antigravity:4459 [120] CPU:005
+          <idle>-0     [005]  6293.859311: sched_switch:         swapper/5:0 [120] R ==> antigravity:4459 [120]
+          <idle>-0     [002]  6293.859323: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.859324: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [006]  6293.859325: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [006]  6293.859326: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+     antigravity-4459  [005]  6293.859326: sched_switch:         antigravity:4459 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [001]  6293.859329: sched_wakeup:         language_server:4808 [120] CPU:001
+          <idle>-0     [001]  6293.859329: sched_switch:         swapper/1:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [005]  6293.859331: sched_wakeup:         antigravity:4459 [120] CPU:005
+     antigravity-4496  [006]  6293.859331: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+ language_server-4958  [002]  6293.859331: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [005]  6293.859332: sched_switch:         swapper/5:0 [120] R ==> antigravity:4459 [120]
+          <idle>-0     [002]  6293.859333: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.859333: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4808  [001]  6293.859334: sched_switch:         language_server:4808 [120] S ==> swapper/1:0 [120]
+ language_server-4958  [002]  6293.859336: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [006]  6293.859339: sched_wakeup:         antigravity:4496 [120] CPU:006
+          <idle>-0     [006]  6293.859339: sched_switch:         swapper/6:0 [120] R ==> antigravity:4496 [120]
+     antigravity-4459  [005]  6293.859340: sched_switch:         antigravity:4459 [120] S ==> swapper/5:0 [120]
+     antigravity-4496  [006]  6293.859341: sched_switch:         antigravity:4496 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.860943: sched_wakeup:         G1 Service:4743 [120] CPU:006
+          <idle>-0     [006]  6293.860952: sched_switch:         swapper/6:0 [120] R ==> G1 Service:4743 [120]
+      G1 Service-4743  [006]  6293.861001: sched_switch:         G1 Service:4743 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.861012: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.861029: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.861031: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [004]  6293.861037: sched_wakeup:         trace-cmd:34137 [120] CPU:004
+          <idle>-0     [004]  6293.861041: sched_switch:         swapper/4:0 [120] R ==> trace-cmd:34137 [120]
+       trace-cmd-34137 [004]  6293.861056: sched_switch:         trace-cmd:34137 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [003]  6293.861142: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [003]  6293.861143: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [003]  6293.861144: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.861759: sched_wakeup:         VM Thread:4745 [120] CPU:003
+          <idle>-0     [003]  6293.861767: sched_switch:         swapper/3:0 [120] R ==> VM Thread:4745 [120]
+       VM Thread-4745  [003]  6293.861797: sched_switch:         VM Thread:4745 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6293.862388: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [006]  6293.862391: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [002]  6293.862391: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [006]  6293.862392: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [003]  6293.862396: sched_wakeup:         trace-cmd:34132 [120] CPU:003
+          <idle>-0     [003]  6293.862396: sched_switch:         swapper/3:0 [120] R ==> trace-cmd:34132 [120]
+ language_server-5524  [006]  6293.862398: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+ language_server-4958  [002]  6293.862399: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+       trace-cmd-34132 [003]  6293.862401: sched_switch:         trace-cmd:34132 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.862421: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.862422: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.862426: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.862873: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.862880: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.862887: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [003]  6293.863209: sched_wakeup:         Monitor Deflati:4750 [120] CPU:003
+          <idle>-0     [003]  6293.863210: sched_switch:         swapper/3:0 [120] R ==> Monitor Deflati:4750 [120]
+ Monitor Deflati-4750  [003]  6293.863216: sched_switch:         Monitor Deflati:4750 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.863464: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [002]  6293.863467: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.863480: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [006]  6293.863483: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [001]  6293.863485: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [007]  6293.863491: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [001]  6293.863492: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+          <idle>-0     [007]  6293.863492: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [006]  6293.863493: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.863497: sched_wakeup:         language_server:4808 [120] CPU:003
+ language_server-4958  [002]  6293.863498: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [006]  6293.863500: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.863501: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [003]  6293.863506: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-5505  [007]  6293.863516: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+ language_server-5524  [006]  6293.863519: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+ language_server-5454  [001]  6293.863523: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [004]  6293.863530: sched_wakeup:         language_server:5458 [120] CPU:004
+ language_server-4808  [003]  6293.863531: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6293.863531: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.863532: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [004]  6293.863535: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-4958  [002]  6293.863537: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+ language_server-5458  [004]  6293.863553: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.864338: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.864338: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.864341: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [003]  6293.865153: sched_wakeup:         rcu_preempt:15 [120] CPU:003
+          <idle>-0     [003]  6293.865164: sched_switch:         swapper/3:0 [120] R ==> rcu_preempt:15 [120]
+          <idle>-0     [006]  6293.865168: sched_wakeup:         rcu_tasks_trace:67 [120] CPU:006
+          <idle>-0     [006]  6293.865171: sched_switch:         swapper/6:0 [120] R ==> rcu_tasks_trace:67 [120]
+     rcu_preempt-15    [003]  6293.865174: sched_switch:         rcu_preempt:15 [120] I ==> swapper/3:0 [120]
+ rcu_tasks_trace-67    [006]  6293.865181: sched_switch:         rcu_tasks_trace:67 [120] I ==> swapper/6:0 [120]
+          <idle>-0     [002]  6293.865599: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.865606: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.865627: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.866157: sched_wakeup:         kworker/3:0:37 [120] CPU:003
+          <idle>-0     [001]  6293.866158: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [003]  6293.866169: sched_wakeup:         ksoftirqd/3:36 [120] CPU:003
+          <idle>-0     [003]  6293.866180: sched_switch:         swapper/3:0 [120] R ==> kworker/3:0:37 [120]
+     kworker/3:0-37    [003]  6293.866191: sched_switch:         kworker/3:0:37 [120] I ==> ksoftirqd/3:36 [120]
+     ksoftirqd/3-36    [003]  6293.866193: sched_wakeup:         kworker/3:0:37 [120] CPU:003
+     ksoftirqd/3-36    [003]  6293.866199: sched_switch:         ksoftirqd/3:36 [120] S ==> kworker/3:0:37 [120]
+     kworker/3:0-37    [003]  6293.866285: sched_switch:         kworker/3:0:37 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.866286: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.866288: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [002]  6293.866682: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.866690: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.866720: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.866727: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.866732: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [002]  6293.866748: sched_wakeup:         language_server:4958 [120] CPU:002
+ language_server-4808  [003]  6293.866748: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6293.866749: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.866751: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.866955: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.866956: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.866958: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.867365: sched_wakeup:         VM Periodic Tas:4744 [120] CPU:003
+          <idle>-0     [003]  6293.867365: sched_switch:         swapper/3:0 [120] R ==> VM Periodic Tas:4744 [120]
+ VM Periodic Tas-4744  [003]  6293.867372: sched_switch:         VM Periodic Tas:4744 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6293.869815: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.869831: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.869834: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [001]  6293.870162: sched_wakeup:         kworker/1:2:29628 [120] CPU:001
+          <idle>-0     [001]  6293.870171: sched_switch:         swapper/1:0 [120] R ==> kworker/1:2:29628 [120]
+     kworker/1:2-29628 [001]  6293.870195: sched_switch:         kworker/1:2:29628 [120] I ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.870586: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.870594: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.870602: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [002]  6293.870896: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.870906: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.870918: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.870929: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.870933: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [002]  6293.870954: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.870954: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4808  [003]  6293.870958: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+ language_server-4958  [002]  6293.870959: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [001]  6293.871665: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.871691: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+          <idle>-0     [003]  6293.871703: sched_wakeup:         trace-cmd:34131 [120] CPU:003
+ language_server-5454  [001]  6293.871704: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [003]  6293.871708: sched_switch:         swapper/3:0 [120] R ==> trace-cmd:34131 [120]
+       trace-cmd-34131 [003]  6293.871728: sched_switch:         trace-cmd:34131 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [004]  6293.871814: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.871818: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+          <idle>-0     [001]  6293.871825: sched_wakeup:         language_server:5454 [120] CPU:001
+ language_server-5458  [004]  6293.871826: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.871826: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.871832: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [004]  6293.871968: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.871969: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+          <idle>-0     [001]  6293.871989: sched_wakeup:         Compositor:4766 [120] CPU:001
+          <idle>-0     [001]  6293.871990: sched_switch:         swapper/1:0 [120] R ==> Compositor:4766 [120]
+ VizCompositorTh-4375  [004]  6293.871992: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [002]  6293.872120: sched_wakeup:         Chrome_ChildIOT:4374 [120] CPU:002
+          <idle>-0     [002]  6293.872124: sched_switch:         swapper/2:0 [120] R ==> Chrome_ChildIOT:4374 [120]
+ Chrome_ChildIOT-4374  [002]  6293.872158: sched_switch:         Chrome_ChildIOT:4374 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.872209: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.872210: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+      Compositor-4766  [001]  6293.872218: sched_switch:         Compositor:4766 [120] S ==> swapper/1:0 [120]
+ VizCompositorTh-4375  [004]  6293.872230: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.872900: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.872916: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.872923: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [007]  6293.872951: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.872963: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.872974: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [007]  6293.873608: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.873616: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.873625: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [001]  6293.873988: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.873999: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+          <idle>-0     [002]  6293.874021: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.874030: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-5454  [001]  6293.874051: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+ language_server-4958  [002]  6293.874056: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.874138: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.874148: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.874155: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [007]  6293.874849: sched_wakeup:         irq/170-rtw88_p:602 [49] CPU:007
+          <idle>-0     [007]  6293.874859: sched_switch:         swapper/7:0 [120] R ==> irq/170-rtw88_p:602 [49]
+          <idle>-0     [005]  6293.875070: sched_wakeup:         kworker/u32:2:20347 [120] CPU:005
+          <idle>-0     [005]  6293.875077: sched_switch:         swapper/5:0 [120] R ==> kworker/u32:2:20347 [120]
+          <idle>-0     [002]  6293.875113: sched_wakeup:         language_server:4958 [120] CPU:002
+   kworker/u32:2-20347 [005]  6293.875120: sched_switch:         kworker/u32:2:20347 [120] I ==> swapper/5:0 [120]
+          <idle>-0     [002]  6293.875121: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.875147: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.875171: sched_wakeup:         language_server:4808 [120] CPU:003
+ irq/170-rtw88_p-602   [007]  6293.875171: sched_switch:         irq/170-rtw88_p:602 [49] S ==> swapper/7:0 [120]
+          <idle>-0     [003]  6293.875172: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [002]  6293.875177: sched_wakeup:         language_server:4958 [120] CPU:002
+ language_server-4808  [003]  6293.875178: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6293.875178: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.875181: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [006]  6293.875582: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.875596: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.875619: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [002]  6293.876232: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.876232: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.876235: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.876318: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.876319: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.876322: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.876338: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.876339: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.876342: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.876639: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.876646: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.876669: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [006]  6293.876680: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.876689: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.876704: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.876714: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.876719: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5505  [007]  6293.876725: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [002]  6293.877285: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.877286: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.877291: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.877291: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [002]  6293.877292: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+ language_server-4808  [003]  6293.877294: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [002]  6293.877294: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.877294: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.877297: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [001]  6293.878113: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.878121: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.878135: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.879156: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.879164: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.879205: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [004]  6293.879312: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.879318: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+          <idle>-0     [001]  6293.879324: sched_wakeup:         language_server:5454 [120] CPU:001
+ language_server-5458  [004]  6293.879325: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.879325: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.879330: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [002]  6293.879348: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.879348: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.879350: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [002]  6293.880401: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.880401: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [002]  6293.880409: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.880418: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.880422: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [002]  6293.880438: sched_wakeup:         language_server:4958 [120] CPU:002
+          <idle>-0     [002]  6293.880439: sched_switch:         swapper/2:0 [120] R ==> language_server:4958 [120]
+ language_server-4808  [003]  6293.880441: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+ language_server-4958  [002]  6293.880442: sched_switch:         language_server:4958 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.881163: sched_wakeup:         kworker/4:0:43 [120] CPU:004
+          <idle>-0     [004]  6293.881171: sched_switch:         swapper/4:0 [120] R ==> kworker/4:0:43 [120]
+     kworker/4:0-43    [004]  6293.881176: sched_switch:         kworker/4:0:43 [120] I ==> swapper/4:0 [120]
+          <idle>-0     [005]  6293.881183: sched_wakeup:         gnome-shell:2974 [120] CPU:005
+          <idle>-0     [005]  6293.881183: sched_switch:         swapper/5:0 [120] R ==> gnome-shell:2974 [120]
+     gnome-shell-2974  [005]  6293.881220: sched_switch:         gnome-shell:2974 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [004]  6293.881267: sched_wakeup:         gnome-shell:2926 [120] CPU:004
+          <idle>-0     [004]  6293.881268: sched_switch:         swapper/4:0 [120] R ==> gnome-shell:2926 [120]
+          <idle>-0     [002]  6293.881463: sched_wakeup:         gdbus:2941 [120] CPU:002
+          <idle>-0     [002]  6293.881467: sched_switch:         swapper/2:0 [120] R ==> gdbus:2941 [120]
+     gnome-shell-2926  [004]  6293.881474: sched_switch:         gnome-shell:2926 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [000]  6293.881497: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.881498: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [006]  6293.881502: sched_wakeup:         gdbus:3244 [120] CPU:006
+          <idle>-0     [006]  6293.881503: sched_switch:         swapper/6:0 [120] R ==> gdbus:3244 [120]
+ language_server-4958  [000]  6293.881513: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.881518: sched_wakeup:         language_server:4808 [120] CPU:003
+           gdbus-2941  [002]  6293.881520: sched_switch:         gdbus:2941 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [003]  6293.881522: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.881532: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.881532: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.881533: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [000]  6293.881536: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [005]  6293.881597: sched_wakeup:         ibus-daemon:3106 [120] CPU:005
+          <idle>-0     [005]  6293.881602: sched_switch:         swapper/5:0 [120] R ==> ibus-daemon:3106 [120]
+           gdbus-3244  [006]  6293.881605: sched_switch:         gdbus:3244 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.881669: sched_wakeup:         gdbus:3244 [120] CPU:006
+          <idle>-0     [006]  6293.881669: sched_switch:         swapper/6:0 [120] R ==> gdbus:3244 [120]
+     ibus-daemon-3106  [005]  6293.881674: sched_switch:         ibus-daemon:3106 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [005]  6293.881678: sched_wakeup:         ibus-daemon:3106 [120] CPU:005
+          <idle>-0     [005]  6293.881679: sched_switch:         swapper/5:0 [120] R ==> ibus-daemon:3106 [120]
+     ibus-daemon-3106  [005]  6293.881684: sched_switch:         ibus-daemon:3106 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [001]  6293.881699: sched_wakeup:         gdbus:3473 [120] CPU:001
+          <idle>-0     [001]  6293.881700: sched_switch:         swapper/1:0 [120] R ==> gdbus:3473 [120]
+           gdbus-3244  [006]  6293.881705: sched_switch:         gdbus:3244 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.881755: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.881756: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.881760: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.881774: sched_wakeup:         ibus-engine-sim:3467 [120] CPU:006
+          <idle>-0     [006]  6293.881774: sched_switch:         swapper/6:0 [120] R ==> ibus-engine-sim:3467 [120]
+           gdbus-3473  [001]  6293.881784: sched_switch:         gdbus:3473 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.881813: sched_wakeup:         gdbus:3473 [120] CPU:001
+          <idle>-0     [001]  6293.881813: sched_switch:         swapper/1:0 [120] R ==> gdbus:3473 [120]
+ ibus-engine-sim-3467  [006]  6293.881829: sched_switch:         ibus-engine-sim:3467 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.881833: sched_wakeup:         gdbus:3244 [120] CPU:006
+          <idle>-0     [006]  6293.881834: sched_switch:         swapper/6:0 [120] R ==> gdbus:3244 [120]
+           gdbus-3473  [001]  6293.881839: sched_switch:         gdbus:3473 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [005]  6293.881862: sched_wakeup:         ibus-daemon:3106 [120] CPU:005
+          <idle>-0     [005]  6293.881863: sched_switch:         swapper/5:0 [120] R ==> ibus-daemon:3106 [120]
+           gdbus-3244  [006]  6293.881871: sched_switch:         gdbus:3244 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.881887: sched_wakeup:         gdbus:3244 [120] CPU:006
+          <idle>-0     [006]  6293.881888: sched_switch:         swapper/6:0 [120] R ==> gdbus:3244 [120]
+     ibus-daemon-3106  [005]  6293.881900: sched_switch:         ibus-daemon:3106 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [002]  6293.881908: sched_wakeup:         gdbus:2941 [120] CPU:002
+          <idle>-0     [002]  6293.881909: sched_switch:         swapper/2:0 [120] R ==> gdbus:2941 [120]
+           gdbus-3244  [006]  6293.881915: sched_switch:         gdbus:3244 [120] S ==> swapper/6:0 [120]
+           gdbus-2941  [002]  6293.881965: sched_switch:         gdbus:2941 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.881968: sched_wakeup:         gnome-shell:2926 [120] CPU:004
+          <idle>-0     [004]  6293.881975: sched_switch:         swapper/4:0 [120] R ==> gnome-shell:2926 [120]
+          <idle>-0     [000]  6293.882049: sched_wakeup:         gnome-terminal-:18856 [120] CPU:000
+          <idle>-0     [000]  6293.882050: sched_switch:         swapper/0:0 [120] R ==> gnome-terminal-:18856 [120]
+     gnome-shell-2926  [004]  6293.882058: sched_switch:         gnome-shell:2926 [120] S ==> swapper/4:0 [120]
+ gnome-terminal--18856 [000]  6293.882155: sched_switch:         gnome-terminal-:18856 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [000]  6293.882604: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.882615: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [000]  6293.882637: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.882642: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.882646: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+          <idle>-0     [000]  6293.882659: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.882660: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [000]  6293.882664: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.882665: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.882825: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.882831: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [001]  6293.882838: sched_wakeup:         containerd:1433 [120] CPU:001
+          <idle>-0     [007]  6293.882838: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.882839: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [006]  6293.882841: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+ language_server-5505  [007]  6293.882843: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.882844: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.882844: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.882847: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [001]  6293.882847: sched_switch:         swapper/1:0 [120] R ==> containerd:1433 [120]
+      containerd-1433  [001]  6293.882868: sched_switch:         containerd:1433 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.882933: sched_wakeup:         containerd:1396 [120] CPU:001
+          <idle>-0     [001]  6293.882934: sched_switch:         swapper/1:0 [120] R ==> containerd:1396 [120]
+      containerd-1396  [001]  6293.882938: sched_switch:         containerd:1396 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [007]  6293.883688: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.883695: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.883715: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [000]  6293.883726: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.883734: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.883752: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.883753: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.883755: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+ language_server-4958  [000]  6293.883756: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [001]  6293.883926: sched_wakeup:         containerd:1433 [120] CPU:001
+          <idle>-0     [001]  6293.883933: sched_switch:         swapper/1:0 [120] R ==> containerd:1433 [120]
+          <idle>-0     [000]  6293.883943: sched_wakeup:         containerd:1400 [120] CPU:000
+          <idle>-0     [000]  6293.883943: sched_switch:         swapper/0:0 [120] R ==> containerd:1400 [120]
+      containerd-1433  [001]  6293.883948: sched_switch:         containerd:1433 [120] S ==> swapper/1:0 [120]
+      containerd-1400  [000]  6293.883950: sched_switch:         containerd:1400 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.886373: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.886373: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.886375: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.886380: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.886381: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.886384: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.886722: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.886729: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.886751: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [007]  6293.887078: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.887086: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.887102: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [001]  6293.887447: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.887454: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.887485: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [004]  6293.887496: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.887504: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.887515: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [004]  6293.888642: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.888650: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+ VizCompositorTh-4375  [004]  6293.888689: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.888700: sched_wakeup:         Compositor:4766 [120] CPU:001
+          <idle>-0     [001]  6293.888704: sched_switch:         swapper/1:0 [120] R ==> Compositor:4766 [120]
+          <idle>-0     [002]  6293.888825: sched_wakeup:         Chrome_ChildIOT:4374 [120] CPU:002
+          <idle>-0     [002]  6293.888830: sched_switch:         swapper/2:0 [120] R ==> Chrome_ChildIOT:4374 [120]
+          <idle>-0     [004]  6293.888855: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.888855: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+ Chrome_ChildIOT-4374  [002]  6293.888857: sched_switch:         Chrome_ChildIOT:4374 [120] S ==> swapper/2:0 [120]
+ VizCompositorTh-4375  [004]  6293.888865: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+      Compositor-4766  [001]  6293.888880: sched_switch:         Compositor:4766 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [005]  6293.889840: sched_wakeup:         VM Periodic Tas:4917 [120] CPU:005
+          <idle>-0     [005]  6293.889856: sched_switch:         swapper/5:0 [120] R ==> VM Periodic Tas:4917 [120]
+ VM Periodic Tas-4917  [005]  6293.889868: sched_switch:         VM Periodic Tas:4917 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [006]  6293.889910: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.889922: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.889929: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.890599: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.890607: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.890623: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.890991: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.890999: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.891029: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.891037: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.891041: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5505  [007]  6293.891055: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [001]  6293.893003: sched_wakeup:         containerd:1396 [120] CPU:001
+          <idle>-0     [001]  6293.893013: sched_switch:         swapper/1:0 [120] R ==> containerd:1396 [120]
+      containerd-1396  [001]  6293.893048: sched_switch:         containerd:1396 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [006]  6293.894091: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.894099: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.894122: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.895154: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.895162: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [007]  6293.895197: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.895200: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [006]  6293.895202: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.895224: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.895225: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.895229: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+ language_server-5505  [007]  6293.895231: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [001]  6293.895551: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.895562: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.895567: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.896629: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.896637: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.896658: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [004]  6293.896749: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.896754: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+          <idle>-0     [001]  6293.896760: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.896761: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5458  [004]  6293.896761: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+ language_server-5454  [001]  6293.896765: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [007]  6293.897157: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.897165: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.897182: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.897280: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.897280: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.897282: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.898333: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.898333: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [007]  6293.898336: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.898337: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [006]  6293.898337: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+ language_server-5505  [007]  6293.898338: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.899388: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.899389: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.899391: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [000]  6293.899714: sched_wakeup:         gmain:4099 [120] CPU:000
+          <idle>-0     [000]  6293.899716: sched_switch:         swapper/0:0 [120] R ==> gmain:4099 [120]
+           gmain-4099  [000]  6293.899743: sched_switch:         gmain:4099 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [006]  6293.900453: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.900460: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.900485: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.900489: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.900493: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5505  [007]  6293.900509: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.900509: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.900509: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.900512: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.900668: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.900668: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.900670: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.900828: sched_wakeup:         language_server:5454 [120] CPU:001
+          <idle>-0     [001]  6293.900840: sched_switch:         swapper/1:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [001]  6293.900844: sched_switch:         language_server:5454 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [007]  6293.900956: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.900964: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.900974: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.901511: sched_wakeup:         antigravity:4543 [120] CPU:006
+          <idle>-0     [006]  6293.901519: sched_switch:         swapper/6:0 [120] R ==> antigravity:4543 [120]
+     antigravity-4543  [006]  6293.901555: sched_switch:         antigravity:4543 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [001]  6293.901561: sched_wakeup:         antigravity:4497 [120] CPU:001
+          <idle>-0     [001]  6293.901565: sched_switch:         swapper/1:0 [120] R ==> antigravity:4497 [120]
+          <idle>-0     [006]  6293.901909: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.901913: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+          <idle>-0     [005]  6293.901947: sched_wakeup:         antigravity:4543 [120] CPU:005
+ language_server-5454  [006]  6293.901948: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [005]  6293.901951: sched_switch:         swapper/5:0 [120] R ==> antigravity:4543 [120]
+     antigravity-4497  [001]  6293.901961: sched_switch:         antigravity:4497 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [001]  6293.901978: sched_wakeup:         antigravity:4497 [120] CPU:001
+          <idle>-0     [000]  6293.901981: sched_wakeup:         Chrome_ChildIOT:4390 [120] CPU:000
+          <idle>-0     [004]  6293.901981: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [001]  6293.901981: sched_switch:         swapper/1:0 [120] R ==> antigravity:4497 [120]
+     antigravity-4543  [005]  6293.901982: sched_switch:         antigravity:4543 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [004]  6293.901987: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+          <idle>-0     [000]  6293.901988: sched_switch:         swapper/0:0 [120] R ==> Chrome_ChildIOT:4390 [120]
+          <idle>-0     [005]  6293.902012: sched_wakeup:         antigravity:4543 [120] CPU:005
+ language_server-5458  [004]  6293.902013: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [005]  6293.902015: sched_switch:         swapper/5:0 [120] R ==> antigravity:4543 [120]
+     antigravity-4497  [001]  6293.902017: sched_switch:         antigravity:4497 [120] S ==> swapper/1:0 [120]
+     antigravity-4543  [005]  6293.902024: sched_switch:         antigravity:4543 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [003]  6293.902082: sched_wakeup:         trace-cmd:34130 [120] CPU:003
+          <idle>-0     [003]  6293.902087: sched_switch:         swapper/3:0 [120] R ==> trace-cmd:34130 [120]
+       trace-cmd-34130 [003]  6293.902099: sched_switch:         trace-cmd:34130 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [004]  6293.902103: sched_wakeup:         antigravity:4384 [120] CPU:004
+          <idle>-0     [004]  6293.902107: sched_switch:         swapper/4:0 [120] R ==> antigravity:4384 [120]
+ Chrome_ChildIOT-4390  [000]  6293.902116: sched_switch:         Chrome_ChildIOT:4390 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [006]  6293.902146: sched_wakeup:         gmain:2939 [120] CPU:006
+          <idle>-0     [006]  6293.902148: sched_switch:         swapper/6:0 [120] R ==> gmain:2939 [120]
+           gmain-2939  [006]  6293.902193: sched_switch:         gmain:2939 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [002]  6293.902799: sched_wakeup:         Chrome_ChildIOT:4479 [120] CPU:002
+          <idle>-0     [002]  6293.902805: sched_switch:         swapper/2:0 [120] R ==> Chrome_ChildIOT:4479 [120]
+          <idle>-0     [006]  6293.902884: sched_wakeup:         antigravity:4475 [120] CPU:006
+          <idle>-0     [006]  6293.902885: sched_switch:         swapper/6:0 [120] R ==> antigravity:4475 [120]
+ Chrome_ChildIOT-4479  [002]  6293.902888: sched_switch:         Chrome_ChildIOT:4479 [120] S ==> swapper/2:0 [120]
+     antigravity-4384  [004]  6293.903003: sched_switch:         antigravity:4384 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [002]  6293.903184: sched_wakeup:         antigravity:4531 [120] CPU:002
+          <idle>-0     [002]  6293.903186: sched_switch:         swapper/2:0 [120] R ==> antigravity:4531 [120]
+     antigravity-4531  [002]  6293.903198: sched_switch:         antigravity:4531 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [002]  6293.903645: sched_wakeup:         antigravity:4531 [120] CPU:002
+          <idle>-0     [002]  6293.903646: sched_switch:         swapper/2:0 [120] R ==> antigravity:4531 [120]
+     antigravity-4475  [006]  6293.903647: sched_switch:         antigravity:4475 [120] S ==> swapper/6:0 [120]
+     antigravity-4531  [002]  6293.903652: sched_switch:         antigravity:4531 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [000]  6293.903677: sched_wakeup:         Chrome_ChildIOT:4390 [120] CPU:000
+          <idle>-0     [000]  6293.903688: sched_switch:         swapper/0:0 [120] R ==> Chrome_ChildIOT:4390 [120]
+          <idle>-0     [004]  6293.903720: sched_wakeup:         antigravity:4384 [120] CPU:004
+          <idle>-0     [004]  6293.903722: sched_switch:         swapper/4:0 [120] R ==> antigravity:4384 [120]
+ Chrome_ChildIOT-4390  [000]  6293.903731: sched_switch:         Chrome_ChildIOT:4390 [120] S ==> swapper/0:0 [120]
+     antigravity-4384  [004]  6293.903814: sched_switch:         antigravity:4384 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [003]  6293.903821: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.903831: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.903854: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.904286: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.904287: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.904290: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [003]  6293.904918: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.904926: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.904954: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.904968: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.904977: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.904985: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.904985: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.904986: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.904989: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [004]  6293.905289: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.905290: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+          <idle>-0     [001]  6293.905310: sched_wakeup:         Compositor:4766 [120] CPU:001
+          <idle>-0     [001]  6293.905311: sched_switch:         swapper/1:0 [120] R ==> Compositor:4766 [120]
+ VizCompositorTh-4375  [004]  6293.905314: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [002]  6293.905389: sched_wakeup:         Chrome_ChildIOT:4374 [120] CPU:002
+          <idle>-0     [002]  6293.905390: sched_switch:         swapper/2:0 [120] R ==> Chrome_ChildIOT:4374 [120]
+ Chrome_ChildIOT-4374  [002]  6293.905405: sched_switch:         Chrome_ChildIOT:4374 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.905454: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.905456: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+      Compositor-4766  [001]  6293.905462: sched_switch:         Compositor:4766 [120] S ==> swapper/1:0 [120]
+ VizCompositorTh-4375  [004]  6293.905474: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [003]  6293.906052: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.906060: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.906085: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.906107: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.906114: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.906119: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.906119: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.906120: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.906122: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.906577: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.906589: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.906613: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.906884: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.906895: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.906916: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.907007: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.907015: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.907025: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.907674: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.907682: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.907710: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.907729: sched_wakeup:         language_server:5505 [120] CPU:007
+          <idle>-0     [007]  6293.907730: sched_switch:         swapper/7:0 [120] R ==> language_server:5505 [120]
+ language_server-5505  [007]  6293.907735: sched_switch:         language_server:5505 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [002]  6293.907740: sched_wakeup:         gmain:1037 [120] CPU:002
+          <idle>-0     [002]  6293.907741: sched_switch:         swapper/2:0 [120] R ==> gmain:1037 [120]
+           gmain-1037  [002]  6293.907759: sched_switch:         gmain:1037 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [000]  6293.907805: sched_wakeup:         gmain:4099 [120] CPU:000
+          <idle>-0     [000]  6293.907814: sched_switch:         swapper/0:0 [120] R ==> gmain:4099 [120]
+           gmain-4099  [000]  6293.907825: sched_switch:         gmain:4099 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [006]  6293.908086: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.908094: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.908108: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.908117: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.908122: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+          <idle>-0     [006]  6293.908137: sched_wakeup:         language_server:5454 [120] CPU:006
+ language_server-5458  [004]  6293.908137: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.908137: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.908142: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.908162: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.908164: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.908167: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.909217: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.909218: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.909223: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.909234: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.909238: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.909259: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.909260: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.909262: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.909264: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [007]  6293.911039: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.911048: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.911076: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.911774: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.911781: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.911801: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.912157: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.912165: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.912181: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.912314: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.912315: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.912317: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.912862: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.912869: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [007]  6293.912878: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.912885: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.912903: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+ language_server-5524  [006]  6293.912904: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [000]  6293.912917: sched_wakeup:         language_server:5505 [120] CPU:000
+          <idle>-0     [000]  6293.912921: sched_switch:         swapper/0:0 [120] R ==> language_server:5505 [120]
+ language_server-5505  [000]  6293.912941: sched_switch:         language_server:5505 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [006]  6293.912941: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.912941: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.912944: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [006]  6293.913231: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.913232: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.913238: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.913249: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.913253: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.913258: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [003]  6293.913367: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.913368: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.913373: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.913415: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.913416: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.913422: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.913423: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.913424: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.913425: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.914440: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.914445: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.914452: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [003]  6293.915488: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.915496: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.915516: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.916164: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.916181: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.916187: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [003]  6293.916571: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.916578: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.916607: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.916701: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.916702: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.916708: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.916709: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.916710: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.916711: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.916966: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.916967: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.916969: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.917421: sched_wakeup:         VM Periodic Tas:4744 [120] CPU:003
+          <idle>-0     [003]  6293.917422: sched_switch:         swapper/3:0 [120] R ==> VM Periodic Tas:4744 [120]
+ VM Periodic Tas-4744  [003]  6293.917428: sched_switch:         VM Periodic Tas:4744 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [005]  6293.918288: sched_wakeup:         kworker/u32:2:20347 [120] CPU:005
+          <idle>-0     [005]  6293.918302: sched_switch:         swapper/5:0 [120] R ==> kworker/u32:2:20347 [120]
+   kworker/u32:2-20347 [005]  6293.918372: sched_switch:         kworker/u32:2:20347 [120] I ==> swapper/5:0 [120]
+          <idle>-0     [003]  6293.919773: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.919781: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.919801: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.920301: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.920309: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.920315: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.920863: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.920871: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.920890: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.920983: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.920988: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+ language_server-4958  [000]  6293.921011: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.921061: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.921065: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.921088: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.921367: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.921370: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.921382: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.921458: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.921462: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.921485: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.921545: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.921549: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.921572: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.921972: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+          <idle>-0     [004]  6293.921977: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+ VizCompositorTh-4375  [004]  6293.922044: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [001]  6293.922053: sched_wakeup:         Compositor:4766 [120] CPU:001
+          <idle>-0     [001]  6293.922058: sched_switch:         swapper/1:0 [120] R ==> Compositor:4766 [120]
+          <idle>-0     [005]  6293.922156: sched_wakeup:         python3:2596 [120] CPU:005
+          <idle>-0     [005]  6293.922162: sched_switch:         swapper/5:0 [120] R ==> python3:2596 [120]
+         python3-2596  [005]  6293.922332: sched_switch:         python3:2596 [120] S ==> swapper/5:0 [120]
+          <idle>-0     [002]  6293.922339: sched_wakeup:         Chrome_ChildIOT:4374 [120] CPU:002
+          <idle>-0     [002]  6293.922342: sched_switch:         swapper/2:0 [120] R ==> Chrome_ChildIOT:4374 [120]
+ Chrome_ChildIOT-4374  [002]  6293.922393: sched_switch:         Chrome_ChildIOT:4374 [120] S ==> swapper/2:0 [120]
+          <idle>-0     [004]  6293.922424: sched_wakeup:         VizCompositorTh:4375 [120] CPU:004
+      Compositor-4766  [001]  6293.922425: sched_switch:         Compositor:4766 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [004]  6293.922429: sched_switch:         swapper/4:0 [120] R ==> VizCompositorTh:4375 [120]
+ VizCompositorTh-4375  [004]  6293.922483: sched_switch:         VizCompositorTh:4375 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [006]  6293.922621: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.922624: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.922633: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [007]  6293.923034: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.923043: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.923059: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [007]  6293.923611: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.923621: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.923644: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [006]  6293.923693: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.923701: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.923729: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.923844: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.923850: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+ language_server-5458  [004]  6293.923855: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+          <idle>-0     [003]  6293.924158: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.924176: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.924181: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.925231: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.925231: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.925239: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.925328: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.925340: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.925347: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.925347: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.925348: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.925350: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.926007: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.926015: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.926043: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [001]  6293.926275: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.926277: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.926282: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [003]  6293.926319: sched_wakeup:         language_server:5503 [120] CPU:003
+          <idle>-0     [003]  6293.926320: sched_switch:         swapper/3:0 [120] R ==> language_server:5503 [120]
+ language_server-5503  [003]  6293.926322: sched_switch:         language_server:5503 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.926400: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.926401: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.926404: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [001]  6293.926646: sched_wakeup:         language_server:4806 [120] CPU:001
+          <idle>-0     [001]  6293.926658: sched_switch:         swapper/1:0 [120] R ==> language_server:4806 [120]
+ language_server-4806  [001]  6293.926660: sched_switch:         language_server:4806 [120] S ==> swapper/1:0 [120]
+          <idle>-0     [006]  6293.927107: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.927115: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.927139: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [000]  6293.927228: sched_wakeup:         language_server:5505 [120] CPU:000
+          <idle>-0     [000]  6293.927234: sched_switch:         swapper/0:0 [120] R ==> language_server:5505 [120]
+ language_server-5505  [000]  6293.927240: sched_switch:         language_server:5505 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [003]  6293.927466: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.927473: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.927487: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.927546: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.927558: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.927566: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.927566: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.927567: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.927569: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.928791: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.928798: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.928807: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.929630: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.929638: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.929660: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.929868: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.929875: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5454  [006]  6293.929890: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.929990: sched_wakeup:         language_server:5458 [120] CPU:004
+          <idle>-0     [004]  6293.930004: sched_switch:         swapper/4:0 [120] R ==> language_server:5458 [120]
+          <idle>-0     [006]  6293.930010: sched_wakeup:         language_server:5454 [120] CPU:006
+          <idle>-0     [006]  6293.930011: sched_switch:         swapper/6:0 [120] R ==> language_server:5454 [120]
+ language_server-5458  [004]  6293.930011: sched_switch:         language_server:5458 [120] S ==> swapper/4:0 [120]
+ language_server-5454  [006]  6293.930016: sched_switch:         language_server:5454 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.930712: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.930719: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.930751: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.930847: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.930848: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.930854: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.930855: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.930856: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.930857: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.931157: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.931165: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.931187: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.931919: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.931926: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.931938: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.932028: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.932033: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.932039: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.932039: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.932040: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.932042: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.932238: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.932239: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5524  [006]  6293.932243: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [000]  6293.932305: sched_wakeup:         language_server:5505 [120] CPU:000
+          <idle>-0     [000]  6293.932306: sched_switch:         swapper/0:0 [120] R ==> language_server:5505 [120]
+          <idle>-0     [006]  6293.932312: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.932313: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+ language_server-5505  [000]  6293.932314: sched_switch:         language_server:5505 [120] S ==> swapper/0:0 [120]
+ language_server-5524  [006]  6293.932315: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+          <idle>-0     [003]  6293.933104: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.933111: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4808  [003]  6293.933157: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [000]  6293.933257: sched_wakeup:         language_server:4958 [120] CPU:000
+          <idle>-0     [000]  6293.933269: sched_switch:         swapper/0:0 [120] R ==> language_server:4958 [120]
+          <idle>-0     [003]  6293.933275: sched_wakeup:         language_server:4808 [120] CPU:003
+          <idle>-0     [003]  6293.933275: sched_switch:         swapper/3:0 [120] R ==> language_server:4808 [120]
+ language_server-4958  [000]  6293.933276: sched_switch:         language_server:4958 [120] S ==> swapper/0:0 [120]
+ language_server-4808  [003]  6293.933278: sched_switch:         language_server:4808 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.933366: sched_wakeup:         language_server:5524 [120] CPU:006
+          <idle>-0     [006]  6293.933367: sched_switch:         swapper/6:0 [120] R ==> language_server:5524 [120]
+          <idle>-0     [000]  6293.933371: sched_wakeup:         language_server:5505 [120] CPU:000
+          <idle>-0     [000]  6293.933371: sched_switch:         swapper/0:0 [120] R ==> language_server:5505 [120]
+ language_server-5524  [006]  6293.933372: sched_switch:         language_server:5524 [120] S ==> swapper/6:0 [120]
+ language_server-5505  [000]  6293.933375: sched_switch:         language_server:5505 [120] S ==> swapper/0:0 [120]
+          <idle>-0     [007]  6293.933703: sched_wakeup:         language_server:5448 [120] CPU:007
+          <idle>-0     [007]  6293.933716: sched_switch:         swapper/7:0 [120] R ==> language_server:5448 [120]
+ language_server-5448  [007]  6293.933729: sched_switch:         language_server:5448 [120] S ==> swapper/7:0 [120]
+          <idle>-0     [003]  6293.934167: sched_wakeup:         kworker/3:0:37 [120] CPU:003
+          <idle>-0     [001]  6293.934186: sched_wakeup:         kworker/1:2:29628 [120] CPU:001
+          <idle>-0     [003]  6293.934193: sched_switch:         swapper/3:0 [120] R ==> kworker/3:0:37 [120]
+          <idle>-0     [001]  6293.934195: sched_switch:         swapper/1:0 [120] R ==> kworker/1:2:29628 [120]
+     kworker/1:2-29628 [001]  6293.934199: sched_switch:         kworker/1:2:29628 [120] I ==> swapper/1:0 [120]
+     kworker/3:0-37    [003]  6293.934201: sched_switch:         kworker/3:0:37 [120] I ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.934294: sched_wakeup:         Listener:34138 [120] CPU:003
+          <idle>-0     [003]  6293.934294: sched_switch:         swapper/3:0 [120] R ==> Listener:34138 [120]
+          <idle>-0     [006]  6293.934309: sched_wakeup:         dds.log:34147 [120] CPU:006
+          <idle>-0     [006]  6293.934309: sched_switch:         swapper/6:0 [120] R ==> dds.log:34147 [120]
+        Listener-34138 [003]  6293.934313: sched_switch:         Listener:34138 [120] S ==> swapper/3:0 [120]
+          <idle>-0     [003]  6293.934332: sched_wakeup:         Listener:34138 [120] CPU:003
+          <idle>-0     [003]  6293.934332: sched_switch:         swapper/3:0 [120] R ==> Listener:34138 [120]
+         dds.log-34147 [006]  6293.934345: sched_switch:         dds.log:34147 [120] X ==> swapper/6:0 [120]
+          <idle>-0     [004]  6293.935170: sched_wakeup:         rcu_preempt:15 [120] CPU:004
+          <idle>-0     [004]  6293.935178: sched_switch:         swapper/4:0 [120] R ==> rcu_preempt:15 [120]
+     rcu_preempt-15    [004]  6293.935196: sched_switch:         rcu_preempt:15 [120] I ==> swapper/4:0 [120]
+        Listener-34138 [003]  6293.935562: sched_switch:         Listener:34138 [120] Z ==> swapper/3:0 [120]
+          <idle>-0     [006]  6293.935572: sched_wakeup:         trace-cmd:34129 [120] CPU:006
+          <idle>-0     [006]  6293.935577: sched_switch:         swapper/6:0 [120] R ==> trace-cmd:34129 [120]

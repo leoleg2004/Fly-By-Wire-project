@@ -1,0 +1,55 @@
+LIB_NAME  	= time
+LIB_SRC   	= time_library.c
+
+CPPFLAGS = -c -Wall -fpic -m64 -O2 -std=c++0x
+LDFLAGS= -m64
+
+CPP= g++
+
+LN= g++
+AR=ar
+
+SYSLIBS= -ldl -lm -lpthread -lrt
+
+
+INCLUDES = -I.
+
+DDS_LIBS =  -lfastcdr -lfastrtps
+
+DIRECTORIES= output.dir 
+
+all: $(DIRECTORIES) $(LIB_NAME)
+
+LIB_TARGET= $(SERL_HOME)/DDS/bin/runtime/lib/lib$(LIB_NAME).so
+LIB_TARGET_Z= $(SERL_HOME)/DDS/bin/runtime/lib/lib$(LIB_NAME).a
+#LIB_TARGET= ./lib$(LIB_NAME).so
+#LIB_TARGET_Z= ./lib$(LIB_NAME).a
+
+LIB_OBJS    = $(LIB_SRC:%.c=output/%.o)
+
+$(LIB_TARGET): $(LIB_OBJS)
+	$(LN) $(LDFLAGS) -shared -o $(LIB_TARGET) $(LIB_OBJS) $(DDS_LIBS) $(SYSLIBS)
+
+$(LIB_TARGET_Z): $(LIB_OBJS)
+	$(AR) -cru $(LIB_TARGET_Z) $(LIB_OBJS)
+
+$(LIB_NAME): $(LIB_TARGET) $(LIB_TARGET_Z)
+
+output/%.o:%.c
+	$(CPP) $(CPPFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
+
+.PHONY: $(LIB_NAME) 
+
+
+clean:
+	@rm -rf output
+
+install:
+#	cp *.h $(RUNTIME)/include
+	
+%.dir : 
+	@echo "Checking directory $*"
+	@if [ ! -d $* ]; then \
+		echo "Making directory $*"; \
+		mkdir -p $* ; \
+	fi;

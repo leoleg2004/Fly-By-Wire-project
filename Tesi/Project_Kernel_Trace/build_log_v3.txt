@@ -1,0 +1,31 @@
+make -C src/msg
+make -C src/lib
+make -C src/tools
+make[1]: ingresso nella directory «/home/leonardo/eprosima_projects/flight_sensor/flight_sensor/Tesi/Project_Kernel_Trace/src/msg»
+make[1]: ingresso nella directory «/home/leonardo/eprosima_projects/flight_sensor/flight_sensor/Tesi/Project_Kernel_Trace/src/lib»
+make[1]: ingresso nella directory «/home/leonardo/eprosima_projects/flight_sensor/flight_sensor/Tesi/Project_Kernel_Trace/src/tools»
+cp monitor.py ../../bin/tools/monitor.py
+cp marker_dds.sh ../../bin/tools/marker_dds.sh
+g++ -Wall -fPIC -O2 -std=c++11 -I. -I/usr/local/include -I/usr/local/include GeometryPeriodic/GeometryBroadcastner.cpp -o ../../bin/msg/GeometryBroadcastner -L../../bin/lib -lActivity_library -lpthread -lrt
+chmod +x ../../bin/tools/monitor.py
+chmod +x ../../bin/tools/marker_dds.sh
+cp marker.sh ../../bin/tools/marker.sh
+cp run_trace_dds.sh ../../bin/tools/run_trace_dds.sh
+chmod +x ../../bin/tools/marker.sh
+chmod +x ../../bin/tools/run_trace_dds.sh
+In file included from GeometryPeriodic/GeometryBroadcastner.cpp:17:
+GeometryPeriodic/GeometryBroadcastner.hpp:11:10: fatal error: Broadcastner.hpp: File o directory non esistente
+   11 | #include "Broadcastner.hpp"
+      |          ^~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [Makefile:32: ../../bin/msg/GeometryBroadcastner] Errore 1
+make[1]: uscita dalla directory «/home/leonardo/eprosima_projects/flight_sensor/flight_sensor/Tesi/Project_Kernel_Trace/src/msg»
+cp run_trace.sh ../../bin/tools/run_trace.sh
+chmod +x ../../bin/tools/run_trace.sh
+make: *** [Makefile:13: src/msg] Errore 2
+make: *** Attesa per i processi non terminati....
+ar rcs ../../bin/lib/libActivity_library.a print_library.o math_library.o activity_library_dyn.o bug_library.o Activity_library/activity_library.o activity_library.o time_library.o matrix_library.o
+Script installati in bin/tools.
+make[1]: uscita dalla directory «/home/leonardo/eprosima_projects/flight_sensor/flight_sensor/Tesi/Project_Kernel_Trace/src/tools»
+ar rcs ../../bin/lib/libcommunication_library.a communication_library/Broadcastner.o communication_library/Listener.o
+make[1]: uscita dalla directory «/home/leonardo/eprosima_projects/flight_sensor/flight_sensor/Tesi/Project_Kernel_Trace/src/lib»
