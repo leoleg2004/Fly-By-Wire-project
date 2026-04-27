@@ -1,6 +1,6 @@
 TARGET = time_library
 
-all: $(TARGET).a clean
+all: $(TARGET).a
 
 $(TARGET).a: $(TARGET).o
 	ar rcs $@ $^

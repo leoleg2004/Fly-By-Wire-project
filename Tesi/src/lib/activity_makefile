@@ -1,6 +1,6 @@
 TARGET = activity_library
 
-all: $(TARGET).a clean
+all: $(TARGET).a
 
 $(TARGET).a: $(TARGET).o time_library.a
 	ar rcs $@ $^

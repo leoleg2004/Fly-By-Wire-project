@@ -1,6 +1,6 @@
 TARGET = bug_library
 
-all: $(TARGET).a       clean
+all: $(TARGET).a      
 
 $(TARGET).a: $(TARGET).o matrix_library.a
 	ar rcs $@ $^
