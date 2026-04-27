@@ -1,82 +1,106 @@
-✈️ Real-Time Flight Telemetry System: RM & EDF Scheduling with Fast DDS
-Questo progetto analizza i paradigmi di computazione Hard Real-Time in ambiente Linux (ottimizzato con patch PREEMPT_RT), mettendo a confronto le prestazioni delle politiche di scheduling Rate Monotonic (RM) ed Earliest Deadline First (EDF).
+✈️ Real-Time Flight Telemetry System: RM Scheduling con Fast DDS
 
-L'architettura modella un ecosistema avionico distribuito dove il determinismo temporale e l'affidabilità della comunicazione IPC (Inter-Process Communication) sono requisiti critici. Il sistema è orchestrato tramite il middleware eProsima Fast DDS, che garantisce lo scambio di dati telemetrici ad alte prestazioni tra nodi computazionali isolati.
+Questo progetto analizza i paradigmi di computazione Hard Real-Time in ambiente Linux (ottimizzato con patch PREEMPT_RT), focalizzandosi sulla politica di scheduling Rate Monotonic (RM). Il sistema simula un ecosistema avionico distribuito che utilizza il middleware eProsima Fast DDS per lo scambio di telemetria complessa (dati testuali e immagini) in configurazioni single-core e multi-core.
 
-⚙️ Fondamenti di Schedulazione e Protocolli POSIX
-Per garantire la prevedibilità del sistema (determinismo), il software interagisce con le interfacce a basso livello del kernel Linux e lo standard POSIX.1b.
+L'intero progetto è strutturato per garantire l'automazione completa, dalla compilazione all'analisi dei tracciamenti del kernel, attraverso strumenti contenuti nelle cartelle Tesi e dds.
+📡 Comunicazione DDS: Telemetria e Imaging
 
-1. Isolamento Computazionale (CPU Affinity)
+Il sistema supporta due tipologie principali di scambio dati, situate all'interno della directory dds/, con script dedicati per ogni scenario:
 
-Per minimizzare l'interferenza causata dallo scheduler generico (OS Noise) e massimizzare l'efficienza delle cache, il sistema implementa il partizionamento dei core. Utilizzando le macro CPU_SET e la funzione pthread_attr_setaffinity_np(), ogni thread critico viene vincolato a una CPU fisica specifica, riducendo drasticamente i cache miss e i context switch involontari.
+    Standard Message Telemetry: Scambio di pacchetti dati leggeri (altitudine, assetto, coordinate) per il controllo di volo in tempo reale.
 
-2. Rate Monotonic Scheduling (RM)
+    Photo/Image Transmission: Gestione di payload pesanti (immagini dai sensori ottici). Questa modalità testa la capacità dello scheduler RM di gestire task con tempi di esecuzione più lunghi (CPU burning elevato) e latenze di serializzazione DDS senza violare le scadenze critiche.
 
-La politica RM è implementata come schema a priorità fissa preventiva (fixed-priority preemptive).
+Entrambe le modalità sono testabili sia su singolo core (massima contesa) che su multi-core (isolamento tramite CPU affinity).
+🛩️ Simulatore F-16 Non-Lineare (Cartella SimulatoreC++)
 
-Meccanismo: Viene utilizzata la classe di scheduling SCHED_FIFO tramite la struttura sched_param.
+Il progetto include una cartella indipendente denominata SimulatoreC++, che contiene l'implementazione di un simulatore di volo non-lineare basato sul modello dell'aereo F-16, con rendering grafico sviluppato in Raylib.
 
-Assegnazione: Le priorità vengono calcolate secondo il teorema di Liu e Layland, assegnando priorità superiori ai task con periodi più brevi.
+    Build System Dedicato: La cartella è provvista di un proprio Makefile e di un file CMakeLists.txt. Questo garantisce una ricompilazione rapida e isolata per qualsiasi tipo di modifica apportata al motore fisico o grafico.
 
-API: pthread_attr_setschedparam() e pthread_attr_setschedpolicy().
+    Origine MATLAB e Automazione: Questo codice in C++ è una derivazione diretta di un modello originariamente sviluppato in MATLAB. Tutto il lavoro di analisi, progettazione della teoria del controllo e automazione su questo specifico modello F-16 risiede in una repository Git separata. Puoi consultare il progetto originario qui:
+    👉 [Repository MATLAB - Simulatore e Automazione F-16]([https://github.com/leoleg2004/AutomationF16])
 
-3. Earliest Deadline First (EDF)
+    Scopo in questo Progetto: A differenza degli altri moduli, questo simulatore in C++ non utilizza gli script di tracciamento automatizzato illustrati di seguito, ma funge puramente da ambiente di implementazione e testing locale per la dinamica di volo.
+🛠️ Automazione e Build System
 
-Per scenari a priorità dinamica, il sistema sfrutta SCHED_DEADLINE, una politica basata sull'algoritmo Constant Bandwidth Server (CBS).
+Il progetto implementa un sistema di gestione del codice avanzato per facilitare lo sviluppo e il testing:
 
-Meccanismo: Poiché non è esposto direttamente da pthread, si interagisce con il kernel tramite la syscall __NR_sched_setattr.
+    Makefile Intelligenti: Ogni modulo (ad eccezione del simulatore F-16) dispone di un Makefile configurato per gestire automaticamente le dipendenze, i file sorgente e la ricompilazione delle librerie collegate.
 
-Parametri: Il task viene definito dalla terna (Runtime,Deadline,Period), permettendo al kernel di garantire una frazione di CPU dedicata ed eseguire sempre il task con la scadenza più prossima.
+    Compilazione Parallela: Supporto nativo per la compilazione accelerata tramite il comando make -j4, ottimizzando i tempi di build sui sistemi multi-processor.
 
-4. Gestione Temporale e Memory Locking
+    Gestione Eseguibili: Il sistema pulisce e rigenera automaticamente i binari garantendo che ogni simulazione utilizzi sempre l'ultima versione del codice e delle configurazioni delle librerie.
 
-Precisione al Nanosecondo: Per evitare la deriva temporale (drifting), la periodicità è garantita da clock_nanosleep() con il clock CLOCK_MONOTONIC e flag TIMER_ABSTIME. Ciò assicura che il risveglio avvenga su un istante assoluto rispetto all'epoca di avvio.
+⚙️ Caratteristiche Tecniche e Requisiti
+Gestione Thread e Scheduling
 
-Resilienza della Memoria: Il comando mlockall(MCL_CURRENT | MCL_FUTURE) disabilita il paging della memoria virtuale su disco (swapping). Questo previene latenze non deterministiche causate da page faults durante l'accesso a variabili critiche.
+    Libreria POSIX: Creazione e gestione nativa dei thread tramite pthread_create.
 
-🏗️ Architettura del Sistema Distribuiti (DDS)
-Il sistema è suddiviso in moduli funzionali che comunicano attraverso il protocollo Data Distribution Service (DDS), seguendo lo standard DCPS (Data Centric Publish-Subscribe).
+    Politica RM: Implementazione con SCHED_FIFO e priorità statiche calcolate su base periodica.
 
-1. Telemetry Provider (Publisher - Task Periodico)
+    Memory Locking: Uso di mlockall per prevenire il paging virtuale e garantire il determinismo.
 
-Criticità: Hard Real-Time.
+Requisiti di Sistema
 
-Funzione: Modella l'acquisizione dati dai sensori di bordo. Genera campioni telemetrici (altitudine, assetto) e li pubblica sul TelemetryTopic.
+    Kernel: Linux con patch PREEMPT_RT.
 
-Simulazione Carico: Include una funzione di CPU burning deterministica per simulare il tempo di computazione necessario alla lettura fisica dei sensori.
+    Middleware: eProsima Fast DDS.
 
-2. Control & Analysis Node (Subscriber - Task Critico)
+    Analisi: trace-cmd, kernelshark e Python 3 (per il monitor visuale).
 
-Criticità: Hard Real-Time.
+    Grafica: Raylib.
 
-Funzione: Riceve i dati in tempo reale e analizza la serie temporale. Monitora le soglie di sicurezza avionica e logga lo stato del sistema.
+    Linguaggio: C++17.
 
-Determinismo IPC: L'overhead introdotto dalla serializzazione dei dati (Fast CDR) e dal trasporto DDS viene misurato per valutare l'impatto sulla latenza end-to-end del loop di controllo.
+🚀 Workflow di Analisi e Simulazione Base (run_trace.sh e marker.sh)
 
-3. Flight Visualizer (DDS Listener - Soft Real-Time)
+Per automatizzare la valutazione degli algoritmi RM standard (singolo o multi-core) e la comunicazione DDS base (senza immagini), il sistema utilizza lo script principale run_trace.sh.
 
-Criticità: Soft Real-Time / Best-Effort.
+Lo script esegue una pipeline di analisi in 5 step sequenziali totalmente automatizzati:
 
-Tecnologia: Sviluppato con Raylib.
+    Rilevamento Dinamico: Lo script cerca automaticamente l'eseguibile e il relativo file sorgente. Il sorgente è fondamentale perché l'analizzatore andrà a estrarne i parametri temporali (i periodi dei task) necessari per la valutazione.
 
-Isolamento: Questo modulo opera come un osservatore passivo. Grazie alle proprietà di QoS (Quality of Service) di DDS, il visualizzatore grafico non può rallentare o bloccare i nodi Hard Real-Time, garantendo l'integrità dei task di controllo anche in caso di sovraccarico della GPU.
+    Tracciamento Kernel (trace-cmd): L'eseguibile viene avviato sotto la supervisione di trace-cmd, che registra in tempo reale eventi critici come sched_switch e sched_wakeup, generando il file binario trace.dat.
 
-📊 Analisi delle Prestazioni e Metriche RT
-L'efficacia del sistema viene validata attraverso la raccolta di metriche ingegneristiche ad ogni ciclo di esecuzione:
+    Estrazione Report: Il file binario viene convertito in un report testuale (trace_output.txt) leggibile dai successivi tool di analisi.
 
-Response Time (Tempo di Risposta): Misura l'intervallo tra l'istante di rilascio del task e il suo completamento. Fornisce indicazioni sulla capacità del sistema di soddisfare il carico computazionale.
+    Analisi C++ (thread_analysis): Viene compilato ed eseguito al volo lo strumento custom thread_analysis.cpp. Questo tool incrocia il log del kernel con i periodi letti dal file sorgente originale, calcolando latenze, Response Time, e Deadline Miss.
 
-Release Jitter (Variazione di Rilascio): Analizza la stabilità temporale del risveglio del thread. Un jitter elevato indica interferenze da parte degli interrupt di sistema o configurazioni errate della patch PREEMPT_RT.
+    Visualizzazione Python: Infine, lo script avvia il Monitor Real-Time in Python, un tool visivo che legge i dati generati per produrre grafici sull'andamento dei thread analizzati.
 
-Deadline Miss Rate: Monitora la frequenza con cui i task superano la propria scadenza temporale. In configurazione Hard Real-Time, questa metrica deve tendere a zero.
+L'uso di marker.sh
 
-🛠️ Toolchain e Requisiti Tecnici
-Requisiti
+Lo script marker.sh viene impiegato per profilare in tempo reale i task e agevolare la visualizzazione su KernelShark, intercettando i PID esatti e inserendo dei marker sulla timeline del kernel per evidenziare eventi specifici durante l'esecuzione.
+📸 Esecuzione Avanzata: DDS con Immagini e Concorrenza (dds/DDS/)
 
-Kernel: Linux con patch RT-Preempt.
+All'interno della sottocartella dds/DDS/, troviamo la controparte avanzata degli script precedenti, progettata appositamente per le comunicazioni DDS con payload pesanti, come la trasmissione di immagini dai sensori.
 
-Middleware: eProsima Fast DDS (v2.x o superiore).
+    Stessa Pipeline, Carico Maggiore: Funzionano seguendo gli stessi concetti di tracciamento, ma simulano i colli di bottiglia causati dalla serializzazione DDS e da alti livelli di CPU burning.
 
-Grafica: Raylib (per il modulo di monitoraggio).
+    run_trace_dds.sh & marker_dds.sh: Quando Publisher e Subscriber vengono eseguiti in contemporanea, marker_dds.sh utilizza il comando pidof per intercettare e "agganciare" al volo i PID di entrambi i processi. Questo permette di tracciare le latenze inter-processo e visualizzarle chiaramente su KernelShark in un unico contesto visivo.
 
-Linguaggio: C++17.
+📊 Strumenti di Monitoraggio Avanzati (Cartella Tesi)
+
+Il nucleo analitico del progetto è contenuto all'interno della cartella Tesi. Oltre agli script per la generazione dei report, questa cartella ospita tool diagnostici specifici per il middleware, fondamentali per analizzare a fondo la rete:
+
+    eProsima Fast DDS Monitor: All'interno della cartella Tesi è presente la sottocartella DDS_MONITOR, che contiene lo strumento ufficiale di eProsima per tenere traccia in tempo reale dello stato della rete, del throughput e delle latenze di comunicazione.
+
+    Procedura di Utilizzo del Monitor: Per avviare correttamente la tracciatura delle statistiche, seguire questi step:
+
+        Avviare la Comunicazione: Eseguire in due terminali separati gli script del Publisher e del Subscriber DDS per instaurare e mantenere attiva la comunicazione.
+
+        Avviare il Monitor: Entrare nella cartella Tesi/DDS_MONITOR e lanciare lo script del Fast DDS Monitor. Attenzione: Assicurarsi che lo script abbia i corretti privilegi di esecuzione (es. usando sudo o impostando preventivamente chmod +x sullo script) per evitare che il programma fallisca a causa di permessi negati nell'accesso ai socket di rete.
+
+        Sintonizzazione del Dominio: Una volta aperta l'interfaccia grafica del monitor, è necessario sintonizzarlo sullo stesso Domain ID scelto e configurato all'interno del codice sorgente C++ dei nodi DDS. Fatto ciò, il monitor rileverà automaticamente i nodi e inizierà a tracciarne le statistiche.
+
+    Attivazione via Codice: Si noti che i parametri profilati dal DDS Monitor non vengono esposti di default dai nodi. Vengono esplicitamente attivati via codice nel sorgente dei Publisher/Subscriber, modificando opportunamente le policy di QoS (Quality of Service) per consentire l'esportazione delle metriche senza sovraccaricare inutilmente l'IPC di base.
+📂 Archiviazione Automatica degli Output (output/traces/)
+
+Al termine di ogni singola simulazione, gli script creano automaticamente una cartella dedicata all'interno di output/traces/.
+
+    Nomenclatura Timestamp: La cartella viene nominata dinamicamente unendo il nome dell'applicativo a un timestamp esatto (es. trace_results_app10c_20260426_190000).
+
+    Contenuto: Tutti i file generati durante la run vengono isolati in questa directory, tra cui il dump grezzo del kernel (trace.dat), il log testuale (trace_output.txt), le metriche calcolate dall'analizzatore C++ (risultati_finali.txt) e i file .csv generati per alimentare i grafici del monitor Python.
+
+Questo approccio garantisce che ogni test sia perfettamente documentato, riproducibile e pronto per l'estrazione delle metriche finali.
