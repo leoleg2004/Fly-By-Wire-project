@@ -109,7 +109,7 @@ else
 fi
 
 MONITOR_SCRIPT_ABS="$PROJECT_ROOT/src/tools/monitor.py"
-THREAD_ANALYSIS_CPP="$SCRIPT_DIR/thread_analysis.cpp"
+PARSER_SRC="$PROJECT_ROOT/src/tools/thread_analysis.cpp"
 
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 OUTPUT_DIR="$PROJECT_ROOT/bin/Test/trace_marker_dds_${TRACE_NAME}_${TIMESTAMP}"
@@ -140,10 +140,10 @@ trace-cmd report "$OUTPUT_DIR/trace.dat" > "$OUTPUT_DIR/trace_output.txt"
 # --- 6. Compila thread_analysis -----------------------------------------------
 echo "[3/6] Compilazione analizzatore C++..."
 PARSER_EXE="$OUTPUT_DIR/thread_analysis"
-if [ -f "$THREAD_ANALYSIS_CPP" ]; then
-    g++ -O2 -std=c++17 "$THREAD_ANALYSIS_CPP" -o "$PARSER_EXE"
+if [ -f "$PARSER_SRC" ]; then
+    g++ -O2 -std=c++17 "$PARSER_SRC" -o "$PARSER_EXE"
 else
-    echo "ATTENZIONE: $THREAD_ANALYSIS_CPP non trovato!"
+    echo "ATTENZIONE: $PARSER_SRC non trovato!"
     PARSER_EXE=""
 fi
 

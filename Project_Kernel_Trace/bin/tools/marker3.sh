@@ -28,7 +28,7 @@ find_src() {
 }
 
 SRC_FILE_ABS=$(find_src "$APP_NAME")
-PARSER_SRC="$SCRIPT_DIR/thread_analysis.cpp"
+PARSER_SRC="$PROJECT_ROOT/src/tools/thread_analysis.cpp"
 PARSER_EXE="$OUTPUT_DIR/thread_analysis"
 
 echo "[3/4] Compilazione analizzatore C++..."

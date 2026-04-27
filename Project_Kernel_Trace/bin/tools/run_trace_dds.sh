@@ -56,7 +56,7 @@ fi
 
 SRC_FILE_ABS="$SRC_FILE"
 MONITOR_SCRIPT_ABS="$PROJECT_ROOT/src/tools/monitor.py"
-PARSER_SRC="$SCRIPT_DIR/thread_analysis.cpp"
+PARSER_SRC="$PROJECT_ROOT/src/tools/thread_analysis.cpp"
 
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 OUTPUT_DIR="$PROJECT_ROOT/bin/Test/trace_results_dds_${APP_NAME}_${TIMESTAMP}"
