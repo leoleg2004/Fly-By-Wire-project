@@ -1,0 +1,24 @@
+
+----------------------------------------------------------
+ TASK: ImageSender (PID: 62070)
+----------------------------------------------------------
+ [Esecuzione] WCET :     10.115 ms  |  ACET:      7.753 ms
+ [T.Risposta] WCRT :     10.088 ms
+ [Periodo]    Mis. :    199.994 ms  |  Jitter:    0.036 ms
+ [Parametri]  Periodo:  200.000 ms  |  Deadline:  200.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  189.912 ms
+ [Stati]      Sleep  :       21      |  Preempt:        1     |  Run n.: 23
+ [Globale]    Util%  :    4.053 %    |  Gaps   :       22 (194.397 ms max)
+
+----------------------------------------------------------
+ TASK: ImageSubscriber (PID: 62129)
+----------------------------------------------------------
+ [Esecuzione] WCET :    930.551 ms  |  ACET:    901.434 ms
+ [T.Risposta] WCRT :    930.618 ms
+ [Periodo]    Mis. :    908.368 ms  |  Jitter:   18.839 ms
+ [Parametri]  Periodo:  908.368 ms  |  Deadline:  908.368 ms
+ [Scadenze]   Miss   :        1      |  Slack Peggiore:  -22.250 ms
+ [Stati]      Sleep  :        5      |  Preempt:      184     |  Run n.: 191
+ [Globale]    Util%  :  118.936 %    |  Gaps   :      189 (0.148 ms max)
+
+[+] Dati esportati su timeline.csv
