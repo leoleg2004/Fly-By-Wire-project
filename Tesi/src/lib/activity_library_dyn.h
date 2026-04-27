@@ -7,11 +7,11 @@
 typedef struct activity_parameters {
     char name[15];
     int period;
-    int alternate_period;  
+    int alternate_period;  //periodo nuovo a run time
     int parameter;
     long int deadline;
-    long int alternate_deadline; 
-    int alternate_core;    // <--- AGGIUNTO: Il core su cui saltare
+    long int alternate_deadline; //deadline nuova a run-time
+    int alternate_core;    //core sui si vuole migrare
     void (*function)(int); 
 } t_activity_par;
 

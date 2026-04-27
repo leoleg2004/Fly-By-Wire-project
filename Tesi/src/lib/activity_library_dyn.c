@@ -82,9 +82,9 @@ void *PeriodicTaskDyn(void *ptr) {
       printf("%s:             period                  = %d millisecs\n", activity.name, activity.period);
       printf("%s:             exec_next_release_time  = %ld millisecs\n\n", activity.name, exec_next_release_time);
 
-      // ========================================================
-      // LOGICA DI INVERSIONE A 5 ESECUZIONI E CAMBIO CORE
-      // ========================================================
+     
+      // logica di cambio priorità a run-time e cambio di core 
+     //5 è scelto a caso al momento di potrebbe mettere anche dopo una possibile deadline miss
       if (execution_count == 5) {
           printf("\n==========================================================\n");
           printf(">> [%s] 5 ESECUZIONI RAGGIUNTE INVERSIONE IN CORSO...\n", activity.name);
@@ -96,7 +96,7 @@ void *PeriodicTaskDyn(void *ptr) {
           activity.period = activity.alternate_period;
           activity.deadline = activity.alternate_deadline; 
           
-          // 2. Cambio Priorità
+          // 2. Cambio Priorità e ricalcolo con rm la priorità
           struct sched_param sp;
           sp.sched_priority = 99 - (activity.period / 10);
           if (sp.sched_priority < 1) sp.sched_priority = 1;
@@ -106,12 +106,12 @@ void *PeriodicTaskDyn(void *ptr) {
               perror("Errore nell'aggiornamento della priorita");
           }
           
-          // 3. CAMBIO CORE (MIGRAZIONE)
+          // 3. CAMBIO CORE 
           cpu_set_t cpuset;
           CPU_ZERO(&cpuset);
           CPU_SET(activity.alternate_core, &cpuset); // Imposta il nuovo core
           
-          // --- MARKER INIZIO MIGRAZIONE CORE ---
+          // MARKER INIZIO CAMBIO CORE 
           snprintf(marker, sizeof(marker), "CORE_MIGRATION_START_%s_TO_%d", activity.name, activity.alternate_core);
           write_trace_marker(marker);
 
@@ -119,11 +119,11 @@ void *PeriodicTaskDyn(void *ptr) {
               perror("Errore nell'aggiornamento del core (Affinity)");
           }
 
-          // --- MARKER FINE MIGRAZIONE CORE ---
+          //  MARKER FINE MIGRAZIONE CORE 
           snprintf(marker, sizeof(marker), "CORE_MIGRATION_END_%s_TO_%d", activity.name, activity.alternate_core);
           write_trace_marker(marker);
 
-          // Log dei risultati
+          
           printf(">> [%s] Nuovo Periodo: %d ms | Nuova Priorita: %d | Migrato su Core: %d\n", 
                  activity.name, activity.period, sp.sched_priority, activity.alternate_core);
           

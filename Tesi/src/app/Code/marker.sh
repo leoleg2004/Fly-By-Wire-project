@@ -15,7 +15,7 @@ fi
 APP_NAME=$(basename "$EXECUTABLE")
 
 # =========================================================================
-# SOLUZIONE DEL PROFESSORE + ESTRAZIONE DEI THREAD DDS (TID)
+# ESTRAZIONE DEI THREAD DDS (TID)
 # =========================================================================
 PIDS_1=$(pidof "$APP_NAME")
 if [ -z "$PIDS_1" ]; then
@@ -74,7 +74,7 @@ else
 fi
 # =========================================================================
 
-# Troviamo il file sorgente .c o .cpp da dare in pasto all'analizzatore!
+# Troviamo il file sorgente .c o .cpp da dare in analisi
 SRC_FILE="sorgenti/${APP_NAME}.c"
 if [ ! -f "$SRC_FILE" ]; then
     SRC_FILE="sorgenti/${APP_NAME}_main.c"
@@ -178,7 +178,7 @@ echo "========================================================="
 echo "Tracciamento completato! Dati in: $OUTPUT_DIR"
 
 # =========================================================================
-# FASE 6: AVVIO DI KERNELSHARK
+# FASE 6: AVVIO DI KERNELSHARK in modo automatico
 # =========================================================================
 echo ""
 echo "[6/6] Avvio KernelShark..."
