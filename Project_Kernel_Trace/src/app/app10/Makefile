@@ -8,7 +8,7 @@ CORE_HDR = -I$(PROJECT_ROOT)/src/lib/lib/activity/include -I$(PROJECT_ROOT)/src/
 MSG_HDR = $(PROJECT_ROOT)/src/lib/generated_msg/include
 
 CFLAGS = -Wall -O2 -I.  $(CORE_HDR) -I$(MSG_HDR)
-LDFLAGS = -L$(LIB_DIR) -L$(PROJECT_ROOT)/bin/msg/lib -lActivity_library -lpthread -lm -lrt
+LDFLAGS = -Wl,-rpath,$(LIB_DIR) -Wl,-rpath,$(MSG_LIB_DIR) -L$(LIB_DIR) -L$(PROJECT_ROOT)/bin/msg/lib -lActivity_library -lpthread -lm -lrt
 
 TARGET = $(BIN_DIR)/app10
 LIBS_DEPS = $(LIB_DIR)/libActivity_library.a $(PROJECT_ROOT)/bin/msg/lib/libdds_geometry_msgs.a
