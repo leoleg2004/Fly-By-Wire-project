@@ -12,7 +12,7 @@ IMG_HDR = -I$(PROJECT_ROOT)/src/lib/image_lib/sender/include -I$(PROJECT_ROOT)/s
 
 CXXFLAGS = -Wall -O2 -std=c++11 -I. $(CORE_HDR) $(DDS_HDR) -I$(MSG_HDR) $(IMG_HDR) -I/usr/local/include $(shell pkg-config --cflags opencv4)
 MSG_LIBS = -ldds_geometry_msgs -ldds_nav_msgs -ldds_rover_msgs -ldds_sensor_msgs -ldds_std_msgs -ldds_tf2_msgs
-LDFLAGS = -L$(LIB_DIR) -L$(MSG_LIB_DIR) -lActivity_library -ldds_communication -limage_subscriber $(MSG_LIBS) -lpthread -lrt -L/usr/local/lib -lfastrtps -lfastcdr $(shell pkg-config --libs opencv4)
+LDFLAGS = -L$(LIB_DIR) -L$(MSG_LIB_DIR) -limage_subscriber -ldds_communication -lActivity_library $(MSG_LIBS) -lpthread -lrt -L/usr/local/lib -lfastrtps -lfastcdr $(shell pkg-config --libs opencv4)
 
 TARGET = $(BIN_DIR)/ImageSubscriber
 LIBS_DEPS = $(LIB_DIR)/libActivity_library.a $(MSG_LIB_DIR)/libdds_communication.a $(MSG_LIB_DIR)/libimage_subscriber.a $(wildcard $(MSG_LIB_DIR)/libdds_*.a)

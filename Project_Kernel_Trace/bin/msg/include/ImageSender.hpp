@@ -123,7 +123,7 @@ private:
   }
 };
 
-void control_function(void *instance, int parameter) {
+inline void control_function(void *instance, int parameter) {
   ImageSender *class_instance = (ImageSender *)instance;
   char marker[64];
 

@@ -83,8 +83,8 @@ private:
   t_activity_par activity_parameters;
 };
 
-int counter = 0;
-void control_function(void *instance, int parameter) {
+inline int counter = 0;
+inline void control_function(void *instance, int parameter) {
   char marker[64];
 
   snprintf(marker, sizeof(marker), "FUNCTION_START_receive_image");
