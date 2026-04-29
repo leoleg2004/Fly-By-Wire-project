@@ -2,9 +2,9 @@
  * Listener.cpp
  */
 
-#include "../../lib/communication_library/Listener.hpp"
-#include "../../lib/activity_library.h"
-#include "../../lib/trace_marker.h"
+#include "Listener.hpp"
+#include "activity_library.h"
+#include "trace_marker.h"
 
 #include <cstdint>
 #include <iostream>

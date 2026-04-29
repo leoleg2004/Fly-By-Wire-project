@@ -1,6 +1,7 @@
 # Makefile coordinatore per src/app
 
-SUBDIRS = $(filter-out Makefile, $(shell ls -d */))
+# Only include subdirectories that have a Makefile (actual apps)
+SUBDIRS = $(shell for d in */; do if [ -f $$d/Makefile ]; then echo $$d; fi; done)
 
 all:
 	@for dir in $(SUBDIRS); do \

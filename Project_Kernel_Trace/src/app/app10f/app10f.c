@@ -10,10 +10,10 @@
 #include <string.h>
 #include <time.h>
 
-#include "../../lib/time_library.h"
-#include "../../lib/trace_marker.h"
+#include "time_library.h"
+#include "trace_marker.h"
 // Include the library header so we use ITS t_activity_par and PeriodicTask
-#include "../../lib/activity_library.h"
+#include "activity_library.h"
 
 #define handle_error(en, msg)                                                  \
   if (en != 0) {                                                               \

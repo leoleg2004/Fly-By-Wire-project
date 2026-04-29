@@ -1,39 +1,25 @@
-# Makefile per src/lib in Project_Kernel_Trace
+# Global Makefile for src/lib in Project_Kernel_Trace
 
-CC = gcc
-CXX = g++
-CFLAGS = -Wall -I. -fPIC -O2
-CXXFLAGS = -Wall -I. -fPIC -O2 
-BIN_DIR = ../../bin/lib
+.PHONY: all clean core dds_lib generated_msg image_lib
 
-# Tutti i .c e .cpp nella root di lib/ (tranne sottocartelle specifiche)
-SRC_C = $(wildcard *.c)
-SRC_CPP = $(wildcard *.cpp)
-OBJS = $(SRC_C:.c=.o) $(SRC_CPP:.cpp=.o)
+all: core dds_lib generated_msg image_lib
 
-# Oggetti per communication_library
-COM_SRC_C = $(wildcard communication_library/*.c)
-COM_SRC_CPP = $(wildcard communication_library/*.cpp)
-COM_OBJS = $(COM_SRC_C:.c=.o) $(COM_SRC_CPP:.cpp=.o)
+core:
+	$(MAKE) -C lib -f lib_makefile
 
-all: $(BIN_DIR)/libActivity_library.a $(BIN_DIR)/libcommunication_library.a
+dds_lib:
+	$(MAKE) -C dds_lib -f dds_lib_makefile
 
-$(BIN_DIR)/libActivity_library.a: $(OBJS)
-	@mkdir -p $(BIN_DIR)
-	ar rcs $@ $^
+generated_msg:
+	$(MAKE) -C generated_msg
 
-$(BIN_DIR)/libcommunication_library.a: $(COM_OBJS)
-	@mkdir -p $(BIN_DIR)
-	ar rcs $@ $^
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+image_lib:
+	$(MAKE) -C image_lib
 
 clean:
-	rm -f $(BIN_DIR)/lib*.a
-	rm -f *.o communication_library/*.o
+	$(MAKE) -C lib -f lib_makefile clean
+	$(MAKE) -C dds_lib -f dds_lib_makefile clean
+	$(MAKE) -C generated_msg clean
+	$(MAKE) -C image_lib clean
 
 .PHONY: all clean

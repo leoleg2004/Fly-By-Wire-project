@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../../lib/time_library.h"
-#include "../../lib/trace_marker.h"
+#include "time_library.h"
+#include "trace_marker.h"
 // Includiamo la libreria per usare la PeriodicTask e i suoi marker!
-#include "../../lib/activity_library.h"
+#include "activity_library.h"
 
 #define handle_error(en, msg)                                                  \
   if (en != 0) {                                                               \
