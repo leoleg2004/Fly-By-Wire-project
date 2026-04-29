@@ -1,62 +1,65 @@
 # ==========================================
 # 1. SPAZZATURA DI CMAKE E COMPILATORI
 # ==========================================
-# Ignora le cartelle CMakeFiles ovunque si trovino
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CMakeScripts/
+# Ignora le cartelle di output della compilazione (i file .o)
+**/output/
 
 # ==========================================
 # 2. OUTPUT DI COMPILAZIONE (BIN & LIB)
 # ==========================================
-# Ignora i file oggetto e le librerie in generale
+# Ignora file oggetto e librerie sparse
 *.o
 *.a
 *.so
 *.dylib
 *.out
 
-# Gestione delle cartelle bin/ e lib/
-# Per permettere eccezioni (es. libmsg.a), non dobbiamo ignorare la cartella stessa
-# ma il suo contenuto.
-**/bin/*
-**/lib/*
-build/*
-_deps/
-.raylib/
+# Ignora il contenuto delle cartelle di output reali, ma NON le cartelle stesse
+# Usiamo percorsi relativi alla radice per evitare di colpire src/lib/lib
+Project_Kernel_Trace/bin/*
+Project_Kernel_Trace/build/*
 
-# ECCEZIONI: File che vogliamo assolutamente su GitHub
-!**/bin/lib/
-!**/bin/lib/libmsg.a
-!**/bin/lib/libcommunication_library.a
-!**/bin/lib/libActivity_library.a
+# ECCEZIONI: Cosa vogliamo vedere nonostante siano in bin/
+# Permettiamo di vedere le cartelle ma ignoriamo i file al loro interno (tranne eccezioni)
+!Project_Kernel_Trace/bin/msg/
+!Project_Kernel_Trace/bin/lib/
+!Project_Kernel_Trace/bin/app/
 
-# Altre eccezioni per la cartella build/
-!build/FlightSim
-!build/MonitorApp
-!build/*.glb
-!build/*.wav
+# Eccezioni specifiche per file libreria (se vuoi tracciarli)
+!Project_Kernel_Trace/bin/lib/*.a
+!Project_Kernel_Trace/bin/msg/lib/*.a
+!Project_Kernel_Trace/bin/msg/lib/*.so
 
 # ==========================================
 # 3. PYTHON E AMBIENTI VIRTUALI
 # ==========================================
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
 venv/
 .venv/
 env/
 ambiente_isolato/
 
 # ==========================================
-# 4. IDE E CONFIGURAZIONI (Eclipse, PyDev, etc)
+# 4. IDE E CONFIGURAZIONI
 # ==========================================
 .project
 .cproject
 .pydevproject
 .settings/
 .metadata/
+.vscode/
+.idea/
+.history/
+
+# ==========================================
+# 5. SICUREZZA PER SORGENTI
+# ==========================================
+# Assicuriamoci che NIENTE dentro src venga mai ignorato
+!Project_Kernel_Trace/src/**
