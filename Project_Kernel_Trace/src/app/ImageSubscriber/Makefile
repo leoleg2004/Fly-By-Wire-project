@@ -1,30 +1,36 @@
 CXX = g++
 PROJECT_ROOT = $(abspath ../../../)
-# Aggiunto supporto OpenCV
-OPENCV_FLAGS = $(shell pkg-config --cflags --libs opencv4)
+BIN_DIR = $(PROJECT_ROOT)/bin/app
+LIB_DIR = $(PROJECT_ROOT)/bin/lib
+MSG_LIB_DIR = $(PROJECT_ROOT)/bin/msg/lib
 
-CXXFLAGS = -Wall -O2 -std=c++11 \
-           -I. \
-           -I$(PROJECT_ROOT)/src/lib \
-           -I$(PROJECT_ROOT)/src/lib/communication_library \
-           -I$(PROJECT_ROOT)/src/msg/generated \
-           -I$(PROJECT_ROOT)/src/msg/generated \
-           -I/usr/local/include \
-           $(shell pkg-config --cflags opencv4)
+# Folders for headers
+CORE_HDR = -I$(PROJECT_ROOT)/src/lib/lib/activity/include -I$(PROJECT_ROOT)/src/lib/lib/math/include -I$(PROJECT_ROOT)/src/lib/lib/matrix/include -I$(PROJECT_ROOT)/src/lib/lib/print/include -I$(PROJECT_ROOT)/src/lib/lib/time/include -I$(PROJECT_ROOT)/src/lib/lib/trace/include
+DDS_HDR = -I$(PROJECT_ROOT)/src/lib/dds_lib/broadcastner/include -I$(PROJECT_ROOT)/src/lib/dds_lib/listener/include
+MSG_HDR = $(PROJECT_ROOT)/src/lib/generated_msg/include
+IMG_HDR = -I$(PROJECT_ROOT)/src/lib/image_lib/sender/include -I$(PROJECT_ROOT)/src/lib/image_lib/subscriber/include -I$(PROJECT_ROOT)/src/lib/image_lib/listener/include
 
-LDFLAGS = -L$(PROJECT_ROOT)/bin/lib \
-          -lmsg -lActivity_library -lcommunication_library \
-          -lpthread -lrt \
-          -L/usr/local/lib -lfastrtps -lfastcdr \
-          $(shell pkg-config --libs opencv4)
+CXXFLAGS = -Wall -O2 -std=c++11 -I. $(CORE_HDR) $(DDS_HDR) -I$(MSG_HDR) $(IMG_HDR) -I/usr/local/include $(shell pkg-config --cflags opencv4)
+MSG_LIBS = -ldds_geometry_msgs -ldds_nav_msgs -ldds_rover_msgs -ldds_sensor_msgs -ldds_std_msgs -ldds_tf2_msgs
+LDFLAGS = -L$(LIB_DIR) -L$(MSG_LIB_DIR) -lActivity_library -ldds_communication -limage_subscriber $(MSG_LIBS) -lpthread -lrt -L/usr/local/lib -lfastrtps -lfastcdr $(shell pkg-config --libs opencv4)
 
-TARGET = $(PROJECT_ROOT)/bin/app/ImageSubscriber
+TARGET = $(BIN_DIR)/ImageSubscriber
+LIBS_DEPS = $(LIB_DIR)/libActivity_library.a $(MSG_LIB_DIR)/libdds_communication.a $(MSG_LIB_DIR)/libimage_subscriber.a $(wildcard $(MSG_LIB_DIR)/libdds_*.a)
+
+# Automatically find all local and lib headers
+HDR_DEPS = $(wildcard *.h) $(wildcard *.hpp) \
+           $(wildcard $(PROJECT_ROOT)/src/lib/lib/*/include/*.h) \
+           $(wildcard $(PROJECT_ROOT)/src/lib/dds_lib/*/include/*.hpp) \
+           $(wildcard $(MSG_HDR)/*.h) \
+           $(wildcard $(PROJECT_ROOT)/src/lib/image_lib/*/include/*.hpp)
 
 all: $(TARGET)
 
-$(TARGET): ImageSubscriber.cpp
-	@mkdir -p $(PROJECT_ROOT)/bin/app
-	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
+$(TARGET): main.cpp $(LIBS_DEPS) $(HDR_DEPS)
+	@mkdir -p $(BIN_DIR)
+	@echo ">>> Building ImageSubscriber..."
+	$(CXX) $(CXXFLAGS) $< -o $@ $(LDFLAGS)
+	@echo "Done."
 
 clean:
 	rm -f $(TARGET)

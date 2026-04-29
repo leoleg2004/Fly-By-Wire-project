@@ -2,9 +2,9 @@
  * Broadcastner.cpp
  */
 
-#include "../../lib/communication_library/Broadcastner.hpp"
-#include "../../lib/activity_library.h"
-#include "../../lib/trace_marker.h"
+#include "Broadcastner.hpp"
+#include "activity_library.h"
+#include "trace_marker.h"
 
 #include <cstdint>
 #include <cstring>

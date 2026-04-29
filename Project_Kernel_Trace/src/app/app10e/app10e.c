@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "../../lib/time_library.h"
-#include "../../lib/trace_marker.h"
+#include "time_library.h"
+#include "trace_marker.h"
 
 #define handle_error(en, msg)                                                  \
   if (en != 0) {                                                               \

@@ -1,26 +1,23 @@
 # Project_Kernel_Trace - Unified Build System
 
-# Default core count for parallel build if not specified
 JOBS ?= 4
 
-.PHONY: all libs apps clean rebuild help
+.PHONY: all msg libs apps clean rebuild help
 
 # Build everything
-all: libs apps
+all: msg libs apps
 	@echo "========================================================="
 	@echo " Build complete! Binaries are in bin/app/"
 	@echo "========================================================="
 
-# Reconstruct libmsg.a from DDS components
-libmsg:
-	@mkdir -p bin/lib/tmp_ext
-	@echo ">>> Reconstructing libmsg.a from DDS objects in generated/DDS..."
-	@cd bin/lib/tmp_ext && for f in $(CURDIR)/src/msg/generated/DDS/bin/messages/lib/*.a; do ar x $$f; done && ar rcs ../libmsg.a *.o
-	@rm -rf bin/lib/tmp_ext
+# Generate sources from IDLs
+msg:
+	@echo ">>> Generating Message Sources from IDLs..."
+	$(MAKE) -C src/msg
 
-# Build libraries first (mandatory dependency for apps)
-libs: libmsg
-	@echo ">>> Building Core Libraries..."
+# Build libraries (depends on msg)
+libs: msg
+	@echo ">>> Building Core and DDS Libraries..."
 	$(MAKE) -C src/lib
 
 # Build applications (depends on libs)
@@ -31,9 +28,9 @@ apps: libs
 # Clean all build artifacts
 clean:
 	@echo ">>> Cleaning everything..."
+	$(MAKE) -C src/msg clean
 	$(MAKE) -C src/lib clean
 	$(MAKE) -C src/app clean
-	rm -f bin/lib/libmsg.a
 	@echo "Done."
 
 # Full rebuild
@@ -42,7 +39,6 @@ rebuild: clean all
 # Help message
 help:
 	@echo "Usage:"
-	@echo "  make          - Build everything (sequential libraries, then apps)"
-	@echo "  make -j4      - Build everything in parallel where possible"
+	@echo "  make          - Build everything"
 	@echo "  make clean    - Remove all binaries and object files"
 	@echo "  make rebuild  - Clean and then build everything"

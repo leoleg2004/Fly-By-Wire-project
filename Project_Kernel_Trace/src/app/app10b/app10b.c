@@ -10,10 +10,10 @@
 #include <math.h>
 #include <stdbool.h>
 
-#include "../../lib/time_library.h"
-#include "../../lib/activity_library.h"
+#include "time_library.h"
+#include "activity_library.h"
 // Manteniamo questa libreria solo per init_tracing() e close_tracing()
-#include "../../lib/trace_marker.h"
+#include "trace_marker.h"
 
 /*
  * Function that implements the activity

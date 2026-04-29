@@ -9,9 +9,9 @@
 #include <math.h>
 #include <stdbool.h>
 
-#include "../../lib/time_library.h"
-#include "../../lib/activity_library.h"
-#include "../../lib/trace_marker.h"
+#include "time_library.h"
+#include "activity_library.h"
+#include "trace_marker.h"
 
 
 
