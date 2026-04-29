@@ -1,0 +1,21 @@
+DIRS = activity math matrix print time trace
+PROJECT_ROOT = $(abspath ../../../)
+BIN_DIR = $(PROJECT_ROOT)/bin/lib
+TARGET = $(BIN_DIR)/libActivity_library.a
+
+all: subdirs $(TARGET)
+
+subdirs:
+	@for dir in $(DIRS); do $(MAKE) -C $$dir; done
+
+$(TARGET): subdirs
+	@mkdir -p $(BIN_DIR)
+	@echo ">>> Creating Combined Library..."
+	@rm -f $@
+	ar rcs $@ $(wildcard */src/output/*.o)
+
+clean:
+	@for dir in $(DIRS); do $(MAKE) -C $$dir clean; done
+	rm -f $(TARGET)
+
+.PHONY: all subdirs clean
