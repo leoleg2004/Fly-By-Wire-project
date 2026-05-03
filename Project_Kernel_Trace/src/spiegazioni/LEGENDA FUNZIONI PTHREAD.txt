@@ -1,0 +1,85 @@
+================================================================================
+                LEGENDA FUNZIONI PTHREAD - SCHEDULAZIONE RM
+================================================================================
+
+1. pthread_attr_init
+--------------------------------------------------------------------------------
+SCOPO:      Inizializza un oggetto "attributo" (pthread_attr_t) con i valori 
+            di base del sistema.
+USO:        L'ho usata per preparare attr1 e attr2 come "fogli bianchi" prima di 
+            configurarli per la Rate Monotonic.
+
+2. pthread_attr_setinheritsched
+--------------------------------------------------------------------------------
+SCOPO:      Decide se il nuovo thread deve ereditare le regole di scheduling 
+            dal processo padre oppure usare regole esplicite.
+USO:        Passandogli PTHREAD_EXPLICIT_SCHED, ho impedito ai thread 
+            di ereditare lo scheduling standard (non real-time) del main.
+
+3. pthread_attr_setschedpolicy
+--------------------------------------------------------------------------------
+SCOPO:      Imposta l'algoritmo (policy) che il sistema operativo userà per 
+            gestire il tempo di CPU del thread.
+USO:        Ho impostato SCHED_FIFO per trasformare i task in processi 
+            Real-Time, requisito base per far funzionare la Rate Monotonic.
+
+4. pthread_attr_setschedparam
+--------------------------------------------------------------------------------
+SCOPO:      Permette di inserire i parametri specifici (come il livello di 
+            priorità) all'interno dell'oggetto attributo.
+USO:        L'ho usata per "iniettare" la priorità calcolata in base al 
+            periodo (es. param1.sched_priority) dentro attr1 e attr2.
+
+5. pthread_attr_setaffinity_np
+--------------------------------------------------------------------------------
+SCOPO:      Lega in modo indissolubile (pin) l'esecuzione del thread a una 
+            lista specifica di processori logici (Core).
+USO:        Passandogli le variabili cpuset1 o cpuset2, ho costretto il 
+            sistema a far girare i thread esattamente sul Core 0 o sul Core 1.
+            (Nota: _np significa Non-Portable, è specifica per Linux).
+
+6. pthread_create
+--------------------------------------------------------------------------------
+SCOPO:      Istanzia fisicamente il thread nel sistema operativo e lo avvia.
+USO:        Le ho passato l'ID del thread, i miei attributi 
+            personalizzati (attr1/attr2), la funzione PeriodicTask e i dati 
+            del task.
+
+7. pthread_attr_destroy
+--------------------------------------------------------------------------------
+SCOPO:      Elimina l'oggetto attributo per evitare sprechi di memoria.
+USO:        L'ho chiamata subito dopo aver creato i thread. Una volta che i 
+            thread sono nati, il "foglio di configurazione" non mi serve più.
+
+8. pthread_join
+--------------------------------------------------------------------------------
+SCOPO:      Mette in pausa il thread chiamante (il main) finché il thread 
+            bersaglio non ha finito il suo lavoro.
+USO:        L'ho inserita alla fine del main per evitare che il programma si chiuda 
+            all'istante "uccidendo" i miei due task periodici.
+
+9. pthread_exit
+--------------------------------------------------------------------------------
+SCOPO:      Termina in modo pulito e sicuro il thread da cui viene chiamata.
+USO:        L'ho inserita come ultimissima istruzione di PeriodicTask per garantire 
+            una chiusura sicura nel caso in cui il loop infinito dovesse interrompersi.
+
+
+10. pthread_setname_np(thread1, "Activity_1");
+--------------------------------------------------------------------------------
+SCOPO:     da avere il nome activity all'interno di kernel linux invece di vedere i nome dei tre task(main, e i due thread)
+USO:        l'ho inserita dopo la creazione del thread per assegnarli il nome ActivityN
+
+
+
+================================================================================
+           COMANDI PER CONTROLLARE SU QUALE CORE GIRANO I THREAD
+================================================================================
+
+Li ho usati nel terminale mentre il programma era in esecuzione per verificare 
+effettivamente l'assegnazione dei core (colonna PSR):
+
+ps -T -o pid,tid,psr,comm -C app09b
+ps -T -o pid,tid,psr,comm -C app09c
+
+
