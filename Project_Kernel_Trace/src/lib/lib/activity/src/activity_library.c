@@ -29,7 +29,12 @@ void *PeriodicTask(void *ptr) {
     exec_start_time = time_current_millisecs();
 
     // Chiamata con entrambi i parametri per compatibilità
-    activity.function(activity.instance, activity.parameter);
+    if (activity.function == (void (*)(void *, int))activity_load) {
+      void (*func_single)(int) = (void (*)(int))activity.function;
+      func_single(activity.parameter);
+    } else {
+      activity.function(activity.instance, activity.parameter);
+    }
 
     exec_end_time = time_current_millisecs();
 

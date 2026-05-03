@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
     if (src_file.is_open()) {
         std::string src_line;
         std::regex name_re(
-            R"DELIM(sprintf\s*\(\s*([a-zA-Z0-9_\[\]]+)\.name\s*,\s*"([^"]+)"\s*\))DELIM");
+            R"DELIM(s(?:n)?printf\s*\(\s*([a-zA-Z0-9_\[\]]+)\.name\s*,\s*(?:(?:\d+|sizeof\s*\([^)]+\)|[a-zA-Z0-9_]+)\s*,\s*)?"([^"]+)"\s*\))DELIM");
         std::regex period_re(
             R"DELIM(([a-zA-Z0-9_\[\]]+)\.period\s*=\s*(\d+))DELIM");
         std::regex deadline_re(

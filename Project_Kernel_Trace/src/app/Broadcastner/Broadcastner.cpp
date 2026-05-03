@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
 
   cpu_set_t cpuset;
   CPU_ZERO(&cpuset);
-  CPU_SET(0, &cpuset);
+  CPU_SET(1, &cpuset);
 
   pthread_t thread1;
   pthread_attr_t attr1;
@@ -87,6 +87,11 @@ int main(int argc, char **argv) {
   pthread_setname_np(thread1, "DDS_Publish");
   pthread_attr_destroy(&attr1);
 
+
+  cpu_set_t cpuset2;
+  CPU_ZERO(&cpuset2);
+  CPU_SET(0, &cpuset2);
+
   pthread_t thread2;
   pthread_attr_t attr2;
   struct sched_param param2;
@@ -94,7 +99,7 @@ int main(int argc, char **argv) {
   pthread_attr_init(&attr2);
   pthread_attr_setinheritsched(&attr2, PTHREAD_EXPLICIT_SCHED);
   pthread_attr_setschedpolicy(&attr2, SCHED_FIFO);
-  pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t), &cpuset);
+  pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t), &cpuset2);
 
   t_activity_par activity_2;
   snprintf(activity_2.name, sizeof(activity_2.name), "Activity_1");
