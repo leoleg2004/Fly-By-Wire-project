@@ -70,6 +70,7 @@ echo "========================================================="
 mkdir -p "$OUTPUT_DIR"
 
 echo "[1/5] Avvio simulatore e registrazione trace-cmd..."
+sudo killall -9 "$APP_NAME" 2>/dev/null
 sudo trace-cmd record -e sched:sched_switch -e sched:sched_wakeup -o "$OUTPUT_DIR/trace.dat" "$EXECUTABLE"
 
 if [ ! -f "$OUTPUT_DIR/trace.dat" ]; then

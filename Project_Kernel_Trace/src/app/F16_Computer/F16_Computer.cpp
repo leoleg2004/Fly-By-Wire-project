@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_long_par activity_pitch_a;
   sprintf(activity_pitch_a.name, "PITCH_A");
   activity_pitch_a.period = 10;
-  activity_pitch_a.parameter = 1;
+  activity_pitch_a.parameter = 2;
   activity_pitch_a.deadline = 10;
 
   param_pitch_a.sched_priority = 99 - (activity_pitch_a.period / 10);
