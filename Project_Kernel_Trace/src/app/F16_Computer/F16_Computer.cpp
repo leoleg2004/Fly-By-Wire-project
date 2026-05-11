@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_long_par activity_pitch_a;
   sprintf(activity_pitch_a.name, "PITCH_A");
   activity_pitch_a.period = 10;
-  activity_pitch_a.parameter = 2;
+  activity_pitch_a.parameter = 1;
   activity_pitch_a.deadline = 10;
 
   param_pitch_a.sched_priority = 99 - (activity_pitch_a.period / 10);
@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_long_par activity_pitch_b;
   sprintf(activity_pitch_b.name, "PITCH_B");
   activity_pitch_b.period = 10;
-  activity_pitch_b.parameter = 2;
+  activity_pitch_b.parameter = 1;
   activity_pitch_b.deadline = 10;
 
   param_pitch_b.sched_priority = 99 - (activity_pitch_b.period / 10);
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_long_par activity_pitch_c;
   sprintf(activity_pitch_c.name, "PITCH_C");
   activity_pitch_c.period = 10;
-  activity_pitch_c.parameter = 2;
+  activity_pitch_c.parameter = 1;
   activity_pitch_c.deadline = 10;
 
   param_pitch_c.sched_priority = 99 - (activity_pitch_c.period / 10);
@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_lat_par activity_roll_a;
   sprintf(activity_roll_a.name, "ROLL_A");
   activity_roll_a.period = 10;
-  activity_roll_a.parameter = 2;
+  activity_roll_a.parameter = 1;
   activity_roll_a.deadline = 10;
 
   param_roll_a.sched_priority = 99 - (activity_roll_a.period / 10);
@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_lat_par activity_roll_b;
   sprintf(activity_roll_b.name, "ROLL_B");
   activity_roll_b.period = 10;
-  activity_roll_b.parameter = 2;
+  activity_roll_b.parameter = 1;
   activity_roll_b.deadline = 10;
 
   param_roll_b.sched_priority = 99 - (activity_roll_b.period / 10);
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_lat_par activity_roll_c;
   sprintf(activity_roll_c.name, "ROLL_C");
   activity_roll_c.period = 10;
-  activity_roll_c.parameter = 2;
+  activity_roll_c.parameter = 1;
   activity_roll_c.deadline = 10;
 
   param_roll_c.sched_priority = 99 - (activity_roll_c.period / 10);
@@ -189,7 +189,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_alt_par activity_alt_a;
   sprintf(activity_alt_a.name, "ALT_A");
   activity_alt_a.period = 20;
-  activity_alt_a.parameter = 3;
+  activity_alt_a.parameter = 1;
   activity_alt_a.deadline = 20;
 
   param_alt_a.sched_priority = 99 - (activity_alt_a.period / 10);
@@ -212,7 +212,7 @@ int main(int argc, char *argv[]) {
   t_f16_fcs_alt_par activity_alt_b;
   sprintf(activity_alt_b.name, "ALT_B");
   activity_alt_b.period = 20;
-  activity_alt_b.parameter = 3;
+  activity_alt_b.parameter = 1;
   activity_alt_b.deadline = 20;
 
   param_alt_b.sched_priority = 99 - (activity_alt_b.period / 10);
@@ -235,7 +235,7 @@ int main(int argc, char *argv[]) {
   t_f16_nav_gps_par activity_gps_1;
   sprintf(activity_gps_1.name, "GPS_1");
   activity_gps_1.period = 50;
-  activity_gps_1.parameter = 5;
+  activity_gps_1.parameter = 1;
   activity_gps_1.deadline = 50;
 
   param_gps_1.sched_priority = 99 - (activity_gps_1.period / 10);
@@ -258,7 +258,7 @@ int main(int argc, char *argv[]) {
   t_f16_nav_gps_par activity_gps_2;
   sprintf(activity_gps_2.name, "GPS_2");
   activity_gps_2.period = 50;
-  activity_gps_2.parameter = 5;
+  activity_gps_2.parameter = 1;
   activity_gps_2.deadline = 50;
 
   param_gps_2.sched_priority = 99 - (activity_gps_2.period / 10);
@@ -281,7 +281,7 @@ int main(int argc, char *argv[]) {
   t_f16_nav_ins_par activity_ins_1;
   sprintf(activity_ins_1.name, "INS_1");
   activity_ins_1.period = 10;
-  activity_ins_1.parameter = 4;
+  activity_ins_1.parameter = 1;
   activity_ins_1.deadline = 10;
 
   param_ins_1.sched_priority = 99 - (activity_ins_1.period / 10);
@@ -304,7 +304,7 @@ int main(int argc, char *argv[]) {
   t_f16_nav_ins_par activity_ins_2;
   sprintf(activity_ins_2.name, "INS_2");
   activity_ins_2.period = 10;
-  activity_ins_2.parameter = 4;
+  activity_ins_2.parameter = 1;
   activity_ins_2.deadline = 10;
 
   param_ins_2.sched_priority = 99 - (activity_ins_2.period / 10);
@@ -327,7 +327,7 @@ int main(int argc, char *argv[]) {
   t_f16_nav_ins_par activity_ins_3;
   sprintf(activity_ins_3.name, "INS_3");
   activity_ins_3.period = 10;
-  activity_ins_3.parameter = 4;
+  activity_ins_3.parameter = 1;
   activity_ins_3.deadline = 10;
 
   param_ins_3.sched_priority = 99 - (activity_ins_3.period / 10);
@@ -350,7 +350,7 @@ int main(int argc, char *argv[]) {
   t_f16_radar_air_par activity_radar_a;
   sprintf(activity_radar_a.name, "RADAR_A");
   activity_radar_a.period = 50;
-  activity_radar_a.parameter = 10;
+  activity_radar_a.parameter = 2;
   activity_radar_a.deadline = 50;
 
   param_radar_a.sched_priority = 99 - (activity_radar_a.period / 10);
@@ -373,7 +373,7 @@ int main(int argc, char *argv[]) {
   t_f16_radar_gnd_par activity_radar_g;
   sprintf(activity_radar_g.name, "RADAR_G");
   activity_radar_g.period = 100;
-  activity_radar_g.parameter = 15;
+  activity_radar_g.parameter = 5;
   activity_radar_g.deadline = 100;
 
   param_radar_g.sched_priority = 99 - (activity_radar_g.period / 10);
@@ -396,7 +396,7 @@ int main(int argc, char *argv[]) {
   t_f16_engine_fadec_par activity_fadec_a;
   sprintf(activity_fadec_a.name, "FADEC_A");
   activity_fadec_a.period = 10;
-  activity_fadec_a.parameter = 3;
+  activity_fadec_a.parameter = 1;
   activity_fadec_a.deadline = 10;
 
   param_fadec_a.sched_priority = 99 - (activity_fadec_a.period / 10);
@@ -419,7 +419,7 @@ int main(int argc, char *argv[]) {
   t_f16_engine_fadec_par activity_fadec_b;
   sprintf(activity_fadec_b.name, "FADEC_B");
   activity_fadec_b.period = 10;
-  activity_fadec_b.parameter = 3;
+  activity_fadec_b.parameter = 1;
   activity_fadec_b.deadline = 10;
 
   param_fadec_b.sched_priority = 99 - (activity_fadec_b.period / 10);
@@ -442,7 +442,7 @@ int main(int argc, char *argv[]) {
   t_f16_weapons_par activity_weapons;
   sprintf(activity_weapons.name, "WEAPONS");
   activity_weapons.period = 100;
-  activity_weapons.parameter = 2;
+  activity_weapons.parameter = 1;
   activity_weapons.deadline = 100;
 
   param_weapons.sched_priority = 99 - (activity_weapons.period / 10);
@@ -465,7 +465,7 @@ int main(int argc, char *argv[]) {
   t_f16_displays_par activity_hud;
   sprintf(activity_hud.name, "HUD");
   activity_hud.period = 30;
-  activity_hud.parameter = 8;
+  activity_hud.parameter = 2;
   activity_hud.deadline = 30;
 
   param_hud.sched_priority = 99 - (activity_hud.period / 10);
@@ -488,7 +488,7 @@ int main(int argc, char *argv[]) {
   t_f16_displays_par activity_mfd;
   sprintf(activity_mfd.name, "MFD");
   activity_mfd.period = 30;
-  activity_mfd.parameter = 8;
+  activity_mfd.parameter = 2;
   activity_mfd.deadline = 30;
 
   param_mfd.sched_priority = 99 - (activity_mfd.period / 10);

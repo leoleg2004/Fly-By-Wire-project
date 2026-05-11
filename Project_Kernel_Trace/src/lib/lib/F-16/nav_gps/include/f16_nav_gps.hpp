@@ -19,6 +19,7 @@ typedef struct f16_nav_gps_parameters {
 } t_f16_nav_gps_par;
 
 void *PeriodicTask_NAV_GPS(void *ptr);
+void f16_nav_gps_load(int parameter);
 
 #ifdef __cplusplus
 }

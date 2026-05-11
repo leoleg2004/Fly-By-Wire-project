@@ -19,6 +19,7 @@ typedef struct f16_fcs_long_parameters {
 } t_f16_fcs_long_par;
 
 void *PeriodicTask_FCS_LONG(void *ptr);
+void f16_fcs_long_load(int parameter);
 
 #ifdef __cplusplus
 }

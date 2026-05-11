@@ -19,6 +19,7 @@ typedef struct f16_weapons_parameters {
 } t_f16_weapons_par;
 
 void *PeriodicTask_WEAPONS(void *ptr);
+void f16_weapons_load(int parameter);
 
 #ifdef __cplusplus
 }

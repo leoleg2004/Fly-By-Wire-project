@@ -19,6 +19,7 @@ typedef struct f16_fcs_alt_parameters {
 } t_f16_fcs_alt_par;
 
 void *PeriodicTask_FCS_ALT(void *ptr);
+void f16_fcs_alt_load(int parameter);
 
 #ifdef __cplusplus
 }

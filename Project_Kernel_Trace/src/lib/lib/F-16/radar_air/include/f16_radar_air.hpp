@@ -19,6 +19,7 @@ typedef struct f16_radar_air_parameters {
 } t_f16_radar_air_par;
 
 void *PeriodicTask_RADAR_AIR(void *ptr);
+void f16_radar_air_load(int parameter);
 
 #ifdef __cplusplus
 }

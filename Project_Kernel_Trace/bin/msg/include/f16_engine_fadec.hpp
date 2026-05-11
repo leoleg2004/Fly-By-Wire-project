@@ -19,6 +19,7 @@ typedef struct f16_engine_fadec_parameters {
 } t_f16_engine_fadec_par;
 
 void *PeriodicTask_ENGINE_FADEC(void *ptr);
+void f16_engine_fadec_load(int parameter);
 
 #ifdef __cplusplus
 }

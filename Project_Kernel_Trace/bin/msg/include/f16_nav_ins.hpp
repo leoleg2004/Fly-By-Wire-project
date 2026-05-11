@@ -19,6 +19,7 @@ typedef struct f16_nav_ins_parameters {
 } t_f16_nav_ins_par;
 
 void *PeriodicTask_NAV_INS(void *ptr);
+void f16_nav_ins_load(int parameter);
 
 #ifdef __cplusplus
 }

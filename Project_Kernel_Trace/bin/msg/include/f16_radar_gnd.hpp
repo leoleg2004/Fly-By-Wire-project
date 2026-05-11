@@ -19,6 +19,7 @@ typedef struct f16_radar_gnd_parameters {
 } t_f16_radar_gnd_par;
 
 void *PeriodicTask_RADAR_GND(void *ptr);
+void f16_radar_gnd_load(int parameter);
 
 #ifdef __cplusplus
 }

@@ -19,6 +19,7 @@ typedef struct f16_displays_parameters {
 } t_f16_displays_par;
 
 void *PeriodicTask_DISPLAYS(void *ptr);
+void f16_displays_load(int parameter);
 
 #ifdef __cplusplus
 }

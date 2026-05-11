@@ -19,6 +19,7 @@ typedef struct f16_fcs_lat_parameters {
 } t_f16_fcs_lat_par;
 
 void *PeriodicTask_FCS_LAT(void *ptr);
+void f16_fcs_lat_load(int parameter);
 
 #ifdef __cplusplus
 }
