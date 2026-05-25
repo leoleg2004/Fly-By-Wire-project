@@ -1,7 +1,8 @@
-#!/bin/bash
-# run_trace.sh - Tracciamento per Project_Kernel_Trace (launch mode)
-# Funziona sia da terminale che dalla dashboard
+	#!/bin/bash
+	# run_trace.sh - Tracciamento per Project_Kernel_Trace (launch mode)
 
+
+	# Salviamo la cartella principale del progetto
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
@@ -12,6 +13,7 @@ else
     SUDO_CMD="sudo"
 fi
 
+# Funzione per risolvere alias dei nomi
 resolve_app_name() {
     case $1 in
         GeometryBroadcastner) echo "Broadcastner" ;;
@@ -20,6 +22,7 @@ resolve_app_name() {
     esac
 }
 
+# Chiediamo l'eseguibile (interattivo o da argomento)
 if [ "$#" -eq 0 ]; then
     read -p "Inserisci l'eseguibile da tracciare (es. app10g o Listener): " RAW_NAME
 else
@@ -28,6 +31,7 @@ fi
 
 EXECUTABLE_NAME=$(resolve_app_name "$RAW_NAME")
 
+	# Cerca l'eseguibile in bin/app/
 EXECUTABLE=$(find "$PROJECT_ROOT/bin/app" -type f -executable -name "$EXECUTABLE_NAME" | head -n 1)
 
 if [ -z "$EXECUTABLE" ]; then
@@ -38,7 +42,7 @@ if [ -z "$EXECUTABLE" ]; then
 fi
 
 APP_NAME=$(basename "$EXECUTABLE")
-
+# Troviamo il file sorgente per l'analisi
 find_src() {
     local name=$1
     local candidate
@@ -46,6 +50,7 @@ find_src() {
     if [ -n "$candidate" ]; then
         echo "$candidate"
     else
+    	# Cerca ovunque in src/
         find "$PROJECT_ROOT/src" \( -name "${name}.cpp" -o -name "${name}.c" \) 2>/dev/null | head -n 1
     fi
 }
