@@ -13,7 +13,7 @@ dds_lib:
 generated_msg:
 	$(MAKE) -C generated_msg
 
-image_lib:
+image_lib: generated_msg
 	$(MAKE) -C image_lib
 
 clean:

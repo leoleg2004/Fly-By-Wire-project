@@ -7,35 +7,28 @@ cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 CMakeScripts/
-# Ignora le cartelle di output della compilazione (i file .o)
+
+# Ignora le cartelle di output della compilazione (i file .o) e directory temporanee
 **/output/
+temp_gen_*/
 
 # ==========================================
 # 2. OUTPUT DI COMPILAZIONE (BIN & LIB)
 # ==========================================
-# Ignora file oggetto e librerie sparse
+# Ignora file oggetto, librerie sparse e marker di compilazione
 *.o
 *.a
 *.so
 *.dylib
 *.out
+*.done
 
-# Ignora il contenuto delle cartelle di output reali, ma NON le cartelle stesse
-# Usiamo percorsi relativi alla radice per evitare di colpire src/lib/lib
-Project_Kernel_Trace/bin/*
-Project_Kernel_Trace/build/*
-
-# ECCEZIONI: Cosa vogliamo vedere nonostante siano in bin/
-# Permettiamo di vedere le cartelle ma ignoriamo i file al loro interno (tranne eccezioni)
-!Project_Kernel_Trace/bin/msg/
-!Project_Kernel_Trace/bin/lib/
-!Project_Kernel_Trace/bin/app/
+# Ignora il contenuto della cartella bin tranne tools
+Project_Kernel_Trace/bin/**
 !Project_Kernel_Trace/bin/tools/
+!Project_Kernel_Trace/bin/tools/**
 
-# Eccezioni specifiche per file libreria (se vuoi tracciarli)
-!Project_Kernel_Trace/bin/lib/*.a
-!Project_Kernel_Trace/bin/msg/lib/*.a
-!Project_Kernel_Trace/bin/msg/lib/*.so
+Project_Kernel_Trace/build/**
 
 # ==========================================
 # 3. PYTHON E AMBIENTI VIRTUALI
@@ -58,9 +51,3 @@ ambiente_isolato/
 .vscode/
 .idea/
 .history/
-
-# ==========================================
-# 5. SICUREZZA PER SORGENTI
-# ==========================================
-# Assicuriamoci che NIENTE dentro src venga mai ignorato
-!Project_Kernel_Trace/src/**
