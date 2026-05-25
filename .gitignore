@@ -30,6 +30,7 @@ Project_Kernel_Trace/build/*
 !Project_Kernel_Trace/bin/msg/
 !Project_Kernel_Trace/bin/lib/
 !Project_Kernel_Trace/bin/app/
+!Project_Kernel_Trace/bin/tools/
 
 # Eccezioni specifiche per file libreria (se vuoi tracciarli)
 !Project_Kernel_Trace/bin/lib/*.a
