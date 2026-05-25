@@ -80,5 +80,5 @@ All'interno della cartella `Tesi` è disponibile il **eProsima Fast DDS Monitor*
 - **Middleware**: eProsima Fast DDS.
 - **Strumenti**: `trace-cmd`, `kernelshark`, `Python 3`.
 - **Linguaggio**: C++17 / C.
-- **Librerie Grafiche**: Raylib (per il simulatore F-16) e OpenCV (per il modulo immagini).
+- **Librerie Grafiche**: OpenCV (per il modulo immagini).
 
