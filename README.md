@@ -42,10 +42,10 @@ Definizioni IDL dei messaggi. Il Makefile integrato gestisce la generazione del 
 
 ---
 
-## 🛩️ Simulatore F-16 Non-Lineare (`SimulatoreC++`)
+## 🛩️ Simulatore F-16 Non-Lineare(Matlab)
 
 Il progetto include un simulatore di volo indipendente basato sul modello dell'aereo F-16:
-- **Rendering**: Sviluppato con la libreria **Raylib**.
+- **Rendering**: Sviluppato con l' applicazione **FlightGear*.
 - **Origine**: Derivato direttamente da modelli fisici sviluppati in MATLAB.
 - **Repository Dedicata**: Per la teoria del controllo e l'automazione originale, consultare: [AutomationF16](https://github.com/leoleg2004/AutomationF16).
 - **Nota**: Questo modulo è autocontenuto e non è collegato direttamente agli script di tracciamento RT.
