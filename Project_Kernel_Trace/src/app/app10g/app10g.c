@@ -60,11 +60,11 @@ int main(int argc, char *argv[]) {
   pthread_attr_setaffinity_np(&attr2, sizeof(cpu_set_t), &cpuset_core2);
 
   // ==========================================
-  // -- THREAD 1 -- (Core 1)
+  // -- THREAD 1 -- (Core 1)a
   // ==========================================
   t_activity_par activity_1;
   snprintf(activity_1.name, 15, "Activity_1");
-  activity_1.function = activity_load; // Funzione importata dalla tua libreria
+  activity_1.function = (void (*)(void *, int))activity_load; // Funzione importata dalla tua libreria
   activity_1.period = 1000;
   activity_1.parameter = 10;
   activity_1.deadline = 1000;
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
   // ==========================================
   t_activity_par activity_2;
   snprintf(activity_2.name, 15, "Activity_2");
-  activity_2.function = activity_load; // Funzione importata dalla tua libreria
+  activity_2.function = (void (*)(void *, int))activity_load; // Funzione importata dalla tua libreria
   activity_2.period = 1200;
   activity_2.parameter = 20;
   activity_2.deadline = 1200;

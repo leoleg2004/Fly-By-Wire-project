@@ -4,6 +4,13 @@
 # Salviamo la cartella principale del progetto
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Se siamo già root (es. dashboard), non serve sudo
+if [ "$EUID" -eq 0 ]; then
+    SUDO_CMD=""
+else
+    SUDO_CMD="sudo"
+fi
 BASE_DIR="$PROJECT_ROOT"
 
 # Funzione per risolvere alias dei nomi
@@ -70,14 +77,29 @@ echo "========================================================="
 mkdir -p "$OUTPUT_DIR"
 
 echo "[1/5] Avvio simulatore DDS e registrazione trace-cmd..."
-sudo trace-cmd record -e sched:sched_switch -e sched:sched_wakeup -o "$OUTPUT_DIR/trace.dat" "$EXECUTABLE"
+# Lanciamo trace-cmd in background e catturiamo il suo PID per gestire il segnale
+TRACE_CMD_PID=""
+cleanup() {
+    echo ""
+    echo "--- Segnale ricevuto, arresto trace-cmd... ---"
+    if [ -n "$TRACE_CMD_PID" ] && kill -0 "$TRACE_CMD_PID" 2>/dev/null; then
+        kill -INT "$TRACE_CMD_PID" 2>/dev/null
+        wait "$TRACE_CMD_PID" 2>/dev/null
+    fi
+}
+trap cleanup INT TERM
+
+$SUDO_CMD trace-cmd record -e sched:sched_switch -e sched:sched_wakeup -o "$OUTPUT_DIR/trace.dat" "$EXECUTABLE" &
+TRACE_CMD_PID=$!
+wait $TRACE_CMD_PID 2>/dev/null
+trap - INT TERM
 
 if [ ! -f "$OUTPUT_DIR/trace.dat" ]; then
     echo "ERRORE CRITICO: trace.dat non creato."
     exit 1
 fi
 
-sudo chown -R "$(id -u):$(id -g)" "$OUTPUT_DIR"
+$SUDO_CMD chown -R "${SUDO_UID:-$(id -u)}:${SUDO_GID:-$(id -g)}" "$OUTPUT_DIR"
 
 echo "[2/5] Generazione del report testuale..."
 trace-cmd report "$OUTPUT_DIR/trace.dat" > "$OUTPUT_DIR/trace_output.txt"
@@ -100,7 +122,8 @@ if [ -n "$PARSER_EXE" ]; then
     
     echo "[5/5] Avvio monitor visivo (Python)..."
     if [ -f "$MONITOR_SCRIPT_ABS" ]; then
-        python3 "$MONITOR_SCRIPT_ABS" "timeline.csv"
+        PYTHON_BIN="python3"
+        "$PYTHON_BIN" "$MONITOR_SCRIPT_ABS" "timeline.csv"
     else
         echo "ATTENZIONE: Non trovo lo script $MONITOR_SCRIPT_ABS."
     fi

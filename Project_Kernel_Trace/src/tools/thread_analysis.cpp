@@ -129,7 +129,7 @@ int main(int argc, char *argv[]) {
         return 1;
 
     std::regex line_re(
-        R"DELIM(^\s*(.*?)-(\d+)\s+\[(\d+)\]\s+(\d+\.\d+):\s+(.*?):\s+(.*)$)DELIM");
+        R"DELIM(^\s*(.*?)-(\d+)\s+\[(\d+)\]\s+\S+\s+(\d+\.\d+):\s+(.*?):\s+(.*)$)DELIM");
     std::regex switch_re(
         R"DELIM(.*?:(\d+)\s+\[\d+\]\s+([A-Z]).*?==>\s+.*?:(\d+)\s+\[)DELIM");
 

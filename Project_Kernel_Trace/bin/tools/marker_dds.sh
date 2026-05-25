@@ -4,6 +4,13 @@
 # Salviamo la cartella principale del progetto
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+
+# Se siamo già root (es. dashboard), non serve sudo
+if [ "$EUID" -eq 0 ]; then
+    SUDO_CMD=""
+else
+    SUDO_CMD="sudo"
+fi
 BASE_DIR="$PROJECT_ROOT"
 
 # Funzione per risolvere alias dei nomi
@@ -37,6 +44,7 @@ aggiungi_pid_e_thread() {
 
     if [ -z "$pids" ]; then
         echo "ERRORE: Il processo '$process_name' non è in esecuzione!"
+        echo "  Avvialo prima con: sudo ./$process_name"
         return 1
     fi
 
@@ -124,14 +132,29 @@ mkdir -p "$OUTPUT_DIR"
 
 # --- 4. Trace-cmd record (ferma con Ctrl+C) -----------------------------------
 echo "[1/6] Registrazione trace-cmd... (Ctrl+C per fermare)"
-sudo trace-cmd record -e sched:sched_switch -e sched:sched_wakeup $PIDS_CMD -o "$OUTPUT_DIR/trace.dat"
+# Lanciamo trace-cmd in background e catturiamo il suo PID per gestire il segnale
+TRACE_CMD_PID=""
+cleanup() {
+    echo ""
+    echo "--- Segnale ricevuto, arresto trace-cmd... ---"
+    if [ -n "$TRACE_CMD_PID" ] && kill -0 "$TRACE_CMD_PID" 2>/dev/null; then
+        kill -INT "$TRACE_CMD_PID" 2>/dev/null
+        wait "$TRACE_CMD_PID" 2>/dev/null
+    fi
+}
+trap cleanup INT TERM
+
+$SUDO_CMD trace-cmd record -e sched:sched_switch -e sched:sched_wakeup $PIDS_CMD -o "$OUTPUT_DIR/trace.dat" &
+TRACE_CMD_PID=$!
+wait $TRACE_CMD_PID 2>/dev/null
+trap - INT TERM
 
 if [ ! -f "$OUTPUT_DIR/trace.dat" ]; then
     echo "ERRORE CRITICO: trace.dat non creato."
     exit 1
 fi
 
-sudo chown -R "$(id -u):$(id -g)" "$OUTPUT_DIR"
+$SUDO_CMD chown -R "${SUDO_UID:-$(id -u)}:${SUDO_GID:-$(id -g)}" "$OUTPUT_DIR"
 
 # --- 5. Report testuale -------------------------------------------------------
 echo "[2/6] Generazione report testuale..."
@@ -162,7 +185,8 @@ echo ""
 echo "[5/6] Avvio monitor visivo Python..."
 if [ -f "$MONITOR_SCRIPT_ABS" ]; then
     cd "$OUTPUT_DIR" || exit
-    python3 "$MONITOR_SCRIPT_ABS" "timeline.csv"
+    PYTHON_BIN="python3"
+    "$PYTHON_BIN" "$MONITOR_SCRIPT_ABS" "timeline.csv"
     cd "$PROJECT_ROOT"
 else
     echo "ATTENZIONE: $MONITOR_SCRIPT_ABS non trovato."

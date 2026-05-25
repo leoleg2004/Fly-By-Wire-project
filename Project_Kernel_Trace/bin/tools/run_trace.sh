@@ -1,12 +1,17 @@
 #!/bin/bash
 # run_trace.sh - Tracciamento per Project_Kernel_Trace (launch mode)
+# Funziona sia da terminale che dalla dashboard
 
-# Salviamo la cartella principale del progetto
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-BASE_DIR="$PROJECT_ROOT"
 
-# Funzione per risolvere alias dei nomi
+# Se siamo già root (es. lanciato dalla dashboard con sudo), non serve sudo interno
+if [ "$EUID" -eq 0 ]; then
+    SUDO_CMD=""
+else
+    SUDO_CMD="sudo"
+fi
+
 resolve_app_name() {
     case $1 in
         GeometryBroadcastner) echo "Broadcastner" ;;
@@ -15,43 +20,41 @@ resolve_app_name() {
     esac
 }
 
-# Chiediamo l'eseguibile
 if [ "$#" -eq 0 ]; then
-    read -p "Inserisci l'eseguibile da tracciare (es. app10c o GeometryListener): " RAW_NAME
+    read -p "Inserisci l'eseguibile da tracciare (es. app10g o Listener): " RAW_NAME
 else
     RAW_NAME=$1
 fi
 
 EXECUTABLE_NAME=$(resolve_app_name "$RAW_NAME")
 
-# Cerca l'eseguibile in bin/app/
 EXECUTABLE=$(find "$PROJECT_ROOT/bin/app" -type f -executable -name "$EXECUTABLE_NAME" | head -n 1)
 
 if [ -z "$EXECUTABLE" ]; then
     echo "ERRORE: Eseguibile '$EXECUTABLE_NAME' non trovato in bin/app/!"
+    echo "Eseguibili disponibili:"
+    find "$PROJECT_ROOT/bin/app" -type f -executable | xargs -I{} basename {} | sort
     exit 1
 fi
 
 APP_NAME=$(basename "$EXECUTABLE")
 
-# Troviamo il file sorgente per l'analisi
 find_src() {
     local name=$1
-    # Priorità a src/app/
-    local candidate=$(find "$PROJECT_ROOT/src/app" -name "${name}.cpp" -o -name "${name}.c" | head -n 1)
+    local candidate
+    candidate=$(find "$PROJECT_ROOT/src/app" \( -name "${name}.cpp" -o -name "${name}.c" \) 2>/dev/null | head -n 1)
     if [ -n "$candidate" ]; then
         echo "$candidate"
     else
-        # Cerca ovunque in src/
-        find "$PROJECT_ROOT/src" -name "${name}.cpp" -o -name "${name}.c" | head -n 1
+        find "$PROJECT_ROOT/src" \( -name "${name}.cpp" -o -name "${name}.c" \) 2>/dev/null | head -n 1
     fi
 }
 
 SRC_FILE=$(find_src "$APP_NAME")
 
 if [ ! -f "$SRC_FILE" ]; then
-    echo "ERRORE CRITICO: Non trovo il file sorgente per $APP_NAME!"
-    exit 1
+    echo "AVVISO: File sorgente non trovato per $APP_NAME. Analisi periodi sarà limitata."
+    SRC_FILE="/dev/null"
 fi
 
 SRC_FILE_ABS="$SRC_FILE"
@@ -69,16 +72,35 @@ echo "========================================================="
 
 mkdir -p "$OUTPUT_DIR"
 
+echo "$OUTPUT_DIR" > /tmp/last_marker_dir
+echo "$APP_NAME" > "$OUTPUT_DIR/app_name.txt"
+
 echo "[1/5] Avvio simulatore e registrazione trace-cmd..."
-sudo killall -9 "$APP_NAME" 2>/dev/null
-sudo trace-cmd record -e sched:sched_switch -e sched:sched_wakeup -o "$OUTPUT_DIR/trace.dat" "$EXECUTABLE"
+$SUDO_CMD killall -9 "$APP_NAME" 2>/dev/null
+
+# Lanciamo trace-cmd in background e catturiamo il suo PID per gestire il segnale
+TRACE_CMD_PID=""
+cleanup() {
+    echo ""
+    echo "--- Segnale ricevuto, arresto trace-cmd... ---"
+    if [ -n "$TRACE_CMD_PID" ] && kill -0 "$TRACE_CMD_PID" 2>/dev/null; then
+        kill -INT "$TRACE_CMD_PID" 2>/dev/null
+        wait "$TRACE_CMD_PID" 2>/dev/null
+    fi
+}
+trap cleanup INT TERM
+
+$SUDO_CMD trace-cmd record -e sched:sched_switch -e sched:sched_wakeup -o "$OUTPUT_DIR/trace.dat" "$EXECUTABLE" &
+TRACE_CMD_PID=$!
+wait $TRACE_CMD_PID 2>/dev/null
+trap - INT TERM
 
 if [ ! -f "$OUTPUT_DIR/trace.dat" ]; then
     echo "ERRORE CRITICO: trace.dat non creato."
     exit 1
 fi
 
-sudo chown -R "$(id -u):$(id -g)" "$OUTPUT_DIR"
+$SUDO_CMD chown -R "${SUDO_UID:-$(id -u)}:${SUDO_GID:-$(id -g)}" "$OUTPUT_DIR"
 
 echo "[2/5] Generazione del report testuale..."
 trace-cmd report "$OUTPUT_DIR/trace.dat" > "$OUTPUT_DIR/trace_output.txt"
@@ -87,21 +109,30 @@ echo "[3/5] Compilazione analizzatore C++..."
 PARSER_EXE="$OUTPUT_DIR/thread_analysis"
 if [ -f "$PARSER_SRC" ]; then
     g++ -O2 -std=c++17 "$PARSER_SRC" -o "$PARSER_EXE"
+    if [ $? -ne 0 ]; then
+        echo "ERRORE: Compilazione thread_analysis fallita!"
+        PARSER_EXE=""
+    fi
 else
     echo "ATTENZIONE: File $PARSER_SRC non trovato!"
     PARSER_EXE=""
 fi
 
-echo "[4/5] Avvio Analisi (Lettura periodi dal codice)... "
+echo "[4/5] Avvio Analisi..."
 if [ -n "$PARSER_EXE" ]; then
     cd "$OUTPUT_DIR" || exit
     ./thread_analysis "trace_output.txt" "$SRC_FILE_ABS" "ALL" > "risultati_finali.txt"
     echo ""
     cat "risultati_finali.txt"
-    
+
     echo "[5/5] Avvio monitor visivo (Python)..."
     if [ -f "$MONITOR_SCRIPT_ABS" ]; then
-        python3 "$MONITOR_SCRIPT_ABS" "timeline.csv"
+        PYTHON_BIN="python3"
+        if [ -f "timeline.csv" ]; then
+            "$PYTHON_BIN" "$MONITOR_SCRIPT_ABS" "timeline.csv" "timeline_monitor.png"
+        else
+            echo "ATTENZIONE: timeline.csv non trovato, impossibile avviare il monitor."
+        fi
     else
         echo "ATTENZIONE: Non trovo lo script $MONITOR_SCRIPT_ABS."
     fi

@@ -85,5 +85,5 @@ if [ ! -f "$OUTPUT_DIR/trace.dat" ]; then
     exit 1
 fi
 
-sudo chown -R "$(id -u):$(id -g)" "$OUTPUT_DIR"
+sudo chown -R "${SUDO_UID:-$(id -u)}:${SUDO_GID:-$(id -g)}" "$OUTPUT_DIR"
 echo "Registrazione completata. Usa marker2.sh per generare il report."

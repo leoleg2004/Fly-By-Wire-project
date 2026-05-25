@@ -21,7 +21,8 @@ echo "[5/6] Avvio monitor visivo (Python)..."
 if [ -f "$MONITOR_SCRIPT_ABS" ]; then
     if [ -f "$OUTPUT_DIR/timeline.csv" ]; then
         cd "$OUTPUT_DIR" || exit
-        python3 "$MONITOR_SCRIPT_ABS" "timeline.csv"
+        PYTHON_BIN="python3"
+        "$PYTHON_BIN" "$MONITOR_SCRIPT_ABS" "timeline.csv"
         cd "$PROJECT_ROOT" || exit
     else
         echo "ERRORE: timeline.csv non trovato in $OUTPUT_DIR. Esegui marker3.sh prima."

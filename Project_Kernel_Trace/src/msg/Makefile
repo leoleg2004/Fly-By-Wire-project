@@ -8,10 +8,28 @@ GEN_INC = ../lib/generated_msg/include
 GEN_SRC = ../lib/generated_msg/src
 BIN_INC_DIR = ../../bin/msg/include
 
-FAST_DDS_GEN = /home/leonardo/TOOLS/eProsima/src/fastddsgen/scripts/fastddsgen
-# Ensure Java 11 is used
-export JAVA_HOME = /usr/lib/jvm/java-1.11.0-openjdk-amd64
-export PATH := $(JAVA_HOME)/bin:$(PATH)
+# Locate fastddsgen: check PATH first, then common installation directories
+FAST_DDS_GEN := $(shell \
+	command -v fastddsgen 2>/dev/null || \
+	( [ -f "/opt/fastdds/bin/fastddsgen" ] && echo "/opt/fastdds/bin/fastddsgen" ) || \
+	( [ -f "$$HOME/eprosima_install/bin/fastddsgen" ] && echo "$$HOME/eprosima_install/bin/fastddsgen" ) || \
+	( [ -f "$$HOME/TOOLS/eProsima/fastddsgen/scripts/fastddsgen" ] && echo "$$HOME/TOOLS/eProsima/fastddsgen/scripts/fastddsgen" ) || \
+	( [ -f "$$HOME/TOOLS/eProsima/src/fastddsgen/scripts/fastddsgen" ] && echo "$$HOME/TOOLS/eProsima/src/fastddsgen/scripts/fastddsgen" ) || \
+	echo "fastddsgen" \
+)
+
+# Try to find a valid JAVA_HOME if not already defined (required by fastddsgen)
+ifndef JAVA_HOME
+  JAVA_CANDIDATE := $(shell \
+	for dir in /usr/lib/jvm/java-11-openjdk-amd64 /usr/lib/jvm/java-8-openjdk-amd64 /usr/lib/jvm/java-17-openjdk-amd64 /usr/lib/jvm/default-java; do \
+		if [ -d "$$dir" ]; then echo "$$dir"; break; fi; \
+	done \
+  )
+  ifneq ($(JAVA_CANDIDATE),)
+    export JAVA_HOME := $(JAVA_CANDIDATE)
+    export PATH := $(JAVA_HOME)/bin:$(PATH)
+  endif
+endif
 
 all: $(DONE_FILES)
 

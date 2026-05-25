@@ -13,6 +13,8 @@
 #include <pthread.h>
 #include <sched.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <vector>
 
 // Usiamo il namespace generato da fastddsgen v2+
 using namespace geometry_msgs::msg::dds_;
@@ -44,6 +46,19 @@ void computation_function(void *instance, int parameter) {
 }
 
 int main(int argc, char **argv) {
+  // SCHED_FIFO richiede privilegi root
+  if (geteuid() != 0) {
+    std::vector<char*> new_argv;
+    new_argv.push_back((char*)"sudo");
+    new_argv.push_back((char*)"LD_LIBRARY_PATH=/usr/local/lib");
+    for (int i = 0; i < argc; ++i) {
+      new_argv.push_back(argv[i]);
+    }
+    new_argv.push_back(nullptr);
+    execvp("sudo", new_argv.data());
+    return 1;
+  }
+
   init_tracing();
 
   // Rinominato da PointPubSubType
@@ -81,7 +96,7 @@ int main(int argc, char **argv) {
   int ret_err =
       pthread_create(&thread1, &attr1, PeriodicTask, (void *)&activity_1);
   if (ret_err != 0) {
-    perror("Error creating thread 1");
+    fprintf(stderr, "Error creating thread 1: %s\n", strerror(ret_err));
     exit(1);
   }
   pthread_setname_np(thread1, "DDS_Publish");
@@ -117,7 +132,7 @@ int main(int argc, char **argv) {
 
   ret_err = pthread_create(&thread2, &attr2, PeriodicTask, (void *)&activity_2);
   if (ret_err != 0) {
-    perror("Error creating thread 2");
+    fprintf(stderr, "Error creating thread 2: %s\n", strerror(ret_err));
     exit(1);
   }
   pthread_setname_np(thread2, "Activity_1");

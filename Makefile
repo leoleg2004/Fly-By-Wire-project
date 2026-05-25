@@ -13,24 +13,24 @@ all: msg libs apps
 # Generate sources from IDLs
 msg:
 	@echo ">>> Generating Message Sources from IDLs..."
-	$(MAKE) -C src/msg
+	$(MAKE) -C Project_Kernel_Trace/src/msg
 
 # Build libraries (depends on msg)
 libs: msg
 	@echo ">>> Building Core and DDS Libraries..."
-	$(MAKE) -C src/lib
+	$(MAKE) -C Project_Kernel_Trace/src/lib
 
 # Build applications (depends on libs)
 apps: libs
 	@echo ">>> Building Applications..."
-	$(MAKE) -C src/app
+	$(MAKE) -C Project_Kernel_Trace/src/app
 
 # Clean all build artifacts
 clean:
 	@echo ">>> Cleaning everything..."
-	$(MAKE) -C src/msg clean
-	$(MAKE) -C src/lib clean
-	$(MAKE) -C src/app clean
+	$(MAKE) -C Project_Kernel_Trace/src/msg clean
+	$(MAKE) -C Project_Kernel_Trace/src/lib clean
+	$(MAKE) -C Project_Kernel_Trace/src/app clean
 	@echo "Done."
 
 # Full rebuild

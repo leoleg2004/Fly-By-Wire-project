@@ -23,6 +23,13 @@ from collections import defaultdict
 import numpy  as np
 import pandas as pd
 import matplotlib
+# Use non-interactive backend if no display is available
+try:
+    import matplotlib.pyplot as _plt_test
+    _plt_test.figure()
+    _plt_test.close()
+except Exception:
+    matplotlib.use("Agg")
 import matplotlib.pyplot   as plt
 import matplotlib.patches  as mpatches
 import matplotlib.ticker   as mticker
@@ -687,7 +694,10 @@ def build_chart(df: pd.DataFrame, output: str,
     # ── Save & Show ──────────────────────────────────────────────────────
     plt.savefig(output, dpi=150, bbox_inches="tight", facecolor="white")
     print(f"[OK]  Salvato  →  {output}")
-    plt.show()
+    try:
+        plt.show()
+    except Exception:
+        pass  # Headless environment: skip interactive display
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

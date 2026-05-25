@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import time
 import subprocess
 import threading
 import tkinter as tk
@@ -54,14 +55,18 @@ class KernelTraceDashboard(tk.Tk):
         
         # Tabs
         self.tab_scripts = tk.Frame(self.notebook, bg=BG_COLOR)
+        self.tab_dds = tk.Frame(self.notebook, bg=BG_COLOR)
         self.tab_traces = tk.Frame(self.notebook, bg=BG_COLOR)
         
-        self.notebook.add(self.tab_scripts, text="  Scripts Manager  ")
+        self.notebook.add(self.tab_scripts, text="  Scripts Manager (Single)  ")
+        self.notebook.add(self.tab_dds, text="  DDS Studio (Multi)  ")
         self.notebook.add(self.tab_traces, text="  Trace Manager  ")
         
         # Setup Tabs content
         self.setup_scripts_tab()
+        self.setup_dds_studio_tab()
         self.setup_traces_tab()
+        self.refresh_apps()
         
     def setup_styles(self):
         style = ttk.Style(self)
@@ -123,42 +128,14 @@ class KernelTraceDashboard(tk.Tk):
     # ==========================================
     # SCRIPTS TAB
     # ==========================================
+
     def setup_scripts_tab(self):
         self.tab_scripts.columnconfigure(0, weight=1)
-        self.tab_scripts.rowconfigure(1, weight=1)
+        self.tab_scripts.rowconfigure(0, weight=1)
         
-        # --- Phase 1: Application Launcher ---
-        phase1_frame = ttk.LabelFrame(self.tab_scripts, text="Step 1: Application Launcher (Start your targets before passive tracing)", style="TLabelframe")
-        phase1_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 5))
-        
-        # Launcher controls
-        launcher_controls = tk.Frame(phase1_frame, bg=PANEL_BG)
-        launcher_controls.pack(fill="x", padx=10, pady=(10, 5))
-        
-        ttk.Label(launcher_controls, text="Select Executable:", style="Panel.TLabel").pack(side="left", padx=(0, 10))
-        
-        self.proc_combobox = ttk.Combobox(launcher_controls, font=("Helvetica", 11), state="normal", width=30)
-        self.proc_combobox.pack(side="left", padx=(0, 10))
-        
-        self.launch_sudo_var = tk.BooleanVar(value=True)
-        ttk.Checkbutton(launcher_controls, text="Run as Root", variable=self.launch_sudo_var).pack(side="left", padx=(0, 15))
-        
-        ttk.Button(launcher_controls, text="🚀 Launch Application", command=self.launch_app).pack(side="left")
-        
-        # Running apps list
-        running_apps_frame = tk.Frame(phase1_frame, bg=PANEL_BG)
-        running_apps_frame.pack(fill="x", padx=10, pady=(5, 10))
-        
-        ttk.Label(running_apps_frame, text="Running Targets:", style="Panel.TLabel").pack(side="left", padx=(0, 10))
-        
-        self.active_apps_listbox = tk.Listbox(running_apps_frame, height=2, font=("Helvetica", 11), bg=TEXT_BG, fg=FG_COLOR, selectbackground=ACCENT_COLOR, highlightthickness=1, highlightbackground="#cccccc", relief="flat")
-        self.active_apps_listbox.pack(side="left", fill="x", expand=True, padx=(0, 10))
-        
-        ttk.Button(running_apps_frame, text="🛑 Stop Selected App", command=self.stop_app, style="Stop.TButton").pack(side="left")
-
-        # --- Phase 2: Script Execution ---
-        phase2_frame = ttk.LabelFrame(self.tab_scripts, text="Step 2: Configure & Run Script", style="TLabelframe")
-        phase2_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=(5, 10))
+        # --- Single Process Script Execution ---
+        phase2_frame = ttk.LabelFrame(self.tab_scripts, text="Active Tracing (Single Process)", style="TLabelframe")
+        phase2_frame.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
         phase2_frame.columnconfigure(1, weight=1)
         phase2_frame.rowconfigure(0, weight=1)
         
@@ -166,9 +143,9 @@ class KernelTraceDashboard(tk.Tk):
         left_panel = tk.Frame(phase2_frame, bg=PANEL_BG)
         left_panel.grid(row=0, column=0, sticky="ns", padx=10, pady=10)
         
-        self.script_listbox = tk.Listbox(left_panel, width=30, font=("Helvetica", 11), bg=TEXT_BG, fg=FG_COLOR, selectbackground=ACCENT_COLOR, selectforeground="white", highlightthickness=1, highlightbackground="#cccccc", relief="flat")
-        self.script_listbox.pack(fill="both", expand=True, pady=(0, 10))
-        self.script_listbox.bind("<<ListboxSelect>>", self.on_script_select)
+        self.script_listbox_single = tk.Listbox(left_panel, width=30, font=("Helvetica", 11), bg=TEXT_BG, fg=FG_COLOR, selectbackground=ACCENT_COLOR, selectforeground="white", highlightthickness=1, highlightbackground="#cccccc", relief="flat")
+        self.script_listbox_single.pack(fill="both", expand=True, pady=(0, 10))
+        self.script_listbox_single.bind("<<ListboxSelect>>", self.on_script_select_single)
         
         ttk.Button(left_panel, text="Refresh Scripts List", command=self.refresh_scripts).pack(fill="x")
         
@@ -179,43 +156,34 @@ class KernelTraceDashboard(tk.Tk):
         right_panel.rowconfigure(3, weight=1) # console grows
         
         ttk.Label(right_panel, text="Selected Script:", style="Panel.TLabel").grid(row=0, column=0, sticky="nw", pady=5)
-        self.selected_script_var = tk.StringVar(value="None")
-        ttk.Label(right_panel, textvariable=self.selected_script_var, font=("Helvetica", 13, "bold"), background=PANEL_BG, foreground=FG_COLOR).grid(row=0, column=1, sticky="w", padx=10, pady=5)
+        self.selected_script_var_single = tk.StringVar(value="None")
+        ttk.Label(right_panel, textvariable=self.selected_script_var_single, font=("Helvetica", 13, "bold"), background=PANEL_BG, foreground=FG_COLOR).grid(row=0, column=1, sticky="w", padx=10, pady=5)
         
-        # Multi-Process List
-        ttk.Label(right_panel, text="Target Processes to Trace:", style="Panel.TLabel").grid(row=1, column=0, sticky="nw", pady=5)
+        # Single-Process List
+        ttk.Label(right_panel, text="Target Process to Trace:", style="Panel.TLabel").grid(row=1, column=0, sticky="nw", pady=5)
         
         proc_frame = tk.Frame(right_panel, bg=PANEL_BG)
         proc_frame.grid(row=1, column=1, sticky="ew", padx=10, pady=5)
         proc_frame.columnconfigure(0, weight=1)
         
-        self.process_listbox = tk.Listbox(proc_frame, height=3, font=("Helvetica", 11), bg=TEXT_BG, fg=FG_COLOR, selectbackground=ACCENT_COLOR, highlightthickness=1, highlightbackground="#cccccc", relief="flat")
-        self.process_listbox.grid(row=0, column=0, columnspan=3, sticky="ew", pady=(0, 5))
+        self.single_proc_combobox = ttk.Combobox(proc_frame, font=("Helvetica", 11), state="normal")
+        self.single_proc_combobox.grid(row=0, column=0, sticky="ew")
         
-        self.add_proc_combobox = ttk.Combobox(proc_frame, font=("Helvetica", 11), state="normal")
-        self.add_proc_combobox.grid(row=1, column=0, sticky="ew")
-        self.add_proc_combobox.bind("<Return>", lambda e: self.add_process())
-        
-        ttk.Button(proc_frame, text="+ Add Target", command=self.add_process, width=12).grid(row=1, column=1, padx=(5,0))
-        ttk.Button(proc_frame, text="- Remove", command=self.remove_process, width=8).grid(row=1, column=2, padx=(5,0))
-
-        self.refresh_apps() # Populate both comboboxes
-
         # Checkbox & Run Buttons
         controls_frame = tk.Frame(right_panel, bg=PANEL_BG)
         controls_frame.grid(row=2, column=0, columnspan=2, sticky="ew", pady=10)
         
-        self.run_sudo_var = tk.BooleanVar(value=False)
-        ttk.Checkbutton(controls_frame, text="Run as Root (Requires sudo password)", variable=self.run_sudo_var).pack(side="left", padx=10)
+        self.run_sudo_var_single = tk.BooleanVar(value=False)
+        ttk.Checkbutton(controls_frame, text="Run as Root", variable=self.run_sudo_var_single).pack(side="left", padx=10)
         
-        self.run_bg_btn = ttk.Button(controls_frame, text="▶ Run Script in Background", command=self.run_in_background, state="disabled")
-        self.run_bg_btn.pack(side="left", padx=(10, 10))
+        self.run_bg_btn_single = ttk.Button(controls_frame, text="▶ Run in Background", command=self.run_in_background_single, state="disabled")
+        self.run_bg_btn_single.pack(side="left", padx=(10, 10))
         
-        self.run_term_btn = ttk.Button(controls_frame, text="▶ Run in Terminal", command=self.run_in_terminal, state="disabled")
-        self.run_term_btn.pack(side="left", padx=(0, 10))
+        self.run_term_btn_single = ttk.Button(controls_frame, text="▶ Run in Terminal", command=self.run_in_terminal_single, state="disabled")
+        self.run_term_btn_single.pack(side="left", padx=(0, 10))
         
-        self.stop_btn = ttk.Button(controls_frame, text="🛑 Stop Trace Script", command=self.stop_process, state="disabled", style="Stop.TButton")
-        self.stop_btn.pack(side="right")
+        self.stop_btn_single = ttk.Button(controls_frame, text="🛑 Stop Trace", command=self.stop_process, state="disabled", style="Stop.TButton")
+        self.stop_btn_single.pack(side="right")
         
         # Console
         console_frame = tk.Frame(right_panel, bg=PANEL_BG)
@@ -227,12 +195,95 @@ class KernelTraceDashboard(tk.Tk):
         header.grid(row=0, column=0, sticky="ew", pady=(0, 5))
         header.columnconfigure(0, weight=1)
         ttk.Label(header, text="Console Output", style="SubHeader.TLabel").grid(row=0, column=0, sticky="w")
-        ttk.Button(header, text="Clear", command=self.clear_log).grid(row=0, column=1, sticky="e")
+        ttk.Button(header, text="Clear", command=lambda: self.log_text_single.delete(1.0, tk.END)).grid(row=0, column=1, sticky="e")
         
-        self.log_text = scrolledtext.ScrolledText(console_frame, bg=CONSOLE_BG, fg=CONSOLE_FG, font=("Consolas", 10), insertbackground="white", relief="flat", highlightthickness=1, highlightbackground="#cccccc")
-        self.log_text.grid(row=1, column=0, sticky="nsew")
+        self.log_text_single = scrolledtext.ScrolledText(console_frame, bg=CONSOLE_BG, fg=CONSOLE_FG, font=("Consolas", 10), insertbackground="white", relief="flat", highlightthickness=1, highlightbackground="#cccccc")
+        self.log_text_single.grid(row=1, column=0, sticky="nsew")
+
+    def setup_dds_studio_tab(self):
+        self.tab_dds.columnconfigure(0, weight=1)
+        self.tab_dds.rowconfigure(1, weight=1)
         
-        self.refresh_scripts()
+        # --- Step 1: Select Targets & Launch ---
+        step1_frame = ttk.LabelFrame(self.tab_dds, text="Step 1: Select Targets & Launch", style="TLabelframe")
+        step1_frame.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 5))
+        
+        proc_frame = tk.Frame(step1_frame, bg=PANEL_BG)
+        proc_frame.pack(fill="x", padx=10, pady=10)
+        
+        ttk.Label(proc_frame, text="Target Processes:", style="Panel.TLabel").grid(row=0, column=0, sticky="nw", pady=5)
+        
+        self.process_listbox = tk.Listbox(proc_frame, height=3, font=("Helvetica", 11), bg=TEXT_BG, fg=FG_COLOR, selectbackground=ACCENT_COLOR, highlightthickness=1, highlightbackground="#cccccc", relief="flat")
+        self.process_listbox.grid(row=0, column=1, columnspan=3, sticky="ew", pady=(0, 5), padx=(10,0))
+        
+        self.add_proc_combobox = ttk.Combobox(proc_frame, font=("Helvetica", 11), state="normal")
+        self.add_proc_combobox.grid(row=1, column=1, sticky="ew", padx=(10,0))
+        self.add_proc_combobox.bind("<Return>", lambda e: self.add_process())
+        
+        ttk.Button(proc_frame, text="+ Add Target", command=self.add_process, width=12).grid(row=1, column=2, padx=(5,0))
+        ttk.Button(proc_frame, text="- Remove", command=self.remove_process, width=8).grid(row=1, column=3, padx=(5,0))
+        
+        self.launch_sudo_var = tk.BooleanVar(value=True)
+        ttk.Checkbutton(proc_frame, text="Run as Root", variable=self.launch_sudo_var).grid(row=2, column=1, sticky="w", padx=(10, 0), pady=(5,0))
+        
+        ttk.Button(proc_frame, text="🚀 Launch Selected", command=self.launch_selected_terminal).grid(row=2, column=2, padx=(5,0), sticky="e", pady=(5,0))
+        ttk.Button(proc_frame, text="🚀 Launch ALL", command=self.launch_all_terminals).grid(row=2, column=3, padx=(5,0), sticky="e", pady=(5,0))
+
+        # --- Step 2: Trace Scripts ---
+        step2_frame = ttk.LabelFrame(self.tab_dds, text="Step 2: Trace Scripts", style="TLabelframe")
+        step2_frame.grid(row=1, column=0, sticky="nsew", padx=10, pady=(5, 10))
+        step2_frame.columnconfigure(1, weight=1)
+        step2_frame.rowconfigure(2, weight=1) # console grows
+        
+        # Left Panel - Script List
+        left_panel = tk.Frame(step2_frame, bg=PANEL_BG)
+        left_panel.grid(row=0, column=0, rowspan=3, sticky="ns", padx=10, pady=10)
+        
+        self.script_listbox_dds = tk.Listbox(left_panel, width=30, font=("Helvetica", 11), bg=TEXT_BG, fg=FG_COLOR, selectbackground=ACCENT_COLOR, selectforeground="white", highlightthickness=1, highlightbackground="#cccccc", relief="flat")
+        self.script_listbox_dds.pack(fill="both", expand=True, pady=(0, 10))
+        self.script_listbox_dds.bind("<<ListboxSelect>>", self.on_script_select_dds)
+        
+        ttk.Button(left_panel, text="Refresh Scripts List", command=self.refresh_scripts).pack(fill="x")
+        
+        # Right Panel - Script Config
+        right_panel = tk.Frame(step2_frame, bg=PANEL_BG)
+        right_panel.grid(row=0, column=1, sticky="nsew", padx=(0, 10), pady=10)
+        right_panel.columnconfigure(1, weight=1)
+        
+        ttk.Label(right_panel, text="Selected Script:", style="Panel.TLabel").grid(row=0, column=0, sticky="nw", pady=5)
+        self.selected_script_var_dds = tk.StringVar(value="None")
+        ttk.Label(right_panel, textvariable=self.selected_script_var_dds, font=("Helvetica", 13, "bold"), background=PANEL_BG, foreground=FG_COLOR).grid(row=0, column=1, sticky="w", padx=10, pady=5)
+        
+        # Checkbox & Run Buttons
+        controls_frame = tk.Frame(step2_frame, bg=PANEL_BG) 
+        controls_frame.grid(row=1, column=1, sticky="ew", padx=(0,10), pady=10)
+        
+        self.run_sudo_var_dds = tk.BooleanVar(value=False)
+        ttk.Checkbutton(controls_frame, text="Run as Root", variable=self.run_sudo_var_dds).pack(side="left", padx=(0,10))
+        
+        self.run_bg_btn_dds = ttk.Button(controls_frame, text="▶ Run Script in Background", command=self.run_in_background_dds, state="disabled")
+        self.run_bg_btn_dds.pack(side="left", padx=(0, 10))
+        
+        self.run_term_btn_dds = ttk.Button(controls_frame, text="▶ Run in Terminal", command=self.run_in_terminal_dds, state="disabled")
+        self.run_term_btn_dds.pack(side="left", padx=(0, 10))
+        
+        self.stop_btn_dds = ttk.Button(controls_frame, text="🛑 Stop Trace Script", command=self.stop_process, state="disabled", style="Stop.TButton")
+        self.stop_btn_dds.pack(side="right")
+        
+        # Console
+        console_frame = tk.Frame(step2_frame, bg=PANEL_BG)
+        console_frame.grid(row=2, column=1, sticky="nsew", padx=(0,10), pady=(0, 10))
+        console_frame.columnconfigure(0, weight=1)
+        console_frame.rowconfigure(1, weight=1)
+        
+        header = tk.Frame(console_frame, bg=PANEL_BG)
+        header.grid(row=0, column=0, sticky="ew", pady=(0, 5))
+        header.columnconfigure(0, weight=1)
+        ttk.Label(header, text="Console Output", style="SubHeader.TLabel").grid(row=0, column=0, sticky="w")
+        ttk.Button(header, text="Clear", command=lambda: self.log_text_dds.delete(1.0, tk.END)).grid(row=0, column=1, sticky="e")
+        
+        self.log_text_dds = scrolledtext.ScrolledText(console_frame, bg=CONSOLE_BG, fg=CONSOLE_FG, font=("Consolas", 10), insertbackground="white", relief="flat", highlightthickness=1, highlightbackground="#cccccc")
+        self.log_text_dds.grid(row=1, column=0, sticky="nsew")
 
     def refresh_apps(self):
         apps = []
@@ -241,10 +292,10 @@ class KernelTraceDashboard(tk.Tk):
                 if os.path.isfile(os.path.join(BIN_APP_DIR, f)) and os.access(os.path.join(BIN_APP_DIR, f), os.X_OK):
                     apps.append(f)
         apps.sort()
-        self.proc_combobox['values'] = apps
+        self.single_proc_combobox['values'] = apps
         self.add_proc_combobox['values'] = apps
         if apps:
-            self.proc_combobox.set(apps[0])
+            self.single_proc_combobox.set(apps[0])
             self.add_proc_combobox.set(apps[0])
 
     def add_process(self):
@@ -257,128 +308,163 @@ class KernelTraceDashboard(tk.Tk):
         if sel:
             self.process_listbox.delete(sel[0])
 
-    def launch_app(self):
-        val = self.proc_combobox.get().strip()
-        if not val: return
+    def launch_selected_terminal(self):
+        selection = self.process_listbox.curselection()
+        if not selection:
+            messagebox.showwarning("No Selection", "Please select a target process from the list to launch.")
+            return
+            
+        val = self.process_listbox.get(selection[0])
+        use_sudo = self.launch_sudo_var.get()
+        if use_sudo and not self.sudo_password:
+            pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to run applications as root:\\n(It will not be stored)", show='*')
+            if pwd is None: return
+            self.sudo_password = pwd
+            
         app_path = os.path.join(BIN_APP_DIR, val)
         if not os.path.exists(app_path):
-            messagebox.showerror("Error", f"Executable {val} not found in bin/app/")
+            self.log_message(f"--- Executable {val} not found in bin/app/ ---\n")
+            return
+            
+        if use_sudo:
+            cmd = f"sudo -S bash -c '{app_path} < /dev/tty'; echo; echo \"Process finished. Press Enter to close.\"; read < /dev/tty"
+            cmd_to_run = f"echo '{self.sudo_password}' | {{ {cmd}; }}"
+        else:
+            cmd = f"{app_path}; echo; echo \"Process finished. Press Enter to close.\"; read"
+            cmd_to_run = cmd
+            
+        terminal_cmd = []
+        if shutil.which("gnome-terminal"):
+            terminal_cmd = ["gnome-terminal", "--", "bash", "-c", cmd_to_run]
+        elif shutil.which("terminator"):
+            terminal_cmd = ["terminator", "-x", "bash", "-c", cmd_to_run]
+        elif shutil.which("x-terminal-emulator"):
+            terminal_cmd = ["x-terminal-emulator", "-e", f"bash -c '{cmd_to_run}'"]
+        else:
+            self.log_message("--- Failed to launch terminal: No supported terminal emulator found ---\n\n")
+            return
+            
+        self.log_message(f"--- Launching in external terminal: {val} ---\n")
+        try:
+            subprocess.Popen(terminal_cmd, cwd=PROJECT_ROOT)
+        except Exception as e:
+            self.log_message(f"--- Failed to launch terminal for {val}: {str(e)} ---\n")
+
+    def launch_all_terminals(self):
+        targets = self.get_arguments_dds()
+        if not targets:
+            messagebox.showwarning("No Targets", "Please add at least one target process.")
             return
             
         use_sudo = self.launch_sudo_var.get()
-        cmd = []
-        if use_sudo:
-            if not self.sudo_password:
-                pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to run application as root:\n(It will not be stored)", show='*')
-                if pwd is None: return
-                self.sudo_password = pwd
-            cmd = ['sudo', '-S', '-E', app_path]
-        else:
-            cmd = [app_path]
+        if use_sudo and not self.sudo_password:
+            pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to run applications as root:\\n(It will not be stored)", show='*')
+            if pwd is None: return
+            self.sudo_password = pwd
             
-        threading.Thread(target=self._run_app_background, args=(val, cmd, use_sudo), daemon=True).start()
-
-    def _run_app_background(self, app_name, cmd, use_sudo):
-        app_id = str(uuid.uuid4())[:8]
-        display_name = f"{app_name} [{app_id}] {'(Root)' if use_sudo else ''}"
-        
-        self.log_text.after(0, self.active_apps_listbox.insert, tk.END, display_name)
-        self.log_text.after(0, self.log_message, f"\n--- Started Target Application: {display_name} ---\n")
-        
-        try:
+        for val in targets:
+            app_path = os.path.join(BIN_APP_DIR, val)
+            if not os.path.exists(app_path):
+                self.log_message(f"--- Executable {val} not found in bin/app/ ---\n")
+                continue
+                
             if use_sudo:
-                proc = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, cwd=PROJECT_ROOT)
-                proc.stdin.write(self.sudo_password + '\n')
-                proc.stdin.flush()
+                cmd = f"sudo -S bash -c '{app_path} < /dev/tty'; echo; echo \"Process finished. Press Enter to close.\"; read < /dev/tty"
+                cmd_to_run = f"echo '{self.sudo_password}' | {{ {cmd}; }}"
             else:
-                proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, cwd=PROJECT_ROOT)
+                cmd = f"{app_path}; echo; echo \"Process finished. Press Enter to close.\"; read"
+                cmd_to_run = cmd
                 
-            self.running_apps[display_name] = {"name": app_name, "process": proc, "sudo": use_sudo}
-            
-            for line in proc.stdout:
-                # Add prefix to make it clear which app is logging
-                self.log_text.after(0, self.log_message, f"[{app_name}] {line}")
-                
-            proc.wait()
-            self.log_text.after(0, self.log_message, f"\n--- Target Application Finished: {display_name} (Code {proc.returncode}) ---\n")
-            
-        except Exception as e:
-            self.log_text.after(0, self.log_message, f"\n--- Failed to run {display_name}: {str(e)} ---\n")
-        finally:
-            if display_name in self.running_apps:
-                del self.running_apps[display_name]
-            self.log_text.after(0, self._remove_from_listbox, self.active_apps_listbox, display_name)
-
-    def _remove_from_listbox(self, listbox, item):
-        elements = listbox.get(0, tk.END)
-        if item in elements:
-            idx = elements.index(item)
-            listbox.delete(idx)
-
-    def stop_app(self):
-        sel = self.active_apps_listbox.curselection()
-        if not sel: return
-        display_name = self.active_apps_listbox.get(sel[0])
-        
-        if display_name in self.running_apps:
-            app_info = self.running_apps[display_name]
-            proc = app_info["process"]
-            use_sudo = app_info["sudo"]
-            
-            self.log_message(f"\n--- Stopping target application: {display_name}... ---\n")
-            if use_sudo and self.sudo_password:
-                try:
-                    subprocess.run(['sudo', '-S', 'kill', '-INT', str(proc.pid)], 
-                                   input=self.sudo_password+'\n', text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                except Exception as e:
-                    self.log_message(f"Failed to stop sudo app: {e}\n")
+            terminal_cmd = []
+            if shutil.which("gnome-terminal"):
+                terminal_cmd = ["gnome-terminal", "--", "bash", "-c", cmd_to_run]
+            elif shutil.which("terminator"):
+                terminal_cmd = ["terminator", "-x", "bash", "-c", cmd_to_run]
+            elif shutil.which("x-terminal-emulator"):
+                terminal_cmd = ["x-terminal-emulator", "-e", f"bash -c '{cmd_to_run}'"]
             else:
-                proc.send_signal(signal.SIGINT)
+                self.log_message("--- Failed to launch terminal: No supported terminal emulator found ---\n\n")
+                continue
+                
+            self.log_message(f"--- Launching in external terminal: {val} ---\n")
+            try:
+                subprocess.Popen(terminal_cmd, cwd=PROJECT_ROOT)
+                time.sleep(1.0)  # Avoid sudo-rs concurrent authentication lock
+            except Exception as e:
+                self.log_message(f"--- Failed to launch terminal for {val}: {str(e)} ---\n")
 
     def refresh_scripts(self):
-        self.script_listbox.delete(0, tk.END)
+        self.script_listbox_single.delete(0, tk.END)
+        self.script_listbox_dds.delete(0, tk.END)
         if os.path.exists(BIN_TOOLS_DIR):
             scripts = [f for f in os.listdir(BIN_TOOLS_DIR) if f.endswith(".sh")]
             scripts.sort()
             for s in scripts:
-                self.script_listbox.insert(tk.END, s)
-                
-    def on_script_select(self, event):
-        selection = self.script_listbox.curselection()
+                self.script_listbox_single.insert(tk.END, s)
+                self.script_listbox_dds.insert(tk.END, s)
+
+    def on_script_select_single(self, event):
+        selection = self.script_listbox_single.curselection()
         if selection:
-            script_name = self.script_listbox.get(selection[0])
-            self.selected_script_var.set(script_name)
-            self.run_bg_btn.config(state="normal")
-            self.run_term_btn.config(state="normal")
-            
-            # Suggest sudo for trace recording scripts
+            script_name = self.script_listbox_single.get(selection[0])
+            self.selected_script_var_single.set(script_name)
+            self.run_bg_btn_single.config(state="normal")
+            self.run_term_btn_single.config(state="normal")
             if "marker1" in script_name or "marker." in script_name or "marker_dds" in script_name or "run_trace" in script_name:
-                self.run_sudo_var.set(True)
+                self.run_sudo_var_single.set(True)
+            else:
+                self.run_sudo_var_single.set(False)
+
+    def on_script_select_dds(self, event):
+        selection = self.script_listbox_dds.curselection()
+        if selection:
+            script_name = self.script_listbox_dds.get(selection[0])
+            self.selected_script_var_dds.set(script_name)
+            self.run_bg_btn_dds.config(state="normal")
+            self.run_term_btn_dds.config(state="normal")
+            
+            if "marker1" in script_name or "marker." in script_name or "marker_dds" in script_name or "run_trace" in script_name:
+                self.run_sudo_var_dds.set(True)
                 if self.process_listbox.size() == 0 and len(self.add_proc_combobox['values']) > 0:
                     self.process_listbox.insert(tk.END, self.add_proc_combobox['values'][0])
             else:
-                self.run_sudo_var.set(False)
+                self.run_sudo_var_dds.set(False)
 
     def log_message(self, message):
-        self.log_text.insert(tk.END, message)
-        self.log_text.see(tk.END)
-        
+        try:
+            self.log_text_single.insert(tk.END, message)
+            self.log_text_single.see(tk.END)
+        except: pass
+        try:
+            self.log_text_dds.insert(tk.END, message)
+            self.log_text_dds.see(tk.END)
+        except: pass
+
     def clear_log(self):
-        self.log_text.delete(1.0, tk.END)
+        try: self.log_text_single.delete(1.0, tk.END); self.log_text_dds.delete(1.0, tk.END)
+        except: pass
 
     def stop_process(self):
         if self.current_process:
             self.log_message("\n--- Stopping trace script... ---\n")
-            if self.run_sudo_var.get() and self.sudo_password:
-                try:
-                    subprocess.run(['sudo', '-S', 'kill', '-INT', str(self.current_process.pid)], 
+            try:
+                # Invia SIGINT all'intero process group per raggiungere trace-cmd
+                pgid = os.getpgid(self.current_process.pid)
+                if self.sudo_password is not None and self.sudo_password:
+                    subprocess.run(['sudo', '-S', '-k', 'kill', '-INT', '-' + str(pgid)], 
                                    input=self.sudo_password+'\n', text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                except Exception as e:
-                    self.log_message(f"Failed to stop sudo script: {e}\n")
-            else:
-                self.current_process.send_signal(signal.SIGINT)
+                else:
+                    os.killpg(pgid, signal.SIGINT)
+            except Exception as e:
+                self.log_message(f"Failed to stop script: {e}\n")
+                # Fallback: kill the process directly
+                try:
+                    self.current_process.send_signal(signal.SIGINT)
+                except Exception:
+                    pass
             
-            self.stop_btn.config(state="disabled")
+            self.stop_btn_single.config(state="disabled")
+        self.stop_btn_dds.config(state="disabled")
 
     def run_pipeline(self):
         # Chain marker2, marker3, marker4
@@ -391,35 +477,38 @@ class KernelTraceDashboard(tk.Tk):
                 try:
                     proc = subprocess.Popen(['bash', script_path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, cwd=PROJECT_ROOT)
                     for line in proc.stdout:
-                        self.log_text.after(0, self.log_message, line)
+                        self.log_text_single.after(0, self.log_message, line)
                     proc.wait()
                 except Exception as e:
-                    self.log_text.after(0, self.log_message, f"--- Pipeline failed on {script}: {e} ---\n")
+                    self.log_text_single.after(0, self.log_message, f"--- Pipeline failed on {script}: {e} ---\n")
                     break
             self.log_message("=== PIPELINE FINISHED ===\n\n")
-            self.log_text.after(0, self.refresh_traces)
+            self.log_text_single.after(0, self.refresh_traces)
         
         threading.Thread(target=pipeline_thread, daemon=True).start()
 
     def _run_subprocess(self, cmd, use_sudo):
         self.log_message(f"--- Running Script: {' '.join(cmd)} ---\n")
-        self.run_bg_btn.config(state="disabled")
-        self.run_term_btn.config(state="disabled")
-        self.stop_btn.config(state="normal")
+        self.run_bg_btn_single.config(state="disabled")
+        self.run_bg_btn_dds.config(state="disabled")
+        self.run_term_btn_single.config(state="disabled")
+        self.run_term_btn_dds.config(state="disabled")
+        self.stop_btn_single.config(state="normal")
+        self.stop_btn_dds.config(state="normal")
         
         try:
             if use_sudo:
-                self.current_process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, cwd=PROJECT_ROOT)
+                self.current_process = subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, cwd=PROJECT_ROOT, start_new_session=True)
                 self.current_process.stdin.write(self.sudo_password + '\n')
                 self.current_process.stdin.flush()
             else:
-                self.current_process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, cwd=PROJECT_ROOT)
+                self.current_process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1, cwd=PROJECT_ROOT, start_new_session=True)
                 
             for line in self.current_process.stdout:
-                self.log_text.after(0, self.log_message, line)
+                self.log_text_single.after(0, self.log_message, line)
                 
             self.current_process.wait()
-            self.log_text.after(0, self.log_message, f"--- Script finished with code {self.current_process.returncode} ---\n\n")
+            self.log_text_single.after(0, self.log_message, f"--- Script finished with code {self.current_process.returncode} ---\n\n")
             
             # Check if we should run pipeline (applies to marker1 or marker)
             if self.running_script_name and ("marker1" in self.running_script_name or "marker." in self.running_script_name or "marker_dds" in self.running_script_name):
@@ -427,62 +516,126 @@ class KernelTraceDashboard(tk.Tk):
                 self.after(500, self.check_pipeline)
 
         except Exception as e:
-            self.log_text.after(0, self.log_message, f"--- Execution Failed: {str(e)} ---\n\n")
+            self.log_text_single.after(0, self.log_message, f"--- Execution Failed: {str(e)} ---\n\n")
         finally:
             self.current_process = None
             self.running_script_name = None
-            self.run_bg_btn.config(state="normal")
-            self.run_term_btn.config(state="normal")
-            self.stop_btn.config(state="disabled")
+            self.run_bg_btn_single.config(state="normal")
+            self.run_bg_btn_dds.config(state="normal")
+            self.run_term_btn_single.config(state="normal")
+            self.run_term_btn_dds.config(state="normal")
+            self.stop_btn_single.config(state="disabled")
+            self.stop_btn_dds.config(state="disabled")
             self.after(0, self.refresh_traces)
 
     def check_pipeline(self):
         if messagebox.askyesno("Recording Complete", "The marker recording has finished.\nDo you want to automatically generate the report and view the monitor? (Runs marker2, marker3, marker4)"):
             self.run_pipeline()
 
-    def get_arguments(self):
+    def get_arguments_single(self):
+        val = self.single_proc_combobox.get().strip()
+        return [val] if val else []
+
+    def get_arguments_dds(self):
         return list(self.process_listbox.get(0, tk.END))
 
-    def run_in_background(self):
+    def run_in_background_single(self):
         if self.current_process is not None:
             messagebox.showwarning("Busy", "A trace script is already running. Stop it first.")
             return
             
-        script_name = self.selected_script_var.get()
+        script_name = self.selected_script_var_single.get()
         if script_name == "None": return
         self.running_script_name = script_name
         
         script_path = os.path.join(BIN_TOOLS_DIR, script_name)
-        args = self.get_arguments()
+        args = self.get_arguments_single()
         
-        use_sudo = self.run_sudo_var.get()
+        use_sudo = self.run_sudo_var_single.get()
         cmd = []
         if use_sudo:
             if not self.sudo_password:
-                pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to run the script:\n(It will not be stored)", show='*')
+                pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to run the script:\\n(It will not be stored)", show='*')
                 if pwd is None: return
                 self.sudo_password = pwd
-            cmd = ['sudo', '-S', '-E', 'bash', script_path] + args
+            cmd = ['sudo', '-S', '-k', '-E', 'bash', script_path] + args
         else:
             cmd = ['bash', script_path] + args
             
         threading.Thread(target=self._run_subprocess, args=(cmd, use_sudo), daemon=True).start()
 
-    def run_in_terminal(self):
-        script_name = self.selected_script_var.get()
+    def run_in_background_dds(self):
+        if self.current_process is not None:
+            messagebox.showwarning("Busy", "A trace script is already running. Stop it first.")
+            return
+            
+        script_name = self.selected_script_var_dds.get()
+        if script_name == "None": return
+        self.running_script_name = script_name
+        
+        script_path = os.path.join(BIN_TOOLS_DIR, script_name)
+        args = self.get_arguments_dds()
+        
+        use_sudo = self.run_sudo_var_dds.get()
+        cmd = []
+        if use_sudo:
+            if not self.sudo_password:
+                pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to run the script:\\n(It will not be stored)", show='*')
+                if pwd is None: return
+                self.sudo_password = pwd
+            cmd = ['sudo', '-S', '-k', '-E', 'bash', script_path] + args
+        else:
+            cmd = ['bash', script_path] + args
+            
+        threading.Thread(target=self._run_subprocess, args=(cmd, use_sudo), daemon=True).start()
+
+    def run_in_terminal_single(self):
+        script_name = self.selected_script_var_single.get()
         if script_name == "None": return
         
         script_path = os.path.join(BIN_TOOLS_DIR, script_name)
-        args = " ".join(self.get_arguments())
+        args = " ".join(self.get_arguments_single())
         
         cmd = f"bash -c '{script_path} {args}; echo; echo \"Process finished. Press Enter to close.\"; read'"
-        terminal_cmd = ["gnome-terminal", "--", "bash", "-c", cmd]
+        terminal_cmd = []
+        if shutil.which("gnome-terminal"):
+            terminal_cmd = ["gnome-terminal", "--", "bash", "-c", cmd]
+        elif shutil.which("terminator"):
+            terminal_cmd = ["terminator", "-x", "bash", "-c", cmd]
+        elif shutil.which("x-terminal-emulator"):
+            terminal_cmd = ["x-terminal-emulator", "-e", f"bash -c \'{cmd}\'"]
+        else:
+            self.log_message("--- Failed to launch terminal: No supported terminal emulator found ---\n\n")
+            return
         self.log_message(f"--- Launching in external terminal: {script_name} {args} ---\n")
         try:
             subprocess.Popen(terminal_cmd, cwd=PROJECT_ROOT)
         except Exception as e:
             self.log_message(f"--- Failed to launch terminal: {str(e)} ---\n\n")
 
+    def run_in_terminal_dds(self):
+        script_name = self.selected_script_var_dds.get()
+        if script_name == "None": return
+        
+        script_path = os.path.join(BIN_TOOLS_DIR, script_name)
+        args = " ".join(self.get_arguments_dds())
+        
+        cmd = f"bash -c '{script_path} {args}; echo; echo \"Process finished. Press Enter to close.\"; read'"
+        terminal_cmd = []
+        if shutil.which("gnome-terminal"):
+            terminal_cmd = ["gnome-terminal", "--", "bash", "-c", cmd]
+        elif shutil.which("terminator"):
+            terminal_cmd = ["terminator", "-x", "bash", "-c", cmd]
+        elif shutil.which("x-terminal-emulator"):
+            terminal_cmd = ["x-terminal-emulator", "-e", f"bash -c \'{cmd}\'"]
+        else:
+            self.log_message("--- Failed to launch terminal: No supported terminal emulator found ---\n\n")
+            return
+        self.log_message(f"--- Launching in external terminal: {script_name} {args} ---\n")
+        try:
+            subprocess.Popen(terminal_cmd, cwd=PROJECT_ROOT)
+        except Exception as e:
+            self.log_message(f"--- Failed to launch terminal: {str(e)} ---\n\n")
 
     # ==========================================
     # TRACES TAB
