@@ -228,6 +228,8 @@ class KernelTraceDashboard(tk.Tk):
         
         ttk.Button(proc_frame, text="🚀 Launch Selected", command=self.launch_selected_terminal).grid(row=2, column=2, padx=(5,0), sticky="e", pady=(5,0))
         ttk.Button(proc_frame, text="🚀 Launch ALL", command=self.launch_all_terminals).grid(row=2, column=3, padx=(5,0), sticky="e", pady=(5,0))
+        
+        ttk.Button(proc_frame, text="🛑 Kill Target Apps", command=self.kill_all_apps).grid(row=3, column=3, padx=(5,0), sticky="e", pady=(5,0))
 
         # --- Step 2: Trace Scripts ---
         step2_frame = ttk.LabelFrame(self.tab_dds, text="Step 2: Trace Scripts", style="TLabelframe")
@@ -327,8 +329,22 @@ class KernelTraceDashboard(tk.Tk):
             return
             
         if use_sudo:
-            cmd = f"sudo -S bash -c '{app_path} < /dev/tty'; echo; echo \"Process finished. Press Enter to close.\"; read < /dev/tty"
-            cmd_to_run = f"echo '{self.sudo_password}' | {{ {cmd}; }}"
+            temp_id = str(uuid.uuid4())
+            pass_file = f"/tmp/.kt_sudo_{temp_id}"
+            try:
+                with open(pass_file, "w") as f:
+                    f.write(self.sudo_password + "\n")
+                os.chmod(pass_file, 0o600)
+            except Exception as e:
+                self.log_message(f"--- Failed to create password file: {str(e)} ---\n")
+                return
+                
+            env_vars = ""
+            for var in ["DISPLAY", "XAUTHORITY", "WAYLAND_DISPLAY"]:
+                if var in os.environ:
+                    env_vars += f"export {var}='{os.environ[var]}'; "
+                    
+            cmd_to_run = f"sudo -S < {pass_file} bash -c 'rm -f {pass_file}; {env_vars}tail -f /dev/null | {app_path}'; rm -f {pass_file}; echo; echo \"Process finished. Press Enter to close.\"; read < /dev/tty"
         else:
             cmd = f"{app_path}; echo; echo \"Process finished. Press Enter to close.\"; read"
             cmd_to_run = cmd
@@ -337,11 +353,14 @@ class KernelTraceDashboard(tk.Tk):
         if shutil.which("gnome-terminal"):
             terminal_cmd = ["gnome-terminal", "--", "bash", "-c", cmd_to_run]
         elif shutil.which("terminator"):
-            terminal_cmd = ["terminator", "-x", "bash", "-c", cmd_to_run]
+            terminal_cmd = ["terminator", "-u", "-x", "bash", "-c", cmd_to_run]
         elif shutil.which("x-terminal-emulator"):
             terminal_cmd = ["x-terminal-emulator", "-e", f"bash -c '{cmd_to_run}'"]
         else:
             self.log_message("--- Failed to launch terminal: No supported terminal emulator found ---\n\n")
+            if use_sudo:
+                try: os.remove(pass_file)
+                except OSError: pass
             return
             
         self.log_message(f"--- Launching in external terminal: {val} ---\n")
@@ -369,8 +388,22 @@ class KernelTraceDashboard(tk.Tk):
                 continue
                 
             if use_sudo:
-                cmd = f"sudo -S bash -c '{app_path} < /dev/tty'; echo; echo \"Process finished. Press Enter to close.\"; read < /dev/tty"
-                cmd_to_run = f"echo '{self.sudo_password}' | {{ {cmd}; }}"
+                temp_id = str(uuid.uuid4())
+                pass_file = f"/tmp/.kt_sudo_{temp_id}"
+                try:
+                    with open(pass_file, "w") as f:
+                        f.write(self.sudo_password + "\n")
+                    os.chmod(pass_file, 0o600)
+                except Exception as e:
+                    self.log_message(f"--- Failed to create password file: {str(e)} ---\n")
+                    continue
+                    
+                env_vars = ""
+                for var in ["DISPLAY", "XAUTHORITY", "WAYLAND_DISPLAY"]:
+                    if var in os.environ:
+                        env_vars += f"export {var}='{os.environ[var]}'; "
+                        
+                cmd_to_run = f"sudo -S < {pass_file} bash -c 'rm -f {pass_file}; {env_vars}tail -f /dev/null | {app_path}'; rm -f {pass_file}; echo; echo \"Process finished. Press Enter to close.\"; read < /dev/tty"
             else:
                 cmd = f"{app_path}; echo; echo \"Process finished. Press Enter to close.\"; read"
                 cmd_to_run = cmd
@@ -379,19 +412,25 @@ class KernelTraceDashboard(tk.Tk):
             if shutil.which("gnome-terminal"):
                 terminal_cmd = ["gnome-terminal", "--", "bash", "-c", cmd_to_run]
             elif shutil.which("terminator"):
-                terminal_cmd = ["terminator", "-x", "bash", "-c", cmd_to_run]
+                terminal_cmd = ["terminator", "-u", "-x", "bash", "-c", cmd_to_run]
             elif shutil.which("x-terminal-emulator"):
                 terminal_cmd = ["x-terminal-emulator", "-e", f"bash -c '{cmd_to_run}'"]
             else:
                 self.log_message("--- Failed to launch terminal: No supported terminal emulator found ---\n\n")
+                if use_sudo:
+                    try: os.remove(pass_file)
+                    except OSError: pass
                 continue
                 
             self.log_message(f"--- Launching in external terminal: {val} ---\n")
             try:
                 subprocess.Popen(terminal_cmd, cwd=PROJECT_ROOT)
-                time.sleep(1.0)  # Avoid sudo-rs concurrent authentication lock
+                time.sleep(1.5)  # Avoid sudo-rs concurrent authentication lock
             except Exception as e:
                 self.log_message(f"--- Failed to launch terminal for {val}: {str(e)} ---\n")
+                if use_sudo:
+                    try: os.remove(pass_file)
+                    except OSError: pass
 
     def refresh_scripts(self):
         self.script_listbox_single.delete(0, tk.END)
@@ -439,6 +478,25 @@ class KernelTraceDashboard(tk.Tk):
             self.log_text_dds.insert(tk.END, message)
             self.log_text_dds.see(tk.END)
         except: pass
+
+    def kill_all_apps(self):
+        try:
+            apps = [f for f in os.listdir(BIN_APP_DIR) if os.path.isfile(os.path.join(BIN_APP_DIR, f))]
+            if not apps:
+                return
+            
+            if not self.sudo_password:
+                pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to forcefully terminate applications:\\n(It will not be stored)", show='*')
+                if pwd is None: return
+                self.sudo_password = pwd
+                
+            self.log_message("\n--- Killing all target apps... ---\n")
+            cmd = ['sudo', '-S', 'killall', '-9'] + apps
+            
+            subprocess.run(cmd, input=self.sudo_password + '\n', text=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            self.log_message("Sent kill signal to target apps.\n")
+        except Exception as e:
+            self.log_message(f"Error killing apps: {e}\n")
 
     def clear_log(self):
         try: self.log_text_single.delete(1.0, tk.END); self.log_text_dds.delete(1.0, tk.END)
@@ -558,7 +616,7 @@ class KernelTraceDashboard(tk.Tk):
                 pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to run the script:\\n(It will not be stored)", show='*')
                 if pwd is None: return
                 self.sudo_password = pwd
-            cmd = ['sudo', '-S', '-k', '-E', 'bash', script_path] + args
+            cmd = ['sudo', '-S', '-k', 'bash', script_path] + args
         else:
             cmd = ['bash', script_path] + args
             
@@ -583,7 +641,7 @@ class KernelTraceDashboard(tk.Tk):
                 pwd = simpledialog.askstring("Sudo Required", "Enter your sudo password to run the script:\\n(It will not be stored)", show='*')
                 if pwd is None: return
                 self.sudo_password = pwd
-            cmd = ['sudo', '-S', '-k', '-E', 'bash', script_path] + args
+            cmd = ['sudo', '-S', '-k', 'bash', script_path] + args
         else:
             cmd = ['bash', script_path] + args
             
