@@ -23,21 +23,11 @@ temp_gen_*/
 *.out
 *.done
 
-# Ignora il contenuto della cartella bin tranne tools e le cartelle con .gitkeep
-Project_Kernel_Trace/bin/*
-!Project_Kernel_Trace/bin/tools/
-!Project_Kernel_Trace/bin/app/
-!Project_Kernel_Trace/bin/lib/
-!Project_Kernel_Trace/bin/msg/
-!Project_Kernel_Trace/bin/Test/
-Project_Kernel_Trace/bin/app/*
-!Project_Kernel_Trace/bin/app/.gitkeep
-Project_Kernel_Trace/bin/lib/*
-!Project_Kernel_Trace/bin/lib/.gitkeep
-Project_Kernel_Trace/bin/msg/*
-!Project_Kernel_Trace/bin/msg/.gitkeep
-Project_Kernel_Trace/bin/Test/*
-!Project_Kernel_Trace/bin/Test/.gitkeep
+# Nessuna restrizione per bin/ così tutto il contenuto è visibile
+!Project_Kernel_Trace/bin/**/*.a
+!Project_Kernel_Trace/bin/**/*.so
+!Project_Kernel_Trace/bin/**/*.o
+!Project_Kernel_Trace/bin/**/*.done
 
 Project_Kernel_Trace/build/**
 

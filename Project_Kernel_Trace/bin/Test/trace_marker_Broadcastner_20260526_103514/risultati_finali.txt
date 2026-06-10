@@ -1,0 +1,46 @@
+
+----------------------------------------------------------
+ TASK: DDS_Publish (PID: 3966)
+----------------------------------------------------------
+ [Esecuzione] WCET :     93.427 ms  |  ACET:     84.088 ms
+ [T.Risposta] WCRT :     93.418 ms
+ [Periodo]    Mis. :    599.516 ms  |  Jitter:    3.212 ms
+ [Parametri]  Periodo:  600.000 ms  |  Deadline:  600.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  506.582 ms
+ [Stati]      Sleep  :        8      |  Preempt:        0     |  Run n.: 9
+ [Globale]    Util%  :   15.867 %    |  Gaps   :        8 (525.827 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 3967)
+----------------------------------------------------------
+ [Esecuzione] WCET :     62.912 ms  |  ACET:     56.761 ms
+ [T.Risposta] WCRT :     62.901 ms
+ [Periodo]    Mis. :    999.995 ms  |  Jitter:    0.134 ms
+ [Parametri]  Periodo: 1000.000 ms  |  Deadline: 1000.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  937.099 ms
+ [Stati]      Sleep  :        5      |  Preempt:        0     |  Run n.: 6
+ [Globale]    Util%  :    6.875 %    |  Gaps   :        5 (945.446 ms max)
+
+----------------------------------------------------------
+ TASK: DDS_Publish (PID: 5331)
+----------------------------------------------------------
+ [Esecuzione] WCET :     88.894 ms  |  ACET:     83.223 ms
+ [T.Risposta] WCRT :     88.890 ms
+ [Periodo]    Mis. :    600.001 ms  |  Jitter:    0.419 ms
+ [Parametri]  Periodo:  600.000 ms  |  Deadline:  600.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  511.110 ms
+ [Stati]      Sleep  :        8      |  Preempt:        1     |  Run n.: 10
+ [Globale]    Util%  :   13.871 %    |  Gaps   :        9 (519.286 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 5332)
+----------------------------------------------------------
+ [Esecuzione] WCET :     57.575 ms  |  ACET:     54.957 ms
+ [T.Risposta] WCRT :     60.620 ms
+ [Periodo]    Mis. :    999.982 ms  |  Jitter:    0.573 ms
+ [Parametri]  Periodo: 1000.000 ms  |  Deadline: 1000.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  939.380 ms
+ [Stati]      Sleep  :        5      |  Preempt:        0     |  Run n.: 6
+ [Globale]    Util%  :    6.708 %    |  Gaps   :        5 (946.310 ms max)
+
+[+] Dati esportati su timeline.csv
