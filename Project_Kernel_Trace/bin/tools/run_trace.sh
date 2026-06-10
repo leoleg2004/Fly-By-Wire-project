@@ -88,10 +88,11 @@ TRACE_CMD_PID=""
 cleanup() {
     echo ""
     echo "--- Segnale ricevuto, arresto trace-cmd... ---"
-    if [ -n "$TRACE_CMD_PID" ] && kill -0 "$TRACE_CMD_PID" 2>/dev/null; then
-        kill -INT "$TRACE_CMD_PID" 2>/dev/null
+    $SUDO_CMD pkill -INT trace-cmd 2>/dev/null
+    if [ -n "$TRACE_CMD_PID" ]; then
         wait "$TRACE_CMD_PID" 2>/dev/null
     fi
+    sleep 1
 }
 trap cleanup INT TERM
 

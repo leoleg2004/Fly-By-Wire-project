@@ -1,0 +1,24 @@
+
+----------------------------------------------------------
+ TASK: Activity_1 (PID: 14079)
+----------------------------------------------------------
+ [Esecuzione] WCET :    145.877 ms  |  ACET:    142.318 ms
+ [T.Risposta] WCRT :    145.850 ms
+ [Periodo]    Mis. :    923.137 ms  |  Jitter:    0.442 ms
+ [Parametri]  Periodo: 1000.000 ms  |  Deadline: 1000.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  854.150 ms
+ [Stati]      Sleep  :        6      |  Preempt:        0     |  Run n.: 7
+ [Globale]    Util%  :   17.047 %    |  Gaps   :        6 (785.183 ms max)
+
+----------------------------------------------------------
+ TASK: Activity_2 (PID: 14080)
+----------------------------------------------------------
+ [Esecuzione] WCET :    295.637 ms  |  ACET:    286.474 ms
+ [T.Risposta] WCRT :    295.617 ms
+ [Periodo]    Mis. :   1107.806 ms  |  Jitter:    0.534 ms
+ [Parametri]  Periodo: 1200.000 ms  |  Deadline: 1200.000 ms
+ [Scadenze]   Miss   :        0      |  Slack Peggiore:  904.383 ms
+ [Stati]      Sleep  :        6      |  Preempt:        1     |  Run n.: 8
+ [Globale]    Util%  :   29.676 %    |  Gaps   :        7 (832.804 ms max)
+
+[+] Dati esportati su timeline.csv
