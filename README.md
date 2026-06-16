@@ -42,7 +42,7 @@ Definizioni IDL dei messaggi. Il Makefile integrato gestisce la generazione del 
 
 ---
 
-## 🛩️ Simulatore F-16 Non-Lineare (`SimulatoreC++`)
+## 🛩️ Simulatore F-16 Non-Lineare 
 
 Il progetto include un simulatore di volo indipendente basato sul modello dell'aereo F-16:
 - **Rendering**: Sviluppato con la libreria **Raylib**.
