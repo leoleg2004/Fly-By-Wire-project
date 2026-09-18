@@ -1,0 +1,967 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{bhattacharya_f16_trim}{software}{}{}
+      \name{author}{1}{}{%
+        {{hash=43ca765e5ed212c87f9d8e9e5de0405f}{%
+           family={Bhattacharya},
+           familyi={B\bibinitperiod},
+           given={Raktim},
+           giveni={R\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Texas A\&M University}%
+      }
+      \strng{namehash}{43ca765e5ed212c87f9d8e9e5de0405f}
+      \strng{fullhash}{43ca765e5ed212c87f9d8e9e5de0405f}
+      \strng{fullhashraw}{43ca765e5ed212c87f9d8e9e5de0405f}
+      \strng{bibnamehash}{43ca765e5ed212c87f9d8e9e5de0405f}
+      \strng{authorbibnamehash}{43ca765e5ed212c87f9d8e9e5de0405f}
+      \strng{authornamehash}{43ca765e5ed212c87f9d8e9e5de0405f}
+      \strng{authorfullhash}{43ca765e5ed212c87f9d8e9e5de0405f}
+      \strng{authorfullhashraw}{43ca765e5ed212c87f9d8e9e5de0405f}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Implementazione MATLAB del modello non lineare dell'F-16}
+      \field{title}{F16-Model-Matlab: TrimF16.m}
+      \field{urlday}{26}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://github.com/isrlab/F16-Model-Matlab/blob/main/TrimF16.m
+      \endverb
+      \verb{url}
+      \verb https://github.com/isrlab/F16-Model-Matlab/blob/main/TrimF16.m
+      \endverb
+    \endentry
+    \entry{Astrom2008}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=8587f4ee9267cc790142519010958edb}{%
+           family={J.\bibnamedelimi {Å}ström},
+           familyi={J\bibinitperiod\bibinitdelim Å\bibinitperiod},
+           given={Karl},
+           giveni={K\bibinitperiod}}}%
+        {{hash=22ec7dc3434ec7866e28d570204999f8}{%
+           family={Murray},
+           familyi={M\bibinitperiod},
+           given={Richard\bibnamedelima M.},
+           giveni={R\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Princeton, NJ}%
+      }
+      \list{publisher}{1}{%
+        {Princeton University Press}%
+      }
+      \strng{namehash}{f56d13174cd6cd80e7b987066739cd65}
+      \strng{fullhash}{f56d13174cd6cd80e7b987066739cd65}
+      \strng{fullhashraw}{f56d13174cd6cd80e7b987066739cd65}
+      \strng{bibnamehash}{f56d13174cd6cd80e7b987066739cd65}
+      \strng{authorbibnamehash}{f56d13174cd6cd80e7b987066739cd65}
+      \strng{authornamehash}{f56d13174cd6cd80e7b987066739cd65}
+      \strng{authorfullhash}{f56d13174cd6cd80e7b987066739cd65}
+      \strng{authorfullhashraw}{f56d13174cd6cd80e7b987066739cd65}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{1st}
+      \field{isbn}{978-0-691-13576-2}
+      \field{title}{Feedback Systems: An Introduction for Scientists and Engineers}
+      \field{year}{2008}
+      \verb{urlraw}
+      \verb https://fbswiki.org/wiki/index.php/Feedback_Systems:_An_Introduction_for_Scientists_and_Engineers
+      \endverb
+      \verb{url}
+      \verb https://fbswiki.org/wiki/index.php/Feedback_Systems:_An_Introduction_for_Scientists_and_Engineers
+      \endverb
+    \endentry
+    \entry{stevens2015aircraft}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=34647e92206433d5a14e99ba6b123b1c}{%
+           family={Stevens},
+           familyi={S\bibinitperiod},
+           given={Brian\bibnamedelima L},
+           giveni={B\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=e8b2d327ef78200b45c2158053b96ca0}{%
+           family={Lewis},
+           familyi={L\bibinitperiod},
+           given={Frank\bibnamedelima L},
+           giveni={F\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=288ddf0ed32d5d6023ac50b46ba35808}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={Eric\bibnamedelima N},
+           giveni={E\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {John Wiley \& Sons}%
+      }
+      \strng{namehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{fullhash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{fullhashraw}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{bibnamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorbibnamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authornamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorfullhash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorfullhashraw}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Aircraft control and simulation: dynamics, controls design, and autonomous systems}
+      \field{year}{2015}
+    \endentry
+    \entry{lewis2015ch2}{inbook}{}{}
+      \name{author}{3}{}{%
+        {{hash=34647e92206433d5a14e99ba6b123b1c}{%
+           family={Stevens},
+           familyi={S\bibinitperiod},
+           given={Brian\bibnamedelima L.},
+           giveni={B\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=e8b2d327ef78200b45c2158053b96ca0}{%
+           family={Lewis},
+           familyi={L\bibinitperiod},
+           given={Frank\bibnamedelima L.},
+           giveni={F\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=288ddf0ed32d5d6023ac50b46ba35808}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={Eric\bibnamedelima N.},
+           giveni={E\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {John Wiley \& Sons, Ltd}%
+      }
+      \strng{namehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{fullhash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{fullhashraw}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{bibnamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorbibnamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authornamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorfullhash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorfullhashraw}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \field{extraname}{2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Aircraft Control and Simulation: Dynamics, Controls Design, and Autonomous Systems}
+      \field{chapter}{2}
+      \field{isbn}{9781119174882}
+      \field{note}{Analisi aerodinamica, linearizzazione e separazione dei moti}
+      \field{title}{Modeling the Aircraft}
+      \field{year}{2015}
+      \field{pages}{63\bibrangedash 141}
+      \range{pages}{79}
+      \verb{doi}
+      \verb 10.1002/9781119174882.ch2
+      \endverb
+      \verb{urlraw}
+      \verb https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch2
+      \endverb
+      \verb{url}
+      \verb https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch2
+      \endverb
+    \endentry
+    \entry{lewis2015ch3}{inbook}{}{}
+      \name{author}{1}{}{%
+        {{hash=e8b2d327ef78200b45c2158053b96ca0}{%
+           family={Lewis},
+           familyi={L\bibinitperiod},
+           given={Frank\bibnamedelima L.},
+           giveni={F\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {John Wiley \& Sons, Ltd}%
+      }
+      \strng{namehash}{e8b2d327ef78200b45c2158053b96ca0}
+      \strng{fullhash}{e8b2d327ef78200b45c2158053b96ca0}
+      \strng{fullhashraw}{e8b2d327ef78200b45c2158053b96ca0}
+      \strng{bibnamehash}{e8b2d327ef78200b45c2158053b96ca0}
+      \strng{authorbibnamehash}{e8b2d327ef78200b45c2158053b96ca0}
+      \strng{authornamehash}{e8b2d327ef78200b45c2158053b96ca0}
+      \strng{authorfullhash}{e8b2d327ef78200b45c2158053b96ca0}
+      \strng{authorfullhashraw}{e8b2d327ef78200b45c2158053b96ca0}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Aircraft Control and Simulation: Dynamics, Controls Design, and Autonomous Systems}
+      \field{chapter}{3}
+      \field{isbn}{9781119174882}
+      \field{note}{Estratto per l'analisi dei modelli di stato continui e simulazione del volo}
+      \field{title}{Modeling, Design, and Simulation Tools}
+      \field{year}{2015}
+      \field{pages}{142\bibrangedash 249}
+      \range{pages}{108}
+      \verb{doi}
+      \verb 10.1002/9781119174882.ch3
+      \endverb
+      \verb{urlraw}
+      \verb https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch3
+      \endverb
+      \verb{url}
+      \verb https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch3
+      \endverb
+    \endentry
+    \entry{mit_quaternions}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=5864966a44125ae859a7b9ff3013705e}{%
+           family={Technology\bibnamedelima (MIT)},
+           familyi={T\bibinitperiod\bibinitdelim (\bibinitperiod},
+           given={Massachusetts\bibnamedelima Institute},
+           giveni={M\bibinitperiod\bibinitdelim I\bibinitperiod},
+           prefix={of},
+           prefixi={o\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {MIT}%
+      }
+      \strng{namehash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{fullhash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{fullhashraw}{5864966a44125ae859a7b9ff3013705e}
+      \strng{bibnamehash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{authorbibnamehash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{authornamehash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{authorfullhash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{authorfullhashraw}{5864966a44125ae859a7b9ff3013705e}
+      \field{extraname}{1}
+      \field{sortinit}{7}
+      \field{sortinithash}{108d0be1b1bee9773a1173443802c0a3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Quaternions lecture}
+      \field{urlday}{26}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://ocw.mit.edu/courses/6-801-machine-vision-fall-2020/resources/lecture-18-rotation-and-how-to-represent-it-unit-quaternions-the-space-of-rotations/
+      \endverb
+      \verb{url}
+      \verb https://ocw.mit.edu/courses/6-801-machine-vision-fall-2020/resources/lecture-18-rotation-and-how-to-represent-it-unit-quaternions-the-space-of-rotations/
+      \endverb
+    \endentry
+    \entry{mit_rungekutta}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=5864966a44125ae859a7b9ff3013705e}{%
+           family={Technology\bibnamedelima (MIT)},
+           familyi={T\bibinitperiod\bibinitdelim (\bibinitperiod},
+           given={Massachusetts\bibnamedelima Institute},
+           giveni={M\bibinitperiod\bibinitdelim I\bibinitperiod},
+           prefix={of},
+           prefixi={o\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {MIT}%
+      }
+      \strng{namehash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{fullhash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{fullhashraw}{5864966a44125ae859a7b9ff3013705e}
+      \strng{bibnamehash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{authorbibnamehash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{authornamehash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{authorfullhash}{5864966a44125ae859a7b9ff3013705e}
+      \strng{authorfullhashraw}{5864966a44125ae859a7b9ff3013705e}
+      \field{extraname}{2}
+      \field{sortinit}{9}
+      \field{sortinithash}{0a5ebc79d83c96b6579069544c73c7d4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Course 10.001 Web Notes}
+      \field{title}{Differential Equations Notes: The Runge-Kutta Method}
+      \field{urlday}{26}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node5.html
+      \endverb
+      \verb{url}
+      \verb https://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node5.html
+      \endverb
+    \endentry
+    \entry{etkin_dynamics}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=780c52c0abc37f59f2f12cffd754dac8}{%
+           family={Etkin},
+           familyi={E\bibinitperiod},
+           given={Bernard},
+           giveni={B\bibinitperiod}}}%
+        {{hash=922b723a0f917fa46456610a69cc6fe9}{%
+           family={Reid},
+           familyi={R\bibinitperiod},
+           given={Lloyd\bibnamedelima Duff},
+           giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York}%
+      }
+      \list{publisher}{1}{%
+        {John Wiley \& Sons}%
+      }
+      \strng{namehash}{d3ee772429a5d85650cc9f72300ee48b}
+      \strng{fullhash}{d3ee772429a5d85650cc9f72300ee48b}
+      \strng{fullhashraw}{d3ee772429a5d85650cc9f72300ee48b}
+      \strng{bibnamehash}{d3ee772429a5d85650cc9f72300ee48b}
+      \strng{authorbibnamehash}{d3ee772429a5d85650cc9f72300ee48b}
+      \strng{authornamehash}{d3ee772429a5d85650cc9f72300ee48b}
+      \strng{authorfullhash}{d3ee772429a5d85650cc9f72300ee48b}
+      \strng{authorfullhashraw}{d3ee772429a5d85650cc9f72300ee48b}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Dynamics of flight: stability and control}
+      \field{volume}{3}
+      \field{year}{1996}
+    \endentry
+    \entry{Particle_Swarm_Optimization}{online}{}{}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labeltitlesource}{title}
+      \field{title}{Particle\_Swarm\_Optimization\_toolbox}
+      \field{urlday}{26}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://it.mathworks.com/matlabcentral/fileexchange/7506-particle-swarm-optimization-toolbox
+      \endverb
+      \verb{url}
+      \verb https://it.mathworks.com/matlabcentral/fileexchange/7506-particle-swarm-optimization-toolbox
+      \endverb
+    \endentry
+    \entry{ferramosca_cal_multivariabili_misc}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a0ec6223582d13b2f1f402655b31b644}{%
+           family={Ferramosca},
+           familyi={F\bibinitperiod},
+           given={Antonio},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Università degli Studi di Bergamo}%
+      }
+      \strng{namehash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{fullhash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{fullhashraw}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{bibnamehash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{authorbibnamehash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{authornamehash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{authorfullhash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{authorfullhashraw}{a0ec6223582d13b2f1f402655b31b644}
+      \field{extraname}{1}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Materiale didattico per il corso di Controllo Avanzato}
+      \field{note}{Control and Automation Laboratory (CAL)}
+      \field{title}{Lezione 06 - Schemi di controllo multivariabili}
+      \field{urlday}{26}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://cal.unibg.it/wp-content/uploads/Controllo_avanzato/Lezione-06-Schemi-di-controllo-multivariabili.pdf
+      \endverb
+      \verb{url}
+      \verb https://cal.unibg.it/wp-content/uploads/Controllo_avanzato/Lezione-06-Schemi-di-controllo-multivariabili.pdf
+      \endverb
+    \endentry
+    \entry{ogata_2010}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=72cb1e667ce543119df1b777c0db24de}{%
+           family={Ogata},
+           familyi={O\bibinitperiod},
+           given={Katsuhiko},
+           giveni={K\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Boston, MA}%
+      }
+      \list{publisher}{1}{%
+        {Prentice Hall}%
+      }
+      \strng{namehash}{72cb1e667ce543119df1b777c0db24de}
+      \strng{fullhash}{72cb1e667ce543119df1b777c0db24de}
+      \strng{fullhashraw}{72cb1e667ce543119df1b777c0db24de}
+      \strng{bibnamehash}{72cb1e667ce543119df1b777c0db24de}
+      \strng{authorbibnamehash}{72cb1e667ce543119df1b777c0db24de}
+      \strng{authornamehash}{72cb1e667ce543119df1b777c0db24de}
+      \strng{authorfullhash}{72cb1e667ce543119df1b777c0db24de}
+      \strng{authorfullhashraw}{72cb1e667ce543119df1b777c0db24de}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{5th}
+      \field{title}{Modern Control Engineering}
+      \field{year}{2010}
+    \endentry
+    \entry{brugali_erts_2025}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=048d2f05ba9035984c80801fcbc2381c}{%
+           family={Brugali},
+           familyi={B\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{bibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorbibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authornamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Materiale didattico del corso di Embedded Real-Time Systems, Università degli Studi di Bergamo}
+      \field{note}{Dispense del corso a.a. 2025--2026, Prof. Davide Brugali}
+      \field{title}{Embedded Real-Time Systems --- Lecture Slides}
+      \field{year}{2025}
+    \endentry
+    \entry{brugali_erts_posix}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=048d2f05ba9035984c80801fcbc2381c}{%
+           family={Brugali},
+           familyi={B\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{bibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorbibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authornamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Dispense 19.2--19.3, corso Embedded Real-Time Systems, Università degli Studi di Bergamo, a.a. 2025--2026}
+      \field{title}{POSIX Threads --- Lecture Notes}
+      \field{year}{2025}
+    \endentry
+    \entry{brugali_erts_DDS}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=048d2f05ba9035984c80801fcbc2381c}{%
+           family={Brugali},
+           familyi={B\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{bibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorbibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authornamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \field{extraname}{3}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Dispensa 19.3, corso Embedded Real-Time Systems, Università degli Studi di Bergamo, a.a. 2025--2026}
+      \field{title}{DDS --- Lecture Notes}
+      \field{year}{2025}
+    \endentry
+    \entry{eprosima_monitor_docs}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=3f394000194f0ea4a0d924108d2d3da4}{%
+           family={{eProsima}},
+           familyi={e\bibinitperiod}}}%
+      }
+      \strng{namehash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{fullhash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{fullhashraw}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{bibnamehash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{authorbibnamehash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{authornamehash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{authorfullhash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{authorfullhashraw}{3f394000194f0ea4a0d924108d2d3da4}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://fast-dds-monitor.readthedocs.io/en/latest/}}
+      \field{note}{Accessed: 2026-05-05}
+      \field{title}{{Fast DDS Monitor} -- Documentation v4.0.0}
+      \field{year}{2024}
+    \endentry
+    \entry{rostedt_ftrace}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=d53c5fa2909340b08413f0eeb39d83fb}{%
+           family={Rostedt},
+           familyi={R\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{fullhash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{fullhashraw}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{bibnamehash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{authorbibnamehash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{authornamehash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{authorfullhash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{authorfullhashraw}{d53c5fa2909340b08413f0eeb39d83fb}
+      \field{extraname}{1}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://lwn.net/Articles/322666/}}
+      \field{note}{Linux Weekly News (LWN.net)}
+      \field{title}{Debugging the Kernel Using \texttt{ftrace}}
+      \field{year}{2009}
+    \endentry
+    \entry{tracecmd_record_man}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=d53c5fa2909340b08413f0eeb39d83fb}{%
+           family={Rostedt},
+           familyi={R\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{fullhash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{fullhashraw}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{bibnamehash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{authorbibnamehash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{authornamehash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{authorfullhash}{d53c5fa2909340b08413f0eeb39d83fb}
+      \strng{authorfullhashraw}{d53c5fa2909340b08413f0eeb39d83fb}
+      \field{extraname}{2}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://www.trace-cmd.org/Documentation/trace-cmd/trace-cmd-record.1.html}}
+      \field{note}{Copyright Red Hat Inc., GNU Public License}
+      \field{title}{\texttt{trace-cmd-record}(1) --- Manual Page}
+      \field{year}{2010}
+    \endentry
+    \entry{Scheduling_Real_Time}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=9c677286866aad38f8e9b660f5411814}{%
+           family={Wikipedia},
+           familyi={W\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {WikiPedia}%
+      }
+      \strng{namehash}{9c677286866aad38f8e9b660f5411814}
+      \strng{fullhash}{9c677286866aad38f8e9b660f5411814}
+      \strng{fullhashraw}{9c677286866aad38f8e9b660f5411814}
+      \strng{bibnamehash}{9c677286866aad38f8e9b660f5411814}
+      \strng{authorbibnamehash}{9c677286866aad38f8e9b660f5411814}
+      \strng{authornamehash}{9c677286866aad38f8e9b660f5411814}
+      \strng{authorfullhash}{9c677286866aad38f8e9b660f5411814}
+      \strng{authorfullhashraw}{9c677286866aad38f8e9b660f5411814}
+      \field{extraname}{1}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Radar}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://www.faa.gov/sites/faa.gov/files/aircraft/air_cert/design_approvals/air_software/05-27_RTSA.pdf
+      \endverb
+      \verb{url}
+      \verb https://www.faa.gov/sites/faa.gov/files/aircraft/air_cert/design_approvals/air_software/05-27_RTSA.pdf
+      \endverb
+    \endentry
+    \entry{nasa1984}{report}{}{}
+      \list{institution}{1}{%
+        {NASA}%
+      }
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{title}{AFTI/F-16 Digital Flight Control System Experience}
+      \field{type}{techreport}
+      \field{year}{1984}
+      \verb{urlraw}
+      \verb https://ntrs.nasa.gov/api/citations/19840012524/downloads/19840012524.pdf
+      \endverb
+      \verb{url}
+      \verb https://ntrs.nasa.gov/api/citations/19840012524/downloads/19840012524.pdf
+      \endverb
+    \endentry
+    \entry{Navigation_System}{report}{}{}
+      \list{institution}{1}{%
+        {U.S airforce}%
+      }
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labeltitlesource}{title}
+      \field{title}{Testing the Latest Embedded GPS/INS Hybrid Navigation System for the F-16 Fighting Falco}
+      \field{type}{techreport}
+      \verb{urlraw}
+      \verb https://ndia.dtic.mil/wp-content/uploads/2007/test/JKillian_SessionD3.pdf
+      \endverb
+      \verb{url}
+      \verb https://ndia.dtic.mil/wp-content/uploads/2007/test/JKillian_SessionD3.pdf
+      \endverb
+    \endentry
+    \entry{Radar_AN/APG-68}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=9c677286866aad38f8e9b660f5411814}{%
+           family={Wikipedia},
+           familyi={W\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {WikiPedia}%
+      }
+      \strng{namehash}{9c677286866aad38f8e9b660f5411814}
+      \strng{fullhash}{9c677286866aad38f8e9b660f5411814}
+      \strng{fullhashraw}{9c677286866aad38f8e9b660f5411814}
+      \strng{bibnamehash}{9c677286866aad38f8e9b660f5411814}
+      \strng{authorbibnamehash}{9c677286866aad38f8e9b660f5411814}
+      \strng{authornamehash}{9c677286866aad38f8e9b660f5411814}
+      \strng{authorfullhash}{9c677286866aad38f8e9b660f5411814}
+      \strng{authorfullhashraw}{9c677286866aad38f8e9b660f5411814}
+      \field{extraname}{2}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Radar}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/wiki/AN/APG-68
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/wiki/AN/APG-68
+      \endverb
+    \endentry
+    \entry{spitzer2017digital}{book}{}{}
+      \name{author}{3}{}{%
+        {{hash=8ad23c942977bc24c7ae5802c0164be8}{%
+           family={Spitzer},
+           familyi={S\bibinitperiod},
+           given={Cary},
+           giveni={C\bibinitperiod}}}%
+        {{hash=8e3f6b1d47ede17c563271cae0501b8d}{%
+           family={Ferrell},
+           familyi={F\bibinitperiod},
+           given={Uma},
+           giveni={U\bibinitperiod}}}%
+        {{hash=ed069562858d698bbdf60064bef6d63a}{%
+           family={Ferrell},
+           familyi={F\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {CRC press}%
+      }
+      \strng{namehash}{326f2c4d23e2036214266b95c8402a15}
+      \strng{fullhash}{326f2c4d23e2036214266b95c8402a15}
+      \strng{fullhashraw}{326f2c4d23e2036214266b95c8402a15}
+      \strng{bibnamehash}{326f2c4d23e2036214266b95c8402a15}
+      \strng{authorbibnamehash}{326f2c4d23e2036214266b95c8402a15}
+      \strng{authornamehash}{326f2c4d23e2036214266b95c8402a15}
+      \strng{authorfullhash}{326f2c4d23e2036214266b95c8402a15}
+      \strng{authorfullhashraw}{326f2c4d23e2036214266b95c8402a15}
+      \field{sortinit}{3}
+      \field{sortinithash}{ad6fe7482ffbd7b9f99c9e8b5dccd3d7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Digital avionics handbook}
+      \field{year}{2017}
+      \verb{urlraw}
+      \verb https://books.google.it/books?hl=it&lr=&id=kvjRBQAAQBAJ&oi=fnd&pg=PP1&dq=spitzer+2017+digital,&ots=TDwms27puj&sig=oq3DEpEiOWTz_eHcTUWwSFQ2xTk&redir_esc=y#v=onepage&q=spitzer%202017%20digital%2C&f=false
+      \endverb
+      \verb{url}
+      \verb https://books.google.it/books?hl=it&lr=&id=kvjRBQAAQBAJ&oi=fnd&pg=PP1&dq=spitzer+2017+digital,&ots=TDwms27puj&sig=oq3DEpEiOWTz_eHcTUWwSFQ2xTk&redir_esc=y#v=onepage&q=spitzer%202017%20digital%2C&f=false
+      \endverb
+    \endentry
+    \entry{ferramosca_cal_lqr_misc}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=a0ec6223582d13b2f1f402655b31b644}{%
+           family={Ferramosca},
+           familyi={F\bibinitperiod},
+           given={Antonio},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Università degli Studi di Bergamo}%
+      }
+      \strng{namehash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{fullhash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{fullhashraw}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{bibnamehash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{authorbibnamehash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{authornamehash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{authorfullhash}{a0ec6223582d13b2f1f402655b31b644}
+      \strng{authorfullhashraw}{a0ec6223582d13b2f1f402655b31b644}
+      \field{extraname}{2}
+      \field{sortinit}{4}
+      \field{sortinithash}{9381316451d1b9788675a07e972a12a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Materiale didattico per il corso di Controllo Avanzato}
+      \field{note}{Control and Automation Laboratory (CAL)}
+      \field{title}{Lezione 08 - Regolatore Lineare Quadratico LQR}
+      \field{urlday}{26}
+      \field{urlmonth}{3}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://cal.unibg.it/wp-content/uploads/Controllo_avanzato/Lezione-08-LQR.pdf
+      \endverb
+      \verb{url}
+      \verb https://cal.unibg.it/wp-content/uploads/Controllo_avanzato/Lezione-08-LQR.pdf
+      \endverb
+    \endentry
+    \entry{astrom2006advanced}{book}{}{}
+      \name{author}{2}{}{%
+        {{hash=1b77956c091010989c5fc2426441bf07}{%
+           family={Åström},
+           familyi={Å\bibinitperiod},
+           given={Karl\bibnamedelima J.},
+           giveni={K\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=44be1c7157500a148884377dae85210e}{%
+           family={Hägglund},
+           familyi={H\bibinitperiod},
+           given={Tore},
+           giveni={T\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Research Triangle Park, NC}%
+      }
+      \list{publisher}{2}{%
+        {ISA - The Instrumentation, Systems}%
+        {Automation Society}%
+      }
+      \strng{namehash}{69f57bfb420efc901b0e0fe6a4ef3c39}
+      \strng{fullhash}{69f57bfb420efc901b0e0fe6a4ef3c39}
+      \strng{fullhashraw}{69f57bfb420efc901b0e0fe6a4ef3c39}
+      \strng{bibnamehash}{69f57bfb420efc901b0e0fe6a4ef3c39}
+      \strng{authorbibnamehash}{69f57bfb420efc901b0e0fe6a4ef3c39}
+      \strng{authornamehash}{69f57bfb420efc901b0e0fe6a4ef3c39}
+      \strng{authorfullhash}{69f57bfb420efc901b0e0fe6a4ef3c39}
+      \strng{authorfullhashraw}{69f57bfb420efc901b0e0fe6a4ef3c39}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-1556179426}
+      \field{title}{Advanced PID Control}
+      \field{year}{2006}
+      \true{nocite}
+    \endentry
+    \entry{lewis2015ch1}{inbook}{}{}
+      \name{author}{3}{}{%
+        {{hash=34647e92206433d5a14e99ba6b123b1c}{%
+           family={Stevens},
+           familyi={S\bibinitperiod},
+           given={Brian\bibnamedelima L.},
+           giveni={B\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=e8b2d327ef78200b45c2158053b96ca0}{%
+           family={Lewis},
+           familyi={L\bibinitperiod},
+           given={Frank\bibnamedelima L.},
+           giveni={F\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=288ddf0ed32d5d6023ac50b46ba35808}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={Eric\bibnamedelima N.},
+           giveni={E\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {John Wiley \& Sons, Ltd}%
+      }
+      \strng{namehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{fullhash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{fullhashraw}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{bibnamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorbibnamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authornamehash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorfullhash}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \strng{authorfullhashraw}{5b9497ae43b23f71d529b5b0877c7fe1}
+      \field{extraname}{3}
+      \field{sortinit}{5}
+      \field{sortinithash}{20e9b4b0b173788c5dace24730f47d8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Aircraft Control and Simulation: Dynamics, Controls Design, and Autonomous Systems}
+      \field{chapter}{1}
+      \field{isbn}{9781119174882}
+      \field{note}{Estrazione delle equazioni cinematiche e dinamiche del moto}
+      \field{title}{The Kinematics and Dynamics of Aircraft Motion}
+      \field{year}{2015}
+      \true{nocite}
+      \field{pages}{1\bibrangedash 62}
+      \range{pages}{62}
+      \verb{doi}
+      \verb 10.1002/9781119174882.ch1
+      \endverb
+      \verb{urlraw}
+      \verb https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch1
+      \endverb
+      \verb{url}
+      \verb https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch1
+      \endverb
+    \endentry
+    \entry{brugali_erts_taskmodel}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=048d2f05ba9035984c80801fcbc2381c}{%
+           family={Brugali},
+           familyi={B\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{bibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorbibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authornamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \field{extraname}{4}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Dispensa 09, corso Embedded Real-Time Systems, Università degli Studi di Bergamo, a.a. 2025--2026}
+      \field{title}{Modeling Real-Time Activities --- Lecture Notes}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{brugali_erts_scheduling}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=048d2f05ba9035984c80801fcbc2381c}{%
+           family={Brugali},
+           familyi={B\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{bibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorbibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authornamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \field{extraname}{5}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Dispensa 11.0, corso Embedded Real-Time Systems, Università degli Studi di Bergamo, a.a. 2025--2026}
+      \field{title}{Priority-Driven RT Scheduling --- Lecture Notes}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{brugali_erts_overrun}{misc}{}{}
+      \name{author}{1}{}{%
+        {{hash=048d2f05ba9035984c80801fcbc2381c}{%
+           family={Brugali},
+           familyi={B\bibinitperiod},
+           given={Davide},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{fullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{bibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorbibnamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authornamehash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhash}{048d2f05ba9035984c80801fcbc2381c}
+      \strng{authorfullhashraw}{048d2f05ba9035984c80801fcbc2381c}
+      \field{extraname}{6}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{Dispensa 14, corso Embedded Real-Time Systems, Università degli Studi di Bergamo, a.a. 2025--2026}
+      \field{title}{Handling Overrun --- Lecture Notes}
+      \field{year}{2025}
+      \true{nocite}
+    \endentry
+    \entry{eprosima_monitor_doc}{online}{}{}
+      \name{author}{1}{}{%
+        {{hash=3f394000194f0ea4a0d924108d2d3da4}{%
+           family={{eProsima}},
+           familyi={e\bibinitperiod}}}%
+      }
+      \list{organization}{1}{%
+        {eProsima}%
+      }
+      \strng{namehash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{fullhash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{fullhashraw}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{bibnamehash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{authorbibnamehash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{authornamehash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{authorfullhash}{3f394000194f0ea4a0d924108d2d3da4}
+      \strng{authorfullhashraw}{3f394000194f0ea4a0d924108d2d3da4}
+      \field{extraname}{2}
+      \field{sortinit}{6}
+      \field{sortinithash}{b33bc299efb3c36abec520a4c896a66d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{note}{Sito ufficiale e download dell'applicazione}
+      \field{title}{Fast DDS Monitor}
+      \field{urlday}{6}
+      \field{urlmonth}{5}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \true{nocite}
+      \verb{urlraw}
+      \verb https://www.eprosima.com/middleware/tools/fast-dds-monitor
+      \endverb
+      \verb{url}
+      \verb https://www.eprosima.com/middleware/tools/fast-dds-monitor
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

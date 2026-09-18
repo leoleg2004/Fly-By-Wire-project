@@ -1,0 +1,116 @@
+
+\chapter{Sintesi del Controllo e Limiti del Disaccoppiamento}
+\label{cap:9}
+La dinamica longitudinale dell'F-16 presenta un elevato grado di accoppiamento. Contrariamente a quanto si potrebbe ipotizzare per velivoli da trasporto commerciali, l'impianto risulta fortemente accoppiato anche nella condizione di volo di crociera. Poiché l'ipotesi di un disaccoppiamento senza pre-compensazione non è possibile per  governare l'impianto in sicurezza si tenterà pertanto l'approccio della pre-compensazione sulla matrice delle funzioni di trasferimento, al fine di valutare la fattibilità di semplici regolatori decentralizzati (PID indipendenti) da applicare direttamente agli attuatori fisici dell'aereo. L'approccio classico per la sintesi multivariabile prevede l'inserimento di una rete di \textbf{pre-compensazione dinamica in avanti} (\textit{Dynamic Feedforward Decoupler}), con l'obiettivo di forzare la diagonalizzazione del sistema e restituire ai controllori dei canali virtuali isolati. Tuttavia, come verrà dimostrato nel prosieguo della trattazione, tale strategia si rivelerà inefficace a causa degli stringenti limiti fisici e numerici, rendendo necessaria l'adozione di tecniche di controllo più avanzate (analizzate nei Capitoli \ref{cap:lqr} e \ref{cap:mpc}).
+
+\section{Progetto del pre-compensatore dinamico}
+
+L'obiettivo della rete di disaccoppiamento in avanti è determinare una matrice di pre-compensazione $W(s) \in \mathbb{C}^{3 \times 3}$ tale per cui l'impianto apparente $\tilde{G}(s) = G(s)W(s)$ risulti essere una matrice puramente diagonale.
+Sviluppando il prodotto matriciale tra l'impianto originale $G(s)$ e la matrice incognita $W(s)$, si ottiene:
+\begin{equation}
+	\tilde{G}(s) = 
+	\begin{bmatrix}
+		G_{11} & G_{12} & G_{13} \\ 
+		G_{21} & G_{22} & G_{23} \\ 
+		G_{31} & G_{32} & G_{33}
+	\end{bmatrix}
+	\begin{bmatrix}
+		W_{11} & W_{12} & W_{13} \\ 
+		W_{21} & W_{22} & W_{23} \\ 
+		W_{31} & W_{32} & W_{33}
+	\end{bmatrix}
+\end{equation}
+
+Affinché $\tilde{G}(s)$ sia diagonale, tutti i termini extra-diagonali devono essere identicamente nulli. Questo impone un sistema di 6 equazioni (due zeri per ogni colonna) a fronte di 9 incognite (gli elementi della matrice $W$).
+Il sistema presenta quindi 3 gradi di libertà. Dal punto di vista ingegneristico, la scelta più logica è imporre che i canali di comando "diretti" passino inalterati attraverso il disaccoppiatore. Matematicamente, questo si traduce nell'imporre che gli elementi sulla diagonale principale di $W(s)$ siano unitari:
+\begin{equation}
+	W_{11}(s) = W_{22}(s) = W_{33}(s) = 1
+\end{equation}
+Fisicamente, ciò significa che un comando virtuale unitario (es. cabrata) genera una richiesta unitaria sull'attuatore primario corrispondente (es. equilibratore), demandando agli elementi fuori diagonale il compito di generare le deflessioni correttive sugli altri attuatori per annullare il cross-talk.
+
+Sfruttando questa condizione, è possibile scindere il problema in tre sistemi lineari indipendenti, uno per ciascuna colonna di $W(s)$.
+
+\subsection{Calcolo della Prima Colonna(Velocità)}
+Annullando i termini extra-diagonali della prima colonna di $\tilde{G}(s)$ ($\tilde{G}_{21} = 0$ e $\tilde{G}_{31} = 0$) e ponendo $W_{11} = 1$, si ottiene il sistema:
+\begin{equation}
+	\begin{cases}
+		G_{21}(1) + G_{22}W_{21} + G_{23}W_{31} = 0 \\
+		G_{31}(1) + G_{32}W_{21} + G_{33}W_{31} = 0
+	\end{cases}
+\end{equation}
+Riscrivendo in forma matriciale per isolare le incognite $W_{21}$ e $W_{31}$:
+\begin{equation}
+	\begin{bmatrix}
+		G_{22} & G_{23} \\ 
+		G_{32} & G_{33}
+	\end{bmatrix}
+	\begin{bmatrix}
+		W_{21} \\ 
+		W_{31}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		-G_{21} \\ 
+		-G_{31}
+	\end{bmatrix}
+\end{equation}
+
+\subsection{Calcolo della Seconda Colonna}
+Seguendo la medesima logica, si annullano i termini $\tilde{G}_{12}$ e $\tilde{G}_{32}$, ponendo $W_{22} = 1$:
+\begin{equation}
+	\begin{bmatrix}
+		G_{11} & G_{13} \\ 
+		G_{31} & G_{33}
+	\end{bmatrix}
+	\begin{bmatrix}
+		W_{12} \\ 
+		W_{32}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		-G_{12} \\ 
+		-G_{32}
+	\end{bmatrix}
+\end{equation}
+
+\subsection{Calcolo della Terza Colonna(Becheggio)}
+Infine, per annullare i termini $\tilde{G}_{13}$ e $\tilde{G}_{23}$, ponendo $W_{33} = 1$:
+\begin{equation}
+	\begin{bmatrix}
+		G_{11} & G_{12} \\ 
+		G_{21} & G_{22}
+	\end{bmatrix}
+	\begin{bmatrix}
+		W_{13} \\ 
+		W_{23}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		-G_{13} \\ 
+		-G_{23}
+	\end{bmatrix}
+\end{equation}
+
+Risolvendo analiticamente (o numericamente in ambiente MATLAB) questi tre sistemi quadrati $2 \times 2$, si ricavano le 6 funzioni di trasferimento incognite che, assieme agli $1$ sulla diagonale, costituiscono la matrice di pre-compensazione esatta $W(s)$.
+\section{Limiti algoritmici: complessità polinomiale}
+Dal punto di vista puramente teorico, il prodotto $\tilde{G} = G \cdot W_{dinamico}$ restituisce una matrice con zeri perfetti al di fuori della diagonale principale. Tuttavia, la validazione numerica di questo impianto virtuale ha rivelato la totale inapplicabilità pratica di questa soluzione. Estrapolando i canali isolati (ad esempio il canale della velocità $V_t$ rispetto al comando virtuale di spinta, o il rateo di beccheggio $q$ rispetto al comando virtuale dell'equilibratore), si osserva una \textbf{esplosione dell'ordine del sistema}. A causa delle operazioni di inversione e moltiplicazione delle funzioni di trasferimento, l'algoritmo calcola il minimo comune multiplo dei denominatori e come riscontrato dai dati estratti in ambiente MATLAB, le funzioni di trasferimento disaccoppiate risultanti generano polinomi a numeratore e denominatore che \textbf{superano il 50° grado} (fino a $s^{52}$).
+
+Inoltre, i coefficienti diei polinomi hanno un intervallo di magnitudo non realistico variando da ordini di grandezza pari a $10^{10}$ fino a residui di $10^{-30}$. Questo fenomeno genera tre criticità letali per il controllo del volo:
+\begin{enumerate}
+	\item \textbf{Cancellazioni Imperfette:} Forzare l'annullamento dei termini incrociati comporta la creazione di decine di coppie polo-zero coincidenti. Dal punto di vista numerico (floating-point), la cancellazione non è mai perfetta, lasciando nel sistema "modi nascosti" e micro-dinamiche ad altissima frequenza.
+	\item \textbf{Poli Instabili Non di Fase Minima:} L'inversione della matrice aerodinamica introduce sistematicamente radici nel semipiano destro del piano complesso, rendendo l'impianto a ciclo aperto virtuale intrinsecamente instabile.
+	\item \textbf{Fallimento della Sintesi PID:} Il tentativo di sintetizzare regolatori Proporzionali-Integrali-Derivativi (PID) su canali di ordine 52 si è rivelato matematicamente impossibile. Gli algoritmi di \textit{autotuning} (come il PID Tuner di Simulink) collassano di fronte al malcondizionamento numerico, non riuscendo a identificare coefficienti in grado di stabilizzare l'anello chiuso e restituendo verdetti di instabilità strutturale, indipendentemente dai parametri scelti.
+\end{enumerate}
+
+\section{Evoluzione verso il controllo nello spazio di stato}
+L'impossibilità di estrarre canali SISO governabili decreta il fallimento dell'architettura a disaccoppiamento in avanti e controllo decentralizzato. Costringere l'aereo a cancellare la sua stessa fisica aerodinamica richiederebbe peraltro un'energia e una deflessione degli attuatori che superano ampiamente le saturazioni fisiche di bordo. Per garantire la stabilità e le prestazioni richieste dal \textit{Flight Control System}, è necessario un drastico cambio di paradigma. Anziché tentare di mascherare l'accoppiamento operando manipolazioni su matrici di funzioni di trasferimento, la tesi sposterà il focus su architetture native per sistemi MIMO, operanti interamente nel dominio dello \textbf{Spazio di Stato} (tramite matrici $A, B, C, D$).
+
+Come verrà discusso nei capitoli successivi, il controllo dell'impianto verrà raggiunto con successo tramite due tecniche avanzate:
+\begin{itemize}
+	\item \textbf{Regolatore Lineare Quadratico (LQR) - (Cfr. Capitolo \ref{cap:lqr}):} Una tecnica di controllo ottimo a retroazione di stato completo che non forza zeri irrealizzabili, ma gestisce organicamente l'accoppiamento posizionando in modo globale i poli a ciclo chiuso, ottimizzando contemporaneamente l'errore di \textit{tracking} e lo sforzo energetico degli attuatori.
+	\item \textbf{Model Predictive Control (MPC) - (Cfr. Capitolo \ref{cap:mpc}):} Un'architettura predittiva introdotta per gestire attivamente le interazioni multivariabili nel rispetto rigoroso dei vincoli di inviluppo e delle saturazioni meccaniche, prevenendo il degrado prestazionale alle alte incidenze.
+\end{itemize}
+
+% ==========================================
+% CAPITOLO 11: CONTROLLO OTTIMO LQR
+% ==========================================

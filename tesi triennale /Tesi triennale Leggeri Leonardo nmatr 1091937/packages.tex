@@ -1,0 +1,95 @@
+% --- PACCHETTI FONDAMENTALI ---
+\usepackage[utf8]{inputenc}
+% babel is loaded by the class via the italian option
+\usepackage{amsmath, amssymb, amsfonts}
+
+% --- FONT: LATIN MODERN (Stile Accademico / Template fp555) ---
+\usepackage[T1]{fontenc} % Codifica font essenziale per l'italiano e gli accenti
+\usepackage{lmodern}     % Il font accademico per eccellenza
+\usepackage{bm}          % Grassetto per la matematica
+% --- GEOMETRIA E MARGINI ---
+% Linea guida: Margini 3 cm sopra, sotto e sui lati (aggiustato per twoside)
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm, inner=3.5cm, outer=2.5cm}
+\usepackage{pdfpages}
+% --- INTERLINEA 1.5 ---
+% Linea guida: Interlinea 1,5
+\usepackage{setspace}
+\onehalfspacing
+
+% --- GESTIONE SPAZIATURA TITOLI CAPITOLI ---
+\usepackage{titlesec}
+% Questo comando riduce lo spazio bianco in cima alla pagina prima del capitolo
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+\titlespacing*{\chapter}{0pt}{-40pt}{40pt} % Il valore -40pt sposta tutto verso l'alto
+
+% --- INTESTAZIONI E PIÈ DI PAGINA ELEGANTI ---
+% La classe MastersDoctoralThesis gestisce automaticamente le intestazioni e piè di pagina tramite scrlayer-scrpage.
+% fancyhdr è stato rimosso per evitare incompatibilità.
+
+% --- PACCHETTI GRAFICA E TABELLE ---
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{xcolor}
+\usepackage{subcaption}
+\usepackage{multirow}
+
+% --- GESTIONE SPAZIATURA E TAGLI (Evita righe orfane/vedove) ---
+\widowpenalty=10000
+\clubpenalty=10000
+\displaywidowpenalty=10000
+
+% --- BIBLIOGRAFIA ---
+\usepackage[backend=biber, style=numeric, sorting=none]{biblatex}
+\addbibresource{automazione.bib}
+\addbibresource{real_time.bib} 
+
+% --- STILE DEL CODICE ---
+\usepackage{listings}
+\lstdefinestyle{mystyle}{
+	backgroundcolor=\color{lightgray!10},  
+	commentstyle=\color{green!50!black},
+	keywordstyle=\color{blue},
+	numberstyle=\tiny\color{gray},
+	stringstyle=\color{purple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=4
+}
+
+\lstdefinelanguage{MATLAB}{
+	keywords={break,case,catch,continue,elseif,else,end,for,function,
+		global,if,otherwise,persistent,return,switch,try,while,clear,assignin,disp,fprintf,error},
+	morekeywords={findop,operspec,linearize,ssdata,eig},
+	sensitive=true,
+	morecomment=[l]\%,
+	morestring=[b]',
+}
+\lstset{
+	style=mystyle,
+	extendedchars=true,
+	literate={à}{{\`a}}1 {è}{{\`e}}1 {é}{{\'e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {È}{{\'E}}1 {À}{{\`A}}1
+}
+
+% --- TITOLO---
+\title{\textbf{Modellazione Dinamica a 6 Gradi di Libertà (6-DOF)}\\ 
+	\Large Equazioni del Moto per Velivolo F-16 con Analisi Mimo e Simulatore real-time c++}
+\author{Leonardo Leggeri}
+\date{}
+
+% --- LINK CLICCABILI  ---
+% hyperref è già caricato dalla classe, applichiamo solo il setup personalizzato
+\hypersetup{colorlinks=true, citecolor=blue, linkcolor=blue, filecolor=magenta, urlcolor=blue, pdftitle={Simulazione 6-DOF F-16}}
+% \hypersetup{hidelinks, pdftitle={Simulazione 6-DOF F-16}}

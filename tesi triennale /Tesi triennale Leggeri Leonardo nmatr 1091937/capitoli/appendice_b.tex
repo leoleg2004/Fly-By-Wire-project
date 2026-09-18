@@ -1,0 +1,750 @@
+\chapter{Codici MATLAB: Controllo Ottimo LQR}
+
+In questa appendice vengono riportati i codici MATLAB utilizzati. Il documento è strutturato per essere facilmente navigabile: partendo dallo script principale, è possibile esplorare tutte le funzioni richiamate.
+
+\section*{Script Principale LQR}
+\subsection*{File: \texttt{LQRAnalysis.m}}
+\label{sec:LQRAnalysis}
+
+Script MATLAB principale per l'analisi di stabilità, tuning dei pesi tramite regola di Bryson e progettazione del controllo LQR. In questo script vengono richiamate le seguenti funzioni, definite nelle sezioni successive:
+\begin{itemize}
+    \item \hyperref[sec:plot_lyapunov_lqr]{\texttt{plot\_lyapunov\_lqr.m}}
+    \item \hyperref[sec:funzioni_lqr_progetta_LQR_continuo]{\texttt{funzioni\_lqr/progetta\_LQR\_continuo.m}}
+    \item \hyperref[sec:funzioni_lqr_progetta_LQR_discreto]{\texttt{funzioni\_lqr/progetta\_LQR\_discreto.m}}
+    \item \hyperref[sec:funzioni_lqr_plot_lyapunov]{\texttt{funzioni\_lqr/plot\_lyapunov.m}}
+    \item \hyperref[sec:funzioni_lqr_plot_lyapunov_discrete]{\texttt{funzioni\_lqr/plot\_lyapunov\_discrete.m}}
+\end{itemize}
+
+\begin{lstlisting}[language=Matlab, caption={Script Principale LQR}, label={lst:LQRAnalysis}]
+% =========================================================================
+% Tesi Triennale - LQR Longitudinale F-16
+% Ing. Leggeri Leonardo
+% =========================================================================
+close all
+% Inizializzazione Path
+startup_project();
+
+%% 1. IMPOSTAZIONE DEL SISTEMA (Solo veri attuatori)
+% Estraiamo le dimensioni dalle matrici
+nx = size(A_long, 1);
+nu_long = size(B_long, 2);
+
+B_ctrl = B_long(:, 1:3); 
+D_ctrl = D_long(:, 1:3);
+nu = size(B_ctrl, 2); 
+
+%% 2. SINTESI DEL CONTROLLORE LQR 
+% =========================================================================
+% NOTA SUI PESI Q e R:
+% Se vuoi modificare l'aggressività del controllore (pesi Q e R),
+% apri il file "funzioni_lqr/progetta_LQR_continuo.m" e modificali 
+% =========================================================================
+disp('--- Sintesi LQR Continuo ---');
+[K, P, Q, R, A_cl] = progetta_LQR_continuo(A_long, B_ctrl);
+
+disp('Guadagno K:');
+disp(K);
+disp('Autovalori a ciclo chiuso (devono avere parte reale negativa):'); disp(eig(A_cl));
+
+% Creiamo il sistema State-Space a ciclo chiuso (Continuo)
+sys_cl = ss(A_cl, zeros(nx, nu), eye(nx), zeros(nx, nu));
+
+% Vettore tempo per la simulazione
+t = 0:0.05:10;
+
+% Condizione iniziale estrema (Looping/Candela)
+x0 = [0; 0.3; 0; 20]; % theta, q, U, W
+
+% Simulazione della risposta libera (initial) del sistema
+[y_sim, t_sim, x_sim] = initial(sys_cl, x0, t);
+
+% Traspongo x_sim per avere gli stati sulle righe (come nel tuo script precedente)
+xf = x_sim'; 
+
+% Calcolo dei comandi u generati dall'LQR in ogni istante (u = -K*x)
+uf = -K * xf; 
+
+%% 4. GRAFICI (Senza vincoli, con nuovi colori)
+rad2deg = 180 / pi; % Fattore di conversione utile per la leggibilità
+
+% Definizione del colore Giallo leggibile per sfondo bianco
+colore_giallo = [0.9290, 0.6940, 0.1250]; 
+
+% -------------------------------------------------------------------------
+% FIGURA 1: DINAMICA DEGLI STATI (Variabili Separate)
+% -------------------------------------------------------------------------
+figure('Name', 'Controllo LQR Puro: Stati a Ciclo Chiuso', 'Color', 'w', 'Position', [100, 100, 800, 800])
+
+% 1. Angolo di Beccheggio (theta)
+subplot(4, 1, 1)
+plot(t, xf(1,:) * rad2deg, 'b', 'LineWidth', 2); hold on;
+yline(0, 'k--', 'LineWidth', 1);
+ylabel('Ampiezza [deg]', 'Interpreter', 'latex')
+title('$\theta$ (Pitch Angle)', 'Interpreter', 'latex')
+grid on;
+
+% 2. Rateo di Beccheggio (q)
+subplot(4, 1, 2)
+plot(t, xf(2,:) * rad2deg, 'r', 'LineWidth', 2); hold on;
+yline(0, 'k--', 'LineWidth', 1);
+ylabel('Ampiezza [deg/s]', 'Interpreter', 'latex')
+title('$q$ (Pitch Rate)', 'Interpreter', 'latex')
+grid on;
+
+% 3. Velocità asse X (U)
+subplot(4, 1, 3)
+plot(t, xf(3,:), 'Color', colore_giallo, 'LineWidth', 2); hold on;
+yline(0, 'k--', 'LineWidth', 1);
+ylabel('Ampiezza [ft/s]', 'Interpreter', 'latex')
+title('$U$ (Velocit\`a Orizzontale)', 'Interpreter', 'latex')
+grid on;
+
+% 4. Velocità asse Z (W)
+subplot(4, 1, 4)
+plot(t, xf(4,:), 'g', 'LineWidth', 2); hold on;
+yline(0, 'k--', 'LineWidth', 1);
+xlabel('Tempo [s]', 'Interpreter', 'latex') 
+ylabel('Ampiezza [ft/s]', 'Interpreter', 'latex')
+title('$W$ (Velocit\`a Verticale $\approx \alpha$)', 'Interpreter', 'latex')
+grid on;
+
+% -------------------------------------------------------------------------
+% FIGURA 2: SFORZO DEGLI ATTUATORI (Senza linee di saturazione)
+% -------------------------------------------------------------------------
+figure('Name', 'Controllo LQR Puro: Sforzo Attuatori', 'Color', 'w', 'Position', [150, 150, 800, 800])
+
+% 1. Thrust (Spinta del Motore)
+subplot(3, 1, 1)
+plot(t, uf(1,:), 'b', 'LineWidth', 2); hold on; % Blu
+yline(0, 'k--', 'LineWidth', 1);
+ylabel('Spinta [lbs]')
+title('Azione di Controllo Libera: Manetta (Thrust)')
+grid on;
+
+% 2. Elevator (Equilibratore)
+subplot(3, 1, 2)
+plot(t, uf(2,:) * rad2deg, 'r', 'LineWidth', 2); hold on; % Rosso
+yline(0, 'k--', 'LineWidth', 1);
+ylabel('Deflessione [deg]')
+title('Azione di Controllo Libera: Equilibratore')
+grid on;
+
+% 3. Leading Edge Flap (LEF)
+subplot(3, 1, 3)
+plot(t, uf(3,:) * rad2deg, 'g', 'LineWidth', 2); hold on; % Verde
+yline(0, 'k--', 'LineWidth', 1);
+xlabel('Tempo [s]') 
+ylabel('Deflessione [deg]')
+title('Azione di Controllo Libera: Leading Edge Flap')
+grid on;
+
+% =========================================================================
+% VISUALIZZAZIONE GRAFICA DEI NUOVI POLI (Ciclo Chiuso)
+% =========================================================================
+sys_cl_map = ss(A_cl, B_ctrl, C_long, D_ctrl); 
+
+figure('Name', 'Mappa Poli-Zeri a Ciclo Chiuso (LQR Continuo)', 'Color', 'w', 'Position', [200, 200, 600, 500]);
+pzmap(sys_cl_map);
+grid on;
+
+title('Verifica Stabilità LQR: Posizione dei Nuovi Poli');
+xlabel('Asse Reale (Velocità di convergenza/divergenza)');
+ylabel('Asse Immaginario (Frequenza di oscillazione)');
+
+%% 5. RITRATTO DI FASE E FUNZIONE DI LYAPUNOV (LQR)
+% Per visualizzare la stabilità, isoliamo la dinamica a corto periodo 
+% variando W (velocità verticale) e q (pitch rate) e fissando U=0, theta=0.
+
+% 5.1 Definizione della griglia spaziale
+w_range = linspace(-25, 25, 50);   % ft/s
+q_range_rad = linspace(-1.5, 1.5, 50); % rad/s
+[W_grid, Q_rad] = meshgrid(w_range, q_range_rad);
+Q_deg = Q_rad * rad2deg; % Conversione per asse grafico
+
+% 5.2 Calcolo della funzione di Lyapunov V(x) = x^T * P * x sulla griglia
+V_surf = zeros(size(W_grid));
+for i = 1:size(W_grid, 1)
+    for j = 1:size(W_grid, 2)
+        % Fissiamo theta=0 e U=0
+        stato_surf = [0; Q_rad(i,j); 0; W_grid(i,j)];
+        V_surf(i,j) = stato_surf' * P * stato_surf;
+    end
+end
+
+% 5.3 Dinamica a ciclo chiuso per ode45
+dxdt = @(t, x) A_cl * x;
+
+%% 5. RITRATTO DI FASE E FUNZIONE DI LYAPUNOV 3D (LQR)
+% Usa la nuova funzione dedicata per generare il ritratto di fase 2D e
+% la funzione di Lyapunov in 3D
+plot_lyapunov_lqr(P, A_cl);
+\end{lstlisting}
+
+\section*{Analisi Funzionale di Lyapunov}
+\subsection*{File: \texttt{plot\_lyapunov\_lqr.m}}
+\label{sec:plot_lyapunov_lqr}
+
+Script principale per il plotting, l'analisi e lo studio dell'ellissoide associato al funzionale di Lyapunov del sistema LQR.
+
+\begin{lstlisting}[language=Matlab, caption={Analisi Funzionale di Lyapunov}, label={lst:plot_lyapunov_lqr}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function plot_lyapunov_lqr(P, A_cl)
+    % =========================================================================
+    % PLOT_LYAPUNOV - Ritratto di Fase e Funzione di Lyapunov 3D
+    % Riceve in ingresso la matrice P e la matrice a ciclo chiuso A_cl
+    % =========================================================================
+    
+    set(0,'DefaultLineLineWidth',1.5);
+    set(0,'DefaultAxesFontSize',14);
+    set(0,'DefaulttextInterpreter','latex');
+    
+    %% 1. Traiettorie (Solo dinamiche veloci)
+    dxdt = @(t,x) A_cl * x;
+    
+    % Matrice delle condizioni iniziali multiple (8 scenari di partenza)
+    % Ordine degli stati: [theta; q; u; w]
+    x0_mult = [
+         0,    0,    0,    0,    0,    0,    0,    0;
+         1.2, -1.2,  0.5, -0.5,  0.8, -0.8,  0.3, -0.3;
+         0,    0,    0,    0,    0,    0,    0,    0;
+        20,  -20,   15,  -15, -10,   10,   22,  -22
+    ]; 
+          
+    figure('Name', 'Ritratto di Fase LQR', 'Color', 'w', 'Position', [50 100 800 600]);
+    hold on; grid on;
+    
+    % Generiamo automaticamente una palette di colori per le N traiettorie
+    num_simulazioni = size(x0_mult, 2);
+    colori = lines(num_simulazioni); 
+    
+    for i = 1:num_simulazioni
+        % Simuliamo solo per 3 secondi per il corto periodo
+        [~, x] = ode45(dxdt, [0 3], x0_mult(:, i)); 
+        
+        % Salviamo gli handle solo della prima iterazione per una legenda pulita
+        if i == 1
+            h_traj = plot(x(:,4), rad2deg(x(:,2)), 'Color', colori(i,:));
+            h_start = plot(x(1,4), rad2deg(x(1,2)), '*', 'Color', colori(i,:), 'MarkerSize', 8); 
+        else
+            plot(x(:,4), rad2deg(x(:,2)), 'Color', colori(i,:));
+            plot(x(1,4), rad2deg(x(1,2)), '*', 'Color', colori(i,:), 'MarkerSize', 8); 
+        end
+    end
+    
+    %% 2. Campo Vettoriale e Curve di Livello
+   
+    % Riduciamo la griglia per "abbracciare" esattamente le tue condizioni iniziali
+    w_lim = 45;  
+    q_lim = 75;  
+    [W_grid, Q_deg] = meshgrid(linspace(-w_lim, w_lim, 80), linspace(-q_lim, q_lim, 80));
+   
+    Q_rad = deg2rad(Q_deg);
+    
+    W_dot = zeros(size(W_grid));
+    Q_dot = zeros(size(Q_rad));
+    V_contour = zeros(size(W_grid));
+    
+    for i = 1:numel(W_grid)
+        % Slicing: imponiamo theta=0 e u=0
+        stato = [0; Q_rad(i); 0; W_grid(i)];
+        derivata = A_cl * stato;
+        
+        Q_dot(i) = derivata(2); 
+        W_dot(i) = derivata(4); 
+        V_contour(i) = stato' * P * stato;
+    end
+    
+    % Campo vettoriale
+    L = sqrt(W_dot.^2 + Q_dot.^2) + 1e-6;
+    h_quiv = quiver(W_grid, Q_deg, W_dot./L, rad2deg(Q_dot)./L, 0.45, 'Color', [0.7 0.7 0.7]);
+    
+    % Curve di Livello (Spaziatura Logaritmica)
+    val_min = min(V_contour(:));
+    val_max = max(V_contour(:));
+    livelli_log = logspace(log10(val_min + 1e-3), log10(val_max), 18);
+    
+    [~, h_cont] = contour(W_grid, Q_deg, V_contour, livelli_log, 'LineWidth', 1.5);
+    
+    xlabel('Vertical Velocity $w$ [ft/s]') 
+    ylabel('Pitch Rate $q$ [deg/s]') 
+    title('Ritratto di fase')
+    
+    xlim([-w_lim, w_lim]); 
+    ylim([-q_lim, q_lim]);
+    
+    % Legenda dinamica e pulita (solo 4 voci invece di 18)
+    legend([h_traj, h_start, h_quiv, h_cont], ...
+           {'Traiettorie di Stato', 'Punti di Partenza', 'Direzione Flusso', 'Contour $V(x) = x^T P x$'}, ...
+           'Interpreter','latex', 'Location', 'bestoutside');
+
+    %% 3. Visualizzazione 3D della Funzione di Lyapunov LQR
+    figure('Name', 'Funzione di Lyapunov 3D - LQR', 'Color', 'w');
+    hold on; grid on;
+    
+    % Superficie 3D
+    V_surf = zeros(size(W_grid));
+    for i = 1:size(W_grid, 1)
+        for j = 1:size(W_grid, 2)
+            stato_surf = [0; Q_rad(i,j); 0; W_grid(i,j)];
+            V_surf(i,j) = stato_surf' * P * stato_surf;
+        end
+    end
+    
+    h_surf = surf(W_grid, Q_deg, V_surf, 'EdgeColor', 'none', 'FaceAlpha', 0.7);
+    colormap jet;
+    colorbar;
+    
+    % --- AGGIUNTA FONDAMENTALE: Inizializziamo max_v_traj ---
+    max_v_traj = 0;
+    
+    % Proiezione traiettorie 3D
+    for i = 1:num_simulazioni
+        % Integrazione più fitta per fluidità visiva
+        [~, x] = ode45(dxdt, linspace(0, 3, 300), x0_mult(:, i));
+        
+        V_traiettoria = sum((x * P) .* x, 2); 
+        
+        % --- Calcoliamo il picco di energia ---
+        if max(V_traiettoria) > max_v_traj
+            max_v_traj = max(V_traiettoria);
+        end
+        
+        % Usiamo i colori estratti dalla palette per mantenere coerenza col 2D
+        if i == 1
+            h_traj3 = plot3(x(:,4), rad2deg(x(:,2)), V_traiettoria, '-', 'Color', colori(i,:), 'LineWidth', 2.5);
+            h_start3 = plot3(x(1,4), rad2deg(x(1,2)), V_traiettoria(1), 'o', 'MarkerFaceColor', colori(i,:), 'MarkerEdgeColor', 'k', 'MarkerSize', 6);
+        else
+            plot3(x(:,4), rad2deg(x(:,2)), V_traiettoria, '-', 'Color', colori(i,:), 'LineWidth', 2.5);
+            plot3(x(1,4), rad2deg(x(1,2)), V_traiettoria(1), 'o', 'MarkerFaceColor', colori(i,:), 'MarkerEdgeColor', 'k', 'MarkerSize', 6);
+        end
+    end
+    
+    title('Funzione di Lyapunov $V(x) = x^T P x$ a Ciclo Chiuso', 'Interpreter', 'latex')
+    xlabel('Velocit\`a Verticale $w$ [ft/s]', 'Interpreter', 'latex')
+    ylabel('Pitch Rate $q$ [deg/s]', 'Interpreter', 'latex')
+    zlabel('Energia $V(x)$', 'Interpreter', 'latex')
+    
+    % Taglio dinamico dell'asse Z per non tagliare il paraboloide
+    zmax_plot = max(max(V_surf(:)), max_v_traj);
+    zlim([0, zmax_plot * 1.1]); 
+    xlim([-w_lim, w_lim]);
+    ylim([-q_lim, q_lim]);
+    view(-45, 30);
+    
+    % Legenda 3D
+    legend([h_surf, h_traj3, h_start3], ...
+           {'Funzione di Lyapunov $V(x)$', 'Traiettoria di Stato', 'Condizione Iniziale'}, ...
+           'Interpreter', 'latex', 'Location', 'bestoutside');
+end
+\end{lstlisting}
+
+\section*{Progetto LQR (Tempo Continuo)}
+\subsection*{File: \texttt{funzioni\_lqr/progetta\_LQR\_continuo.m}}
+\label{sec:funzioni_lqr_progetta_LQR_continuo}
+
+Funzione per la risoluzione dell'equazione algebrica di Riccati (ARE) e il calcolo del guadagno ottimo LQR nel dominio del tempo continuo.
+
+\begin{lstlisting}[language=Matlab, caption={Progetto LQR (Tempo Continuo)}, label={lst:funzioni_lqr_progetta_LQR_continuo}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function [K, P, Q, R, A_cl] = progetta_LQR_continuo(A, B)
+    % =====================================================================
+    % Calcolo pesi LQR (Regola di Bryson) coerenti con il modello F-16
+    % Ordine stati: [theta (rad); q (rad/s); U (ft/s); W (ft/s)]
+    % Ordine input: [Thrust (lbs); Elevator (rad); LEF (rad)]
+    % =====================================================================
+    
+    % Massimi scostamenti tollerabili per gli stati (Bryson's rule)
+    max_theta = deg2rad(15); % 15 gradi max tollerati per il pitch
+    max_q     = deg2rad(30); % 30 deg/s max tollerati per il pitch rate
+    max_U     = 30;          % 30 ft/s max per la velocità X
+    max_W     = 20;          % 20 ft/s max per la velocità Z (incide su alpha)
+    
+    Q = diag([1/max_theta^2, 1/max_q^2, 1/max_U^2, 1/max_W^2]);
+    
+    % Massimi scostamenti tollerabili per gli attuatori
+    max_thrust = 5000;       % 5000 lbs variazione manetta
+    max_elev   = deg2rad(25);% 25 gradi max deflessione equilibratore
+    max_lef    = deg2rad(25);% 25 gradi max deflessione LEF
+    
+    R = diag([1/max_thrust^2, 1/max_elev^2, 1/max_lef^2]);
+    
+    % Fattori di tuning per dare più aggressività globale (se necessario)
+    rho_q = 1; 
+    rho_r = 100; 
+    
+    Q = rho_q * Q;
+    R = rho_r * R;
+    
+    % Sintesi LQR
+    [K, P, ~] = lqr(A, B, Q, R);
+    A_cl = A - B*K;
+end
+\end{lstlisting}
+
+\section*{Progetto LQR}
+\subsection*{File: \texttt{funzioni\_lqr/progetta\_LQR\_discreto.m}}
+\label{sec:funzioni_lqr_progetta_LQR_discreto}
+
+Funzione per il calcolo del guadagno ottimo LQR nel dominio del tempo discreto.
+
+\begin{lstlisting}[language=Matlab, caption={Progetto LQR (Tempo Discreto)}, label={lst:funzioni_lqr_progetta_LQR_discreto}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function [K, P, Q, R, A_cl] = progetta_LQR_discreto(A, B)
+    % =====================================================================
+    % Calcolo pesi LQR (Regola di Bryson) coerenti con il modello F-16
+    % Ordine stati: [theta (rad); q (rad/s); U (m/s); W (m/s)]
+    % Ordine input: [Thrust (N); Elevator (rad); LEF (rad)]
+    % =====================================================================
+    
+    ft2m = 0.3048;
+    lbf2N = 4.44822;
+    
+    % Massimi scostamenti tollerabili per gli stati (Bryson's rule)
+    max_theta = 15 * pi/180; % 15 gradi max tollerati per il pitch
+    max_q     = 30 * pi/180; % 30 deg/s max tollerati per il pitch rate
+    max_U     = 30 * ft2m;   % 30 ft/s convertiti in m/s max per la velocità X
+    max_W     = 20 * ft2m;   % 20 ft/s convertiti in m/s max per la velocità Z
+    
+    Q = diag([1/max_theta^2, 1/max_q^2, 1/max_U^2, 1/max_W^2]);
+    
+    % Massimi scostamenti tollerabili per gli attuatori
+    max_thrust = 5000 * lbf2N;   % 5000 lbs convertite in Newton
+    max_elev   = 25 * pi/180;    % 25 gradi max deflessione equilibratore
+    max_lef    = 25 * pi/180;    % 25 gradi max deflessione LEF
+    
+    R = diag([1/max_thrust^2, 1/max_elev^2, 1/max_lef^2]);
+    
+    % Fattori di tuning per dare più aggressività globale (se necessario)
+    rho_q = 20;  % Bilanciamento: molto reattivo ma senza rendere il problema Infeasible
+    rho_r = 1;   % Mantiene uno sforzo di controllo ragionevole per non violare i vincoli con x_iniziale elevato 
+    
+    Q = rho_q * Q;
+    R = rho_r * R;
+    
+    % Sintesi LQR
+    fprintf('DEBUG progetta_LQR_discreto:\n');
+    fprintf('Size of A: %dx%d\n', size(A,1), size(A,2));
+    fprintf('Size of B: %dx%d\n', size(B,1), size(B,2));
+    fprintf('Size of Q before dlqr: %dx%d\n', size(Q,1), size(Q,2));
+    fprintf('Size of R before dlqr: %dx%d\n', size(R,1), size(R,2));
+    
+    % Assicuriamoci che Q e R siano delle dimensioni esatte
+    Nx = size(A, 1);
+    Nu = size(B, 2);
+    
+    if size(Q, 1) ~= Nx || size(Q, 2) ~= Nx
+        disp('ATTENZIONE: Q non è della dimensione corretta! Ricostruzione sicura in corso...');
+        Q_new = eye(Nx);
+        n_min = min(Nx, size(Q,1));
+        Q_new(1:n_min, 1:n_min) = Q(1:n_min, 1:n_min);
+        Q = Q_new;
+    end
+    
+    if size(R, 1) ~= Nu || size(R, 2) ~= Nu
+        disp('ATTENZIONE: R non è della dimensione corretta! Ricostruzione sicura in corso...');
+        R = eye(Nu);
+    end
+    
+    [K, P, ~] = dlqr(A, B, Q, R);
+    A_cl = A - B*K;
+end
+\end{lstlisting}
+
+\section*{Plot Lyapunov (Tempo Continuo)}
+\subsection*{File: \texttt{funzioni\_lqr/plot\_lyapunov.m}}
+\label{sec:funzioni_lqr_plot_lyapunov}
+
+Funzione per la visualizzazione grafica dell'ellissoide del funzionale di Lyapunov continuo.
+
+\begin{lstlisting}[language=Matlab, caption={Plot Lyapunov (Tempo Continuo)}, label={lst:funzioni_lqr_plot_lyapunov}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function plot_lyapunov(P, A_cl)
+    % =========================================================================
+    % PLOT_LYAPUNOV - Ritratto di Fase e Funzione di Lyapunov 3D
+    % Riceve in ingresso la matrice P e la matrice a ciclo chiuso A_cl
+    % =========================================================================
+    
+    set(0,'DefaultLineLineWidth',1.5);
+    set(0,'DefaultAxesFontSize',14);
+    set(0,'DefaulttextInterpreter','latex');
+    
+    %% 1. Traiettorie (Solo dinamiche veloci)
+    dxdt = @(t,x) A_cl * x;
+    
+    % Condizioni iniziali 
+    % Matrice delle condizioni iniziali multiple (8 scenari di partenza)
+% Ordine degli stati: [theta; q; u; w]
+x0_mult = [
+     0,    0,    0,    0,    0,    0,    0,    0;
+     1.2, -1.2,  0.5, -0.5,  0.8, -0.8,  0.3, -0.3;
+     0,    0,    0,    0,    0,    0,    0,    0;
+    20,  -20,   15,  -15, -10,   10,   22,  -22
+]; 
+          
+    figure('Name', 'Corto Periodo: w vs q', 'Color', 'w', 'Position', [50 100 800 600]);
+    hold on; grid on;
+    colori = {'r', 'g', 'b'}; 
+    
+    for i = 1:size(x0, 2)
+        % Simuliamo solo per 3 secondi per il corto periodo
+        [t, x] = ode45(dxdt, [0 3], x0(:, i)); 
+        % Plot: Asse X = w (ft/s), Asse Y = q (deg/s)
+        plot(x(:,4), rad2deg(x(:,2)), 'Color', colori{i});
+        plot(x(1,4), rad2deg(x(1,2)), '*', 'Color', colori{i}, 'MarkerSize', 8); 
+    end
+
+    %% 2. Campo Vettoriale e Curve di Livello
+    w_lim = 150;
+    q_lim = 150;
+    
+    [W_grid, Q_deg] = meshgrid(linspace(-w_lim, w_lim, 35), linspace(-q_lim, q_lim, 35));
+    Q_rad = deg2rad(Q_deg);
+    
+    W_dot = zeros(size(W_grid));
+    Q_dot = zeros(size(Q_rad));
+    V_contour = zeros(size(W_grid));
+    
+    for i = 1:numel(W_grid)
+        % Slicing: imponiamo theta=0 e u=0
+        stato = [0; Q_rad(i); 0; W_grid(i)];
+        derivata = A_cl * stato;
+        
+        Q_dot(i) = derivata(2); 
+        W_dot(i) = derivata(4); 
+        V_contour(i) = stato' * P * stato;
+    end
+    
+    % Campo vettoriale
+    L = sqrt(W_dot.^2 + Q_dot.^2) + 1e-6;
+    quiver(W_grid, Q_deg, W_dot./L, rad2deg(Q_dot)./L, 0.45, 'Color', [0.7 0.7 0.7]);
+    
+    % Curve di Livello (Spaziatura Logaritmica)
+    val_min = min(V_contour(:));
+    val_max = max(V_contour(:));
+    livelli_log = logspace(log10(val_min + 1e-3), log10(val_max), 18);
+    
+    contour(W_grid, Q_deg, V_contour, livelli_log, 'LineWidth', 1.5);
+    xlabel('Vertical Velocity $w$ [ft/s]') 
+    ylabel('Pitch Rate $q$ [deg/s]') 
+    title('Moto di Corto Periodo (Dinamica Veloce)')
+    
+    xlim([-w_lim, w_lim]); 
+    ylim([-q_lim, q_lim]);
+    legend({'Traiettoria 1', 'Start 1', 'Traiettoria 2', 'Start 2', 'Traiettoria 3', 'Start 3', ...
+            'Direzione Flusso', 'Contour $V(x) = x^T P x$'}, 'Interpreter','latex', 'Location', 'bestoutside');
+
+    %% 3. Visualizzazione 3D della Funzione di Lyapunov LQR
+    figure('Name', 'Funzione di Lyapunov 3D - LQR', 'Color', 'w');
+    hold on; grid on;
+    
+    % Superficie 3D
+    V_surf = zeros(size(W_grid));
+    for i = 1:size(W_grid, 1)
+        for j = 1:size(W_grid, 2)
+            stato_surf = [0; Q_rad(i,j); 0; W_grid(i,j)];
+            V_surf(i,j) = stato_surf' * P * stato_surf;
+        end
+    end
+    
+    surf(W_grid, Q_deg, V_surf, 'EdgeColor', 'none', 'FaceAlpha', 0.7);
+    colormap jet;
+    colorbar;
+    
+    % Proiezione traiettorie 3D
+    for i = 1:size(x0, 2)
+        % Integrazione più fitta per fluidità visiva
+        [t, x] = ode45(dxdt, linspace(0, 3, 300), x0(:, i));
+        
+        V_traiettoria = sum((x * P) .* x, 2); 
+        
+        plot3(x(:,4), rad2deg(x(:,2)), V_traiettoria, 'k-', 'LineWidth', 2);
+        plot3(x(1,4), rad2deg(x(1,2)), V_traiettoria(1), 'ro', 'MarkerFaceColor', 'r', 'MarkerSize', 6);
+    end
+    
+    title('Funzione di Lyapunov $V(x) = x^T P x$ (LQR)', 'Interpreter', 'latex')
+    xlabel('$w$ [ft/s]', 'Interpreter', 'latex')
+    ylabel('$q$ [deg/s]', 'Interpreter', 'latex')
+    zlabel('$V(x)$', 'Interpreter', 'latex')
+    view(-45, 30);
+end
+\end{lstlisting}
+
+\section*{Plot Lyapunov (Tempo Discreto)}
+\subsection*{File: \texttt{funzioni\_lqr/plot\_lyapunov\_discrete.m}}
+\label{sec:funzioni_lqr_plot_lyapunov_discrete}
+
+Funzione per la visualizzazione grafica dell'ellissoide del funzionale di Lyapunov discreto.
+
+\begin{lstlisting}[language=Matlab, caption={Plot Lyapunov (Tempo Discreto)}, label={lst:funzioni_lqr_plot_lyapunov_discrete}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function plot_lyapunov_discrete(P_ds, A_cl_ds, Ts)
+    % =========================================================================
+    % PLOT_LYAPUNOV_DISCRETE - Funzione di Lyapunov 3D per sistemi a tempo discreto
+    % Grafico migliorato: Traiettoria interpolata fluida + Campionamenti discreti
+    % =========================================================================
+    
+    if nargin < 3
+        Ts = 0.05; 
+    end
+    
+    rad2deg = 180 / pi;
+    
+    % --- 1. DEFINIZIONE LIMITI VISIVI ---
+    w_lim = 50;  % ft/s
+    q_lim = 50;  % deg/s
+    
+    [W_grid, Q_deg] = meshgrid(linspace(-w_lim, w_lim, 80), linspace(-q_lim, q_lim, 80));
+    Q_rad = Q_deg / rad2deg; 
+    
+    % --- 2. CALCOLO SUPERFICIE DI LYAPUNOV ---
+    V_surf = zeros(size(W_grid));
+    for i = 1:size(W_grid, 1)
+        for j = 1:size(W_grid, 2)
+            stato_surf = [0; Q_rad(i,j); 0; W_grid(i,j)];
+            V_surf(i,j) = stato_surf' * P_ds * stato_surf;
+        end
+    end
+    
+    % --- 3. DINAMICA DISCRETA E CONDIZIONI INIZIALI ---
+    N_steps = round(10 / Ts); 
+    
+    x0 = [0,  0.5, 0,  30;   
+          0, -0.6, 0, -40;   
+          0,  0.8, 0, -20]';
+
+    %% --- FIGURA 3D ---
+    figure('Name', sprintf('Lyapunov 3D Discreto (Ts = %g s)', Ts), 'Color', 'w', 'Position', [150 150 850 650]);
+    hold on; grid on;
+    
+    % 1. Disegno Superficie
+    h_surf = surf(W_grid, Q_deg, V_surf, 'EdgeColor', 'none', 'FaceAlpha', 0.65);
+    colormap jet;
+    cb = colorbar;
+    ylabel(cb, 'Energia $V(x_k)$', 'Interpreter', 'latex', 'FontSize', 12);
+    
+    colori = {'r', 'g', 'b'};
+    max_v_traj = 0; 
+    
+    % 2. Simulazione e Disegno Traiettorie
+    for i = 1:size(x0, 2)
+        x_traj = zeros(4, N_steps);
+        x_traj(:, 1) = x0(:, i);
+        
+        for k = 1:N_steps-1
+            x_traj(:, k+1) = A_cl_ds * x_traj(:, k);
+        end
+        
+        V_traj = zeros(N_steps, 1);
+        for k = 1:N_steps
+            V_traj(k) = x_traj(:, k)' * P_ds * x_traj(:, k);
+        end
+        
+        if max(V_traj) > max_v_traj
+            max_v_traj = max(V_traj);
+        end
+        
+        % --- MAGIA VISIVA: INTERPOLAZIONE FLUIDA DELLA TRAIETTORIA ---
+        % Usiamo 'pchip' (interpolazione cubica che non crea finti rimbalzi) 
+        % per generare 10 volte più punti e rendere la curva morbidissima
+        t_discrete = 1:N_steps;
+        t_fine = linspace(1, N_steps, N_steps * 10);
+        
+        W_smooth = pchip(t_discrete, x_traj(4,:), t_fine);
+        Q_smooth = pchip(t_discrete, x_traj(2,:) * rad2deg, t_fine);
+        V_smooth = pchip(t_discrete, V_traj, t_fine);
+        
+        % 1. Disegniamo prima la SCIA FLUIDA (linea continua)
+        if i == 1
+            h_line = plot3(W_smooth, Q_smooth, V_smooth, '-', 'Color', colori{i}, 'LineWidth', 2);
+        else
+            plot3(W_smooth, Q_smooth, V_smooth, '-', 'Color', colori{i}, 'LineWidth', 2);
+        end
+        
+        % 2. Disegniamo sopra i PUNTI DISCRETI (solo pallini, senza linee)
+        plot3(x_traj(4,:), x_traj(2,:) * rad2deg, V_traj, 'o', ...
+              'MarkerEdgeColor', colori{i}, 'MarkerFaceColor', 'w', 'MarkerSize', 4);
+              
+        % Partenza (Start)
+        if i == 1
+            h_start = plot3(x_traj(4,1), x_traj(2,1) * rad2deg, V_traj(1), 'o', ...
+                            'MarkerFaceColor', colori{i}, 'MarkerEdgeColor', 'k', 'MarkerSize', 8);
+        else
+            plot3(x_traj(4,1), x_traj(2,1) * rad2deg, V_traj(1), 'o', ...
+                  'MarkerFaceColor', colori{i}, 'MarkerEdgeColor', 'k', 'MarkerSize', 8);
+        end
+        
+        % Arrivo (End)
+        plot3(x_traj(4,end), x_traj(2,end) * rad2deg, V_traj(end), 's', ...
+              'MarkerFaceColor', colori{i}, 'MarkerEdgeColor', 'k', 'MarkerSize', 8);
+    end
+    
+    % --- ORIGINE ---
+    h_end = plot3(0, 0, 0, 'p', 'MarkerFaceColor', 'y', 'MarkerEdgeColor', 'k', 'MarkerSize', 16);
+    
+    % --- FORMATTAZIONE E LEGENDA ---
+    title(sprintf('\\textbf{Funzione di Lyapunov $V(x_k)$ a Tempo Discreto ($T_s = %g$ s)}', Ts), 'Interpreter', 'latex', 'FontSize', 16);
+    xlabel('Velocit\`a Verticale $w$ [ft/s]', 'Interpreter', 'latex', 'FontSize', 12);
+    ylabel('Pitch Rate $q$ [deg/s]', 'Interpreter', 'latex', 'FontSize', 12);
+    zlabel('Energia $V(x_k) = x_k^T P_d x_k$', 'Interpreter', 'latex', 'FontSize', 12);
+    
+    legend([h_surf, h_line, h_start, h_end], ...
+           {'Superficie $V(x_k)$', 'Evoluzione di Stato (Interpolata)', 'Partenza ($k=0$)', 'Origine ($k \to \infty$)'}, ...
+           'Interpreter', 'latex', 'FontSize', 12, 'Location', 'northeast');
+    
+    zlim([0, max_v_traj * 1.2]); 
+    xlim([-w_lim, w_lim]);
+    ylim([-q_lim, q_lim]);
+    view(-35, 30);
+end
+\end{lstlisting}
+

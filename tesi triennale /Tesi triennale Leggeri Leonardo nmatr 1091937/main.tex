@@ -1,0 +1,74 @@
+\documentclass[12pt, a4paper, twoside, openright, italian]{MastersDoctoralThesis}
+\input{packages}
+
+\begin{document}
+	 
+	% FRONTE
+	%SPIZIO UNIBG
+	% ==========================================
+	\input{frontespizio}
+
+	
+	% ==========================================
+	% INDICE
+	% ==========================================
+	% Numerazione romana per l'indice
+	\pagenumbering{roman}
+	\tableofcontents
+	\cleardoublepage
+	
+	% Numerazione araba per i capitoli
+	\pagenumbering{arabic}
+
+% ==========================================
+% introduzione
+% ==========================================
+\input{capitoli/00_introduzione}
+\cleardoublepage
+\input{capitoli/01_nomenclatura_e_vettori_di_stato}
+\cleardoublepage
+\input{capitoli/02_derivazione_analitica_delle_equazioni}
+\cleardoublepage
+\input{capitoli/03_modello_delle_forze_e_momenti_aerodinamici}
+\cleardoublepage
+\input{capitoli/04_equazioni_complete_e_significato_fisico}
+\cleardoublepage
+\input{capitoli/05_architettura_e_struttura_del_simulatore}
+\cleardoublepage
+\input{capitoli/06_simulatore_flightgear_f_16}
+\cleardoublepage
+\input{capitoli/07_punto_di_equilibrio_linearizzazione_e_stabilit}
+\cleardoublepage
+\input{capitoli/08_realizzazione_minima_e_accoppiamento_dei_canali_mimo}
+\cleardoublepage
+\input{capitoli/09_sintesi_del_controllo_mimo_e_limiti_del_disaccoppiamento_dinamico}
+\cleardoublepage
+\input{capitoli/10_architettura_a_ciclo_chiuso_controllo_ottimo_lqr}
+\cleardoublepage
+\input{capitoli/11_il_controllo_predittivo_avanzato_mpc}
+\cleardoublepage
+\input{capitoli/12_monitor_real_time}
+\cleardoublepage
+\input{capitoli/13_modelli_e_strumenti}
+\cleardoublepage
+\input{capitoli/14_il_lavoro_svolto}
+\cleardoublepage
+\input{capitoli/15_caso_di_studio_il_computer_di_bordo_dell_f_16}
+\cleardoublepage
+\input{capitoli/16_conclusioni}
+\cleardoublepage\begin{center}
+	
+\end{center}
+	\clearpage
+	
+	% ==========================================
+	% appendici
+	% ==========================================
+	\appendix
+	\input{capitoli/appendice_a}
+	\input{capitoli/appendice_b}
+	
+	\cleardoublepage
+	\printbibliography[heading=bibintoc, title={Bibliografia}]
+
+\end{document}

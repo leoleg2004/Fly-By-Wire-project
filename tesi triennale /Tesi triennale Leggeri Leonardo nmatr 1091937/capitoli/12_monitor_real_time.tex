@@ -1,0 +1,32 @@
+\chapter{Monitor Real Time}
+\label{ch:introduzione}
+\label{sec:fly-by-wire}
+\section{Schedulazione nei Sistemi Real-Time}
+I sistemi \textit{Real-Time} (RT) sono caratterizzati dalla necessità di produrre, entro un preciso vincolo temporale, l'esecuzione di una task periodica all'interno di un vincolo detto
+\textbf{deadline}. Nei sistemi \textit{Hard Real-Time}, come i computer di bordo avionici i quali saranno trattati nel caso di studio al Cap.\ref{sec:caso_di_studio}. 
+Il mancato rispetto di una deadline non è semplicemente un degrado di prestazioni, è un fallimento del sistema con potenziali conseguenze che comportano la perdita di controllo dell'aereo con conseguente distruzione di esso e con danni mortali al pilota. Nei sistemi \textit{Soft Real-Time}, come ad esempio nei sistemi multimediali il superamento occasionale di una deadline comporta una riduzione della qualità percepita e quindi della effettiva resa di prestazione, ma non comporta nesun tipo di pericolo per quanto riguarda l'utente finale. Il fulcro della progettazione RT è l'algoritmo di \textbf{schedulazione} ovvero il meccanismo che il sistema operativo utilizza per decidere quale task eseguire in ogni istante su ogni core della CPU disponibile. In un ambiente multi-core, la complessità aumenta: ai task devono essere assegnate sia le priorità di esecuzione che l'affinità ai core fisici, garantendo che i task più critici abbiano sempre accesso alla risorsa computazionale entro le proprie deadline.
+\clearpage
+\subsection{Utilizzo di Rate Monotonic} All' interno dei prossimi capitoli verrà preso in considerazione l'algoritmo hard-real-time \textbf{Rate Monotonic} (RM), proposto da Liu e Layland nel 1973. Questo algoritmo è uno dei fondamenti teorici della schedulazione RT, Esso assegna staticamente a ogni task una priorità inversamente proporzionale al suo periodo: il task con il periodo più breve ottiene la priorità più alta. Il suo utilizzo è ottimale per sistemi di task periodici con deadline uguali al periodo, ma non è necessaria questo requisito. La condizione di schedulabilità è la seguente:
+
+\begin{equation}
+	U = \sum_{i=1}^{n} \frac{C_i}{T_i} \leq n \left(2^{1/n} - 1\right)
+	\label{eq:rms_bound}
+\end{equation}
+
+dove $C_i$ è il Worst Case Execution Time del task $i$, $T_i$ è il suo periodo. Il limite a destra converge a $\ln 2 \approx 0.693$ per $n \rightarrow \infty$. In un sistema Linux come quello utilizzato, viene usata la policy \texttt{SCHED\_FIFO} con RM, la schedulazione quindi viene implementata assegnando priorità numeriche discendenti al crescere del periodo nel momento della creazione del thread con tutti i parametri necessari.
+Il limite $U_{bound}(n)$ è una funzione decrescente di $n$ che converge a $\ln 2 \approx 0.693$ per $n \to \infty$.
+
+\noindent\textbf{Importante:} il test è \textit{sufficiente ma non necessario}. Un insieme di task che supera il bound potrebbe comunque rispettare tutte le deadline (come dimostra il Processo Set C delle slide ERTS con $U = 1.0$). Il test con Hyperbolic Bound, anch'esso presentato nel corso, è meno pessimistico ma più complesso.
+
+\section{Obiettivo della Tesi}
+La finalità di questa tesi è lo sviluppo e la validazione di un sistema completo per l'\textbf{analisi dei parametri temporali} di applicazioni Real-Time in esecuzione su un'architettura multi-core e possibilmente con diverse regole di schedulazione, di conseguenza diverse da RM come EDF, PIP e PCP. Il progetto risponde alla seguente domanda: dato un insieme di task periodici implementati in C++ tramite le primitive della libreria  POSIX e in esecuzione su Linux, è possibile estrarre automaticamente le metriche temporali fondamentali (WCET, Jitter, Response Time, Deadline Miss) e visualizzarle in modo tale che le statistiche ottenute siano corrette e graficamente utilizzabili per la validazione dell' applicazione creata dello sviluppatore.
+
+La risposta proposta si articola in tre componenti principali:
+\begin{enumerate}
+	\item Una \textbf{libreria per i Marker Temporali}: in C/C++ che inietta marker temporali nel buffer di tracciamento del kernel Linux tramite il sottosistema \texttt{ftrace}, in questo modo attraverso il file generato dalla simulazione chiamato trace.dat, si può capire in quale momento attraverso il timestamp una certa funzione periodica viene eseguita. In questo modo la simulazione ha consistenza e validazione. Senza questa funzionalità risulterebbe diffcile capire esattamente cosa accade durante la simulazione e quindi anche capire se la creazione dei thread con la loro rispettiva Periodic Task e la gestione della schedulazione sia avvenuta nel modo corretto e che rispetti i vincoli di utilizzo del sistema textit{ Real-Time}.
+	\item  \textbf{parser C++}: chiamato nel progetto (ThreadAnalysi.cpp), il seguente codice legge il log degli eventi di scheduling generato da \texttt{trace-cmd}  e calcola automaticamente le metriche temporali per ogni task, queste verranno poi caricate su un file csv chiamato (timeline.csv) che sarà utilizzato dal monitor python (monitor.py) per poter visualizzare correttamente tutte le statistiche.
+	\item  \textbf{monitor Python}: che legge il file csv (timeline.csv) e genera diagrammi di Gantt con tabelle di statistiche leggibili per lo sviluppatore.
+\end{enumerate}
+
+Nella trattazione che seguirà, è stato scelto come caso di studio per la validazione del progetto un computer di bordo di un caccia F-16 che simula i controlli eseguiti dal protocollo \texttt{Fly-By-Wire}. L'implementazione è basata su  \textbf{Multi-Thread} concorrenti distribuiti su i 7 core fisici disponbili sulla macchina linux utilizzata, la quale riproduce fedelmente il vero funzionamento di un sistema avionico.
+

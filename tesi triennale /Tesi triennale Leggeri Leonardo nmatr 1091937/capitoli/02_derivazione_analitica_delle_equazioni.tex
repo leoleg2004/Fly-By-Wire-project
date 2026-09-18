@@ -1,0 +1,57 @@
+\chapter{Derivazione Analitica delle Equazioni Del Moto}
+\label{capi2}
+In questa sezione si eseguono i calcoli tensoriali e matriciali per derivare le equazioni differenziali del moto, omettendo per semplicità la presenza del vento durante la derivazione cinematica di base (assumendo quindi $\mathbf{V}_{cm/e}^{frd} \approx \mathbf{V}_r^{frd}$),\cite{lewis2015ch2}
+
+\section{Equazioni di cinematica}
+Per ottenere la velocità del velivolo rispetto al suolo, è necessario proiettare il vettore velocità dal Body Frame ($frd$) al Target Plane ($tp$). La matrice di trasformazione $\mathbf{C}_{tp/frd}$ è l'esatta trasposta della matrice dei coseni direttori definita nel Capitolo 1 ($\mathbf{C}_{tp/frd} = \mathbf{C}_{frd/tp}^T$).
+
+Moltiplicando tale matrice per le velocità $\mathbf{V}_{cm/e}^{frd}$, si ottiene:
+\begin{equation}
+\begin{bmatrix} \dot{p}_N \\ \dot{p}_E \\ \dot{p}_D \end{bmatrix} = 
+\begin{bmatrix} 
+c\theta c\psi & s\phi s\theta c\psi - c\phi s\psi & c\phi s\theta c\psi + s\phi s\psi \\ 
+c\theta s\psi & s\phi s\theta s\psi + c\phi c\psi & c\phi s\theta s\psi - s\phi c\psi \\ 
+-s\theta & s\phi c\theta & c\phi c\theta 
+\end{bmatrix} 
+\begin{bmatrix} u \\ v \\ w \end{bmatrix}
+\end{equation}
+
+\section{Equazioni di dinamica}
+Applicando la Seconda Legge di Newton nel sistema di riferimento inerziale e derivandola nel sistema rotante (Body Frame) tramite il Teorema di Coriolis, l'equazione vettoriale risulta:
+\begin{equation}
+\mathbf{F}_{tot}^{bf} = m \left( \dot{\mathbf{V}}_{cm/e}^{frd} + \boldsymbol{\omega}_{b/e}^{frd} \times \mathbf{V}_{cm/e}^{frd} \right)
+\end{equation}
+
+Il prodotto vettoriale genera i termini legati alle accelerazioni apparenti (Coriolis e centrifughe):
+\begin{equation}
+\boldsymbol{\omega}_{b/e}^{frd} \times \mathbf{V}_{cm/e}^{frd} = 
+\begin{bmatrix} p \\ q \\ r \end{bmatrix} \times \begin{bmatrix} u \\ v \\ w \end{bmatrix} = 
+\begin{bmatrix} qw - rv \\ ru - pw \\ pv - qu \end{bmatrix}
+\end{equation}
+
+Il vettore delle forze totali $\mathbf{F}_{tot}^{bf}$ è la somma dei contributi aerodinamici ($\mathbf{F}_A^{bf}$), propulsivi ($\mathbf{F}_T^{bf}$) e gravitazionali ($\mathbf{F}_{grav}^{bf}$). La gravità, proiettata nel Body Frame attraverso la matrice $\mathbf{C}_{frd/tp}$, fornisce le componenti:
+\begin{equation}
+\mathbf{F}_{grav}^{bf} = \mathbf{C}_{frd/tp} \begin{bmatrix} 0 \\ 0 \\ mg \end{bmatrix} = 
+\begin{bmatrix} -mg s\theta \\ mg c\theta s\phi \\ mg c\theta c\phi \end{bmatrix}
+\end{equation}
+
+\section{Momento angolare}
+L'equazione di conservazione del momento angolare $\mathbf{H}$ per un sistema rotante è:
+\begin{equation}
+\mathbf{M}^{bf} = \dot{\mathbf{H}}^{frd} + \left( \boldsymbol{\omega}_{b/e}^{frd} \times \mathbf{H}^{frd} \right)
+\end{equation}
+
+Il momento angolare si ottiene moltiplicando il tensore d'inerzia $\mathbf{I}$ (assumendo la simmetria sul piano $XZ$) per la velocità angolare:
+\begin{equation}
+\mathbf{H}^{frd} = \mathbf{I} \boldsymbol{\omega}_{b/e}^{frd} = 
+\begin{bmatrix} I_{xx} & 0 & -I_{xz} \\ 0 & I_{yy} & 0 \\ -I_{xz} & 0 & I_{zz} \end{bmatrix} 
+\begin{bmatrix} p \\ q \\ r \end{bmatrix} = 
+\begin{bmatrix} I_{xx}p - I_{xz}r \\ I_{yy}q \\ -I_{xz}p + I_{zz}r \end{bmatrix}
+\end{equation}
+
+Derivando $\mathbf{H}^{frd}$ rispetto al tempo si ottiene $\dot{\mathbf{H}}^{frd} = [I_{xx}\dot{p} - I_{xz}\dot{r}, I_{yy}\dot{q}, -I_{xz}\dot{p} + I_{zz}\dot{r}]^T$. 
+Sviluppando il prodotto vettoriale per ottenere i termini giroscopici:
+\begin{equation}
+\boldsymbol{\omega}_{b/e}^{frd} \times \mathbf{H}^{frd} = \begin{bmatrix} p \\ q \\ r \end{bmatrix} \times \begin{bmatrix} H_x \\ H_y \\ H_z \end{bmatrix} = \begin{bmatrix} qH_z - rH_y \\ rH_x - pH_z \\ pH_y - qH_x \end{bmatrix}
+\end{equation}
+

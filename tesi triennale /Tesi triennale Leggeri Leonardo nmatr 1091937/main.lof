@@ -1,0 +1,73 @@
+\babel@toc {italian}{}\relax 
+\babel@toc {italian}{}\relax 
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Definizione dei sistemi di coordinate: la terna solidale al velivolo (Body Frame - FRD) e la terna inerziale terrestre (Earth Frame - NED).}}{16}{figure.caption.9}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Rappresentazione delle forze aerodinamiche incidenti sul profilo alare e scomposizione del vettore velocità.}}{24}{figure.caption.41}%
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Rappresentazione geometrica dell'apertura alare ($b$) e dei parametri di riferimento del velivolo.}}{24}{figure.caption.42}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Rappresentazione visiva del fenomeno del Gimbal Lock: allineamento fisico degli assi di rotazione quando l'angolo di beccheggio raggiunge i $90^\circ $, con conseguente perdita di un grado di libertà.}}{38}{figure.caption.93}%
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Rappresentazione topologica della sfera in $S^3$}}{39}{figure.caption.98}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Architettura globale del simulatore F-16 in ambiente Simulink. Sono visibili i sei sottosistemi principali che governano la dinamica del volo.}}{46}{figure.caption.111}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Dettaglio del blocco 6-DOF (Quaternion).}}{47}{figure.caption.113}%
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Dettaglio del sottosistema Aerodinamico: interfaccia tra lo stato del velivolo e la funzione di calcolo dei coefficienti.}}{48}{figure.caption.115}%
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Implementazione del modello atmosferico ISA per il calcolo dei parametri ambientali in funzione della quota.}}{49}{figure.caption.117}%
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Sottosistema per il calcolo delle variabili cinematiche $\alpha $, $\beta $ e della pressione dinamica $q$.}}{50}{figure.caption.119}%
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Trasformazione vettoriale della forza peso dal sistema NED agli assi corpo tramite Direction Cosine Matrix.}}{52}{figure.caption.125}%
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Condizionamento dei segnali di uscita e calcolo dei parametri di volo derivati (Mach, Gamma).}}{52}{figure.caption.129}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Panoramica dell'architettura di simulazione: integrazione tra Simulink e motore di rendering FlightGear.}}{53}{figure.caption.131}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Sottosistema di acquisizione e condizionamento dei segnali provenienti dal sistema Thrustmaster.}}{54}{figure.caption.133}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Visuale a terra dell'aereo prima del decollo.}}{56}{figure.caption.137}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Visuale FlightGear in volo di crociera.}}{56}{figure.caption.139}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Visuale dell'abitacolo su FlightGear in volo di crociera.}}{57}{figure.caption.141}%
+\contentsline {figure}{\numberline {6.6}{\ignorespaces Interfacciamento con FlightGear tramite Aerospace Blockset e visualizzazione dell'assetto tramite telecamere esterne e strumentazione di bordo.}}{58}{figure.caption.143}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {7.1}{\ignorespaces Inizio della ricerca dell'algortimo PSO}}{62}{figure.caption.149}%
+\contentsline {figure}{\numberline {7.2}{\ignorespaces Algortimo PSO a metà del suo funzionamento}}{63}{figure.caption.150}%
+\contentsline {figure}{\numberline {7.3}{\ignorespaces Algortimo PSO alla fine del suo funzionamento}}{63}{figure.caption.151}%
+\contentsline {figure}{\numberline {7.4}{\ignorespaces Funzionale di costo dell'algoritmo}}{64}{figure.caption.152}%
+\contentsline {figure}{\numberline {7.5}{\ignorespaces Report generato da MATLAB al termine dell'ottimizzazione, mostrante gli stati e gli ingressi di controllo del punto operativo (Trim) validato.}}{64}{figure.caption.153}%
+\contentsline {figure}{\numberline {7.6}{\ignorespaces Mappa Poli-Zeri (pzmap) della realizzazione minima longitudinale. Evidenza del polo instabile a parte reale positiva.}}{66}{figure.caption.159}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {8.1}{\ignorespaces Verifica simulata della proprietà bloccante sul sottosistema $2 \times 2$. Solo la perfetta sovrapposizione vettoriale tra ingresso e stato iniziale (Caso 1) garantisce l'annullamento delle uscite. Qualsiasi deviazione dallo stato geometrico ideale (Caso 2 e 3) compromette il bilanciamento delle forze interne.}}{81}{figure.caption.246}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {10.1}{\ignorespaces \relax }}{92}{figure.caption.280}%
+\contentsline {figure}{\numberline {10.2}{\ignorespaces Risposta del sistema con $Q \gg R$. (a) Il rientro è immediato e aggressivo,(b) ma genera picchi di comando che possono causare la saturazione degli attuatori.}}{94}{figure.caption.287}%
+\contentsline {figure}{\numberline {10.3}{\ignorespaces Analisi geometrica con $Q \gg R$. La ripidezza della funzione di Lyapunov (b) forza le traiettorie di fase (a) a una convergenza dalle condizioni inziali verso l'equilibrio.}}{95}{figure.caption.288}%
+\contentsline {figure}{\numberline {10.4}{\ignorespaces Risposta del sistema con $Q \approx R$. El controllore offre un ottimo compromesso tra rapidità di reiezione del disturbo (a) e contenimento dello sforzo di controllo (b).}}{96}{figure.caption.290}%
+\contentsline {figure}{\numberline {10.5}{\ignorespaces Analisi geometrica con $Q \approx R$. La conformazione bilanciata della superficie di Lyapunov (b) garantisce traiettorie di fase (a) fluide e ben smorzate verso l'origine.}}{97}{figure.caption.291}%
+\contentsline {figure}{\numberline {10.6}{\ignorespaces Risposta del sistema con $R \gg Q$. L'azione di controllo è moderata ed energeticamente efficiente (b), ma il rientro al punto operativo risulta molto più lento (a).}}{98}{figure.caption.293}%
+\contentsline {figure}{\numberline {10.7}{\ignorespaces Analisi geometrica con $R \gg Q$. La superficie di Lyapunov risulta quasi piatta (b), permettendo alle traiettorie di fase (a) ampie escursioni e una convergenza molto lenta.}}{98}{figure.caption.294}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {11.1}{\ignorespaces Evoluzione spaziale degli insiemi a $i$ passi. Il grafico confronta visivamente le proprietà matematiche discusse mostrando un target invariante (insiemi stabilizzabili $\mathcal {S}_i$) si ottiene una sequenza in rigorosa espansione monotona, mentre l'utilizzo di un target generico non invariante (insiemi controllabili $\mathcal {C}_i$) non garantisce la proprietà che garantisce la completa controllabilità del sistema in N passi}}{111}{figure.caption.356}%
+\contentsline {figure}{\numberline {11.2}{\ignorespaces Rappresentazione del poliedro di invarianza $\mathcal {X}_f$ (fetta $\theta =0$) e traiettoria di predizione dello stato verso l'origine.}}{112}{figure.caption.360}%
+\contentsline {figure}{\numberline {11.3}{\ignorespaces Evoluzione temporale delle variabili di stato: beccheggio, pitch rate e variazioni di velocità lineare.}}{113}{figure.caption.361}%
+\contentsline {figure}{\numberline {11.4}{\ignorespaces Sforzo di controllo degli attuatori: si noti l'attivazione dei vincoli di saturazione sull'elevatore e sui flap.}}{114}{figure.caption.362}%
+\contentsline {figure}{\numberline {11.5}{\ignorespaces Analisi geometrica del controllore MPC a ciclo chiuso. Il grafico tridimensionale mostra l'evoluzione dello stato e il corrispondente andamento decrescente del funzionale di costo ottimo, che si comporta come una funzione di Lyapunov scendendo lungo la superficie del costo terminale.}}{115}{figure.caption.364}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {13.1}{\ignorespaces La figura che mostra il funzionamento del Domain View}}{132}{figure.caption.428}%
+\contentsline {figure}{\numberline {13.2}{\ignorespaces figura che mostra funzionamento del monitor DDS e del Chart View}}{133}{figure.caption.430}%
+\contentsline {figure}{\numberline {13.3}{\ignorespaces logo dell applicazione}}{143}{figure.caption.492}%
+\contentsline {figure}{\numberline {13.4}{\ignorespaces Interfacccia grafica di KernelShark}}{144}{figure.caption.497}%
+\contentsline {figure}{\numberline {13.5}{\ignorespaces Tab presente nella dashboard per il tracing di singoli processi}}{146}{figure.caption.501}%
+\contentsline {figure}{\numberline {13.6}{\ignorespaces tab per il tracing di più processi nella dashboard}}{147}{figure.caption.503}%
+\contentsline {figure}{\numberline {13.7}{\ignorespaces \relax }}{148}{figure.caption.505}%
+\contentsline {figure}{\numberline {13.8}{\ignorespaces Flowchart di riferimento e flusso dati}}{149}{figure.caption.507}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {14.1}{\ignorespaces Estratto di \texttt {trace\_output.txt}: ogni riga documenta un evento di scheduling con timestamp, nome processo, PID e stato di transizione.}}{189}{figure.caption.1087}%
+\contentsline {figure}{\numberline {14.2}{\ignorespaces Output a terminale di \texttt {thread\_analysis}: metriche RT per ogni task.}}{191}{figure.caption.1105}%
+\contentsline {figure}{\numberline {14.3}{\ignorespaces Esempio di risultato ottenuto nella creazione del file \texttt {timeline.csv}.}}{191}{figure.caption.1106}%
+\contentsline {figure}{\numberline {14.4}{\ignorespaces Diagramma di Gantt generato da \texttt {monitor.py} per \texttt {app10g}.}}{193}{figure.caption.1121}%
+\contentsline {figure}{\numberline {14.5}{\ignorespaces Output di \texttt {marker.sh}: aggancio congiunto con estrazione di tutti i TID prima di avviare il trace.}}{198}{figure.caption.1222}%
+\contentsline {figure}{\numberline {14.6}{\ignorespaces Monitor Python con risultato della simulazione Broadcastner--Listener. Si può notare nel monitor la barra arancio riguardante il tempo impiegato per la comunicazione DDS.}}{202}{figure.caption.1325}%
+\contentsline {figure}{\numberline {14.7}{\ignorespaces Interfaccia KernelShark con marker applicativi visibili sulla timeline.}}{202}{figure.caption.1326}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {15.1}{\ignorespaces Diagramma di Gantt del simulatore F-16 prodotto da \texttt {monitor.py}: le 20 corsie temporali mostrano l'alternanza di stati \texttt {RUN} (verde), \texttt {SLEEP} (grigio) e \texttt {PREEMPT} (rosso) per ogni sottosistema avionico.}}{245}{figure.caption.2199}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }

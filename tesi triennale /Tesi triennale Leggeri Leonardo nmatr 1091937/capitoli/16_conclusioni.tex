@@ -1,0 +1,58 @@
+\chapter{Conclusioni}
+\label{ch:conclusioni}
+
+\section{Risultati Ottenuti}
+Questo lavoro ha dimostrato i risultati ottenuti attraverso l'automazione del controllo longitudinale attrverso script matlba di analisi e l'utilizzo di un simulatore per validare il lavoro svolto con:
+
+
+\begin{itemize}
+	
+	\item \textbf{Script MATLAB:} script per l'analisi MIMO e di creazione di modelli di controllo LQR e MPC,che si trovano all'interno della repository GitHub dedicata. Disponibile al seguente indirizzo: \url{https://github.com/leoleg2004/AutomationF16}
+	\item \textbf{Simulatore Flight Gear:} simulatore open-source usato per validare le strategie ocntrollo ottenuta con irsultato visivo che si poggia sul modello simulink di un velivolo F-16 non lineare del prof.Bhattachrya\cite{bhattacharya_f16_trim}.
+	
+\end{itemize}
+
+inoltre si è sviluppato un sistema integrato basato un computer di bordo di un F-16 attraverso l'analisi di parametri temporali di applicazioni Real-Time su architettura multi-core Linux. Il sistema sviluppato composto dalla libreria di istrumentazione C, dagli script bash, dal parser C++ e dal monitor Python è in grado di:
+
+\begin{itemize}
+		\item \textbf{Repository dedicata:} il  repository con tutti gli elementi presenti nella tesi sono disponibilei al seguente indirizzo: \url{https://github.com/leoleg2004/Fly-By-Wire-project}
+	\item \textbf{Acquisire automaticamente} il log degli eventi di scheduling tramite \texttt{trace-cmd} con overhead minimo sui task in esecuzione.
+	\item \textbf{Estrarre le metriche fondamentali} (WCET, ACET, Jitter, Response Time, Deadline Miss, Utilizzazione CPU) per ogni task periodico, senza modificare il codice applicativo al di là dell'inclusione della libreria \texttt{trace\_marker}.
+	\item \textbf{Tracciare scenari multi-processo} tipici della comunicazione DDS, grazie agli script \texttt{marker.sh} per l'aggancio passivo a processi già in esecuzione tramite \texttt{/proc}.
+	\item \textbf{Visualizzare i risultati} in diagrammi di Gantt e tabelle statistiche con evidenziazione condizionale delle anomalie.
+\end{itemize}
+
+Il caso di studio del computer di bordo dell'F-16 ha validato il sistema in condizioni di carico elevato (20 thread POSIX su 7 core fisici), confermando che la schedulazione \textit{Rate Monotonic} implementata tramite \texttt{SCHED\_FIFO} garantisce il rispetto delle deadline per tutti i sottosistemi critici (FCS, INS, FADEC) con periodo di 10 ms.
+
+\section{Limiti del Sistema}
+\begin{itemize}
+	\item \textbf{Overhead dei marker:} La scrittura nel buffer \texttt{ftrace} introduce un overhead per ogni chiamata. Nei task con WCET dell'ordine dei microsecondi questo overhead può alterare le misure.
+	\item \textbf{Buffer circolare:} In sessioni di tracciamento molto lunghe o ad alta frequenza di eventi, il buffer di \texttt{ftrace} può andare in overflow, perdendo eventi e rendendo le misure incomplete.
+	\item \textbf{Parsing statico limitato:} Il parsing regex del sorgente funziona solo per i pattern di dichiarazione riconoscibili (\texttt{.period = ...}, \texttt{.deadline = ...}). Parametri calcolati a runtime non vengono estratti.
+	\item \textbf{Risoluzione dei nomi:} La discovery del parser si basa sul matching tra nomi dei thread nel log e marker testuali. Thread che non iniettano marker non vengono riconosciuti dall'analizzatore.
+\end{itemize}
+
+\section{Sviluppi Futuri}
+\begin{itemize}
+	\item \textbf{Analisi a runtime:} Sostituire l'analisi \textit{post-mortem} del log con un agente in-process che calcoli le metriche in tempo reale e notifichi immediatamente eventuali violazioni di deadline durante l'esecuzione.
+	\item \textbf{Supporto a task aperiodici e sporadici:} Estendere il parser per riconoscere task con periodo variabile o attivazione basata su eventi, tipici dei sistemi a interrupt.
+	\item \textbf{Analisi multi-nodo DDS:} Estendere il monitor Python per correlare temporalmente i marker di publisher e subscriber su macchine fisiche diverse, calcolando la latenza end-to-end della comunicazione DDS su rete reale.
+\end{itemize}
+
+\cleardoublepage % Assicura che il capitolo inizi su una pagina nuova
+\phantomsection  % Crea un ancoraggio corretto per il PDF
+\addcontentsline{toc}{chapter}{Ringraziamenti} % Aggiunge i Ringraziamenti all'Indice
+\chapter*{Ringraziamenti}
+
+A conclusione di questo lavoro di tesi e di questo percorso accademico, desidero ringraziare il Prof. Antonio Russo e il Prof. Davide Brugali, che sono stati un costante punto di riferimento e di crescita personale. Ringrazio il Prof. Russo per i continui confronti su ogni mio dubbio e per i preziosi consigli che mi hanno guidato verso le scelte per il mio futuro. Esprimo la mia gratitudine anche al Prof. Brugali per avermi dato l'opportunità di misurarmi con nuove sfide che hanno arricchito enormemente il mio bagaglio di conoscenze. Considererò sempre entrambi come due mentori che hanno saputo mettermi nelle condizioni di migliorare continuamente. Un ringraziamento speciale va alla mia famiglia. A mia mamma, Federica Galli, per essere sempre stata in prima linea a spingermi verso i miei obiettivi. A mio padre, Emanuele Candido Leggeri, per gli sforzi non passati inosservati: senza di essi non avrei potuto concludere questo percorso e aprirne un altro, altrettanto complesso e sfidante. Infine, a mia sorella Angelica, che non ha mai smesso di farmi sentire il supporto necessario per superare ogni problema. Vi ringrazio per essere stati una famiglia così presente e per avermi permesso di completare questi studi con la massima serenità. Un grazie anche ai miei compagni di università: Gabriele Bregolin, Samuele Vecchi, Raul Beltramelli, Riccardo Motta e Davide Scorsetti. Siete stati tutti fondamentali per superare insieme gli ostacoli e i momenti più complessi di questi anni impegnativi; a tutti voi auguro la migliore fortuna nei rispettivi percorsi personali. Ringrazio anche i miei amici d'infanzia: Nicholas Cresci, Stefan Ifteme, Matteo Lupi, Jhair Alejandro Guerra, Giorgia Milanese e Gaia Capelli, che negli anni sono stati continua fonte di ispirazione e di confronto. A loro riconosco un aiuto fondamentale durante questi anni di studio e auguro il meglio per i rispettivi progetti di vita. Infine, grazie alla mia ragazza, Michela. Sei stata una fonte inesauribile di sostegno, sempre pronta ad ascoltare ogni mio problema o pensiero. Anche nei momenti in cui provavo ad abbassare la testa, la tua voglia di vedermi trionfare è bastata per entrambi; devo dunque anche a te il raggiungimento di questo traguardo così importante per la mia vita.
+
+\vspace{1.5cm} % Spazio verticale per separare i ringraziamenti dalla citazione
+
+\begin{flushright}
+	\textit{«Gli scienziati studiano il mondo così com'è; \\ 
+		gli ingegneri creano il mondo che non è mai stato.»}\\
+	\vspace{0.2cm} % Piccolo spazio tra la citazione e l'autore
+	-- Theodore von Kármán
+\end{flushright}
+
+\nocite{*}

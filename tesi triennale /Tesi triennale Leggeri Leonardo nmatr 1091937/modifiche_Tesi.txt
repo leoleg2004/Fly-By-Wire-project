@@ -1,0 +1,121 @@
+ Elenco delle figure
+
+Elenco delle tabelle
+
+Abstract
+
+Introduzione
+
+I. Modellazione e Simulazione Dinamica dell'F-16
+1. Modellazione cinematica e dinamica del velivolo
+
+1.1 Notazione e sistemi di riferimento (include 1.1 e 1.2)
+
+1.2 Vettori di stato e cinematica del vento (include 1.3 e 1.4)
+ 
+1.3 Modellazione di forze e momenti aerodinamici (include 1.5)
+
+2. Derivazione analitica delle equazioni del moto 
+
+2.1 Equazioni di cinematica
+
+2.2 Equazioni di dinamica 
+
+2.3 Momento angolare
+
+3. Modello delle Forze e Momenti Aerodinamici
+
+3.1 Pressione Dinamica e Geometria di Riferimento
+
+3.2 Modelli di forze aerodinamiche
+
+3.3 Adimensionalizzazione dei momenti
+
+3.4 Analisi delle derivate di stabilità tramite serie di Taylor
+
+3.4.1 Dinamica longitudinale
+
+3.4.2 Modello Aerodinamico e Derivate di Stabilità 
+
+3.4.3 Dinamica Latero-Direzionale e Accoppiamento Aerodinamico
+
+(non metterei qui la tua sezione 3.5, questa sezione riguarda la parte di implementazione in simulazione delle equazioni, quindi è più coerente trasferire questa sezione nel capitolo 6)
+
+4. Equazioni non lineari del moto e integrazione numerica
+
+4.1 Equazioni di posizione e assetto (include 4.1 e 4.2)
+
+4.2 Dinamica non lineare delle forze e dei momenti (include 4.3 e 4.4)
+
+4.3 Meccanismo di Controllo Longitudinale
+
+(la Sezione 4.4.4 è una sezione di notazione, e in quanto tale dovrebbe essere inclusa nella sezione 1.1, così che il lettore possa andare all'inizio della tesi per vedere il significato dei simboli)
+
+4.4 Rappresentazione dell'assetto mediante quaternioni (corrisponde a 4.5, probabilmente non abbiamo bisogno di sottosezioni)
+
+4.5 Analisi critica dei metodi di Eulero (la tua 5.1, non abbiamo bisogno di sottosezioni)
+
+4.6 Metodo di Runge-Kutta del quarto ordine (RK4) (la tua 5.2, non abbiamo bisogno di sottosezioni)
+
+5 Architettura e Struttura del Simulatore 
+
+5.1 Panoramica Globale dell’Architettura 
+
+5.2 Dinamica del Corpo Rigido 
+
+5.3 Sottosistema Aerodinamico
+
+5.4 Modello Atmosferico
+
+6. Ambiente di Simulazione & Attuazione Hardware-in-the-Loop
+
+6.1 Integrazione con periferiche Thrustmaster HOTAS
+
+6.2 Interfacciamento: FlightGear e Aerospace Blockset
+
+II. Automazione del Controllo Longitudinale
+7. Analisi di Stabilità e Linearizzazione
+
+7.1 Definizione dei punti di equilibrio
+
+7.2 Linearizzazione dello spazio di stato
+
+7.3 Analisi spettrale e autovalori
+
+7.4 Disaccoppiamento delle dinamiche
+
+7.5 Rappresentazione MIMO e funzioni di trasferimento
+
+8. Proprietà Strutturali e Analisi MIMO
+
+8.1 Raggiungibilità, osservabilità e realizzazione minima
+
+8.2 Analisi dei poli, zeri e proprietà bloccanti
+
+8.3 Interazioni dinamiche e vincoli strutturali
+
+9. Sintesi del Controllo e Limiti del Disaccoppiamento
+
+9.1 Progetto del pre-compensatore dinamico
+
+9.2 Limiti algoritmici: complessità polinomiale
+
+9.3 Evoluzione verso il controllo nello spazio di stato
+
+10. Controllo LQR (Linear Quadratic Regulator)
+
+10.1 Sintesi del regolatore 
+
+10.2 Ottimizzazione delle performance tramite la Regola di Bryson
+
+11. Controllo Predittivo (MPC)
+
+11.1 Principi del Receding Horizon
+
+11.2 Stabilità e teoremi di Lyapunov
+
+11.3 Analisi degli insiemi invarianti e stabilità robusta
+
+11.4 Implementazione per Sistemi Lineari: Legame con LQR 
+
+11.5 Implementazione Pratica: Controllo Longitudinale F-16 

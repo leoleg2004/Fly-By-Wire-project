@@ -1,0 +1,80 @@
+% ==========================================
+% LISTE AUTOMATICHE (FIGURE E TABELLE)
+% ==========================================
+\cleardoublepage
+% Aggiunge la voce "Elenco delle figure" all'indice principale
+\addcontentsline{toc}{chapter}{\listfigurename} 
+\listoffigures % Genera automaticamente la lista delle tue foto
+
+\cleardoublepage
+% Aggiunge la voce "Elenco delle tabelle" all'indice principale
+\addcontentsline{toc}{chapter}{\listtablename} 
+\listoftables % Genera automaticamente la lista delle tabelle 
+
+\cleardoublepage
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+This thesis presents a comprehensive study on the flight dynamics, advanced multivariable control, and real-time software implementation of an F-16 fighter jet onboard computer. Due to its inherent aerodynamic instability—an engineering design choice aimed at maximizing maneuverability for aerial combat—the aircraft cannot be piloted manually and strictly requires a robust, automatic \textit{Fly-by-Wire}  \textit{Flight Control System}(FCS). The work is logically structured into three main phases:
+\begin{itemize}
+      \item \textbf{Modeling and Simulation:} the derivation of the non-linear 6-DOF equations of flight dynamics, the integration of NASA aerodynamic models, and the creation of a high-fidelity simulator in MATLAB/Simulink interfaced with FlightGear for 3D visual validation.
+  \item \textbf{Multivariable and Optimal Control:} the extraction of the linearized MIMO state-space model at cruise Trim, the study of the structural limits of classic decoupling, and the synthesis of advanced controllers LQR and MPC capable of handling the physical saturation limits of the actuators to ensure closed-loop asymptotic stability.
+  \item \textbf{Real-Time Implementation (C++):} the multithreaded C++ architecture developed on multi-core machines, leveraging POSIX primitives, the eProsima DDS middleware for inter-process communication, and Rate Monotonic (RM) scheduling. The system is validated through a Linux kernel tracing infrastructure (ftrace, trace-cmd) interfaced with a Python graphical dashboard.
+\end{itemize}
+
+\cleardoublepage
+\chapter*{Introduzione}
+\addcontentsline{toc}{chapter}{Introduzione}
+
+L'obiettivo di questa tesi è lo studio sistemistico, il controllo multivariabile e l'implementazione software in tempo reale del computer di bordo di un caccia F-16. Essendo progettato con un'instabilità aerodinamica intrinseca per massimizzarne la manovrabilità in combattimento, questo velivolo non può essere pilotato manualmente e richiede un \textit{Flight Control System} (FCS) di tipo \textit{Fly-by-Wire} estremamente affidabile. Il lavoro si articola logicamente in tre macro-aree principali:
+\begin{itemize}
+	\item \textbf{Modellazione e Simulazione:} la derivazione delle equazioni non lineari (6-DOF) della dinamica di volo, l'integrazione dei modelli aerodinamici NASA e la creazione di un simulatore ad alta fedeltà in MATLAB/Simulink interfacciato con FlightGear per la validazione visiva 3D.
+	\item \textbf{Controllo Multivariabile e Ottimo:} l'estrazione del modello lineare MIMO nel punto di \textit{Trim} di crociera, lo studio dei limiti del disaccoppiamento classico, e la sintesi di controllori avanzati LQR e MPC capaci di gestire i vincoli fisici di saturazione degli attuatori per garantire la stabilità asintotica in anello chiuso.
+	\item \textbf{Implementazione Real-Time (C++):} l'architettura multithreading in C++ sviluppata su macchine multi-core, avvalendosi di primitive POSIX, del middleware DDS di eProsima per la comunicazione inter-processo e della schedulazione \textit{Rate Monotonic} (RM). Il sistema è validato tramite un'infrastruttura di tracing del kernel Linux (ftrace, trace-cmd) interfacciata con una dashboard grafica in Python.
+\end{itemize}
+\clearpage
+\subsection*{Struttura della tesi}
+
+\noindent\textbf{Parte I — Modellazione e Simulazione Dinamica dell'F-16}
+\begin{description}
+	\item[\textbf{Capitolo 1 — Modellazione cinematica e dinamica del velivolo:}]
+	Definisce i sistemi di riferimento, la nomenclatura ICAO e i vettori di stato cinematici e aerodinamici del velivolo.
+	\item[\textbf{Capitolo 2 — Derivazione analitica delle equazioni del moto:}]
+	Deriva rigorosamente le equazioni differenziali 6-DOF (dinamica e cinematica) e discute l'utilizzo dei quaternioni per evitare il Gimbal Lock.
+	\item[\textbf{Capitolo 3 — Modello delle Forze e Momenti Aerodinamici:}]
+	Costruisce il modello aerodinamico basato sui coefficienti tabulati NASA e discute la pressione dinamica e le derivate di stabilità.
+	\item[\textbf{Capitolo 4 — Equazioni non lineari del moto e integrazione numerica:}]
+	Presenta il sistema di equazioni differenziali esplicito finale e analizza i metodi di integrazione numerica (Runge-Kutta, Eulero).
+	\item[\textbf{Capitolo 5 — Architettura e Struttura del Simulatore:}]
+	Illustra l'architettura a blocchi del simulatore MATLAB/Simulink e i sottosistemi principali (aerodinamica, gravità, corpo rigido).
+	\item[\textbf{Capitolo 6 — Ambiente di Simulazione \& Attuazione Hardware-in-the-Loop:}]
+	Descrive l'integrazione del simulatore con l'hardware di controllo (Thrustmaster HOTAS) e con il motore di rendering 3D FlightGear per l'analisi visiva.
+\end{description}
+
+\noindent\textbf{Parte II — Automazione del controllo longitudinale }
+\begin{description}
+	\item[\textbf{Capitolo 7 — Analisi di Stabilità e Linearizzazione:}]
+	Ricerca numerica del punto operativo (Trim) in crociera, estrazione del modello lineare e analisi di stabilità del sistema (poli e autovalori).
+	\item[\textbf{Capitolo 8 — Proprietà Strutturali e Analisi MIMO:}]
+	Analisi di raggiungibilità e osservabilità, realizzazione minima e studio della proprietà bloccante degli zeri di trasmissione nel sistema MIMO.
+	\item[\textbf{Capitolo 9 — Sintesi del Controllo e Limiti del Disaccoppiamento:}]
+	Studio delle tecniche di disaccoppiamento in avanti e dei limiti matematico-strutturali che impediscono l'uso di semplici PID decentralizzati.
+	\item[\textbf{Capitolo 10 — Controllo LQR (Linear Quadratic Regulator):}]
+	Sintesi del Regolatore Lineare Quadratico (LQR), taratura dei pesi con la regola di Bryson e analisi geometrica del funzionale di Lyapunov.
+	\item[\textbf{Capitolo 11 — Controllo Predittivo (MPC):}]
+	Formulazione e implementazione del Model Predictive Control per gestire esplicitamente i vincoli fisici degli attuatori, con analisi degli insiemi invarianti.
+\end{description}
+
+\noindent\textbf{Parte III — Implementazione Real-Time Multithreading in C++}
+\begin{description}
+	\item[\textbf{Capitolo 12 — Monitor Real-Time:}]
+	Introduzione al caso di studio e all'architettura software di monitoraggio in tempo reale.
+	\item[\textbf{Capitolo 13 — Modelli e Strumenti:}]
+	Fondamenti teorici: task periodici, primitive POSIX, middleware DDS, e strumenti di tracing del kernel Linux (ftrace, trace-cmd) con interfacce Python.
+	\item[\textbf{Capitolo 14 — Il Lavoro Svolto:}]
+	Dettaglio implementativo delle librerie core in C++, orchestrazione tramite script Bash, e sviluppo della dashboard di monitoraggio grafico.
+	\item[\textbf{Capitolo 15 — Caso di Studio: il Computer di Bordo dell'F-16:}]
+	Integrazione finale del sistema: emulazione dei sottosistemi avionici tramite thread POSIX e validazione temporale delle tracce kernel per garantire il real-time.
+	\item[\textbf{Capitolo 16 — Conclusioni:}]
+	Sintesi dei traguardi raggiunti, limiti del sistema e proposte per sviluppi futuri.
+\end{description}

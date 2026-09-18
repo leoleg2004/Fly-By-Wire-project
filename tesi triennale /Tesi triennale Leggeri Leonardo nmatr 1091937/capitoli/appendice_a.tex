@@ -1,0 +1,765 @@
+\chapter{Codici MATLAB: Controllo Predittivo MPC}
+
+In questa appendice vengono riportati i codici MATLAB utilizzati. Il documento è strutturato per essere facilmente navigabile: partendo dallo script principale, è possibile esplorare tutte le funzioni richiamate.
+
+\section*{Script Principale MPC}
+\subsection*{File: \texttt{MPC.m}}
+\label{sec:MPC}
+
+Script MATLAB principale per la simulazione MPC dell'F-16 (Configurazione, Inizializzazione, Ciclo Closed-Loop). In questo script vengono richiamate le seguenti funzioni, definite nelle sezioni successive:
+\begin{itemize}
+    \item \hyperref[sec:startup]{\texttt{startup.m}}
+    \item \hyperref[sec:funzioni_mpc_discretizza_modello]{\texttt{funzioni\_mpc/discretizza\_modello.m}}
+    \item \hyperref[sec:funzioni_mpc_imposta_vincoli]{\texttt{funzioni\_mpc/imposta\_vincoli.m}}
+    \item \hyperref[sec:funzioni_mpc_setup_mpc]{\texttt{funzioni\_mpc/setup\_mpc.m}}
+    \item \hyperref[sec:funzioni_mpc_simula_mpc]{\texttt{funzioni\_mpc/simula\_mpc.m}}
+    \item \hyperref[sec:funzioni_mpc_cis]{\texttt{funzioni\_mpc/cis.m}}
+    \item \hyperref[sec:funzioni_mpc_plot_cis]{\texttt{funzioni\_mpc/plot\_cis.m}}
+    \item \hyperref[sec:funzioni_mpc_plot_mpc_cost_3d]{\texttt{funzioni\_mpc/plot\_mpc\_cost\_3d.m}}
+    \item \hyperref[sec:funzioni_mpc_plot_risultati]{\texttt{funzioni\_mpc/plot\_risultati.m}}
+\end{itemize}
+
+\begin{lstlisting}[language=Matlab, caption={Script Principale MPC}, label={lst:MPC}]
+% =========================================================================
+% Tesi Triennale - MPC Longitudinale F-16
+% Simulazione con Conversione Continuo-Discreto (c2d) e Radianti
+% Ing. Leggeri Leonardo
+% =========================================================================
+
+% Inizializzazione Path
+% Aggiungiamo prima la cartella locale Startup in cima al path per evitare
+% conflitti con startup_project di altri progetti (es. Tre Camere)
+addpath(fullfile(pwd, 'Startup'), '-begin');
+startup_project();
+
+% =========================================================================
+% TABS AUTOMATICI: Inserisce tutti i grafici in un unico pannello a schede
+% =========================================================================
+set(0, 'DefaultFigureWindowStyle', 'docked');
+
+%% 1. Definizione del Sistema (TEMPO CONTINUO)
+nx = 4; % Stati: [theta,q,U,W]'
+nu = 3; % Ingressi: [T, dele, dlef]'
+Ts = 0.1; % Tempo di campionamento in secondi
+
+disp('Conversione del modello da Continuo a Discreto...');
+[A_long_ds, B_ctrl_ds] = discretizza_modello(A_long, B_ctrl, nx, nu, Ts);
+
+%% 2. Progetto LQR tramite funzione dedicata
+% =========================================================================
+% NOTA SUI PESI Q e R:
+% Se vuoi modificare l'aggressività del controllore (pesi Q e R),
+% apri il file "funzioni_lqr/progetta_LQR_discreto.m" e modificali lì dentro
+% =========================================================================
+disp('Progetto LQR discreto tramite funzione dedicata...');
+[K, P, Q, R, A_cl] = progetta_LQR_discreto(A_long_ds, B_ctrl_ds);
+
+    % I vincoli FISICI assoluti dell'F-16:
+    % Thrust: [1000, 19000] lbf -> Newton
+    % Elevator: [-25, 25] gradi
+    % Flaps (LEF): [0, 25] gradi
+    lbf2N = 4.44822;
+    ft2m = 0.3048;
+    
+    U_min_abs = [1000 * lbf2N; -25 * pi/180; 0];  
+    U_max_abs = [19000 * lbf2N; 25 * pi/180; 25 * pi/180]; 
+
+    % Poiché l'MPC ragiona in "perturbazioni" (u_err), i vincoli su u_err 
+    % devono essere sottratti del punto di trim (best_u)
+    U_min = U_min_abs - [best_u(1); best_u(2); best_u(3)];
+    U_max = U_max_abs - [best_u(1); best_u(2); best_u(3)];
+
+    Rate_max = [10000 * lbf2N; 60 * pi/180; 25 * pi/180];
+
+    % Stati: theta(rad), q(rad/s), u(m/s), w(m/s)
+    X_max = [ 45 * pi/180;  60 * pi/180;  100 * ft2m;  85 * ft2m]; 
+    X_min = [-45 * pi/180; -60 * pi/180; -100 * ft2m; -85 * ft2m];
+
+[Fx, fx, Fu, fu, dU_min, dU_max, Gx, gx] = imposta_vincoli(X_min, X_max, U_min, U_max, Rate_max, Ts);
+
+% Riferimento di Default (Origine del sistema linearizzato)
+x_ref = zeros(nx, 1);
+u_ref = zeros(nu, 1);
+
+% =========================================================================
+% ESEMPIO con target non nullo
+% Affinché l'MPC funzioni correttamente sul modello linearizzato, il nuovo 
+% target deve essere un punto di equilibrio valido: x_ref = A_ds*x_ref + B_ds*u_ref
+%
+%u_ref = [100; 2 * pi/180; 0]; % Es: +1000 lbs di spinta e 2 gradi di equilibratore
+ %x_ref = (eye(nx) - A_long_ds) \ (B_ctrl_ds * u_ref); % Stato di equilibrio esatto associato
+% =========================================================================
+
+%% 4. Calcolo Control Invariant Set e Plot
+disp('--- CALCOLO del Control Invariant Set ---');
+[G_inf, g_inf] = cis(A_long_ds, B_ctrl_ds, x_ref, u_ref, Fx, fx, Fu, fu, Q, R);
+
+%% 5. Setup Problema MPC 
+N = 40; % Orizzonte predittivo 
+mpc_prob = setup_mpc(N, nx, nu, A_long_ds, B_ctrl_ds, Q, P, R, U_min, U_max, Gx, gx, G_inf, g_inf, x_ref, u_ref);
+
+%% 4b. Plot 3D dei Set Invarianti e Feasible Set N-Step
+% Inizializza Dashboard
+tabs = crea_dashboard_mpc();
+plot_cis(G_inf, g_inf, x_ref, mpc_prob, A_long_ds, dU_max, tabs.cis_3d);
+
+%% 6. Simulazione MPC Completa 
+disp('--- Avvio Ottimizzazione e Simulazione MPC ---');
+% Ordine: [theta; q; u; w]
+x_iniziale = [25 * (pi/180);  % theta: +25 gradi (cabrata)
+              3 * (pi/180);  % q: +20 gradi/s (velocità di beccheggio)
+              2;             % u: +20 ft/s (deviazione velocità forward)
+              5];            % w: +20 ft/s (deviazione velocità verticale)
+t_sim = 100; % tempo di simulazione
+
+[storia_x, storia_u, storia_costo] = simula_mpc(mpc_prob, x_iniziale, t_sim, A_long_ds, B_ctrl_ds, dU_max);
+disp('Ottimizzazione Riuscita. Il modello è matematicamente solido.');
+
+disp('---------------------------------------------------');
+disp('VERIFICA RAGGIUNGIMENTO TARGET (Ultimo Step)');
+disp('Stato Finale Raggiunto (storia_x(:,end)):');
+disp(storia_x(:,end));
+disp('Target Desiderato (x_ref):');
+disp(x_ref);
+disp('Errore Assoluto [theta; q; U; W]:');
+disp(abs(storia_x(:,end) - x_ref));
+disp('---------------------------------------------------');
+
+%% 7. Grafici 
+plot_risultati(t_sim, storia_x, storia_u, U_min, U_max, x_ref, u_ref, tabs.stati, tabs.attuatori);
+
+%% 8. Plot Funzionale di Costo MPC 3D
+plot_mpc_cost_3d(mpc_prob, A_long_ds, dU_max, storia_x, storia_costo, Ts, tabs.cost_3d);
+\end{lstlisting}
+
+\section*{Inizializzazione Workspace}
+\subsection*{File: \texttt{startup.m}}
+\label{sec:startup}
+
+Script di inizializzazione dell'ambiente di lavoro e configurazione automatica dei percorsi di progetto.
+
+\begin{lstlisting}[language=Matlab, caption={Inizializzazione Workspace}, label={lst:startup}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+% STARTUP.m
+% Questo script viene eseguito automaticamente da MATLAB all'avvio 
+% (se la cartella corrente è impostata su questa directory)
+% oppure all'apertura del Progetto MATLAB.
+
+disp('--- Esecuzione Automatica di Startup ---');
+addpath(fullfile(pwd, 'Startup'));
+startup_project();
+\end{lstlisting}
+
+\section*{Discretizzazione del Modello}
+\subsection*{File: \texttt{funzioni\_mpc/discretizza\_modello.m}}
+\label{sec:funzioni_mpc_discretizza_modello}
+
+Funzione per la discretizzazione del modello continuo dello spazio di stato (c2d).
+
+\begin{lstlisting}[language=Matlab, caption={Discretizzazione del Modello}, label={lst:funzioni_mpc_discretizza_modello}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function [A_long_ds, B_ctrl_ds] = discretizza_modello(A_long, B_ctrl, nx, nu, Ts)
+    % Converte il sistema da tempo continuo a discreto
+    sys_c = ss(A_long, B_ctrl, eye(nx), zeros(nx, nu));
+    sys_d = c2d(sys_c, Ts, 'zoh'); % Zero-Order Hold
+    A_long_ds = sys_d.A;
+    B_ctrl_ds = sys_d.B;
+end
+\end{lstlisting}
+
+\section*{Definizione dei Vincoli (Constraints)}
+\subsection*{File: \texttt{funzioni\_mpc/imposta\_vincoli.m}}
+\label{sec:funzioni_mpc_imposta_vincoli}
+
+Funzione per la definizione rigorosa dei vincoli fisici e operativi (su stati e ingressi).
+
+\begin{lstlisting}[language=Matlab, caption={Definizione dei Vincoli (Constraints)}, label={lst:funzioni_mpc_imposta_vincoli}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function [Fx, fx, Fu, fu, dU_min, dU_max, Gx, gx] = imposta_vincoli(X_min, X_max, U_min, U_max, Rate_max, Ts)
+    % IMPOSTA_VINCOLI Costruisce le matrici poliedriche dei vincoli per l'MPC.
+    % È una funzione generalizzata per qualsiasi sistema.
+    %
+    % Input:
+    %   X_min, X_max: Limiti inferiori e superiori degli stati (nx x 1)
+    %   U_min, U_max: Limiti inferiori e superiori degli ingressi (nu x 1)
+    %   Rate_max: Massimo rateo di variazione degli ingressi (nu x 1)
+    %   Ts: Tempo di campionamento
+    %
+    % Output:
+    %   Fx, fx: Matrici vincoli di stato Fx * x <= fx
+    %   Fu, fu: Matrici vincoli di ingresso Fu * u <= fu
+    %   dU_min, dU_max: Vincoli di rateo
+    %   Gx, gx: Copia di Fx, fx (per retrocompatibilità)
+
+    nx = length(X_min);
+    nu = length(U_min);
+
+    % Vincoli di Rateo
+    dU_max = Rate_max * Ts; 
+    dU_min = -dU_max;
+
+    % Vincoli Poliedrici di Stato
+    Fx = [eye(nx); -eye(nx)]; 
+    fx = [X_max; -X_min];
+
+    % Vincoli Poliedrici di Ingresso
+    Fu = [eye(nu); -eye(nu)]; 
+    fu = [U_max; -U_min];
+    
+    % Per retrocompatibilità con altri codici MPC pre-esistenti
+    Gx = Fx; 
+    gx = fx; 
+end
+\end{lstlisting}
+
+\section*{Setup e Configurazione MPC}
+\subsection*{File: \texttt{funzioni\_mpc/setup\_mpc.m}}
+\label{sec:funzioni_mpc_setup_mpc}
+
+Funzione per la sintesi e l'impostazione del controllore predittivo (pesi Q e R, orizzonte predittivo, vincoli terminali).
+
+\begin{lstlisting}[language=Matlab, caption={Setup e Configurazione MPC}, label={lst:funzioni_mpc_setup_mpc}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function mpc_prob = setup_mpc(N, nx, nu, A_long_ds, B_ctrl_ds, Q, P, R, U_min, U_max, Gx, gx, G_inf, g_inf, x_ref, u_ref)
+    % SETUP_MPC Prepara tutte le matrici per il quadprog
+    n_vars = N*nu + N*nx; 
+    
+    R_blk = kron(eye(N), R);
+    Q_blk = blkdiag(kron(eye(N-1), Q), P);
+    H = 2 * blkdiag(R_blk, Q_blk);         
+    
+    % Termine lineare della funzione di costo per l'inseguimento del riferimento
+    f = zeros(n_vars, 1);                  
+    for k = 1:N
+        f((k-1)*nu + 1 : k*nu) = -2 * R * u_ref;
+    end
+    for k = 1:N-1
+        f(N*nu + (k-1)*nx + 1 : N*nu + k*nx) = -2 * Q * x_ref;
+    end
+    f(N*nu + (N-1)*nx + 1 : N*nu + N*nx) = -2 * P * x_ref;
+    
+    Aeq_base = zeros(N*nx, n_vars);
+    for k = 1:N
+        Aeq_base((k-1)*nx + 1 : k*nx, (k-1)*nu + 1 : k*nu) = -B_ctrl_ds;
+        Aeq_base((k-1)*nx + 1 : k*nx, N*nu + (k-1)*nx + 1 : N*nu + k*nx) = eye(nx);
+        if k > 1
+            Aeq_base((k-1)*nx + 1 : k*nx, N*nu + (k-2)*nx + 1 : N*nu + (k-1)*nx) = -A_long_ds;
+        end
+    end
+    
+    lb = -inf(n_vars, 1); ub = inf(n_vars, 1); 
+    for k = 1:N
+        lb((k-1)*nu + 1 : k*nu) = U_min;
+        ub((k-1)*nu + 1 : k*nu) = U_max;
+    end
+    
+    A_ineq_stat = []; b_ineq_stat = [];
+    for j = 1:N-1
+        A_t = zeros(size(Gx, 1), n_vars);
+        A_t(:, N*nu + (j-1)*nx + 1 : N*nu + j*nx) = Gx;
+        A_ineq_stat = [A_ineq_stat; A_t];
+        b_ineq_stat = [b_ineq_stat; gx];
+    end
+    
+    A_t = zeros(size(G_inf, 1), n_vars);
+    A_t(:, N*nu + (N-1)*nx + 1 : N*nu + N*nx) = G_inf;
+    A_ineq_stat = [A_ineq_stat; A_t];
+    b_ineq_stat = [b_ineq_stat; g_inf];
+    
+    % Salvataggio in struttura
+    mpc_prob.H = H;
+    mpc_prob.f = f;
+    mpc_prob.Aeq_base = Aeq_base;
+    mpc_prob.lb = lb;
+    mpc_prob.ub = ub;
+    mpc_prob.A_ineq_stat = A_ineq_stat;
+    mpc_prob.b_ineq_stat = b_ineq_stat;
+    mpc_prob.n_vars = n_vars;
+    mpc_prob.N = N;
+    mpc_prob.nx = nx;
+    mpc_prob.nu = nu;
+end
+\end{lstlisting}
+
+\section*{Simulatore MPC Closed-Loop}
+\subsection*{File: \texttt{funzioni\_mpc/simula\_mpc.m}}
+\label{sec:funzioni_mpc_simula_mpc}
+
+Funzione core per la simulazione temporale e l'evoluzione del ciclo chiuso con controllo MPC.
+
+\begin{lstlisting}[language=Matlab, caption={Simulatore MPC Closed-Loop}, label={lst:funzioni_mpc_simula_mpc}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function [storia_x, storia_u, storia_costo] = simula_mpc(mpc_prob, x_iniziale, t_sim, A_long_ds, B_ctrl_ds, dU_max)
+    % SIMULA_MPC Risolve il problema quadratico e simula l'evoluzione del sistema
+    nx = mpc_prob.nx;
+    nu = mpc_prob.nu;
+    N = mpc_prob.N;
+    n_vars = mpc_prob.n_vars;
+    
+    storia_x = zeros(nx, t_sim+1); storia_x(:,1) = x_iniziale;
+    storia_u = zeros(nu, t_sim);
+    storia_costo = zeros(1, t_sim);
+    u_previous = [0;0;0]; 
+    options = optimoptions('quadprog', 'Display', 'off');
+    % --- Precomputazione Matrici Invarianti ---
+    A_rate = zeros(nu*2*N, n_vars); 
+    b_rate_base = zeros(nu*2*N, 1);
+    for k = 1:N
+        idx_u = (k-1)*nu+1:k*nu;
+        A_rate((k-1)*2*nu+1:k*2*nu, idx_u) = [eye(nu); -eye(nu)];
+        if k > 1
+            idx_u_prev = (k-2)*nu+1:(k-1)*nu;
+            A_rate((k-1)*2*nu+1:k*2*nu, idx_u_prev) = [-eye(nu); eye(nu)];
+            b_rate_base((k-1)*2*nu+1:k*2*nu) = [dU_max; dU_max];
+        end
+    end
+    A_ineq_tot = [mpc_prob.A_ineq_stat; A_rate];
+    % ------------------------------------------
+
+    for t = 1:t_sim
+        beq = zeros(N*nx, 1);
+        beq(1:nx) = A_long_ds * storia_x(:,t); 
+        
+        b_rate = b_rate_base;
+        b_rate(1:2*nu) = [dU_max + u_previous; dU_max - u_previous];
+        b_ineq_tot = [mpc_prob.b_ineq_stat; b_rate];
+        [z_opt, fval, exitflag] = quadprog(mpc_prob.H, mpc_prob.f, A_ineq_tot, b_ineq_tot, mpc_prob.Aeq_base, beq, mpc_prob.lb, mpc_prob.ub, [], options);
+        if exitflag < 0
+            error('Infeasible! Il punto allo step %d è fuori da X_N. Riduci leggermente la severità di x_iniziale.', t);
+        end
+        
+        storia_costo(t) = fval;
+        
+        % L'animazione live è stata rimossa per massimizzare le prestazioni.
+        
+        u_applicata = z_opt(1:nu);
+        storia_u(:, t) = u_applicata;
+        
+        storia_x(:, t+1) = A_long_ds * storia_x(:,t) + B_ctrl_ds * u_applicata;
+        u_previous = u_applicata;
+    end
+    
+    % Plot della traiettoria completa tutto in una volta alla fine
+    plot3(storia_x(3,:), storia_x(4,:), storia_x(2,:), '-b', 'LineWidth', 2.5, 'DisplayName', 'Traiettoria Effettiva');
+    
+    % Plot punto di partenza
+    plot3(x_iniziale(3), x_iniziale(4), x_iniziale(2), 'k*', 'MarkerSize', 10, 'LineWidth', 2, 'DisplayName', 'Partenza');
+    text(x_iniziale(3), x_iniziale(4), x_iniziale(2)+0.05, ' Partenza', 'FontWeight', 'bold');
+    
+    % Aggiungi un pallino rosso per ogni passo effettivamente compiuto alla fine
+    plot3(storia_x(3,:), storia_x(4,:), storia_x(2,:), 'ro', 'MarkerSize', 6, 'MarkerFaceColor', 'r', 'DisplayName', 'Passi MPC');
+    
+    % Plot punto di arrivo finale
+    plot3(storia_x(3,end), storia_x(4,end), storia_x(2,end), 'kp', 'MarkerSize', 15, 'MarkerFaceColor', 'k', 'DisplayName', 'Arrivo Effettivo');
+    text(storia_x(3,end), storia_x(4,end), storia_x(2,end)-0.05, ' Arrivo', 'FontWeight', 'bold', 'Color', 'k');
+    
+    % Aggiorna la legenda includendo i nuovi plot
+    legend('show', 'Location', 'best', 'Interpreter', 'latex');
+end
+\end{lstlisting}
+
+\section*{Calcolo Insieme Invariante (CIS)}
+\subsection*{File: \texttt{funzioni\_mpc/cis.m}}
+\label{sec:funzioni_mpc_cis}
+
+Funzione per il calcolo del Control Invariant Set e del Maximum Control Invariant Set (Insieme Invariante di Controllo).
+
+\begin{lstlisting}[language=Matlab, caption={Calcolo Insieme Invariante (CIS)}, label={lst:funzioni_mpc_cis}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function [G_inf, g_inf] = cis(A, B, x_ref, u_ref, Fx, fx, Fu, fu, Q, R)
+    % Control Invariant Set Iterativo tramite Metodo Matriciale (No Polyhedron)
+    [K, ~, ~] = dlqr(A, B, Q, R);
+    A_cl = A - B*K;
+    
+    % Traslazione dei vincoli rispetto al riferimento z = x - x_ref
+    Gx = Fx; 
+    gx = fx - Fx*x_ref;
+    
+    Gu_x = [-K; K]; 
+    gu_x = [fu(1:3) - Fu(1:3,:)*u_ref; fu(4:6) - Fu(4:6,:)*u_ref];
+    
+    G = [Gx; Gu_x]; 
+    g = [gx; gu_x];
+
+    G_inf = G; g_inf = g;
+    max_iter = 100; tol = 1e-6;
+    for i = 1:max_iter
+        G_next = G * (A_cl^i);
+        if norm(G_next, inf) < tol
+            break;
+        end
+        G_inf = [G_inf; G_next];
+        g_inf = [g_inf; g];
+    end
+    
+    % Ritraslazione di g_inf in modo che G_inf * x <= g_inf 
+    % (dato che attualmente G_inf * z <= g_inf)
+    g_inf = g_inf + G_inf * x_ref;
+end
+\end{lstlisting}
+
+\section*{Visualizzazione Insiemi Invarianti}
+\subsection*{File: \texttt{funzioni\_mpc/plot\_cis.m}}
+\label{sec:funzioni_mpc_plot_cis}
+
+Funzione per la visualizzazione 3D e 2D (tramite proiezioni) degli insiemi invarianti calcolati.
+
+\begin{lstlisting}[language=Matlab, caption={Visualizzazione Insiemi Invarianti}, label={lst:funzioni_mpc_plot_cis}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function plot_cis(G_inf, g_inf, x_ref, mpc_prob, A_long_ds, dU_max, parent_tab)
+    if nargin < 3
+        x_ref = zeros(4,1);
+    end
+    if nargin < 7
+        fig1 = figure('Name', 'Control Invariant Set 3D', 'Color', 'w', 'Position', [50, 50, 900, 700]);
+        parent_tab = fig1;
+    end
+    
+    % PLOT_CIS Disegna in 3D il Control Invariant Set
+    ax = axes('Parent', parent_tab);
+    hold(ax, 'on'); grid(ax, 'on'); view(ax, 3); 
+    title(ax, ['Poliedro $\mathcal{X}_f$ in 3D (Fetta $\theta = ', num2str(x_ref(1)), '$)'], 'Interpreter', 'latex', 'FontSize', 14);
+    
+    % Assi aggiornati al tuo vettore di stato: [theta, q, U, W]
+    xlabel('u [m/s]'); ylabel('w [m/s]'); zlabel('q [rad/s]');
+    
+    % Griglia ad alta risoluzione centrata vicino all'origine per trovare il CIS
+    [X_U, X_W, X_q] = meshgrid(linspace(-30, 30, 40), ... % Range per u (Stato 3)
+                               linspace(-30, 30, 40), ... % Range per w (Stato 4)
+                               linspace(-40 * pi/180, 40 * pi/180, 40)); % Range per q (Stato 2)
+    
+    X_U_f = X_U(:); X_W_f = X_W(:); X_q_f = X_q(:); 
+    
+    % Imposta la fetta in modo che combaci con la theta del target
+    theta_slice = x_ref(1); 
+    X_theta_f = theta_slice * ones(size(X_U_f)); % Fetta corrispondente al target
+    
+    Validi_inf = true(size(X_U_f));
+    for j = 1:size(G_inf, 1)
+        Valore = G_inf(j,1)*X_theta_f + G_inf(j,2)*X_q_f + G_inf(j,3)*X_U_f + G_inf(j,4)*X_W_f;
+        Validi_inf = Validi_inf & (Valore <= g_inf(j));
+    end
+    
+    PX_inf = X_U_f(Validi_inf); PY_inf = X_W_f(Validi_inf); PZ_inf = X_q_f(Validi_inf);
+    
+    if length(PX_inf) > 4
+        K_hull_inf = convhull(PX_inf, PY_inf, PZ_inf);
+        h_inf = trisurf(K_hull_inf, PX_inf, PY_inf, PZ_inf, 'Parent', ax, 'FaceColor', 'c', 'FaceAlpha', 0.8, 'EdgeColor', 'b', 'EdgeAlpha', 0.3);
+        leg_handles = h_inf;
+        leg_names = {'Control Invariant Set $\mathcal{O}_\infty$'};
+    else
+        disp('ATTENZIONE: Nessun punto valido trovato per il plot di O_inf sulla fetta scelta.');
+        leg_handles = [];
+        leg_names = {};
+    end
+
+    % --- NOVITÀ: Calcolo e Plot N-Step Feasible Set ---
+    if nargin >= 6
+        disp('Calcolo del Set Feasible N-Step X_N in corso (esplorazione vincoli)...');
+        nx = mpc_prob.nx;
+        nu = mpc_prob.nu;
+        N = mpc_prob.N;
+        n_vars = mpc_prob.n_vars;
+        
+        options = optimoptions('linprog', 'Display', 'off');
+        A_rate = zeros(nu*2*N, n_vars); 
+        b_rate_base = zeros(nu*2*N, 1);
+        for k = 1:N
+            idx_u = (k-1)*nu+1:k*nu;
+            A_rate((k-1)*2*nu+1:k*2*nu, idx_u) = [eye(nu); -eye(nu)];
+            if k > 1
+                idx_u_prev = (k-2)*nu+1:(k-1)*nu;
+                A_rate((k-1)*2*nu+1:k*2*nu, idx_u_prev) = [-eye(nu); eye(nu)];
+                b_rate_base((k-1)*2*nu+1:k*2*nu) = [dU_max; dU_max];
+            end
+        end
+        A_ineq_tot = [mpc_prob.A_ineq_stat; A_rate];
+        
+        u_previous = [0;0;0];
+        b_rate = b_rate_base;
+        b_rate(1:2*nu) = [dU_max + u_previous; dU_max - u_previous];
+        b_ineq_tot = [mpc_prob.b_ineq_stat; b_rate];
+
+        % Griglia a bassa risoluzione dedicata SOLO all'N-Step Set per velocizzare linprog
+        [X_U_N, X_W_N, X_q_N] = meshgrid(linspace(-40, 40, 15), ... 
+                                         linspace(-40, 40, 15), ... 
+                                         linspace(-40 * pi/180, 40 * pi/180, 15));
+        
+        X_U_N_f = X_U_N(:); X_W_N_f = X_W_N(:); X_q_N_f = X_q_N(:); 
+        f_lin = zeros(n_vars, 1);
+        Validi_N = false(size(X_U_N_f));
+        
+        for i = 1:length(X_U_N_f)
+            % Check rapido se è già in O_inf per saltare linprog
+            x0_test = [theta_slice; X_q_N_f(i); X_U_N_f(i); X_W_N_f(i)];
+            
+            is_in_O_inf = true;
+            for j = 1:size(G_inf, 1)
+                if G_inf(j,:) * x0_test > g_inf(j)
+                    is_in_O_inf = false;
+                    break;
+                end
+            end
+            
+            if is_in_O_inf
+                Validi_N(i) = true;
+                continue;
+            end
+            
+            % Se non è in O_inf, testa con linprog
+            beq = zeros(N*nx, 1);
+            beq(1:nx) = A_long_ds * x0_test; 
+            
+            [~, ~, exitflag] = linprog(f_lin, A_ineq_tot, b_ineq_tot, mpc_prob.Aeq_base, beq, mpc_prob.lb, mpc_prob.ub, options);
+            if exitflag >= 0 || exitflag == -3
+                Validi_N(i) = true;
+            end
+        end
+        
+        PX_N = X_U_N_f(Validi_N); PY_N = X_W_N_f(Validi_N); PZ_N = X_q_N_f(Validi_N);
+        if length(PX_N) > 4
+            K_hull_N = convhull(PX_N, PY_N, PZ_N);
+            h_N = trisurf(K_hull_N, PX_N, PY_N, PZ_N, 'Parent', ax, 'FaceColor', 'y', 'FaceAlpha', 0.2, 'EdgeColor', 'y', 'EdgeAlpha', 0.1);
+            leg_handles(end+1) = h_N;
+            leg_names{end+1} = sprintf('Feasible N-Step Set $\\mathcal{X}_{%d}$', N);
+            title(ax, ['Poliedri $\mathcal{O}_\infty$ e $\mathcal{X}_{', num2str(N), '}$ in 3D (Fetta $\theta = ', num2str(theta_slice), '$)'], 'Interpreter', 'latex', 'FontSize', 14);
+        end
+    end
+    
+    if ~isempty(leg_handles)
+        legend(leg_handles, leg_names, 'Location', 'best', 'Interpreter', 'latex');
+    end
+end
+\end{lstlisting}
+
+\section*{Analisi Costo MPC 3D}
+\subsection*{File: \texttt{funzioni\_mpc/plot\_mpc\_cost\_3d.m}}
+\label{sec:funzioni_mpc_plot_mpc_cost_3d}
+
+Funzione per il plotting tridimensionale della funzione di costo associata al regolatore MPC.
+
+\begin{lstlisting}[language=Matlab, caption={Analisi Costo MPC 3D}, label={lst:funzioni_mpc_plot_mpc_cost_3d}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+function plot_mpc_cost_3d(mpc_prob, A_long_ds, dU_max, storia_x, storia_costo, Ts, parent_tab)
+    % =========================================================================
+    % PLOT_MPC_COST_3D - Visualizza il Funzionale di Costo Ottimo J*(x) dell'MPC
+    % =========================================================================
+
+    if nargin < 6
+        Ts = 0.1;
+    end
+    if nargin < 7
+        fig1 = figure('Name', sprintf('Costo MPC 3D (Ts = %g s)', Ts), 'Color', 'w', 'Position', [150 150 850 650]);
+        parent_tab = fig1;
+    end
+    w_lim = 40;  % m/s
+    q_lim = 1.0; % rad/s
+
+    % Usiamo una griglia 20x20 per un calcolo rapido
+    [W_grid, Q_rad] = meshgrid(linspace(-w_lim, w_lim, 20), linspace(-q_lim, q_lim, 20));
+
+    nx = mpc_prob.nx;
+    nu = mpc_prob.nu;
+    N = mpc_prob.N;
+    n_vars = mpc_prob.n_vars;
+
+    % Recuperiamo P_ds approssimato (o potresti passarlo da MPC.m)
+    [~, P_ds, ~] = dlqr(A_long_ds, mpc_prob.Aeq_base(1:nx, 1:nu)*(-1), blkdiag(10,10,1,1), eye(nu)); 
+    
+    V_surf = zeros(size(W_grid));
+    for i = 1:size(W_grid, 1)
+        for j = 1:size(W_grid, 2)
+            stato_surf = [0; Q_rad(i,j); 0; W_grid(i,j)];
+            V_surf(i,j) = stato_surf' * P_ds * stato_surf;
+        end
+    end
+
+    %% --- FIGURA 3D ---
+    ax = axes('Parent', parent_tab);
+    hold(ax, 'on'); grid(ax, 'on');
+    
+    h_surf = surf(ax, W_grid, Q_rad, V_surf, 'EdgeColor', 'none', 'FaceAlpha', 0.65);
+    colormap(ax, jet);
+    cb = colorbar(ax);
+    ylabel(cb, 'Costo Ottimo MPC $J^*(x_k)$', 'Interpreter', 'latex', 'FontSize', 12);
+    
+    max_v_traj = max(storia_costo);
+    if isempty(max_v_traj) || isnan(max_v_traj)
+        max_v_traj = 1;
+    end
+
+    % Traiettoria
+    N_steps = length(storia_costo);
+    t_discrete = 1:N_steps;
+    t_fine = linspace(1, N_steps, N_steps * 10);
+    
+    W_smooth = pchip(t_discrete, storia_x(4,1:N_steps), t_fine);
+    Q_smooth = pchip(t_discrete, storia_x(2,1:N_steps), t_fine);
+    V_smooth = pchip(t_discrete, storia_costo, t_fine);
+    
+    h_line = plot3(ax, W_smooth, Q_smooth, V_smooth, '-r', 'LineWidth', 2);
+
+    % Punti discreti veri
+    plot3(ax, storia_x(4,1:N_steps), storia_x(2,1:N_steps), storia_costo, 'o', ...
+          'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'w', 'MarkerSize', 4);
+          
+    % Start
+    h_start = plot3(ax, storia_x(4,1), storia_x(2,1), storia_costo(1), 'o', ...
+                    'MarkerFaceColor', 'r', 'MarkerEdgeColor', 'k', 'MarkerSize', 8);
+    
+    % End
+    h_end = plot3(ax, storia_x(4,N_steps), storia_x(2,N_steps), storia_costo(N_steps), 's', ...
+          'MarkerFaceColor', 'g', 'MarkerEdgeColor', 'k', 'MarkerSize', 8);
+
+    title(ax, sprintf('\\textbf{Funzionale di Costo MPC $J^*(x_k)$ a Tempo Discreto ($T_s = %g$ s)}', Ts), 'Interpreter', 'latex', 'FontSize', 16);
+    xlabel(ax, 'Velocit\`a Verticale $w$ [m/s]', 'Interpreter', 'latex', 'FontSize', 12);
+    ylabel(ax, 'Velocit\`a di Beccheggio $q$ [rad/s]', 'Interpreter', 'latex', 'FontSize', 12);
+    zlabel(ax, 'Costo $J^*(x_k)$', 'Interpreter', 'latex', 'FontSize', 12);
+    
+    legend(ax, [h_surf, h_line, h_start, h_end], ...
+           {'Superficie $J^*(x_k)$', 'Evoluzione di Stato', 'Partenza ($k=0$)', 'Arrivo'}, ...
+           'Interpreter', 'latex', 'FontSize', 12, 'Location', 'northeast');
+    
+    zlim(ax, [0, max(max(V_surf(:)), max_v_traj) * 1.2]); 
+    xlim(ax, [-w_lim, w_lim]);
+    ylim(ax, [-q_lim, q_lim]);
+    view(ax, -35, 30);
+end
+\end{lstlisting}
+
+\section*{Plot e Grafici dei Risultati}
+\subsection*{File: \texttt{funzioni\_mpc/plot\_risultati.m}}
+\label{sec:funzioni_mpc_plot_risultati}
+
+Funzione per la rappresentazione grafica delle risposte del sistema, evoluzione degli stati e comandi degli attuatori.
+
+\begin{lstlisting}[language=Matlab, caption={Plot e Grafici dei Risultati}, label={lst:funzioni_mpc_plot_risultati}]
+% =========================================================================
+% Copyright (c) 2026 Ing. Leggeri Leonardo
+% Tutti i diritti riservati.
+%
+% ATTENZIONE: Questo software e il relativo codice sorgente sono di proprietà 
+% esclusiva dell'Ing. Leggeri Leonardo. È severamente vietata la copia, 
+% la distribuzione, la modifica o la vendita a terzi senza l'esplicito 
+% consenso scritto dell'autore. La distribuzione o la vendita non autorizzata 
+% costituisce reato ed è perseguibile penalmente secondo le leggi vigenti.
+% =========================================================================
+
+%funzione per la creazione dei grafici dopo esecuzione script MPC.m
+function plot_risultati(t_sim, storia_x, storia_u, U_min, U_max, x_ref, u_ref, tab_stati, tab_attuatori)
+    if nargin < 6
+        x_ref = zeros(4,1);
+        u_ref = zeros(3,1);
+    end
+    if nargin < 8
+        fig1 = figure('Name', 'Risultati MPC: Stati del Velivolo', 'Color', 'w', 'Position', [100 100 900 600]);
+        tab_stati = fig1;
+        fig2 = figure('Name', 'Risultati MPC: Sforzo degli Attuatori', 'Color', 'w', 'Position', [150 150 700 800]);
+        tab_attuatori = fig2;
+    end
+
+    % PLOT_RISULTATI Disegna i grafici dell'evoluzione di stati e attuatori
+    t_layout_x = tiledlayout(tab_stati, 2, 2, 'Padding', 'compact', 'TileSpacing', 'compact');
+    
+    nexttile(t_layout_x); plot(0:t_sim, storia_x(1,:), '-b', 'LineWidth', 1.5); hold on; yline(x_ref(1), 'r--', 'LineWidth', 1.2); title('Pitch Angle (\theta) [rad]'); grid on; 
+    nexttile(t_layout_x); plot(0:t_sim, storia_x(2,:), '-r', 'LineWidth', 1.5); hold on; yline(x_ref(2), 'r--', 'LineWidth', 1.2); title('Pitch Rate (q) [rad/s]'); grid on; 
+    nexttile(t_layout_x); plot(0:t_sim, storia_x(3,:), '-m', 'LineWidth', 1.5); hold on; yline(x_ref(3), 'r--', 'LineWidth', 1.2); title('Velocità Forward (u) [m/s]'); grid on; 
+    nexttile(t_layout_x); plot(0:t_sim, storia_x(4,:), '-c', 'LineWidth', 1.5); hold on; yline(x_ref(4), 'r--', 'LineWidth', 1.2); title('Velocità Verticale (w) [m/s]'); grid on;
+    lgd = legend({'Traiettoria', 'Target (x_{ref})'}, 'Orientation', 'horizontal');
+    lgd.Layout.Tile = 'north';
+
+    t_layout_u = tiledlayout(tab_attuatori, 3, 1, 'Padding', 'compact', 'TileSpacing', 'compact');
+    
+    nexttile(t_layout_u); stairs(0:t_sim-1, storia_u(1,:), '-g', 'LineWidth', 1.5); hold on;
+    yline(U_max(1), 'k--'); yline(U_min(1), 'k--'); yline(u_ref(1), 'r--', 'LineWidth', 1.2); title(' Spinta [N]'); grid on;
+    
+    nexttile(t_layout_u); stairs(0:t_sim-1, storia_u(2,:) * 180 / pi, '-g', 'LineWidth', 1.5); hold on;
+    yline(U_max(2) * 180 / pi, 'k--'); yline(U_min(2) * 180 / pi, 'k--'); yline(u_ref(2) * 180 / pi, 'r--', 'LineWidth', 1.2);
+    title(' Elevatore [deg]'); grid on;
+    
+    nexttile(t_layout_u); stairs(0:t_sim-1, storia_u(3,:) * 180 / pi, '-g', 'LineWidth', 1.5); hold on;
+    yline(U_max(3) * 180 / pi, 'k--'); yline(U_min(3) * 180 / pi, 'k--'); yline(u_ref(3) * 180 / pi, 'r--', 'LineWidth', 1.2);
+    title(' Flap [deg]'); grid on;
+end
+\end{lstlisting}
+

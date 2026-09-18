@@ -1,0 +1,273 @@
+\babel@toc {italian}{}\relax 
+\babel@toc {italian}{}\relax 
+\contentsline {chapter}{Elenco delle figure}{1}{chapter*.1}%
+\contentsline {chapter}{Elenco delle tabelle}{5}{chapter*.2}%
+\contentsline {chapter}{Abstract}{7}{chapter*.4}%
+\contentsline {chapter}{Introduzione}{9}{chapter*.5}%
+\contentsline {part}{I\hspace {1em}Modellazione e Simulazione Dinamica dell' F-16}{13}{part.6}%
+\contentsline {chapter}{\numberline {1}Modellazione cinematica e dinamica del velivolo}{15}{chapter.7}%
+\contentsline {section}{\numberline {1.1}Notazione e sistemi di riferimento}{15}{section.8}%
+\contentsline {section}{\numberline {1.2}Vettori di stato e cinematica del vento}{18}{section.11}%
+\contentsline {section}{\numberline {1.3}Modellazione di forze e momenti aerodinamici}{19}{section.17}%
+\contentsline {subsection}{\numberline {1.3.1}Forze nel Body Frame ($bf$)}{19}{subsection.18}%
+\contentsline {subsection}{\numberline {1.3.2}Forze nel Wind Frame ($w$)}{19}{subsection.20}%
+\contentsline {subsection}{\numberline {1.3.3}Momenti Aerodinamici}{20}{subsection.23}%
+\contentsline {chapter}{\numberline {2}Derivazione Analitica delle Equazioni Del Moto}{21}{chapter.25}%
+\contentsline {section}{\numberline {2.1}Equazioni di cinematica}{21}{section.26}%
+\contentsline {section}{\numberline {2.2}Equazioni di dinamica}{21}{section.28}%
+\contentsline {section}{\numberline {2.3}Momento angolare}{22}{section.32}%
+\contentsline {chapter}{\numberline {3}Modello delle Forze e Momenti Aerodinamici}{23}{chapter.36}%
+\contentsline {section}{\numberline {3.1}Pressione Dinamica e Geometria di Riferimento}{23}{section.39}%
+\contentsline {section}{\numberline {3.2}Modelli di forze aerodinamiche}{25}{section.43}%
+\contentsline {section}{\numberline {3.3}Adimensionalizzazione dei momenti}{25}{section.49}%
+\contentsline {section}{\numberline {3.4}Analisi delle derivate di stabilità tramite serie di Taylor}{26}{section.53}%
+\contentsline {subsection}{\numberline {3.4.1}Dinamica longitudinale}{26}{subsection.54}%
+\contentsline {subsection}{\numberline {3.4.2}Modello Aerodinamico e Derivate di Stabilità}{26}{subsection.55}%
+\contentsline {subsection}{\numberline {3.4.3}Dinamica Latero-Direzionale e Accoppiamento Aerodinamico}{27}{subsection.59}%
+\contentsline {chapter}{\numberline {4}Equazioni non lineari del moto e integrazione numerica}{31}{chapter.63}%
+\contentsline {section}{\numberline {4.1}Equazioni di posizione e assetto}{31}{section.64}%
+\contentsline {section}{\numberline {4.2}Dinamica non lineare delle forze e dei momenti}{32}{section.71}%
+\contentsline {section}{\numberline {4.3}Meccanismo di Controllo Longitudinale}{36}{section.87}%
+\contentsline {section}{\numberline {4.4}Rappresentazione dell'assetto mediante quaternioni}{37}{section.92}%
+\contentsline {paragraph}{Definizione matematica del quaternione:}{38}{paragraph*.94}%
+\contentsline {section}{\numberline {4.5}Analisi critica dei metodi di Eulero}{40}{section.100}%
+\contentsline {section}{\numberline {4.6}Metodo di Runge-Kutta del quarto ordine (RK4)}{41}{section.103}%
+\contentsline {chapter}{\numberline {5}Architettura e Struttura del Simulatore}{45}{chapter.109}%
+\contentsline {section}{\numberline {5.1}Panoramica Globale dell'Architettura}{46}{section.110}%
+\contentsline {section}{\numberline {5.2}Dinamica del Corpo Rigido}{46}{section.112}%
+\contentsline {section}{\numberline {5.3}Sottosistema Aerodinamico}{47}{section.114}%
+\contentsline {section}{\numberline {5.4}Modello Atmosferico }{49}{section.116}%
+\contentsline {section}{\numberline {5.5}Parametri di Volo e Assi di Stabilità }{49}{section.118}%
+\contentsline {section}{\numberline {5.6}Modellazione della Gravità }{51}{section.120}%
+\contentsline {section}{\numberline {5.7}Condizionamento delle Uscite }{52}{section.126}%
+\contentsline {chapter}{\numberline {6}Ambiente di Simulazione & Attuazione Hardware-in-the-Loop}{53}{chapter.130}%
+\contentsline {section}{\numberline {6.1}Integrazione con periferiche Thrustmaster HOTAS}{54}{section.132}%
+\contentsline {section}{\numberline {6.2}Interfacciamento: FlightGear e Aerospace Blockset}{55}{section.134}%
+\contentsline {subsection}{\numberline {6.2.1}Immagini FlightGear}{55}{subsection.135}%
+\contentsline {paragraph}{Immagine prima del decollo:}{55}{paragraph*.136}%
+\contentsline {paragraph}{Volo di crociera}{56}{paragraph*.138}%
+\contentsline {paragraph}{Visuale interna dell'abitacolo}{56}{paragraph*.140}%
+\contentsline {subsection}{\numberline {6.2.2}Strumenti di Bordo e Telecamere}{57}{subsection.142}%
+\contentsline {part}{II\hspace {1em}Automazione del controllo longitudinale}{59}{part.144}%
+\contentsline {chapter}{\numberline {7}Analisi di Stabilità e Linearizzazione}{61}{chapter.145}%
+\contentsline {section}{\numberline {7.1}Definizione dei punti di equilibrio}{61}{section.146}%
+\contentsline {subsection}{\numberline {7.1.1}L'Oggetto opspec (Operating Point Specification)}{61}{subsection.147}%
+\contentsline {subsection}{\numberline {7.1.2}Generazione di op e opreport}{62}{subsection.148}%
+\contentsline {section}{\numberline {7.2}Linearizzazione dello spazio di stato}{64}{section.154}%
+\contentsline {section}{\numberline {7.3}Analisi spettrale e autovalori}{65}{section.157}%
+\contentsline {section}{\numberline {7.4}Disaccoppiamento delle dinamiche}{66}{section.160}%
+\contentsline {section}{\numberline {7.5}Rappresentazione MIMO e funzioni di trasferimento}{69}{section.163}%
+\contentsline {subsection}{\numberline {7.5.1}Derivazione Matematica}{70}{subsection.164}%
+\contentsline {chapter}{\numberline {8}Proprietà Strutturali e Analisi MIMO}{71}{chapter.170}%
+\contentsline {section}{\numberline {8.1}Raggiungibilità, osservabilità e realizzazione minima}{71}{section.171}%
+\contentsline {subsection}{\numberline {8.1.1}Matrici di Raggiungibilità e Osservabilità}{71}{subsection.173}%
+\contentsline {subsection}{\numberline {8.1.2}Cancellazione Polo-Zero e Comando \texttt {minreal}}{74}{subsection.220}%
+\contentsline {subsection}{\numberline {8.1.3}Matrice di Sistema e Zeri Invarianti}{74}{subsection.221}%
+\contentsline {subsection}{\numberline {8.1.4}La Proprietà Bloccante degli Zeri MIMO}{75}{subsection.224}%
+\contentsline {subsection}{\numberline {8.1.5}Verifica in MATLAB: Estrazione degli Zeri Invarianti}{76}{subsection.228}%
+\contentsline {subsubsection}{Significato Fisico della Proprietà Bloccante Esponenziale ($\lambda \neq 0$)}{76}{subsubsection*.233}%
+\contentsline {section}{\numberline {8.2}Analisi dei poli, zeri e proprietà bloccanti}{77}{section.235}%
+\contentsline {subsection}{\numberline {8.2.1}Controprova Computazionale: Analisi di un Sottosistema Sottoattuato ($2 \times 2$)}{78}{subsection.236}%
+\contentsline {subsubsection}{La comparsa della Proprietà Bloccante Esponenziale}{78}{subsubsection*.241}%
+\contentsline {subsubsection}{La comparsa della Proprietà Bloccante Esponenziale ($\lambda \neq 0$)}{79}{subsubsection*.243}%
+\contentsline {subsubsection}{Simulazione Multipla della Proprietà Bloccante}{79}{subsubsection*.245}%
+\contentsline {section}{\numberline {8.3}Interazioni dinamiche e vincoli strutturali}{81}{section.247}%
+\contentsline {chapter}{\numberline {9}Sintesi del Controllo e Limiti del Disaccoppiamento}{83}{chapter.249}%
+\contentsline {section}{\numberline {9.1}Progetto del pre-compensatore dinamico}{83}{section.250}%
+\contentsline {subsection}{\numberline {9.1.1}Calcolo della Prima Colonna(Velocità)}{84}{subsection.253}%
+\contentsline {subsection}{\numberline {9.1.2}Calcolo della Seconda Colonna}{84}{subsection.256}%
+\contentsline {subsection}{\numberline {9.1.3}Calcolo della Terza Colonna(Becheggio)}{85}{subsection.258}%
+\contentsline {section}{\numberline {9.2}Limiti algoritmici: complessità polinomiale}{85}{section.260}%
+\contentsline {section}{\numberline {9.3}Evoluzione verso il controllo nello spazio di stato}{86}{section.264}%
+\contentsline {chapter}{\numberline {10}Controllo LQR (Linear Quadratic Regulator)}{87}{chapter.265}%
+\contentsline {section}{\numberline {10.1}Sintesi del regolatore }{87}{section.266}%
+\contentsline {subsection}{\numberline {10.1.1}Orizzonte Infinito e Indice di Costo}{88}{subsection.269}%
+\contentsline {subsection}{\numberline {10.1.2}L'Equazione Algebrica di Riccati}{88}{subsection.271}%
+\contentsline {section}{\numberline {10.2}Ottimizzazione delle performance tramite la Regola di Bryson}{90}{section.277}%
+\contentsline {subsection}{\numberline {10.2.1}Il problema delle scale e l'inadeguatezza della matrice identità}{91}{subsection.279}%
+\contentsline {subsection}{\numberline {10.2.2}Applicazione della Regola di Bryson}{92}{subsection.281}%
+\contentsline {subsection}{\numberline {10.2.3}Conclusioni sulla sintesi LQR}{93}{subsection.285}%
+\contentsline {subsection}{\numberline {10.2.4}Prestazioni Aggressive Con Matrice Q dominante}{94}{subsection.286}%
+\contentsline {subsection}{\numberline {10.2.5}Compromesso Ottimo Con Matrici Q ed R bilanciate}{96}{subsection.289}%
+\contentsline {subsection}{\numberline {10.2.6}Risparmio Energetico Con Matrice R dominante}{97}{subsection.292}%
+\contentsline {chapter}{\numberline {11}Controllo Predittivo (MPC)}{99}{chapter.295}%
+\contentsline {section}{\numberline {11.1}Principi del Receding Horizon}{99}{section.296}%
+\contentsline {subsection}{\numberline {11.1.1}Formulazione del Problema di Ottimizzazione}{99}{subsection.297}%
+\contentsline {subsection}{\numberline {11.1.2}Varianti del Vincolo Terminale}{100}{subsection.300}%
+\contentsline {subsubsection}{Vincolo di Uguaglianza $x(N) = 0$}{100}{subsubsection*.301}%
+\contentsline {subsubsection}{Vincolo di Disuguaglianza $x(N) \in \mathbb {X}_f$}{101}{subsubsection*.302}%
+\contentsline {section}{\numberline {11.2}Stabilità e teoremi di Lyapunov}{101}{section.303}%
+\contentsline {subsection}{\numberline {11.2.1}Teorema di Lyapunov}{101}{subsection.304}%
+\contentsline {subsection}{\numberline {11.2.2}L'Ipotesi Base di Stabilità nell'MPC}{102}{subsection.306}%
+\contentsline {subsection}{\numberline {11.2.3}La Prova Fondamentale di Stabilità}{103}{subsection.312}%
+\contentsline {subsection}{\numberline {11.2.4}Formulazione Alternativa: Vincolo Terminale di Uguaglianza}{104}{subsection.316}%
+\contentsline {section}{\numberline {11.3}Analisi degli insiemi invarianti e stabilità robusta}{104}{section.319}%
+\contentsline {subsection}{\numberline {11.3.1}Ingredienti Fondamentali per la Stabilità}{104}{subsection.320}%
+\contentsline {paragraph}{Funzione MATLAB:}{105}{paragraph*.327}%
+\contentsline {section}{\numberline {11.4}Implementazione per Sistemi Lineari: Legame con LQR}{105}{section.328}%
+\contentsline {subsection}{\numberline {11.4.1}Il Control Invariant Set e il Maximal Invariant Set $\mathcal {O}(\infty )$}{106}{subsection.331}%
+\contentsline {subsubsection}{Algoritmo Iterativo per il Calcolo di $\mathcal {O}(\infty )$}{106}{subsubsection*.333}%
+\contentsline {subsection}{\numberline {11.4.2}Definizione del Punto di Equilibrio e Variabili di Trim}{107}{subsection.339}%
+\contentsline {subsection}{\numberline {11.4.3}Impostazione dei Vincoli di ingresso e stato}{108}{subsection.341}%
+\contentsline {subsubsection}{Vincoli di Ampiezza sugli Attuatori}{108}{subsubsection*.342}%
+\contentsline {subsubsection}{Vincoli di Rate (Velocit\`a di Attuazione)}{109}{subsubsection*.344}%
+\contentsline {subsubsection}{Vincoli sugli Stati}{109}{subsubsection*.346}%
+\contentsline {subsection}{\numberline {11.4.4}Definizioni di Insiemi Controllabili e Stabilizzabili}{109}{subsection.348}%
+\contentsline {subsubsection}{One-step Set $\mathcal {Q}(\Omega )$}{109}{subsubsection*.349}%
+\contentsline {subsubsection}{i-steps Controllable Set $\mathcal {C}_i(\mathcal {X}, \Omega )$}{110}{subsubsection*.351}%
+\contentsline {subsubsection}{i-steps Stabilizable Set $\mathcal {S}_i(\mathcal {X}, \Omega )$}{110}{subsubsection*.353}%
+\contentsline {subsection}{\numberline {11.4.5}Proprietà di Monotonicità e Convergenza}{110}{subsection.354}%
+\contentsline {section}{\numberline {11.5}Implementazione Pratica: Controllo Longitudinale F-16}{111}{section.357}%
+\contentsline {subsection}{\numberline {11.5.1}Analisi dei Risultati e Validazione del Controllore MPC}{112}{subsection.358}%
+\contentsline {subsection}{\numberline {11.5.2}Variazione del Funzionale di Costo}{114}{subsection.363}%
+\contentsline {part}{III\hspace {1em}Implementazione Real-Time Multithreading in C++}{117}{part.365}%
+\contentsline {chapter}{\numberline {12}Monitor Real Time}{119}{chapter.366}%
+\contentsline {section}{\numberline {12.1}Schedulazione nei Sistemi Real-Time}{119}{section.367}%
+\contentsline {subsection}{\numberline {12.1.1}Utilizzo di Rate Monotonic}{120}{subsection.368}%
+\contentsline {section}{\numberline {12.2}Obiettivo della Tesi}{120}{section.370}%
+\contentsline {chapter}{\numberline {13}Modelli e Strumenti}{123}{chapter.374}%
+\contentsline {section}{\numberline {13.1}Il Modello di Task Periodico}{123}{section.375}%
+\contentsline {subsection}{\numberline {13.1.1}Definizioni Fondamentali}{123}{subsection.376}%
+\contentsline {subsection}{\numberline {13.1.2}Il Ciclo di Vita di un Task Periodico}{124}{subsection.378}%
+\contentsline {subsection}{\numberline {13.1.3}Metriche Temporali Fondamentali}{124}{subsection.384}%
+\contentsline {section}{\numberline {13.2}Schedulazione a Priorità Fissa: Rate Monotonic}{125}{section.385}%
+\contentsline {subsection}{\numberline {13.2.1}Algoritmi di Scheduling Real-Time}{125}{subsection.386}%
+\contentsline {subsection}{\numberline {13.2.2}Rate Monotonic: Assegnamento delle Priorità}{126}{subsection.387}%
+\contentsline {section}{\numberline {13.3}POSIX e DDS per Attività Periodiche e Distribuite}{126}{section.389}%
+\contentsline {paragraph}{Esempio senza DDS: due task su core dedicati trattato al capitolo \ref {cap:app10g_esempio}.}{126}{paragraph*.390}%
+\contentsline {paragraph}{Esempio con DDS: comunicazione distribuita trattato al capitolo \ref {cap:DDS_esempio}}{126}{paragraph*.391}%
+\contentsline {subsection}{\numberline {13.3.1}Il Middleware DDS e la Qualità del Servizio}{128}{subsection.392}%
+\contentsline {section}{\numberline {13.4}Il Monitor DDS: \textit {eProsima Fast DDS Monitor}}{129}{section.393}%
+\contentsline {subsection}{\numberline {13.4.1}Prerequisito: Abilitazione del Modulo Statistico}{129}{subsection.394}%
+\contentsline {paragraph}{Problema di compatibilità di versione:}{130}{paragraph*.404}%
+\contentsline {subsection}{\numberline {13.4.2}Configurazione del Dominio nel Codice}{130}{subsection.405}%
+\contentsline {subsection}{\numberline {13.4.3}Domain View: La Mappa della Rete DDS}{131}{subsection.427}%
+\contentsline {subsection}{\numberline {13.4.4}Chart View: Visualizzazione Statistica della Comunicazione}{133}{subsection.429}%
+\contentsline {subsubsection}{Modalità di tracciamento statistico: }{133}{subsubsection*.431}%
+\contentsline {paragraph}{Esempio: grafico della latenza Broadcastner$\to $Listener.}{134}{paragraph*.432}%
+\contentsline {subsubsection}{Dati in Tempo Reale}{135}{subsubsection*.433}%
+\contentsline {subsubsection}{Sistema di Allerta}{135}{subsubsection*.434}%
+\contentsline {subsection}{\numberline {13.4.5}Utilizzo nel Progetto: Validazione Prima del Tracciamento}{136}{subsection.435}%
+\contentsline {section}{\numberline {13.5}Strumenti di Tracciamento del Kernel: \texttt {ftrace}, \texttt {trace-cmd} e KernelShark}{137}{section.442}%
+\contentsline {subsection}{\numberline {13.5.1}Il Sottosistema \texttt {ftrace} del Kernel Linux}{137}{subsection.443}%
+\contentsline {subsubsection}{I Tracepoint del Sottosistema \texttt {sched}}{137}{subsubsection*.444}%
+\contentsline {subsection}{\numberline {13.5.2}\texttt {trace-cmd}: Interfaccia a Riga di Comando per \texttt {ftrace}}{138}{subsection.445}%
+\contentsline {subsubsection}{Utilizzo in \texttt {run\_trace.sh}: Tracciamento di un Singolo Processo}{138}{subsubsection*.446}%
+\contentsline {subsubsection}{Utilizzo in \texttt {marker.sh}: Tracciamento Passivo Multi-Processo}{139}{subsubsection*.453}%
+\contentsline {subsubsection}{Il File Prodotto: \texttt {trace.dat}}{140}{subsubsection*.465}%
+\contentsline {subsection}{\numberline {13.5.3}Il Comando \texttt {trace-cmd report}: Decodifica del Log Binario}{141}{subsection.466}%
+\contentsline {subsection}{\numberline {13.5.4}KernelShark: Visualizzazione Grafica del Tracciato}{143}{subsection.491}%
+\contentsline {subsection}{\numberline {13.5.5}La Dashboard: \texttt {dashboard.py}}{144}{subsection.498}%
+\contentsline {subsection}{\numberline {13.5.6}Prerequisiti di Installazione}{145}{subsection.499}%
+\contentsline {subsubsection}{Tab 1: Scripts Manager}{146}{subsubsection*.500}%
+\contentsline {subsubsection}{Tab 2: DDS Studio MultiProcesso}{146}{subsubsection*.502}%
+\contentsline {subsubsection}{Tab 3: Trace Manager}{147}{subsubsection*.504}%
+\contentsline {subsection}{\numberline {13.5.7}Flow-Chart di Riferimento per ottenere i Documenti di Progetto}{149}{subsection.506}%
+\contentsline {section}{\numberline {13.6}Librerie Python Utilizzate}{150}{section.508}%
+\contentsline {subsection}{\numberline {13.6.1}Librerie per l'Analisi e Visualizzazione dei Dati}{150}{subsection.509}%
+\contentsline {subsection}{\numberline {13.6.2}Librerie per la GUI e l'Esecuzione di Sistema}{150}{subsection.510}%
+\contentsline {chapter}{\numberline {14}Il Lavoro Svolto}{151}{chapter.511}%
+\contentsline {section}{\numberline {14.1}Fase 1 --- Architettura del Progetto e Build System}{151}{section.512}%
+\contentsline {subsection}{\numberline {14.1.1}Struttura delle Directory}{151}{subsection.513}%
+\contentsline {subsubsection}{La Directory dei Sorgenti (\texttt {src/})}{152}{subsubsection*.514}%
+\contentsline {subsubsection}{La Directory degli Artefatti (\texttt {bin/})}{153}{subsubsection*.515}%
+\contentsline {subsection}{\numberline {14.1.2}Build System: Architettura Decentralizzata dei Makefile}{153}{subsection.516}%
+\contentsline {subsubsection}{Perché Non un Makefile Unico?}{153}{subsubsection*.517}%
+\contentsline {subsubsection}{Perché il Linking Statico}{154}{subsubsection*.518}%
+\contentsline {subsubsection}{Costruzione Locale e Linking Statico}{154}{subsubsection*.519}%
+\contentsline {subsubsection}{Gestione Dinamica delle Dipendenze degli Header}{155}{subsubsection*.532}%
+\contentsline {subsection}{\numberline {14.1.3}Libreria \texttt {time}: Gestione del Tempo Monotónico POSIX}{156}{subsection.548}%
+\contentsline {subsubsection}{Perché \texttt {CLOCK\_MONOTONIC} e non \texttt {CLOCK\_REALTIME}}{156}{subsubsection*.549}%
+\contentsline {subsection}{\numberline {14.1.4}Libreria \texttt {trace}: Iniezione dei Marker nel Kernel}{157}{subsection.550}%
+\contentsline {subsubsection}{Perché scrivere i marker nel Kernel e non in un File Utente}{157}{subsubsection*.551}%
+\contentsline {subsubsection}{Due Versioni: con Stato e Inline}{158}{subsubsection*.552}%
+\contentsline {subsection}{\numberline {14.1.5}Libreria \texttt {activity}: Struttura del Task Periodico}{158}{subsection.553}%
+\contentsline {subsubsection}{Il Problema del Drift Cumulativo e la sua Soluzione}{158}{subsubsection*.554}%
+\contentsline {paragraph}{Utilizzo dei marker da parte del parser.}{159}{paragraph*.555}%
+\contentsline {subsubsection}{La Funzione di Carico Computazionale: \texttt {activity\_load}}{159}{subsubsection*.556}%
+\contentsline {paragraph}{Perché \texttt {volatile}:}{159}{paragraph*.557}%
+\contentsline {paragraph}{Perché operazioni trigonometriche.}{160}{paragraph*.558}%
+\contentsline {subsection}{\numberline {14.1.6}Libreria \texttt {dds\_lib}: Wrapper al Middleware FastDDS}{160}{subsection.559}%
+\contentsline {subsubsection}{Modulo \texttt {Broadcastner}}{160}{subsubsection*.560}%
+\contentsline {paragraph}{Implementazione:}{160}{paragraph*.561}%
+\contentsline {subsubsection}{Modulo \texttt {Listener}}{161}{subsubsection*.562}%
+\contentsline {subsection}{\numberline {14.1.7}Libreria \texttt {generated\_msg}: Classi di Messaggistica DDS}{161}{subsection.563}%
+\contentsline {subsubsection}{Il Processo di Generazione}{161}{subsubsection*.564}%
+\contentsline {subsection}{\numberline {14.1.8}Libreria \texttt {math}: Funzioni Algebriche Ausiliarie}{163}{subsection.565}%
+\contentsline {section}{\numberline {14.2}Fase 3 --- Le Applicazioni del Progetto}{163}{section.566}%
+\contentsline {subsection}{\numberline {14.2.1}Applicazione \texttt {app10g}: Due Task su Core Distinti}{163}{subsection.567}%
+\contentsline {subsubsection}{Dipendenze e Gestione degli Errori:}{164}{subsubsection*.568}%
+\contentsline {subsubsection}{Inizializzazione del Tracing e Dichiarazione delle Variabili}{165}{subsubsection*.592}%
+\contentsline {subsubsection}{Inizializzazione degli Attributi e Policy RT}{165}{subsubsection*.608}%
+\contentsline {subsubsection}{Affinità di Core}{166}{subsubsection*.620}%
+\contentsline {subsubsection}{Configurazione dei Thread}{167}{subsubsection*.636}%
+\contentsline {subsubsection}{Cleanup e Attesa}{168}{subsubsection*.675}%
+\contentsline {subsubsection}{Caratteristiche Rilevanti}{169}{subsubsection*.690}%
+\contentsline {subsubsection}{\texttt {PeriodicTask eseguita dall' applicazione:}}{169}{subsubsection*.691}%
+\contentsline {subsubsection}{\texttt {activity\_load}: }{172}{subsubsection*.759}%
+\contentsline {subsection}{\numberline {14.2.2}Applicazione \texttt {Broadcastner}: Publisher DDS Periodico}{173}{subsection.767}%
+\contentsline {subsubsection}{Include e Variabili Globali di Modulo}{173}{subsubsection*.768}%
+\contentsline {subsubsection}{La Funzione di Pubblicazione con Marker}{174}{subsubsection*.791}%
+\contentsline {subsubsection}{Inizializzazione DDS e Creazione dei Thread}{175}{subsubsection*.820}%
+\contentsline {subsection}{\numberline {14.2.3}Applicazione \texttt {Listener}: Subscriber DDS Event-Driven}{179}{subsection.901}%
+\contentsline {subsubsection}{Include e Namespace}{179}{subsubsection*.902}%
+\contentsline {subsubsection}{La Classe \texttt {GeometryListener}: Architettura a Callback}{180}{subsubsection*.929}%
+\contentsline {subsubsection}{Il \texttt {main}: Avvio della Sottoscrizione}{182}{subsubsection*.970}%
+\contentsline {section}{\numberline {14.3}Fase 4 --- Infrastruttura di Tracciamento e Automazione}{183}{section.988}%
+\contentsline {subsection}{\numberline {14.3.1}Tracciamento Attivo: \texttt {run\_trace.sh}}{184}{subsection.989}%
+\contentsline {subsubsection}{Risoluzione dei Percorsi e Alias dei Nomi}{184}{subsubsection*.992}%
+\contentsline {subsubsection}{Discovery Dinamica di Binario e Sorgente}{185}{subsubsection*.1019}%
+\contentsline {subsubsection}{Creazione della Directory di Output Univoca}{187}{subsubsection*.1052}%
+\contentsline {subsubsection}{Step 1 --- Registrazione con \texttt {trace-cmd record}}{187}{subsubsection*.1068}%
+\contentsline {subsubsection}{Step 2 --- Decodifica con \texttt {trace-cmd report}}{188}{subsubsection*.1083}%
+\contentsline {subsubsection}{Step 3 --- Compilazione ed Esecuzione del Parser C++}{189}{subsubsection*.1088}%
+\contentsline {subsubsection}{Step 4 --- Monitor Visivo Python e Chiusura}{193}{subsubsection*.1108}%
+\contentsline {subsection}{\numberline {14.3.2}Tracciamento Passivo Multi-Processo: \texttt {marker.sh}}{194}{subsection.1122}%
+\contentsline {subsubsection}{Risoluzione dei Percorsi e Lettura degli Argomenti}{194}{subsubsection*.1125}%
+\contentsline {subsubsection}{Aggancio Passivo: Estrazione dei TID da \texttt {/proc}}{195}{subsubsection*.1164}%
+\contentsline {subsubsection}{Discovery del Sorgente, Directory di Output e Registrazione}{197}{subsubsection*.1223}%
+\contentsline {subsubsection}{Decodifica, Analisi, Monitor e KernelShark}{200}{subsubsection*.1285}%
+\contentsline {subsection}{\numberline {14.3.3}Le Versioni Didattiche: \texttt {marker1.sh} -- \texttt {marker4.sh}}{203}{subsection.1327}%
+\contentsline {subsubsection}{\texttt {marker1.sh}: Registrazione}{203}{subsubsection*.1328}%
+\contentsline {subsubsection}{\texttt {marker2.sh}: Decodifica}{206}{subsubsection*.1419}%
+\contentsline {subsubsection}{\texttt {marker3.sh}: Analisi con Parser C++}{207}{subsubsection*.1444}%
+\contentsline {subsubsection}{\texttt {marker4.sh}: Visualizzazione}{209}{subsubsection*.1500}%
+\contentsline {section}{\numberline {14.4}Fase 5 --- Analisi del Tracciato e Strumenti di Monitoraggio}{211}{section.1547}%
+\contentsline {subsection}{\numberline {14.4.1}L'Analizzatore C++: \texttt {thread\_analysis.cpp}}{211}{subsection.1548}%
+\contentsline {subsubsection}{Include, Strutture Dati e Helper Functions}{211}{subsubsection*.1549}%
+\contentsline {subsubsection}{Fase 1: Estrazione dei Parametri Teorici dal Sorgente C/C++}{214}{subsubsection*.1628}%
+\contentsline {subsubsection}{Fase 2: Discovery Dinamica dei Thread dal Trace}{216}{subsubsection*.1677}%
+\contentsline {subsubsection}{Fase 3: Estrazione degli Sched\_Switch e Logica VPID}{219}{subsubsection*.1753}%
+\contentsline {subsubsection}{Fase 4: Costruzione Intervalli, Metriche RT e Lettura file CSV}{224}{subsubsection*.1854}%
+\contentsline {chapter}{\numberline {15}Caso di Studio: Il Computer di Bordo dell'F-16}{233}{chapter.2057}%
+\contentsline {section}{\numberline {15.1}Motivazione Aeronautica e Architettura del Sistema}{234}{section.2058}%
+\contentsline {section}{\numberline {15.2}Librerie Avioniche Utilizzate}{235}{section.2060}%
+\contentsline {subsection}{\numberline {15.2.1}Modulo F-16: Librerie di Simulazione Aerodinamica}{235}{subsection.2073}%
+\contentsline {subsubsection}{Rilevamento Runtime delle Deadline Miss e Flag Skip}{235}{subsubsection*.2074}%
+\contentsline {paragraph}{Perché skippare il ciclo successivo.}{236}{paragraph*.2096}%
+\contentsline {subsubsection}{Elenco Completo dei Moduli F-16}{236}{subsubsection*.2097}%
+\contentsline {section}{\numberline {15.3}Il Sistema di Controllo del Volo (FCS)}{238}{section.2098}%
+\contentsline {subsection}{\numberline {15.3.1}Controllo del Beccheggio (PITCH\_A, PITCH\_B, PITCH\_C)}{238}{subsection.2099}%
+\contentsline {subsection}{\numberline {15.3.2}Controllo del Rollio (ROLL\_A, ROLL\_B, ROLL\_C)}{239}{subsection.2118}%
+\contentsline {subsection}{\numberline {15.3.3}Controllo della Quota (ALT\_A, ALT\_B)}{239}{subsection.2119}%
+\contentsline {section}{\numberline {15.4}Il Sistema di Navigazione}{239}{section.2129}%
+\contentsline {subsection}{\numberline {15.4.1}Navigazione GPS (GPS\_1, GPS\_2)}{240}{subsection.2130}%
+\contentsline {subsection}{\numberline {15.4.2}Navigazione Inerziale (INS\_1, INS\_2, INS\_3)}{240}{subsection.2131}%
+\contentsline {section}{\numberline {15.5}Il Sistema Radar}{241}{section.2141}%
+\contentsline {subsection}{\numberline {15.5.1}Radar Aria-Aria (RADAR\_A)}{241}{subsection.2142}%
+\contentsline {subsection}{\numberline {15.5.2}Radar Aria-Terra (RADAR\_G)}{241}{subsection.2143}%
+\contentsline {section}{\numberline {15.6}Il Sistema FADEC}{242}{section.2153}%
+\contentsline {section}{\numberline {15.7}Il Sistema d'Arma e i Display Avionici}{242}{section.2166}%
+\contentsline {subsection}{\numberline {15.7.1}Sistema d'ingaggio}{242}{subsection.2167}%
+\contentsline {subsection}{\numberline {15.7.2}Display HUD e MFD}{243}{subsection.2168}%
+\contentsline {section}{\numberline {15.8}Distribuzione dei Core e Analisi dell'Architettura}{243}{section.2169}%
+\contentsline {section}{\numberline {15.9}Sincronizzazione Finale e Terminazione}{243}{section.2170}%
+\contentsline {section}{\numberline {15.10}Risultati dell'Analisi di Tracciamento}{245}{section.2195}%
+\contentsline {chapter}{\numberline {16}Conclusioni}{253}{chapter.2419}%
+\contentsline {section}{\numberline {16.1}Risultati Ottenuti}{253}{section.2420}%
+\contentsline {section}{\numberline {16.2}Limiti del Sistema}{254}{section.2421}%
+\contentsline {section}{\numberline {16.3}Sviluppi Futuri}{254}{section.2422}%
+\contentsline {chapter}{Ringraziamenti}{257}{section*.2423}%
+\contentsline {chapter}{\numberline {A}Codici MATLAB: Controllo Predittivo MPC}{261}{appendix.2425}%
+\contentsline {chapter}{\numberline {B}Codici MATLAB: Controllo Ottimo LQR}{287}{appendix.3096}%
+\contentsline {chapter}{Bibliografia}{311}{appendix*.3788}%

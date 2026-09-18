@@ -1,0 +1,250 @@
+@book{stevens2015aircraft,
+	title={Aircraft control and simulation: dynamics, controls design, and autonomous systems},
+	author={Stevens, Brian L and Lewis, Frank L and Johnson, Eric N},
+	year={2015},
+	publisher={John Wiley \& Sons}
+} 
+
+@book{ogata_2010,
+	title={Modern Control Engineering},
+	author={Ogata, Katsuhiko},
+	year={2010},
+	edition={5th},
+	publisher={Prentice Hall},
+	address={Boston, MA}
+}
+
+@misc{eprosima_monitor_docs,
+	author       = {{eProsima}},
+	title        = {{Fast DDS Monitor} -- Documentation v4.0.0},
+	year         = {2024},
+	howpublished = {\url{https://fast-dds-monitor.readthedocs.io/en/latest/}},
+	note         = {Accessed: 2026-05-05}
+}
+
+@misc{tracecmd_record_man,
+	author       = {Rostedt, Steven},
+	title        = {\texttt{trace-cmd-record}(1) --- Manual Page},
+	year         = {2010},
+	howpublished = {\url{https://www.trace-cmd.org/Documentation/trace-cmd/trace-cmd-record.1.html}},
+	note         = {Copyright Red Hat Inc., GNU Public License}
+}
+
+@misc{rostedt_ftrace,
+	author       = {Rostedt, Steven},
+	title        = {Debugging the Kernel Using \texttt{ftrace}},
+	year         = {2009},
+	howpublished = {\url{https://lwn.net/Articles/322666/}},
+	note         = {Linux Weekly News (LWN.net)}
+}
+
+@online{mit_rungekutta,
+	author       = {Massachusetts Institute of Technology (MIT)},
+	title        = {Differential Equations Notes: The Runge-Kutta Method},
+	url          = {https://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node5.html},
+	urldate      = {2026-03-26},
+	organization = {MIT},
+	note         = {Course 10.001 Web Notes}
+}
+
+@online{mit_quaternions,
+	author       = {Massachusetts Institute of Technology (MIT)},
+	title        = {Quaternions lecture},
+	url          = {https://ocw.mit.edu/courses/6-801-machine-vision-fall-2020/resources/lecture-18-rotation-and-how-to-represent-it-unit-quaternions-the-space-of-rotations/},
+	urldate      = {2026-03-26},
+	organization = {MIT},
+}
+
+@misc{ferramosca_cal_multivariabili_misc,
+	author       = {Ferramosca, Antonio},
+	title        = {Lezione 06 - Schemi di controllo multivariabili},
+	howpublished = {Materiale didattico per il corso di Controllo Avanzato},
+	institution  = {Università degli Studi di Bergamo},
+	note         = {Control and Automation Laboratory (CAL)},
+	url          = {https://cal.unibg.it/wp-content/uploads/Controllo_avanzato/Lezione-06-Schemi-di-controllo-multivariabili.pdf},
+	urldate      = {2026-03-26}
+}
+
+@software{bhattacharya_f16_trim,
+	author       = {Bhattacharya, Raktim},
+	title        = {F16-Model-Matlab: TrimF16.m},
+	institution  = {Texas A\&M University},
+	url          = {https://github.com/isrlab/F16-Model-Matlab/blob/main/TrimF16.m},
+	urldate      = {2026-03-26},
+	note         = {Implementazione MATLAB del modello non lineare dell'F-16}
+}
+
+@misc{ferramosca_cal_lqr_misc,
+	author       = {Ferramosca, Antonio},
+	title        = {Lezione 08 - Regolatore Lineare Quadratico LQR},
+	howpublished = {Materiale didattico per il corso di Controllo Avanzato},
+	institution  = {Università degli Studi di Bergamo},
+	note         = {Control and Automation Laboratory (CAL)},
+	url          = {https://cal.unibg.it/wp-content/uploads/Controllo_avanzato/Lezione-08-LQR.pdf},
+	urldate      = {2026-03-26}
+}
+
+@inbook{lewis2015ch3,
+	author    = {Lewis, Frank L.},
+	title     = {Modeling, Design, and Simulation Tools},
+	booktitle = {Aircraft Control and Simulation: Dynamics, Controls Design, and Autonomous Systems},
+	chapter   = {3},
+	pages     = {142--249},
+	publisher = {John Wiley \& Sons, Ltd},
+	year      = {2015},
+	isbn      = {9781119174882},
+	doi       = {10.1002/9781119174882.ch3},
+	url       = {https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch3},
+	note      = {Estratto per l'analisi dei modelli di stato continui e simulazione del volo}
+}
+
+@misc{brugali_erts_2025,
+	author       = {Brugali, Davide},
+	title        = {Embedded Real-Time Systems --- Lecture Slides},
+	year         = {2025},
+	howpublished = {Materiale didattico del corso di Embedded Real-Time Systems,
+	Università degli Studi di Bergamo},
+	note         = {Dispense del corso a.a. 2025--2026, Prof. Davide Brugali}
+}
+
+@misc{brugali_erts_taskmodel,
+	author       = {Brugali, Davide},
+	title        = {Modeling Real-Time Activities --- Lecture Notes},
+	year         = {2025},
+	howpublished = {Dispensa 09, corso Embedded Real-Time Systems,
+	Università degli Studi di Bergamo, a.a. 2025--2026}
+}
+
+@misc{brugali_erts_scheduling,
+	author       = {Brugali, Davide},
+	title        = {Priority-Driven RT Scheduling --- Lecture Notes},
+	year         = {2025},
+	howpublished = {Dispensa 11.0, corso Embedded Real-Time Systems,
+	Università degli Studi di Bergamo, a.a. 2025--2026}
+}
+
+@misc{brugali_erts_posix,
+	author       = {Brugali, Davide},
+	title        = {POSIX Threads --- Lecture Notes},
+	year         = {2025},
+	howpublished = {Dispense 19.2--19.3, corso Embedded Real-Time Systems,
+	Università degli Studi di Bergamo, a.a. 2025--2026}
+}
+
+@misc{brugali_erts_overrun,
+	author       = {Brugali, Davide},
+	title        = {Handling Overrun --- Lecture Notes},
+	year         = {2025},
+	howpublished = {Dispensa 14, corso Embedded Real-Time Systems,
+	Università degli Studi di Bergamo, a.a. 2025--2026}
+}
+
+@misc{brugali_erts_DDS,
+	author       = {Brugali, Davide},
+	title        = {DDS --- Lecture Notes},
+	year         = {2025},
+	howpublished = {Dispensa 19.3, corso Embedded Real-Time Systems,
+	Università degli Studi di Bergamo, a.a. 2025--2026}
+}
+
+@online{Particle_Swarm_Optimization,
+	title        = {Particle\_Swarm\_Optimization\_toolbox},
+	url          = {https://it.mathworks.com/matlabcentral/fileexchange/7506-particle-swarm-optimization-toolbox},
+	urldate      = {2026-03-26}
+}
+
+@online{eprosima_monitor_doc,
+	author       = {{eProsima}},
+	title        = {Fast DDS Monitor},
+	url          = {https://www.eprosima.com/middleware/tools/fast-dds-monitor},
+	urldate      = {2026-05-06},
+	organization = {eProsima},
+	note         = {Sito ufficiale e download dell'applicazione}
+}
+
+@techreport{nasa1984,
+	title={AFTI/F-16 Digital Flight Control System Experience},
+	institution={NASA},
+	year={1984},
+	url={https://ntrs.nasa.gov/api/citations/19840012524/downloads/19840012524.pdf}
+}
+
+@techreport{Navigation_System,
+	title={Testing the Latest
+	Embedded GPS/INS
+	Hybrid Navigation System
+	for the
+	F-16 Fighting Falco},
+	institution={U.S airforce},
+	url={https://ndia.dtic.mil/wp-content/uploads/2007/test/JKillian_SessionD3.pdf}
+}
+
+@online{Radar_AN/APG-68,
+	author       = {Wikipedia},
+	title        = {Radar},
+	url          = {https://en.wikipedia.org/wiki/AN/APG-68},
+	urldate      = {2026-05-06},
+	organization = {WikiPedia},
+}
+
+@online{Scheduling_Real_Time,
+	author       = {Wikipedia},
+	title        = {Radar},
+	url          = {https://www.faa.gov/sites/faa.gov/files/aircraft/air_cert/design_approvals/air_software/05-27_RTSA.pdf},
+	urldate      = {2026-05-06},
+	organization = {WikiPedia},
+}
+
+@book{spitzer2017digital,
+	title={Digital avionics handbook},
+	author={Spitzer, Cary and Ferrell, Uma and Ferrell, Thomas},
+	url={https://books.google.it/books?hl=it&lr=&id=kvjRBQAAQBAJ&oi=fnd&pg=PP1&dq=spitzer+2017+digital,&ots=TDwms27puj&sig=oq3DEpEiOWTz_eHcTUWwSFQ2xTk&redir_esc=y#v=onepage&q=spitzer%202017%20digital%2C&f=false},
+	year={2017},
+	publisher={CRC press}
+}
+
+@book{astrom2006advanced,
+	author    = {Åström, Karl J. and Hägglund, Tore},
+	title     = {Advanced PID Control},
+	publisher = {ISA - The Instrumentation, Systems and Automation Society},
+	year      = {2006},
+	address   = {Research Triangle Park, NC},
+	isbn      = {978-1556179426}
+}
+
+@inbook{lewis2015ch1,
+	author    = {Stevens, Brian L. and Lewis, Frank L. and Johnson, Eric N.},
+	title     = {The Kinematics and Dynamics of Aircraft Motion},
+	booktitle = {Aircraft Control and Simulation: Dynamics, Controls Design, and Autonomous Systems},
+	chapter   = {1},
+	pages     = {1--62},
+	publisher = {John Wiley \& Sons, Ltd},
+	year      = {2015},
+	isbn      = {9781119174882},
+	doi       = {10.1002/9781119174882.ch1},
+	url       = {https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch1},
+	note      = {Estrazione delle equazioni cinematiche e dinamiche del moto}
+}
+
+@inbook{lewis2015ch2,
+	author    = {Stevens, Brian L. and Lewis, Frank L. and Johnson, Eric N.},
+	title     = {Modeling the Aircraft},
+	booktitle = {Aircraft Control and Simulation: Dynamics, Controls Design, and Autonomous Systems},
+	chapter   = {2},
+	pages     = {63--141},
+	publisher = {John Wiley \& Sons, Ltd},
+	year      = {2015},
+	isbn      = {9781119174882},
+	doi       = {10.1002/9781119174882.ch2},
+	url       = {https://onlinelibrary.wiley.com/doi/abs/10.1002/9781119174882.ch2},
+	note      = {Analisi aerodinamica, linearizzazione e separazione dei moti}
+}
+
+@book{etkin_dynamics,
+	title={Dynamics of flight: stability and control},
+	author={Etkin, Bernard and Reid, Lloyd Duff},
+	volume={3},
+	year={1996},
+	publisher={John Wiley \& Sons},
+	address={New York}
+}
